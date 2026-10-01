@@ -12,7 +12,8 @@ export const OG_SIZE = { width: 1200, height: 630 };
 const fit = (text: string, sizes: [number, number][], fallback: number) =>
   sizes.find(([max]) => text.length <= max)?.[1] ?? fallback;
 
-export const render = (node: ReactElement) => new ImageResponse(node, { ...OG_SIZE, fonts: OG_FONTS });
+export const render = (node: ReactElement, headers?: Record<string, string>) =>
+  new ImageResponse(node, { ...OG_SIZE, fonts: OG_FONTS, headers });
 
 /** A species plate as an image, `width` wide. */
 export function OgPlate({ species, width }: { species: SpeciesKey; width: number }) {

@@ -21,7 +21,7 @@ export function Hero() {
         <h1 className="text-[clamp(3.4rem,8vw,7rem)] font-bold leading-[0.9] tracking-[-0.025em]">Dziaderstwo nie&nbsp;wybiera.</h1>
         <p className="mt-7 max-w-xl text-[clamp(1.2rem,2vw,1.45rem)] leading-snug text-ink-soft">
           {typo(
-            "Instytut Badań nad Dziaderstwem opisuje, klasyfikuje i mierzy dziaderstwo w Polsce. Zbadaj się, zanim będzie za późno: test trwa trzy minuty i kończy się certyfikatem.",
+            "Instytut Badań nad Dziaderstwem opisuje, klasyfikuje i mierzy dziaderstwo w Polsce. Zbadaj się, zanim będzie za późno: badanie trwa cztery minuty i kończy się certyfikatem.",
           )}
         </p>
         <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
@@ -32,7 +32,7 @@ export function Hero() {
             Atlas Dziadersów
           </Link>
         </div>
-        <p className="label mt-6 text-ink-faint">24 pytania · ok. 3 minuty · bez pobierania krwi</p>
+        <p className="label mt-6 text-ink-faint">5 gabinetów · ok. 4 minuty · bez pobierania krwi</p>
       </div>
       <Specimen className="lg:col-span-6" />
     </section>
@@ -86,13 +86,13 @@ export function TestBand() {
           </h2>
           <p className="mt-6 max-w-lg text-[clamp(1.15rem,1.8vw,1.35rem)] leading-snug text-paper/80">
             {typo(
-              "Dwadzieścia cztery pytania z życia codziennego. Wynik od 0 do 100%, rozpoznanie gatunku według Atlasu i certyfikat do wysłania rodzinie.",
+              "Badanie okresowe w pięciu gabinetach: plansze Rorschacha, próba klaksonowa, inwentaryzacja szuflady. Wynik, rozpoznanie gatunku, wyniki laboratoryjne i certyfikat do wysłania rodzinie.",
             )}
           </p>
           <dl className="mt-10 grid max-w-lg grid-cols-3 border-t border-paper/30">
             {[
-              ["24", "pytania"],
-              ["3", "minuty"],
+              ["5", "gabinetów"],
+              ["16", "zadań"],
               ["1", "certyfikat"],
             ].map(([value, label]) => (
               <div key={label} className="pt-4">

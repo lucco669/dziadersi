@@ -14,11 +14,13 @@ export type CertificateProps = {
   date?: string;
   /** Marks the certificate as a specimen. */
   sample?: boolean;
+  /** Issued on a family interview, not on the respondent's own answers. */
+  proxy?: boolean;
   className?: string;
 };
 
 /** The certificate, with the red stripe of a Polish school certificate awarded with distinction. */
-export function Certificate({ score, diagnosis, latin, number, species, name, date, sample, className }: CertificateProps) {
+export function Certificate({ score, diagnosis, latin, number, species, name, date, sample, proxy, className }: CertificateProps) {
   return (
     <figure className={cx("relative mx-auto w-full max-w-[34rem] overflow-hidden bg-[#fbf8f1] p-2 text-ink", className)}>
       <div aria-hidden="true" className="absolute -left-20 top-4 h-6 w-56 -rotate-45 bg-red md:-left-16 md:top-12 md:h-7" />
@@ -31,7 +33,7 @@ export function Certificate({ score, diagnosis, latin, number, species, name, da
         <p className="mx-auto mt-4 max-w-sm text-[1rem] italic leading-relaxed text-ink-soft">
           {typo("Niniejszym zaświadcza się, że osoba badana")}
           {name ? <span className="my-1 block text-[1.75rem] not-italic font-bold leading-tight text-ink">{name}</span> : " "}
-          {typo("uzyskała w Teście Dziadersa wynik")}
+          {typo(proxy ? "uzyskała na podstawie wywiadu rodzinnego wynik" : "uzyskała w Teście Dziadersa wynik")}
         </p>
 
         <div className="relative">
@@ -78,7 +80,7 @@ export function Certificate({ score, diagnosis, latin, number, species, name, da
       </div>
 
       <figcaption className="sr-only">
-        {`Certyfikat Dziaderstwa${name ? ` dla: ${name}` : ""}. Wynik ${score}%, rozpoznanie: ${diagnosis}.`}
+        {`Certyfikat Dziaderstwa${name ? ` dla: ${name}` : ""}${proxy ? " (wywiad rodzinny)" : ""}. Wynik ${score}%, rozpoznanie: ${diagnosis}.`}
       </figcaption>
     </figure>
   );

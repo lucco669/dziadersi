@@ -6,14 +6,14 @@ import { site } from "@/lib/site";
 
 const title = "Test Dziadersa";
 const description =
-  "Test Dziadersa: 24 pytania z życia codziennego, około trzech minut. Wynik od 0 do 100%, rozpoznanie gatunku według Atlasu Dziadersów i certyfikat do udostępnienia.";
+  "Test Dziadersa: badanie okresowe w pięciu gabinetach, od plansz Rorschacha po próbę klaksonową. Wynik od 0 do 100%, rozpoznanie gatunku, wyniki laboratoryjne i certyfikat. Także jako wywiad rodzinny i ranking znajomych.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Test Dziadersa: sprawdź, ile masz w sobie dziadersa",
   description,
   path: "/test",
   shareTitle: `${title} · ${site.name}`,
-  shareDescription: "24 pytania, około trzech minut. Wynik, rozpoznanie gatunku i certyfikat. Zbadaj się, zanim będzie za późno.",
+  shareDescription: "Pięć gabinetów, około czterech minut. Plansze Rorschacha, próba klaksonowa, szuflada. Zbadaj się, zanim będzie za późno.",
 });
 
 export default function TestPage() {
@@ -29,7 +29,7 @@ export default function TestPage() {
             description,
             url: `${site.url}/test`,
             inLanguage: "pl",
-            timeRequired: "PT3M",
+            timeRequired: "PT4M",
             publisher: institute,
             isPartOf: { "@type": "WebSite", name: site.name, url: site.url },
           },

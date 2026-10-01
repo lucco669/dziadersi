@@ -4,15 +4,17 @@ import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Stamp } from "@/components/brand";
 import { Certificate } from "@/components/certificate";
+import { LabSheet } from "@/components/lab-sheet";
 import { Section } from "@/components/page";
 import { Figure, SpeciesPlate, INK, PAPER } from "@/components/pictograms";
 import { ResultActions } from "@/components/result-actions";
 import type { Species } from "@/content/species";
-import { QUESTIONS } from "@/content/test";
+import { TASKS } from "@/content/test";
+import { QUESTIONS_V1 } from "@/content/test-v1";
 import { getBulletin } from "@/lib/bulletin";
 import { ZONES } from "@/lib/indeks";
 import { pageMetadata } from "@/lib/seo";
-import { decodeResult, encodeResult, evaluate, MAX_POINTS, SAMPLE_DRAFT, type Diagnosis, type Result } from "@/lib/test";
+import { decodeResult, encodeResult, evaluate, groupPath, SAMPLE_DRAFT, type Diagnosis, type Result } from "@/lib/test";
 import { cx, pct, typo } from "@/lib/typo";
 
 // A result renders in one pass, with no loading state: the code holds everything the page needs.
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }: PageProps<"/wynik/[kod]">): P
   const title = `${result.score}% · ${result.diagnosis.name}`;
   return pageMetadata({
     title,
-    description: `${result.name ? `Osoba badana: ${result.name}. ` : ""}${result.verdict.title}, rozpoznanie: ${result.diagnosis.name}. Test Dziadersa w Instytucie Badań nad Dziaderstwem. Zbadaj się, zanim będzie za późno.`,
+    description: `${result.name ? `Osoba badana: ${result.name}${result.proxy ? " (wywiad rodzinny)" : ""}. ` : ""}${result.verdict.title}, rozpoznanie: ${result.diagnosis.name}. Test Dziadersa w Instytucie Badań nad Dziaderstwem. Zbadaj się, zanim będzie za późno.`,
     path: `/wynik/${result.code}`,
     shareTitle: title,
     noindex: true,
@@ -61,8 +63,9 @@ export default async function ResultPage({ params }: PageProps<"/wynik/[kod]">) 
     <main id="tresc">
       <Summary result={result} nid={bulletin.index.value} />
       <CaseDescription result={result} />
+      <Lab result={result} />
       <Protocol result={result} />
-      <Referral />
+      <Referral code={result.code} />
     </main>
   );
 }
@@ -87,6 +90,7 @@ function Summary({ result, nid }: { result: Result; nid: number }) {
           <div aria-hidden="true">
             <p className="label text-ink-soft">
               Osoba badana{result.name && <span className="text-ink">: {result.name}</span>}
+              {result.proxy && <span className="text-red"> · wywiad rodzinny</span>}
             </p>
             <p className="mt-2 text-[clamp(7.5rem,24vw,15rem)] font-bold leading-[0.8] tracking-[-0.04em] tabular-nums">
               {result.score}
@@ -117,6 +121,7 @@ function Summary({ result, nid }: { result: Result; nid: number }) {
             species={result.diagnosis.species.map((species) => species.key)}
             name={result.name || undefined}
             date={result.date}
+            proxy={result.proxy}
             className="border border-ink"
           />
           <p className="label mt-6 text-center text-ink-soft">
@@ -185,7 +190,7 @@ function Marker({
 function CaseDescription({ result }: { result: Result }) {
   const { verdict, diagnosis } = result;
   return (
-    <Section id="opis" title={verdict.title} aside={`${result.points} z ${MAX_POINTS} pkt`} intro={typo(verdict.description)}>
+    <Section id="opis" title={verdict.title} aside={`${result.points} z ${result.max} pkt`} intro={typo(verdict.description)}>
       <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
           <h3 className="label border-b border-ink pb-3 text-ink-soft">Zalecenia Instytutu</h3>
@@ -279,7 +284,7 @@ function Protocol({ result }: { result: Result }) {
     <Section
       id="protokol"
       title="Protokół badania"
-      aside={`Formularz IBD-T1 · ${QUESTIONS.length} pytania`}
+      aside={result.version === 2 ? `Formularz IBD-T2 · ${TASKS.length} zadań` : `Formularz IBD-T1 · ${QUESTIONS_V1.length} pytania`}
       intro={typo("Odpowiedzi, które w największym stopniu wpłynęły na rozpoznanie.")}
     >
       {result.symptoms.length > 0 ? (
@@ -289,7 +294,9 @@ function Protocol({ result }: { result: Result }) {
               key={symptom.number}
               className="grid gap-x-8 gap-y-2 border-b border-rule py-5 md:grid-cols-[4.5rem_minmax(0,1.25fr)_minmax(0,1fr)_4.5rem] md:items-baseline"
             >
-              <span className="label text-ink-soft">Pyt. {pad(symptom.number)}</span>
+              <span className="label text-ink-soft">
+                {result.version === 2 ? "Zad." : "Pyt."} {pad(symptom.number)}
+              </span>
               <span className="leading-snug">
                 {typo(symptom.question)}
                 <span className="label mt-1.5 block text-ink-faint">{symptom.section}</span>
@@ -305,35 +312,79 @@ function Protocol({ result }: { result: Result }) {
         </p>
       )}
       <p className="label mt-6 text-ink-soft">
-        Suma punktów: {result.points} z {MAX_POINTS}. Pełny protokół jest zapisany wyłącznie w linku do wyniku.
+        Suma punktów: {result.points} z {result.max}. Pełny protokół jest zapisany wyłącznie w linku do wyniku.
       </p>
     </Section>
   );
 }
 
-function Referral() {
+function Lab({ result }: { result: Result }) {
+  return (
+    <Section
+      id="badania"
+      title="Wyniki badań laboratoryjnych"
+      aside="Zakład Diagnostyki Dziaderstwa IBD"
+      intro={typo("Parametry wyliczone z odpowiedzi. Krew nie była potrzebna, choć laboratorium proponowało.")}
+    >
+      <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-10">
+        <LabSheet result={result} className="border border-ink lg:col-span-8" />
+        <div className="lg:col-span-4">
+          <p className="max-w-sm text-lg leading-relaxed">
+            {typo("Strzałka przy wyniku oznacza wartość poza zakresem referencyjnym. Zakresy ustalono na grupie kontrolnej, która nie posiada szuflady ze wszystkim.")}
+          </p>
+          <a href={`/wynik/${result.code}/badania?pobierz`} download className="btn mt-8 border border-ink hover:bg-ink hover:text-paper">
+            Pobierz wyniki <span aria-hidden="true">↓</span>
+          </a>
+          <p className="label mt-3 text-ink-soft">Obraz 4:5, do wysłania lekarzowi rodzinnemu. Albo rodzinie.</p>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/** One more person: a ranking with friends, an interview about someone at home, or the test again. */
+function Referral({ code }: { code: string }) {
   return (
     <section aria-labelledby="skierowanie" className="bg-ink text-paper">
-      <div className="wrap flex flex-col gap-10 py-16 md:flex-row md:items-center md:py-20">
-        <svg viewBox="-2 -1 56 97" className="hidden h-40 shrink-0 md:block" aria-hidden="true">
-          <Figure color={PAPER} cutout={INK} right="point" />
-        </svg>
-        <div className="flex-1">
-          <h2 id="skierowanie" className="text-[clamp(2.4rem,5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
-            Zbadaj kogoś jeszcze.
-          </h2>
-          <p className="mt-4 max-w-xl text-paper/75">
-            {typo("Wyślij test komuś, kto „nie potrzebuje instrukcji”. Albo zrób go jeszcze raz, tym razem szczerze.")}
-          </p>
+      <div className="wrap grid gap-12 py-16 md:py-20 lg:grid-cols-12 lg:gap-10">
+        <div className="flex gap-10 lg:col-span-5">
+          <svg viewBox="-2 -1 56 97" className="hidden h-40 shrink-0 md:block" aria-hidden="true">
+            <Figure color={PAPER} cutout={INK} right="point" />
+          </svg>
+          <div>
+            <h2 id="skierowanie" className="text-[clamp(2.2rem,4vw,3.4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
+              Zbadaj kogoś jeszcze.
+            </h2>
+            <p className="mt-4 max-w-md text-paper/75">
+              {typo("Wyślij test komuś, kto „nie potrzebuje instrukcji”. Albo zrób go jeszcze raz, tym razem szczerze.")}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/test" className="btn bg-paper text-ink hover:bg-red hover:text-paper">
-            Wykonaj test <span aria-hidden="true">→</span>
-          </Link>
-          <Link href="/atlas" className="btn border border-paper/50 text-paper hover:bg-paper/10">
-            Atlas Dziadersów
-          </Link>
-        </div>
+        <ul className="border-t border-paper/30 lg:col-span-7">
+          {[
+            {
+              href: groupPath([code]),
+              title: "Ranking znajomych",
+              text: "Twój wynik na górze listy. Wyślij link, a każdy, kto zrobi test, dopisze się poniżej.",
+            },
+            {
+              href: "/test?tryb=wywiad",
+              title: "Wywiad rodzinny",
+              text: "Odpowiadasz za tatę, wujka albo szefa. Certyfikat dostaje osoba badana.",
+            },
+            { href: "/test", title: "Test jeszcze raz", text: "Instytut zakłada, że tym razem szczerze." },
+          ].map((item) => (
+            <li key={item.title}>
+              <Link href={item.href} className="group grid gap-1 border-b border-paper/30 py-5 sm:grid-cols-[14rem_1fr_auto] sm:items-baseline sm:gap-6">
+                <span className="text-2xl font-bold leading-tight transition-colors group-hover:text-red">{item.title}</span>
+                <span className="font-sans text-[0.95rem] leading-snug text-paper/70">{typo(item.text)}</span>
+                <span aria-hidden="true" className="hidden text-xl transition-transform group-hover:translate-x-1 sm:block">
+                  →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

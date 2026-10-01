@@ -27,10 +27,14 @@ Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
 | --- | --- |
 | `src/app/` | Routes, metadata, share images, favicon set and manifest, robots, sitemap, 404 |
 | `src/components/` | Page template (`page.tsx`: header, sections, test band, pager), brand (`brand.tsx`: head mark, wordmark, seal, stamp), pictograms (`pictograms.tsx`, `specimen.tsx`, `crowd.tsx`) |
-| `src/content/` | All copy: 22 species, 26 dictionary entries, 5 reports, regions, and the 24 test questions (`test.ts`) |
-| `src/lib/test.ts` | Test scoring, species diagnosis, and stateless result codes (answers, date and name in the URL) |
+| `src/content/` | All copy: 22 species, 26 dictionary entries, 5 reports, regions, the 16 test tasks in five rooms (`test.ts`), the retired 24 questions kept for old links (`test-v1.ts`) and the lab parameters (`lab.ts`) |
+| `src/lib/test.ts` | Test scoring, species diagnosis, and stateless result codes (answers, date and name in the URL), both editions |
+| `src/components/test-runner.tsx`, `src/components/test/` | The test: intro, routing slip, and one view per task format (choice, SMS, Rorschach plate, words, horn test, map, inventory, thermometer, rapid series) |
+| `src/lib/lab.ts`, `src/lib/lab-image.tsx` | Lab results for a result code, on the page and as a PNG |
+| `src/lib/group.ts`, `src/app/grupa/[lista]` | Rankings: result codes joined with dots, duel and group views |
+| `public/plansze/`, `assets/plansze/` | Rorschach plates (generated with ChatGPT): WebP for the site, PNG for share images |
 | `src/lib/certificate-image.tsx` | Generated certificates: link preview, Instagram post and story |
-| `src/app/test`, `src/app/wynik/[kod]` | The test runner and the shareable result pages |
+| `src/app/test`, `src/app/wynik/[kod]` | The test page and the shareable result pages, with certificate and lab images |
 | `src/app/atlas`, `src/app/slownik`, `src/app/raporty`, `src/app/indeks` | Content sections; each `[slug]` page is prerendered from `src/content/` |
 | `src/lib/og-cards.tsx`, `src/lib/og.tsx` | Share cards for species, dictionary entries, reports and section pages |
 | `src/lib/seo.ts` | `pageMetadata()`: canonical, Open Graph and Twitter for every page |

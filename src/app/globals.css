@@ -7,6 +7,7 @@
 @theme {
   --color-paper: #f4f0e7;
   --color-paper-deep: #ebe5d7;
+  --color-card: #fbf8f1;
   --color-ink: #161513;
   --color-ink-soft: #57524a;
   --color-ink-faint: #8a8376;
@@ -20,6 +21,14 @@
   --animate-stamp: stamp 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-question-in: question-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-draw: draw 170ms ease-out both;
+  --animate-unfold: unfold 760ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-drain: drain linear both;
+  --animate-send: send 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-park: park 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-drop: drop 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-blink: blink 0.8s steps(1, end) infinite;
+  --animate-honk: honk 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-drive-away: drive-away 1.6s cubic-bezier(0.5, 0, 0.7, 0.4) both;
 
   @keyframes stamp {
     0% {
@@ -51,6 +60,80 @@
       stroke-dashoffset: 0;
     }
   }
+
+  /* A Rorschach blot opens from its crease, as when the folded sheet is pulled apart. */
+  @keyframes unfold {
+    from {
+      opacity: 0.2;
+      transform: scaleX(0.04);
+      filter: blur(4px);
+    }
+    60% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes drain {
+    from {
+      transform: scaleX(1);
+    }
+    to {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes send {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.96);
+    }
+  }
+
+  @keyframes park {
+    from {
+      opacity: 0;
+      transform: translateY(-16px) scale(1.2);
+    }
+  }
+
+  @keyframes drop {
+    from {
+      opacity: 0;
+      transform: translateY(-22px) rotate(-10deg);
+    }
+    60% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0.15;
+    }
+  }
+
+  @keyframes honk {
+    from {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+  }
+
+  @keyframes drive-away {
+    to {
+      opacity: 0;
+      transform: translateY(-34px) scale(0.5);
+    }
+  }
+}
+
+/* SVG pieces scale and move around their own centre. */
+.animate-park,
+.animate-drop,
+.animate-honk,
+.animate-drive-away {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 @theme inline {

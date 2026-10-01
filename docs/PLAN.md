@@ -19,12 +19,19 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 
 ### Phase 1: Test Dziadersa and the certificate (the viral loop) ✅
 
-- `/test`: form "IBD-T1". An intro with an optional "signature" (the name on the certificate), then 24 questions, one per screen. Each answer is crossed out in ink before the next question. Keys 1–4 answer, Backspace goes back, and progress survives a reload. A short "Instytut analizuje wyniki" sequence runs while the result is prefetched.
-- Scoring (`src/lib/test.ts`): every answer gives 0–3 points (the score is the percentage of 72) and weights towards Atlas species. Each species' affinity is measured against what random answering would give, and damped for species with few questions. The result is one species, or a hybrid ("Dziaders Grillowo-Motoryzacyjny") when two are close. "Utajony" and "Pospolity" cover answers with no clear species. In simulations every species wins about equally often, and a respondent's own species is recognised about 72% of the time.
-- `/wynik/[kod]`: the code stores the 24 answers and the test date in 14 characters, plus the name as base64url after `~`. No database is involved. The page shows the score, the verdict stamp, the diagnosis, a scale against today's NID, the certificate, the case description with recommendations, species notes from the Atlas, and the examination protocol. Names are sanitised, and vulgar ones are filtered, both when written and when read.
-- Sharing: native share (which reaches Messenger and Instagram on phones), copy link, Facebook, WhatsApp, X and e-mail. On phones the story image can be sent directly as a file. The name can be added or changed on the result page.
-- Images: `/wynik/[kod]/opengraph-image` (the link preview certificate, 1200×630) and `/wynik/[kod]/certyfikat?format=post|relacja` (1080×1350 and 1080×1920 PNGs). A code always renders the same image, so images are CDN-cached for a year. `/test` has its own share card.
-- Result pages are `noindex`. One sample is prerendered, and every other code renders on its first visit and is then served from cache.
+- `/test`: form "IBD-T2", a periodic check-up in five rooms. The intro asks who is being examined (yourself, or someone close in a **family interview**) and for an optional name, and shows the routing slip ("Karta obiegowa"). Then 16 tasks, one per screen, in different formats:
+  - **Room I, Wywiad lekarski:** two choices and an SMS reply in a phone ("Młody pisze: jestem").
+  - **Room II, Pracownia psychologiczna:** two Rorschach plates and a timed word association (Sobota, Lato, Poniedziałek; hesitation is noted, not punished).
+  - **Room III, Pracownia sprawności:** the horn test (red, red and amber, green: honk at the car that doesn't move; honking early is a "falstart", and the horn sounds), then tap where you park at the market and where the windbreak goes at 6:30 on the beach. What a spot means is revealed only after the tap.
+  - **Room IV, Inwentaryzacja:** tick what is in the drawer and in the boot (the drawing fills up), and a thermometer for socks with sandals (the sock grows).
+  - **Room V, Konsultacja końcowa:** two choices, the third plate, and a rapid yes/no series against the clock ("milczenie oznacza zgodę").
+- Answer order is shuffled per respondent (seeded, so a reload keeps it), and every answer is written as a joke, the sensible ones included. Each room ends with a stamp on the slip and the doctor's interim suspicion. Number keys answer, Enter continues, Backspace goes back, and progress survives a reload. Countdowns are off for `prefers-reduced-motion`.
+- Scoring (`src/lib/test.ts`): every task gives 0–3 points (the score is the percentage of 48) and weights towards Atlas species. Species affinity is measured against random answering and damped for thin evidence. The result is one species or a hybrid; "Utajony" and "Pospolity" cover answers with no clear species. In simulations every species wins under random answering, and a respondent leaning to one species is recognised 73–84% of the time.
+- Result codes are stateless: "2" + every answer packed as one mixed-radix number (14 base36 chars, the family-interview flag included) + the date, then the name after `~`. **Codes starting with "1" are the retired 24-question IBD-T1**: they decode and score exactly as before (`src/content/test-v1.ts`, never edit). Tasks in IBD-T2 must never be reordered or resized; a new edition gets a new code version.
+- `/wynik/[kod]`: score, verdict stamp, diagnosis, scale against today's NID, certificate (marked "na podstawie wywiadu rodzinnego" for family interviews), case description, species notes, **lab results** ("Wyniki badań laboratoryjnych": 12 parameters on real blood-test abbreviations such as OB, CRP, PLT and ALT, plus the horn reaction time, driven by the score and species shares and flagged ↑/↓; `src/content/lab.ts`), the examination protocol, and a band for the next person: ranking, family interview, test again.
+- **Rankings** (`/grupa/[lista]`): result codes joined with dots, at most 12. A result links to its own ranking; anyone opening it can join through `/test?grupa=…` and lands on the updated list, which they share on. Two people get a duel (scores, "zgodność dziaderska", shared symptoms); three or more get the list with Isotype tallies, the dominant species and the most and least compatible pair. Still no database: the URL is the ranking.
+- Images: `/wynik/[kod]/opengraph-image` (1200×630), `/wynik/[kod]/certyfikat?format=post|relacja` (1080×1350, 1080×1920), `/wynik/[kod]/badania` (the lab printout, 1080×1350) and `/grupa/[lista]/opengraph-image`. All are CDN-cached for a year. `/test` has its own card with Plansza IV.
+- Result and ranking pages are `noindex`. One sample of each is prerendered; other codes render on first visit and are then served from cache.
 
 ### Phase 2: Atlas, Słownik, Raporty and Indeks (search traffic) ✅
 
@@ -44,7 +51,11 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - **Generator wypowiedzi**: template-based lines by situation (car, renovation, holiday, restaurant, computer, the neighbour's kids).
 - **Dziaders Bingo**: seeded boards for a wedding, Christmas Eve, a long weekend or the seaside, printable and shareable by URL.
 
-### Phase 4: community (needs a backend and moderation)
+### Phase 4: Supabase, accounts and community (next)
+
+- **Supabase** (Postgres, auth, row-level security) is the backend for everything below. Store results as codes plus region and time, never names.
+- **Narodowy Spis Dziadersów** (`/spis`): real statistics in the manner of the statistics office, drawn with the Isotype figures: tests taken, species and hybrid frequencies, the most common answer to each task, the most dziaderski hour, regions (an optional voivodeship question feeds the map), and how many people retook the test to improve their score. The same data replaces the modelled percentile on the result page and can show "tak samo odpowiedziało 38% badanych" after each answer.
+- **Accounts:** a "Profil Dziaderski" with the history of results and badges; rankings become real groups that update for everyone.
 
 - **Czy to już dziaderstwo?**: users submit situations and the community votes TAK / NIE / DZIADERSTWO KLINICZNE.
 - **Dziaderometr** (a daily 0–10 poll) and **Hall of Fame**.
@@ -61,13 +72,13 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 | URL | Phase |
 | --- | --- |
 | `/` | 0 |
-| `/test`, `/wynik/[kod]` | 1 |
+| `/test`, `/wynik/[kod]`, `/wynik/[kod]/badania`, `/grupa/[lista]` | 1 |
 | `/atlas`, `/atlas/[slug]` | 2 |
 | `/slownik`, `/slownik/[slug]` | 2 |
 | `/raporty`, `/raporty/[slug]` | 2 |
 | `/indeks` (methodology and archive) | 2 |
 | `/generator`, `/bingo` | 3 |
-| `/czy-to-juz-dziaderstwo`, `/hall-of-fame` | 4 |
+| `/spis`, `/czy-to-juz-dziaderstwo`, `/hall-of-fame` | 4 |
 | `/o-instytucie`, `/regulamin`, `/prywatnosc` | before Phase 4, or as soon as analytics is added |
 
 ## 4. Design system
@@ -96,6 +107,9 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - Picture statistics: `Crowd` (100 figures, `count` of them dziaders, in a fixed scattered order) and `Tally` (ten figures for a percentage).
 - The same drawings render in generated images through `src/lib/svg-string.ts`.
 - Motion: plates animate on hover and where marked `animated` (smoke, the kick, the float, rain). The hero diagram draws its leader lines and the mustache twitches. Everything stops for `prefers-reduced-motion`.
+- Test scenes are drawn in the same language (`src/components/test/`): the car park and the beach from above, the crossing for the horn test, the drawer and the boot with 18 small objects, the thermometer with the sock. The traffic light's green (`#4e8b5f`) is the only colour outside the palette.
+
+**Raster art:** the Rorschach plates are the one place where drawing by hand would look fake. They were generated with ChatGPT image generation (through the Codex CLI), converted to transparent WebP (`public/plansze/`, colour-to-alpha against white, so they sit on any background) and kept as PNG for share images (`assets/plansze/`). Plansza IV appears only on the `/test` share card.
 
 **Layout:**
 - Every page is the same template: `PageHeader` (breadcrumbs, h1, lead, a line of facts, an optional picture), then `Section`s, each starting on one ink hairline, then `TestPromo`, the one black band before the footer.

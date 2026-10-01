@@ -134,6 +134,14 @@ export function ResultActions({
           <a href={image("relacja")} download onClick={() => track("Udostępnienie", { kanal: "relacja" })} className="link">
             Pobierz relację 9:16
           </a>
+          <a
+            href={`/wynik/${code}/badania?pobierz`}
+            download
+            onClick={() => track("Udostępnienie", { kanal: "badania" })}
+            className="link"
+          >
+            Wyniki badań
+          </a>
         </dd>
         <dt className="label pt-0.5 text-ink-soft">Wyślij</dt>
         <dd className="flex flex-wrap gap-x-5 gap-y-1">

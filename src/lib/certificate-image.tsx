@@ -42,7 +42,7 @@ function Landscape({ result }: { result: Result }) {
     <OgFrame section={`Certyfikat nr ${result.certificate}`} url="Zbadaj się na dziader.si">
       <div style={{ display: "flex", flexDirection: "column", width: 420 }}>
         <div style={{ ...sans, display: "flex", fontSize: 22, color: C.soft }}>
-          {result.name ? `Osoba badana: ${result.name}` : "Wynik Testu Dziadersa"}
+          {result.name ? `Osoba badana: ${result.name}${result.proxy ? " (wywiad)" : ""}` : result.proxy ? "Wywiad rodzinny" : "Wynik Testu Dziadersa"}
         </div>
         <div style={{ ...bold, display: "flex", marginTop: 4, fontSize: 216, lineHeight: 0.9, letterSpacing: -8 }}>
           {result.score}
@@ -136,7 +136,7 @@ function Portrait({ result, story }: { result: Result; story: boolean }) {
             <div style={{ ...bold, display: "flex", marginTop: 6, fontSize: 56, lineHeight: 1.1 }}>{result.name}</div>
           )}
           <div style={{ ...italic, display: "flex", marginTop: 6, fontSize: 31, color: C.soft }}>
-            uzyskała w Teście Dziadersa wynik
+            {result.proxy ? "uzyskała na podstawie wywiadu rodzinnego wynik" : "uzyskała w Teście Dziadersa wynik"}
           </div>
 
           <div style={{ ...bold, display: "flex", marginTop: 4, fontSize: story ? 260 : 220, lineHeight: 1, letterSpacing: -9 }}>
