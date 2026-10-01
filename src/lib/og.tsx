@@ -1,37 +1,64 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { MUSTACHE_PATH } from "@/components/brand";
+import type { ReactNode } from "react";
+import { MUSTACHE_PATH } from "@/components/pictograms";
 
 /* Shared by every generated image: static TTFs (Satori reads neither woff2 nor variable fonts). */
 
-const [frauncesBlack, frauncesItalic, plexMono] = await Promise.all([
-  readFile(join(process.cwd(), "assets/fonts/Fraunces-144pt-Black.ttf")),
-  readFile(join(process.cwd(), "assets/fonts/Fraunces-72pt-MediumItalic.ttf")),
-  readFile(join(process.cwd(), "assets/fonts/IBMPlexMono-Medium.ttf")),
+const font = (file: string) => readFile(join(process.cwd(), "assets/fonts", file));
+
+const [serifBold, serifRegular, serifItalic, sansSemiBold] = await Promise.all([
+  font("PoltawskiNowy-Bold.ttf"),
+  font("PoltawskiNowy-Regular.ttf"),
+  font("PoltawskiNowy-Italic.ttf"),
+  font("SchibstedGrotesk-SemiBold.ttf"),
 ]);
 
 export const OG_FONTS = [
-  { name: "Fraunces", data: frauncesBlack, weight: 900 as const, style: "normal" as const },
-  { name: "Fraunces", data: frauncesItalic, weight: 500 as const, style: "italic" as const },
-  { name: "Plex Mono", data: plexMono, weight: 500 as const, style: "normal" as const },
+  { name: "Poltawski", data: serifBold, weight: 700 as const, style: "normal" as const },
+  { name: "Poltawski", data: serifRegular, weight: 400 as const, style: "normal" as const },
+  { name: "Poltawski", data: serifItalic, weight: 400 as const, style: "italic" as const },
+  { name: "Schibsted", data: sansSemiBold, weight: 600 as const, style: "normal" as const },
 ];
 
 export const C = {
-  paper: "#f1ebdd",
-  paperLight: "#f8f4ea",
-  ink: "#1b1a17",
-  soft: "#4b463d",
-  faint: "#756e60",
-  green: "#1f3b30",
-  bordo: "#8c1f2e",
+  paper: "#f4f0e7",
+  card: "#fbf8f1",
+  ink: "#161513",
+  soft: "#57524a",
+  faint: "#8a8376",
+  rule: "#d8d0c0",
+  red: "#c4362c",
 };
 
-export const display = { fontFamily: "Fraunces", fontWeight: 900 } as const;
-export const italic = { fontFamily: "Fraunces", fontWeight: 500, fontStyle: "italic" } as const;
-export const mono = { fontFamily: "Plex Mono", fontWeight: 500 } as const;
+export const bold = { fontFamily: "Poltawski", fontWeight: 700 } as const;
+export const serif = { fontFamily: "Poltawski", fontWeight: 400 } as const;
+export const italic = { fontFamily: "Poltawski", fontWeight: 400, fontStyle: "italic" } as const;
+export const sans = { fontFamily: "Schibsted", fontWeight: 600 } as const;
 
-/** The Institute seal, drawn with boxes (Satori can't set text on a path). */
-export function OgSeal({ size, color = C.bordo, rotate = -12 }: { size: number; color?: string; rotate?: number }) {
+/** The pictogram head. */
+export function OgMark({ size, color = C.ink, cutout = C.paper }: { size: number; color?: string; cutout?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="24" fill={color} />
+      <path d={MUSTACHE_PATH} fill={cutout} transform="translate(6.2 21.6) scale(0.356)" />
+    </svg>
+  );
+}
+
+export function OgLogo({ size = 44, color = C.ink, cutout = C.paper }: { size?: number; color?: string; cutout?: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <OgMark size={size * 1.25} color={color} cutout={cutout} />
+      <div style={{ ...bold, display: "flex", marginLeft: size * 0.36, fontSize: size, letterSpacing: -0.4, color }}>
+        DZIADER<span style={{ color: C.red }}>.</span>SI
+      </div>
+    </div>
+  );
+}
+
+/** The Institute's seal, drawn with boxes (Satori can't set text on a path). */
+export function OgSeal({ size, color = C.red, rotate = -10 }: { size: number; color?: string; rotate?: number }) {
   return (
     <div
       style={{
@@ -40,7 +67,7 @@ export function OgSeal({ size, color = C.bordo, rotate = -12 }: { size: number; 
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        border: `${Math.round(size * 0.032)}px solid ${color}`,
+        border: `${Math.round(size * 0.034)}px solid ${color}`,
         borderRadius: 9999,
         transform: `rotate(${rotate}deg)`,
         opacity: 0.92,
@@ -54,15 +81,15 @@ export function OgSeal({ size, color = C.bordo, rotate = -12 }: { size: number; 
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: `${Math.max(2, Math.round(size * 0.009))}px solid ${color}`,
+          border: `${Math.max(2, Math.round(size * 0.01))}px solid ${color}`,
           borderRadius: 9999,
         }}
       >
-        <div style={{ ...mono, display: "flex", fontSize: size * 0.07, letterSpacing: size * 0.012, color }}>EST. 2026</div>
-        <svg width={size * 0.56} height={size * 0.2} viewBox="0 0 100 36" style={{ marginTop: size * 0.03 }}>
-          <path d={MUSTACHE_PATH} fill={color} />
-        </svg>
-        <div style={{ ...display, display: "flex", marginTop: size * 0.01, fontSize: size * 0.17, letterSpacing: size * 0.015, color }}>
+        <div style={{ ...sans, display: "flex", fontSize: size * 0.068, letterSpacing: size * 0.006, color }}>DZIADER.SI</div>
+        <div style={{ display: "flex", marginTop: size * 0.03 }}>
+          <OgMark size={size * 0.32} color={color} />
+        </div>
+        <div style={{ ...bold, display: "flex", marginTop: size * 0.02, fontSize: size * 0.13, letterSpacing: size * 0.012, color }}>
           IBD
         </div>
       </div>
@@ -73,19 +100,55 @@ export function OgSeal({ size, color = C.bordo, rotate = -12 }: { size: number; 
 /** Double-ruled rubber stamp with a label. */
 export function OgStamp({ label, fontSize, rotate = -3 }: { label: string; fontSize: number; rotate?: number }) {
   return (
-    <div style={{ display: "flex", padding: 4, border: `3px solid ${C.bordo}`, transform: `rotate(${rotate}deg)` }}>
+    <div style={{ display: "flex", padding: 4, border: `3px solid ${C.red}`, transform: `rotate(${rotate}deg)` }}>
       <div
         style={{
-          ...mono,
+          ...sans,
           display: "flex",
-          padding: `${Math.round(fontSize * 0.45)}px ${Math.round(fontSize * 0.85)}px`,
-          border: `1.5px solid ${C.bordo}`,
+          padding: `${Math.round(fontSize * 0.42)}px ${Math.round(fontSize * 0.8)}px`,
+          border: `1.5px solid ${C.red}`,
           fontSize,
-          letterSpacing: fontSize * 0.18,
-          color: C.bordo,
+          letterSpacing: fontSize * 0.12,
+          color: C.red,
         }}
       >
         {label.toUpperCase()}
+      </div>
+    </div>
+  );
+}
+
+/** 1200 × 630 share card: logo and section on top, content, a rule and the address at the bottom. */
+export function OgFrame({ section, url, children }: { section: string; url: string; children: ReactNode }) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        padding: "44px 60px 38px",
+        background: C.paper,
+        color: C.ink,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <OgLogo size={40} />
+        <div style={{ ...sans, display: "flex", fontSize: 22, color: C.soft }}>{section}</div>
+      </div>
+      <div style={{ display: "flex", flex: 1, alignItems: "center" }}>{children}</div>
+      <div
+        style={{
+          ...sans,
+          display: "flex",
+          justifyContent: "space-between",
+          paddingTop: 16,
+          borderTop: `2px solid ${C.ink}`,
+          fontSize: 21,
+        }}
+      >
+        <span style={{ color: C.soft }}>Instytut Badań nad Dziaderstwem</span>
+        <span style={{ color: C.red }}>{url}</span>
       </div>
     </div>
   );

@@ -8,11 +8,11 @@ import { cx, pct, typo } from "@/lib/typo";
 export type MapRegion = Region & { speciesName: string; speciesSlug: string };
 
 const SHADES = [
-  "bg-[#e3dac3] text-ink",
-  "bg-[#c6ccb3] text-ink",
-  "bg-[#97a991] text-ink",
-  "bg-[#5b7a69] text-paper",
-  "bg-green text-paper",
+  "bg-[#e9e3d6] text-ink",
+  "bg-[#d3cbbb] text-ink",
+  "bg-[#a69d8c] text-ink",
+  "bg-[#5d574e] text-paper",
+  "bg-ink text-paper",
 ];
 
 const LEGEND = [`<${REGION_BINS[0]}`, ...REGION_BINS.slice(1).map((bin, i) => `${REGION_BINS[i]}–${bin}`), `${REGION_BINS.at(-1)}+`];
@@ -27,9 +27,7 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
 
   return (
     <figure className={className}>
-      <figcaption className="kicker border-b border-ink pb-3">Mapa 1. Dominujący gatunek według województw</figcaption>
-
-      <div role="group" aria-label="Województwa" className="mt-6 grid grid-cols-4 gap-1.5">
+      <div role="group" aria-label="Województwa" className="grid grid-cols-4 gap-1.5">
         {REGION_GRID.flat().map((code) => {
           const item = regions[code];
           const selected = code === active;
@@ -43,15 +41,13 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
               onMouseEnter={() => setActive(code)}
               onFocus={() => setActive(code)}
               className={cx(
-                "flex aspect-square flex-col justify-between p-2 text-left outline-2 outline-offset-2 transition-[outline-color] md:p-2.5",
+                "flex aspect-square flex-col justify-between p-2 text-left outline-[3px] outline-offset-2 transition-[outline-color] md:p-2.5",
                 shadeFor(item.value),
-                selected ? "outline-ink" : "outline-transparent",
+                selected ? "outline-red" : "outline-transparent",
               )}
             >
-              <span className="font-mono text-[0.68rem] font-semibold tracking-[0.08em]">{code}</span>
-              <span className="font-display text-[1.05rem] font-semibold leading-none tabular-nums md:text-lg">
-                {pct(item.value)}
-              </span>
+              <span className="font-sans text-[0.75rem] font-semibold">{code}</span>
+              <span className="text-[1.1rem] font-bold leading-none tabular-nums md:text-xl">{pct(item.value)}</span>
             </button>
           );
         })}
@@ -61,24 +57,26 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
         {SHADES.map((shade, i) => (
           <div key={shade}>
             <div className={cx("h-2", shade)} />
-            <p className="mt-1.5 font-mono text-[0.62rem] text-ink-faint">{LEGEND[i]}</p>
+            <p className="label mt-1.5 text-[0.72rem] text-ink-soft">{LEGEND[i]}</p>
           </div>
         ))}
       </div>
 
-      <div aria-live="polite" className="mt-7 border-t border-rule pt-5">
-        <p className="kicker text-ink-faint">
+      <div aria-live="polite" className="mt-6 border-t border-rule pt-5">
+        <p className="label text-ink-soft">
           {region.name} · {pct(region.value)}%
         </p>
-        <p className="mt-2 font-display text-2xl font-semibold leading-tight tracking-[-0.01em]">
-          <Link href={`/atlas/${region.speciesSlug}`} className="transition-colors hover:text-green">
+        <p className="mt-1 text-2xl font-bold leading-tight">
+          <Link href={`/atlas/${region.speciesSlug}`} className="transition-colors hover:text-red">
             {region.speciesName} <span aria-hidden="true">→</span>
           </Link>
         </p>
         <p className="mt-2 leading-snug text-ink-soft">{typo(region.note)}</p>
       </div>
 
-      <p className="kicker mt-7 text-ink-faint">Układ kafelkowy. Kształty województw uproszczono dla czytelności.</p>
+      <figcaption className="label mt-6 text-ink-soft">
+        Mapa 1. Dominujący gatunek i natężenie dziaderstwa według województw (%). Układ kafelkowy, kształty uproszczono.
+      </figcaption>
     </figure>
   );
 }

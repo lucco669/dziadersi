@@ -12,9 +12,9 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 
 ### Phase 0: front page and brand system ✅ (this repository)
 
-- The Institute's front page: live National Index, daily briefs, a sample test question, a certificate preview, an Atlas preview (species of the week and the species index), a year chart, a regional tile map, the dictionary entry of the day, and a public roadmap.
-- Brand primitives: wordmark, seal, stamps, section headings, status labels.
-- OG image, icons, robots, sitemap, 404.
+- The Institute's front page, five blocks with one idea each: the hero with Rys. 1 (the labelled specimen), the live National Index drawn as 100 figures, the Atlas plate of the ten nationwide species, the test with the certificate, and the dictionary entry of the day next to the latest report.
+- Brand primitives: the head mark, the wordmark, the seal, stamps and the pictogram set (`src/components/pictograms.tsx`).
+- Share images for every page, the favicon set (`favicon.ico`, adaptive `icon.svg`, `apple-icon.png`, manifest icons including a maskable one), the web manifest, robots, sitemap, 404.
 - Fully static. Date-dependent parts regenerate every hour, so the site looks alive with no backend.
 
 ### Phase 1: Test Dziadersa and the certificate (the viral loop) ✅
@@ -29,13 +29,13 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 ### Phase 2: Atlas, Słownik, Raporty and Indeks (search traffic) ✅
 
 - `/atlas` covers 22 species: 10 nationwide (the ones the test diagnoses) and 12 regional ones, one per voivodeship on the map.
-  - The index page has species cards with activity strips, the regional map, a dichotomous identification key, and the conservation categories.
+  - The index page has the species plates (pictograms), the regional map and a dichotomous identification key.
   - Each `/atlas/[slug]` page has a description, "7 objawów …" (the title targets searches like "objawy dziadersa"), vocalisations, handling advice, and a species card: traits, status, a 12-month activity calendar, and the range.
   - Each also links to related species, dictionary phrases, reports, and the test.
 - `/slownik` holds 26 phrases in an A–Z index with the word of the day. Each `/slownik/[slug]` page has the definition, pronunciation, example, cross-references, and the species it belongs to.
 - `/raporty` holds 5 papers. Each `/raporty/[slug]` page has headline figures, an abstract, sections, conclusions, a bar chart, methodology, "Jak cytować" and share links.
 - `/indeks` has the live panel, the full-year chart, the seasons and warning levels, this year's risk calendar, the regional ranking, and the methodology.
-- Every page has its own OG card, all prerendered at build. JSON-LD covers BreadcrumbList, Article, DefinedTerm(Set), CollectionPage and Dataset on the relevant pages, and WebSite + Organization on the homepage. The sitemap is generated from content.
+- Every page has its own OG card, all prerendered at build. JSON-LD covers BreadcrumbList, Article, Report, DefinedTerm(Set), CollectionPage with an ItemList, and Dataset on the relevant pages, and WebSite + Organization on the homepage. Metadata for every page comes from one helper, `pageMetadata()` in `src/lib/seo.ts` (canonical, Open Graph, Twitter). The sitemap is generated from content.
 - Content is plain TS under `src/content/`. URL slugs are explicit and must never change once published.
 - **Still to grow before heavy promotion:** 50 species, 50 dictionary entries and 10 reports. Adding an entry is one object in the relevant file, and its page, OG image, sitemap entry and links are generated automatically.
 
@@ -72,37 +72,35 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 
 ## 4. Design system
 
-**Concept:** FT × National Geographic × research institute × Polish garage. Typographic, archival and calm. The seriousness is the joke.
+**Concept:** a real Polish public institute that happens to study dziaderstwo. It is set in Antykwa Półtawskiego, the typeface of Polish schoolbooks and official print, and illustrated with picture statistics in the manner of Isotype, the pictograms statistics offices used in the 1930s. The seriousness is the joke. Restraint is the style: no costume props.
 
-**Never:** gradients, glow, glassmorphism, emoji as icons, rows of rounded cards with shadows, meme fonts, stock illustrations, or "haha" copy.
+**Never:** gradients, glow, glassmorphism, emoji as icons, rows of rounded cards with shadows, grain textures, rotated decorations, uppercase letter-spaced kickers on every element, `§` section numbering, giant footer wordmarks, meme fonts, stock photos, photos of real people, or "haha" copy.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `paper` | `#f1ebdd` | Page background (with a subtle grain) |
-| `paper-deep` / `paper-light` | `#e7decb` / `#f8f4ea` | Data band / document cards |
-| `ink` | `#1b1a17` | Text, rules, the footer |
-| `ink-soft` / `ink-faint` / `rule` | `#4b463d` / `#756e60` / `#cdc2aa` | Secondary text, captions, hairlines |
-| `green` | `#1f3b30` | The institution and primary actions |
-| `bordo` | `#8c1f2e` | Stamps, alerts, "today" markers |
+| `paper` | `#f4f0e7` | Page background, flat |
+| `paper-deep` | `#ebe5d7` | Hover fills |
+| `ink` | `#161513` | Text, rules, buttons, pictograms, the test band |
+| `ink-soft` / `ink-faint` / `rule` | `#57524a` / `#8a8376` / `#d8d0c0` | Secondary text, captions, hairlines |
+| `red` | `#c4362c` | The stamp: the logo dot, stamps and seals, the certificate stripe, "today" markers, numbering, hover |
+| `blue` / `ochre` / `grey` | `#3d6696` / `#d49a2a` / `#cec6b6` | Pictograms only |
 
 **Type:**
-- **Fraunces** for display: Black for headlines, italic for the voice lines. The wordmark is pinned to `opsz 144`.
-- **Newsreader** for running text.
-- **IBM Plex Mono** for kickers, codes, data and buttons.
+- **Poltawski Nowy** (the revival of Antykwa Półtawskiego) for headlines, running text and the wordmark. Bold for headings, italic for Latin names and quotes.
+- **Schibsted Grotesk** for the interface: navigation, buttons, labels, captions and figures in charts. Sentence case.
+- No monospace.
 
-**Motifs:**
-- Classification codes: `DZI-04`, `IBD-T1`, `Wykres 1.`, `Mapa 1.`
-- `§` numbered sections, each with a 2px rule on top.
-- Hairline dividers.
-- Rubber stamps: double border, worn ink.
-- The Institute seal.
-- An IUCN-style conservation status scale.
-- FT-style annotated charts with a "Źródło:" line.
+**Pictograms** (`src/components/pictograms.tsx`):
+- One figure on a 40 × 100 grid: a round head with a white mustache, a torso with a belly, shorts, white socks and sandals. Poses, hats, legs and torso details (apron, vest, tie, sweater) are options.
+- Every species has a plate (120 × 100): the figure with its attributes, e.g. tongs and a grill, a bucket on a parking space, a parawan. A new species needs a plate in `PLATES`.
+- Picture statistics: `Crowd` (100 figures, `count` of them dziaders, in a fixed scattered order) and `Tally` (ten figures for a percentage).
+- The same drawings render in generated images through `src/lib/svg-string.ts`.
+- Motion: plates animate on hover and where marked `animated` (smoke, the kick, the float, rain). The hero diagram draws its leader lines and the mustache twitches. Everything stops for `prefers-reduced-motion`.
 
-**Discipline:**
-- At most one dark band per page section group (green for the lab, ink for the footer).
-- Bordo is reserved for stamps and alerts.
-- Any new component should look like it could appear in an annual report.
+**Layout:**
+- Every page is the same template: `PageHeader` (breadcrumbs, h1, lead, a line of facts, an optional picture), then `Section`s, each starting on one ink hairline, then `TestPromo`, the one black band before the footer.
+- Lists are rows on hairlines. The only framed object is the certificate, which is a document.
+- The red stripe on the certificate is the stripe of a Polish school certificate awarded with distinction.
 
 ## 5. Voice and content rules
 
@@ -110,14 +108,15 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - Mock habits, not people: no real names or photos, no politics, religion or health, and nothing aimed at age as such.
 - Regional jokes stay affectionate (Ciechocinek dancing, yes; insults, no).
 - Polish typography: „cudzysłowy”, an en dash for ranges, non-breaking spaces after one-letter words (`typo()` does this), and balanced headline wrapping.
-- **New species checklist** (fields from `Species`): code, name, Latin name with authority, status (IUCN code), habitat, activity, two vocalisations, natural enemies, field marks, three behavioural traits (0–100), and a one-line teaser. An LLM can draft entries, but a human edits every one for the tone above.
+- **New species checklist** (fields from `Species`): code, name, Latin name with authority, status (IUCN code), habitat, activity, two vocalisations, natural enemies, field marks, three behavioural traits (0–100), a one-line teaser, and a plate in `PLATES` (`src/components/pictograms.tsx`). An LLM can draft entries, but a human edits every one for the tone above.
 
 ## 6. Technical decisions
 
 - **Next.js 16.3 with Cache Components.** `getBulletin()` is `"use cache"` with `cacheLife("hours")`, so the homepage is prerendered and regenerated in the background every hour. Dates are computed in Europe/Warsaw, not UTC.
 - **The index is a model, not data:** seasonal peaks plus deterministic noise, so every visitor sees the same number, the chart has a real-looking history and forecast, and it never needs a database.
 - **No database until Phase 4.** Test results live in the URL.
-- **OG images** use `next/og` with TTFs bundled in `assets/fonts` (no network at build time).
+- **OG images** use `next/og` with static TTFs bundled in `assets/fonts` (no network at build time). Pictograms are embedded as SVG data URIs via `src/lib/svg-string.ts`.
+- **Icons:** `src/app/favicon.ico` (16, 32 and 48 px), `src/app/icon.svg` (switches to paper on ink in dark mode), `src/app/apple-icon.png`, and `public/icon-192.png`, `icon-512.png` and `icon-maskable-512.png` for the manifest (`src/app/manifest.ts`). They are all drawn from the head mark.
 - **Analytics:** Vercel Web Analytics (`src/components/analytics.tsx`), cookieless. The name part of result URLs (`~…`) is stripped before anything is sent. Page views of `/test` against `/wynik/[kod]` give the completion funnel. Custom events (`Test rozpoczęty`, `Test ukończony` with zone and species, `Udostępnienie` with the channel) are only visible on Vercel's Pro plan.
 
 ## 7. Launch checklist

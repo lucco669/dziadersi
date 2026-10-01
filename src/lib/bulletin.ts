@@ -1,12 +1,5 @@
 import { cacheLife } from "next/cache";
-import {
-  dayOfYear,
-  daysInYear,
-  formatDate,
-  formatLongDate,
-  isoWeek,
-  warsawTime,
-} from "./calendar";
+import { dayOfYear, daysInYear, formatDate, isoWeek, warsawTime } from "./calendar";
 import { measured, milestones, seasonFor, trend, zoneFor } from "./indeks";
 
 const pad = (value: number) => String(value).padStart(2, "0");
@@ -35,8 +28,6 @@ export async function getBulletin() {
     today,
     total,
     week: isoWeek(year, local.month, local.day),
-    issue: today + 1,
-    dateLong: formatLongDate(now),
     date: formatDate(now),
     time: `${pad(local.hour)}:${pad(local.minute)}`,
     index: {

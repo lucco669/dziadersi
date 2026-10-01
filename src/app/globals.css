@@ -1,19 +1,21 @@
 @import "tailwindcss";
 
-/* Paper, ink, one institutional green, one bordo for stamps and alerts. */
+/*
+ * Paper, ink and one stamp red. Blue and ochre appear only in the pictograms.
+ * Keep in sync with the constants in src/components/pictograms.tsx.
+ */
 @theme {
-  --color-paper: #f1ebdd;
-  --color-paper-deep: #e7decb;
-  --color-paper-light: #f8f4ea;
-  --color-ink: #1b1a17;
-  --color-ink-soft: #4b463d;
-  --color-ink-faint: #756e60;
-  --color-rule: #cdc2aa;
-  --color-green: #1f3b30;
-  --color-green-deep: #15291f;
-  --color-green-soft: #44685a;
-  --color-bordo: #8c1f2e;
-  --color-bordo-light: #bf3a44;
+  --color-paper: #f4f0e7;
+  --color-paper-deep: #ebe5d7;
+  --color-ink: #161513;
+  --color-ink-soft: #57524a;
+  --color-ink-faint: #8a8376;
+  --color-rule: #d8d0c0;
+  --color-red: #c4362c;
+  --color-red-deep: #a32a21;
+  --color-blue: #3d6696;
+  --color-ochre: #d49a2a;
+  --color-grey: #cec6b6;
 
   --animate-stamp: stamp 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-question-in: question-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -52,9 +54,8 @@
 }
 
 @theme inline {
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: var(--font-poltawski), ui-serif, Georgia, serif;
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -67,12 +68,11 @@
   body {
     min-height: 100dvh;
     background-color: var(--color-paper);
-    /* Paper grain */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.2 0 0 0 0 0.12 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
     color: var(--color-ink);
     font-family: var(--font-serif);
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
     line-height: 1.6;
+    font-variant-numeric: lining-nums;
     font-kerning: normal;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -90,19 +90,13 @@
     text-wrap: pretty;
   }
 
-  em,
-  i {
-    font-family: var(--font-display);
-    font-style: italic;
-  }
-
   ::selection {
-    background-color: var(--color-green);
+    background-color: var(--color-ink);
     color: var(--color-paper);
   }
 
   :focus-visible {
-    outline: 2px solid currentColor;
+    outline: 2px solid var(--color-red);
     outline-offset: 3px;
   }
 
@@ -123,36 +117,35 @@
 
 @utility wrap {
   width: 100%;
-  max-width: 84rem;
+  max-width: 78rem;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: 1.25rem;
 
   @media (width >= 48rem) {
-    padding-inline: 2rem;
+    padding-inline: 2.5rem;
   }
 }
 
-/* Small uppercase mono label: classification codes, captions, form fields. */
-@utility kicker {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
+/* Small sans label: captions, metadata, table heads. Sentence case. */
+@utility label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.35;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 @utility btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.95rem 1.35rem;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.35rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  white-space: nowrap;
   transition:
     background-color 150ms ease,
     color 150ms ease,
@@ -162,19 +155,225 @@
 @utility link {
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.22em;
-  transition: text-decoration-color 150ms ease;
+  text-underline-offset: 0.2em;
+  transition: color 150ms ease;
 
   &:hover {
-    text-decoration-thickness: 2px;
+    color: var(--color-red);
   }
 }
 
-/* Uneven ink for stamps and seals. */
+/* Uneven ink for the seal and stamps. */
 @utility ink-worn {
   --worn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.2 2.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
   -webkit-mask-image: var(--worn);
   mask-image: var(--worn);
   -webkit-mask-size: 180px;
   mask-size: 180px;
+}
+
+/*
+ * Pictogram motion. Plates move when marked .pg-animated or when their link is hovered,
+ * and never for readers who asked for less motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :is(.pg-animated, .group:hover) .pg-smoke path {
+    animation: pg-smoke 2.4s ease-in-out infinite;
+  }
+  :is(.pg-animated, .group:hover) .pg-smoke path:nth-child(2) {
+    animation-delay: -0.8s;
+  }
+  :is(.pg-animated, .group:hover) .pg-smoke path:nth-child(3) {
+    animation-delay: -1.6s;
+  }
+  :is(.pg-animated, .group:hover) .pg-kick {
+    animation: pg-kick 1.6s cubic-bezier(0.5, 0, 0.3, 1) infinite;
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+  }
+  :is(.pg-animated, .group:hover) .pg-tyre {
+    animation: pg-tyre 1.6s ease-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  :is(.pg-animated, .group:hover) .pg-float {
+    animation: pg-bob 1.8s ease-in-out infinite;
+  }
+  :is(.pg-animated, .group:hover) .pg-drops {
+    animation: pg-drops 1.1s linear infinite;
+  }
+  :is(.pg-animated, .group:hover) .pg-notes,
+  :is(.pg-animated, .group:hover) .pg-zzz {
+    animation: pg-rise 2.2s ease-in-out infinite;
+  }
+  :is(.pg-animated, .group:hover) .pg-bubble {
+    animation: pg-pop 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite alternate;
+    transform-box: fill-box;
+    transform-origin: 10% 100%;
+  }
+  :is(.pg-animated, .group:hover) .pg-wheel {
+    animation: pg-spin 6s linear infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  :is(.pg-animated, .group:hover) .pg-rain {
+    animation: pg-drops 0.9s linear infinite;
+  }
+  :is(.pg-animated, .group:hover) .pg-fly {
+    animation: pg-fly 2.6s ease-in-out infinite;
+  }
+  :is(.pg-animated, .group:hover) .pg-sun {
+    animation: pg-bob 3s ease-in-out infinite;
+  }
+}
+
+@keyframes pg-smoke {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pg-kick {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(14deg);
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+}
+
+@keyframes pg-tyre {
+  0%,
+  50%,
+  100% {
+    transform: rotate(0deg);
+  }
+  58% {
+    transform: rotate(6deg) translateX(0.6px);
+  }
+  70% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes pg-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(1.6px);
+  }
+}
+
+@keyframes pg-drops {
+  from {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+
+@keyframes pg-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  30%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pg-pop {
+  from {
+    transform: scale(0.92);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes pg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pg-fly {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-3px, -3px);
+  }
+}
+
+/* The specimen on the front page: leader lines draw in, labels follow, the mustache twitches. */
+@media (prefers-reduced-motion: no-preference) {
+  .specimen-line {
+    stroke-dasharray: 1;
+    animation: draw 500ms ease-out both;
+    animation-delay: calc(400ms + var(--i) * 140ms);
+  }
+  .specimen-label {
+    animation: question-in 420ms ease-out both;
+    animation-delay: calc(560ms + var(--i) * 140ms);
+  }
+  .specimen-mustache {
+    animation: twitch 7s ease-in-out 2.4s infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .crowd-on {
+    animation: crowd-on 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--i) * 28ms + 200ms);
+  }
+}
+
+@keyframes twitch {
+  0%,
+  88%,
+  100% {
+    transform: rotate(0deg) scaleX(1);
+  }
+  90% {
+    transform: rotate(-5deg) scaleX(1.06);
+  }
+  92% {
+    transform: rotate(4deg) scaleX(1.06);
+  }
+  94% {
+    transform: rotate(-3deg);
+  }
+  96% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes crowd-on {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
 }

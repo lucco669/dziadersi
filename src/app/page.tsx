@@ -1,13 +1,20 @@
-import { AtlasSection } from "@/components/atlas";
-import { Briefs } from "@/components/briefs";
-import { Departments } from "@/components/departments";
-import { DictionarySection } from "@/components/dictionary";
-import { Hero } from "@/components/hero";
+import type { Metadata } from "next";
+import { AtlasPlates, Hero, IndexBand, Shelf, TestBand } from "@/components/home";
 import { JsonLd } from "@/components/page";
-import { IndexSection } from "@/components/index-section";
-import { TestSection } from "@/components/test-section";
 import { getBulletin } from "@/lib/bulletin";
+import { institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  ...pageMetadata({
+    title: site.name,
+    description: site.description,
+    path: "/",
+    shareTitle: `${site.name} · ${site.institute}`,
+    shareDescription: "Test Dziadersa, Atlas Dziadersów i Narodowy Indeks Dziaderstwa. Zbadaj się, zanim będzie za późno.",
+  }),
+  title: { absolute: `${site.name} · ${site.institute}: Test Dziadersa i Atlas Dziadersów` },
+};
 
 export default async function Home() {
   const bulletin = await getBulletin();
@@ -24,26 +31,22 @@ export default async function Home() {
             url: site.url,
             description: site.description,
             inLanguage: "pl",
+            publisher: institute,
           },
           {
             "@context": "https://schema.org",
-            "@type": "Organization",
-            name: site.institute,
+            ...institute,
             alternateName: "IBD",
-            url: site.url,
-            logo: `${site.url}/icon.svg`,
             slogan: site.tagline,
             foundingDate: String(site.founded),
           },
         ]}
       />
-      <Hero bulletin={bulletin} />
-      <Briefs bulletin={bulletin} />
-      <TestSection />
-      <AtlasSection week={bulletin.week} />
-      <IndexSection bulletin={bulletin} />
-      <DictionarySection bulletin={bulletin} />
-      <Departments />
+      <Hero />
+      <IndexBand bulletin={bulletin} />
+      <AtlasPlates />
+      <TestBand />
+      <Shelf bulletin={bulletin} />
     </main>
   );
 }

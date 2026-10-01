@@ -1,26 +1,39 @@
 "use client";
 
 import { track } from "@vercel/analytics";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useEffectEvent, useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import { SPECIES, type SpeciesKey } from "@/content/species";
 import { QUESTIONS } from "@/content/test";
-import { SPECIES } from "@/content/species";
 import { dayNumber, encodeResult, evaluate } from "@/lib/test";
 import { cx, typo } from "@/lib/typo";
 import { Seal } from "./brand";
+import { Figure, SpeciesPlate } from "./pictograms";
 
 const TOTAL = QUESTIONS.length;
 const LETTERS = ["A", "B", "C", "D"];
-const SECTIONS = [...new Set(QUESTIONS.map((question) => question.section))];
 const PROGRESS_KEY = "ibd-t1";
 const ADVANCE_MS = 420;
+const DIAGNOSABLE = SPECIES.filter((species) => species.prefix);
 
 const STEPS = [
   { label: "Zliczanie odpowiedzi", detail: `${TOTAL} z ${TOTAL}` },
-  { label: "Porównanie z Atlasem Dziadersów", detail: `${SPECIES.filter((species) => species.prefix).length} gatunków` },
+  { label: "Porównanie z Atlasem Dziadersów", detail: `${DIAGNOSABLE.length} gatunków` },
   { label: "Konsultacja z Radą Naukową", detail: "bez zastrzeżeń" },
   { label: "Przybijanie pieczątki", detail: "gotowe" },
 ];
+
+/** The species each question probes most, for its illustration. */
+const ILLUSTRATION: (SpeciesKey | null)[] = QUESTIONS.map((question) => {
+  const weights = new Map<SpeciesKey, number>();
+  for (const answer of question.answers) {
+    for (const [key, weight] of Object.entries(answer.species ?? {})) {
+      weights.set(key as SpeciesKey, (weights.get(key as SpeciesKey) ?? 0) + weight);
+    }
+  }
+  return [...weights].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+});
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -161,56 +174,40 @@ export function TestRunner() {
 
   if (phase === "intro") {
     return (
-      <section className="wrap py-12 md:py-20">
-        <div className="grid gap-16 lg:grid-cols-12 lg:gap-10">
+      <section className="wrap pb-20 pt-8 md:pb-28 md:pt-12">
+        <nav aria-label="Ścieżka" className="label text-ink-soft">
+          <Link href="/" className="transition-colors hover:text-red">
+            Instytut
+          </Link>
+          <span className="mx-2 text-ink-faint">/</span>
+          <span className="text-ink">Test Dziadersa</span>
+        </nav>
+
+        <div className="mt-8 grid gap-16 md:mt-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            <p className="kicker flex flex-wrap justify-between gap-x-6 gap-y-2 border-t-2 border-ink pt-4">
-              <span>
-                § 01 <span className="mx-1.5 opacity-50">/</span> Laboratorium
-              </span>
-              <span className="text-ink-faint">Formularz IBD-T1</span>
-            </p>
-            <h1 className="mt-10 font-display text-[clamp(3.5rem,10vw,7.5rem)] font-black leading-[0.86] tracking-[-0.04em]">
-              Test Dziadersa
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft md:text-xl">
+            <h1 className="text-[clamp(2.75rem,7.4vw,6rem)] font-bold leading-[0.95] tracking-[-0.02em]">Test Dziadersa</h1>
+            <p className="mt-6 max-w-2xl text-[clamp(1.2rem,2vw,1.45rem)] leading-snug text-ink-soft">
               {typo(
                 "Badanie przesiewowe w dwudziestu czterech pytaniach z życia codziennego. Na końcu wynik od 0 do 100%, rozpoznanie gatunku według Atlasu i certyfikat do pokazania rodzinie.",
               )}
             </p>
 
-            <dl className="mt-10 grid max-w-xl grid-cols-3 border-y border-ink">
+            <ol className="mt-10 max-w-xl border-t border-ink">
               {[
-                ["Pytania", String(TOTAL)],
-                ["Czas", "ok. 3 min"],
-                ["Wynik", "0–100%"],
-              ].map(([label, value], i) => (
-                <div key={label} className={cx("py-4", i > 0 && "border-l border-rule pl-4 md:pl-6")}>
-                  <dt className="kicker text-ink-faint">{label}</dt>
-                  <dd className="mt-1 whitespace-nowrap font-display text-[1.3rem] font-bold sm:text-2xl md:text-[1.75rem]">{value}</dd>
-                </div>
+                "Odpowiadaj szczerze. Instytut i tak się zorientuje.",
+                "Nie konsultuj odpowiedzi z rodziną. Rodzina jest stroną w sprawie.",
+                "Pierwsza myśl jest zwykle najbardziej dziaderska. Zaufaj jej.",
+              ].map((rule, i) => (
+                <li key={rule} className="grid grid-cols-[2.5rem_1fr] border-b border-rule py-3.5 leading-snug">
+                  <span className="font-sans text-[0.9rem] font-semibold text-red">{pad(i + 1)}</span>
+                  {typo(rule)}
+                </li>
               ))}
-            </dl>
-
-            <div className="mt-10 max-w-xl">
-              <p className="kicker text-ink-faint">Pouczenie</p>
-              <ol className="mt-3">
-                {[
-                  "Odpowiadaj szczerze. Instytut i tak się zorientuje.",
-                  "Nie konsultuj odpowiedzi z rodziną. Rodzina jest stroną w sprawie.",
-                  "Pierwsza myśl jest zwykle najbardziej dziaderska. Zaufaj jej.",
-                ].map((rule, i) => (
-                  <li key={rule} className="grid grid-cols-[2.5rem_1fr] border-b border-rule py-3 text-lg leading-snug">
-                    <span className="kicker pt-1.5 text-ink-faint">{pad(i + 1)}</span>
-                    {typo(rule)}
-                  </li>
-                ))}
-              </ol>
-            </div>
+            </ol>
 
             <form onSubmit={start} className="mt-12">
-              <label htmlFor="podpis" className="kicker text-ink-faint">
-                Podpis osoby badanej · opcjonalnie
+              <label htmlFor="podpis" className="label text-ink-soft">
+                Imię na certyfikat (nieobowiązkowe)
               </label>
               <input
                 id="podpis"
@@ -218,11 +215,11 @@ export function TestRunner() {
                 onChange={(event) => setName(event.target.value)}
                 maxLength={24}
                 autoComplete="given-name"
-                placeholder="Imię na certyfikat"
-                className="mt-2 block w-full max-w-md border-0 border-b-2 border-ink bg-transparent px-0 py-2 font-display text-3xl italic text-green placeholder:text-ink/25 focus:border-green focus-visible:outline-none"
+                placeholder="np. Zenek"
+                className="mt-2 block w-full max-w-md border-0 border-b-2 border-ink bg-transparent px-0 py-2 font-serif text-3xl font-bold placeholder:font-normal placeholder:text-ink/25 focus:border-red focus-visible:outline-none"
               />
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <button type="submit" className="btn bg-green text-paper hover:bg-ink">
+                <button type="submit" className="btn bg-ink text-paper hover:bg-red">
                   Rozpocznij badanie <span aria-hidden="true">→</span>
                 </button>
                 {saved && (
@@ -235,31 +232,24 @@ export function TestRunner() {
                   </button>
                 )}
               </div>
-              <p className="mt-6 max-w-md text-[0.95rem] leading-relaxed text-ink-faint">
-                {typo("Odpowiedzi nie są nigdzie zapisywane. Wynik trafia tylko do linku, którym zdecydujesz się podzielić.")}
+              <p className="label mt-6 max-w-md text-ink-soft">
+                {typo("24 pytania, około trzech minut. Odpowiedzi nie są nigdzie zapisywane: wynik trafia tylko do linku, którym zdecydujesz się podzielić.")}
               </p>
             </form>
           </div>
 
-          <aside className="self-start border border-ink bg-paper-light lg:col-span-5 lg:mt-14">
-            <div className="kicker flex justify-between border-b border-ink px-5 py-3 md:px-7">
-              <span>Zakres badania</span>
-              <span className="text-ink-faint">{SECTIONS.length} działów</span>
-            </div>
-            <ol className="columns-2 gap-6 px-5 py-4 md:px-7">
-              {SECTIONS.map((section, i) => (
-                <li key={section} className="kicker break-inside-avoid py-1.5 text-[0.66rem] text-ink-soft">
-                  <span className="mr-2 text-ink-faint">{pad(i + 1)}</span>
-                  {section}
+          <aside className="lg:col-span-5" aria-label="Gatunki rozpoznawane przez test">
+            <ol className="grid grid-cols-2 gap-x-5 gap-y-6 border-t border-ink pt-6 sm:grid-cols-3">
+              {DIAGNOSABLE.map((species) => (
+                <li key={species.key}>
+                  <SpeciesPlate species={species.key} className="w-full" />
+                  <span className="label mt-1 block text-ink-soft">{species.name}</span>
                 </li>
               ))}
             </ol>
-            <div className="flex items-center gap-5 border-t border-rule px-5 py-5 md:px-7">
-              <Seal className="size-20 shrink-0 rotate-[-12deg] text-bordo" />
-              <p className="text-[0.95rem] leading-snug text-ink-soft">
-                {typo("Badanie zatwierdzone przez Radę Naukową Instytutu. Rada jest w trakcie powoływania.")}
-              </p>
-            </div>
+            <p className="label mt-6 text-ink-soft">
+              {typo("Test rozpoznaje dziesięć gatunków ogólnopolskich i ich krzyżówki, np. Dziadersa Grillowo-Motoryzacyjnego.")}
+            </p>
           </aside>
         </div>
       </section>
@@ -270,11 +260,11 @@ export function TestRunner() {
     return (
       <section className="wrap py-14 md:py-24">
         <div className="mx-auto max-w-2xl" role="status" aria-live="polite">
-          <p className="kicker border-t-2 border-ink pt-4">Formularz IBD-T1 · Opracowanie wyników</p>
-          <h1 className="mt-10 font-display text-[clamp(2.5rem,6vw,4.5rem)] font-black leading-[0.95] tracking-[-0.03em]">
+          <p className="label text-ink-soft">Formularz IBD-T1 · Opracowanie wyników</p>
+          <h1 className="mt-6 text-[clamp(2.5rem,6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.02em]">
             Instytut analizuje wyniki.
           </h1>
-          <p className="mt-4 font-display text-2xl italic text-green">Proszę nie zamykać okna i nie wzywać rodziny.</p>
+          <p className="mt-4 text-2xl italic text-ink-soft">Proszę nie zamykać okna i nie wzywać rodziny.</p>
           <ol className="mt-12 border-t border-ink">
             {STEPS.map((item, i) => (
               <li
@@ -284,14 +274,14 @@ export function TestRunner() {
                   i < step ? "opacity-100" : i === step ? "opacity-60" : "opacity-25",
                 )}
               >
-                <span className="text-green">{i < step ? <Check /> : i === step ? "…" : ""}</span>
+                <span className="text-red">{i < step ? <Check /> : i === step ? "…" : ""}</span>
                 <span className="text-lg">{item.label}</span>
-                <span className="kicker text-ink-faint">{i < step ? item.detail : ""}</span>
+                <span className="label text-ink-soft">{i < step ? item.detail : ""}</span>
               </li>
             ))}
           </ol>
           {step >= STEPS.length && (
-            <Seal className="mx-auto mt-12 block size-36 animate-stamp text-bordo [--stamp-rotate:-12deg]" />
+            <Seal className="mx-auto mt-12 block size-36 animate-stamp text-red [--stamp-rotate:-12deg]" />
           )}
         </div>
       </section>
@@ -300,14 +290,15 @@ export function TestRunner() {
 
   const question = QUESTIONS[current];
   const shortcut = question.answers.length;
+  const illustration = ILLUSTRATION[current];
 
   return (
-    <section ref={top} className="wrap scroll-mt-24 py-10 md:py-16">
+    <section ref={top} className="wrap scroll-mt-6 pb-16 pt-8 md:pb-24 md:pt-12">
       <div className="mx-auto max-w-3xl">
-        <p className="kicker flex items-baseline justify-between gap-6 border-t-2 border-ink pt-4">
-          <span>Formularz IBD-T1</span>
+        <p className="label flex items-baseline justify-between gap-6 text-ink-soft">
+          <span>Formularz IBD-T1 · {question.section}</span>
           <span>
-            Pytanie {pad(current + 1)} <span className="text-ink-faint">/ {TOTAL}</span>
+            Pytanie <span className="text-ink">{pad(current + 1)}</span> / {TOTAL}
           </span>
         </p>
         <div
@@ -316,29 +307,37 @@ export function TestRunner() {
           aria-valuemin={0}
           aria-valuemax={TOTAL}
           aria-valuenow={current}
-          className="mt-4 grid grid-cols-24 gap-[3px]"
+          className="mt-3 grid grid-cols-24 gap-[3px]"
         >
           {QUESTIONS.map((item, i) => (
             <span
               key={item.text}
               className={cx(
                 "h-1.5 transition-colors duration-300",
-                i === current ? "bg-bordo" : answers[i] !== undefined ? "bg-ink" : "bg-ink/15",
+                i === current ? "bg-red" : answers[i] !== undefined ? "bg-ink" : "bg-ink/15",
               )}
             />
           ))}
         </div>
 
         <div key={current} className="animate-question-in">
-          <p className="kicker mt-12 text-green md:mt-16">Dział: {question.section}</p>
-          <h1
-            ref={heading}
-            tabIndex={-1}
-            id="pytanie"
-            className="mt-4 font-display text-[clamp(1.9rem,4.6vw,3.25rem)] font-semibold leading-[1.08] tracking-[-0.015em] focus:outline-none"
-          >
-            {typo(question.text)}
-          </h1>
+          <div className="mt-10 flex items-end justify-between gap-6 md:mt-14">
+            <h1
+              ref={heading}
+              tabIndex={-1}
+              id="pytanie"
+              className="text-[clamp(1.9rem,4.6vw,3.1rem)] font-bold leading-[1.08] tracking-[-0.01em] focus:outline-none"
+            >
+              {typo(question.text)}
+            </h1>
+            {illustration ? (
+              <SpeciesPlate species={illustration} animated className="hidden w-40 shrink-0 sm:block md:w-48" />
+            ) : (
+              <svg viewBox="-4 0 48 96" className="hidden h-28 shrink-0 sm:block" aria-hidden="true">
+                <Figure />
+              </svg>
+            )}
+          </div>
 
           <div role="group" aria-labelledby="pytanie" className="mt-10 border-t border-ink">
             {question.answers.map((answer, i) => {
@@ -351,10 +350,10 @@ export function TestRunner() {
                   onClick={() => choose(i)}
                   className={cx(
                     "grid w-full grid-cols-[2rem_1fr_1.75rem] items-center gap-4 border-b border-rule py-4 pr-1 text-left transition-colors md:grid-cols-[3rem_1fr_2rem] md:py-5",
-                    selected ? "bg-bordo/[0.05]" : "hover:bg-paper-light",
+                    selected ? "bg-red/[0.06]" : "hover:bg-paper-deep",
                   )}
                 >
-                  <span className="pl-1 font-mono text-sm text-ink-faint">{LETTERS[i]}</span>
+                  <span className="pl-1 font-sans text-[0.9rem] font-semibold text-ink-soft">{LETTERS[i]}</span>
                   <span className="text-lg leading-snug md:text-xl">{typo(answer.text)}</span>
                   <Box checked={selected} />
                 </button>
@@ -364,12 +363,10 @@ export function TestRunner() {
         </div>
 
         <div className="mt-8 flex items-center justify-between gap-4">
-          <button type="button" onClick={back} className="kicker py-2 text-ink-soft transition-colors hover:text-ink">
+          <button type="button" onClick={back} className="label py-2 text-ink-soft transition-colors hover:text-ink">
             ← {current === 0 ? "Pouczenie" : "Poprzednie pytanie"}
           </button>
-          <span className="kicker hidden text-ink-faint md:inline">
-            Klawisze 1–{shortcut} wybierają odpowiedź
-          </span>
+          <span className="label hidden text-ink-faint md:inline">Klawisze 1–{shortcut} wybierają odpowiedź</span>
         </div>
       </div>
     </section>
@@ -379,9 +376,9 @@ export function TestRunner() {
 /** Form checkbox; a chosen answer gets crossed out in ink. */
 function Box({ checked }: { checked: boolean }) {
   return (
-    <span aria-hidden="true" className="relative size-6 justify-self-end border-[1.5px] border-ink bg-paper-light md:size-7">
+    <span aria-hidden="true" className="relative size-6 justify-self-end border-[1.5px] border-ink bg-[#fbf8f1] md:size-7">
       {checked && (
-        <svg viewBox="0 0 24 24" className="absolute -inset-1.5 overflow-visible text-bordo" fill="none" stroke="currentColor">
+        <svg viewBox="0 0 24 24" className="absolute -inset-1.5 overflow-visible text-red" fill="none" stroke="currentColor">
           <path
             d="M4.5 5.2C9.2 9.8 13.8 14.6 19.6 19.4"
             pathLength={1}

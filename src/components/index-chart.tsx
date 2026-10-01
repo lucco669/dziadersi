@@ -1,34 +1,7 @@
 import Link from "next/link";
-import { MAP_REGIONS } from "@/content/map";
 import type { Bulletin } from "@/lib/bulletin";
 import { MONTHS_SHORT, dayOfYear } from "@/lib/calendar";
-import { cx, pct, typo } from "@/lib/typo";
-import { SectionHeading } from "./brand";
-import { RegionMap } from "./region-map";
-
-export function IndexSection({ bulletin }: { bulletin: Bulletin }) {
-  return (
-    <section id="indeks" aria-labelledby="indeks-title" className="scroll-mt-20 border-y border-ink bg-paper-deep/70">
-      <div className="wrap py-20 md:py-28">
-        <SectionHeading
-          id="indeks-title"
-          number="03"
-          kicker="Dane"
-          aside={`Aktualizacja: ${bulletin.date}, ${bulletin.time}`}
-          title="Stan dziaderstwa w Polsce"
-          dek={typo(
-            "Narodowy Indeks Dziaderstwa mierzy natężenie zjawiska w skali kraju. Wartość aktualizujemy co godzinę na podstawie obserwacji terenowych, nasłuchu przy grillach i analizy komentarzy pod artykułami o oponach.",
-          )}
-        />
-
-        <div className="mt-14 grid gap-16 lg:grid-cols-12 lg:gap-12">
-          <IndexChart bulletin={bulletin} className="lg:col-span-8" />
-          <RegionMap regions={MAP_REGIONS} className="lg:col-span-4" />
-        </div>
-      </div>
-    </section>
-  );
-}
+import { cx, pct } from "@/lib/typo";
 
 const Y_MIN = 58;
 const Y_MAX = 82;
@@ -50,8 +23,8 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
   return (
     <figure className={className}>
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-ink pb-3">
-        <span className="kicker">Wykres 1. NID w {year} r., wartości dzienne (%)</span>
-        <span className="kicker flex gap-5 text-ink-faint">
+        <span className="label">Wykres 1. NID w {year} r., wartości dzienne (%)</span>
+        <span className="label flex gap-5 text-ink-soft">
           <span className="flex items-center gap-2">
             <span className="h-0.5 w-5 bg-ink" aria-hidden="true" />
             Pomiar
@@ -83,7 +56,7 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
             />
           ))}
           <line x1="0" x2="100" y1="100" y2="100" className="stroke-ink" vectorEffect="non-scaling-stroke" />
-          <path d={area} className="fill-green/10" />
+          <path d={area} className="fill-ink/[0.07]" />
           <path
             d={forecast}
             fill="none"
@@ -105,7 +78,7 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
             x2={todayX}
             y1="0"
             y2="100"
-            className="stroke-bordo"
+            className="stroke-red"
             vectorEffect="non-scaling-stroke"
           />
         </svg>
@@ -113,7 +86,7 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
         {GRID.map((value) => (
           <span
             key={value}
-            className="absolute left-0 -translate-y-full pb-1 font-mono text-[0.7rem] text-ink-faint"
+            className="absolute left-0 -translate-y-full pb-1 font-sans text-[0.75rem] font-medium text-ink-soft"
             style={{ top: `${y(value)}%` }}
           >
             {value}
@@ -139,10 +112,10 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
               }}
             >
               <span className={cx("absolute left-0 top-0 whitespace-nowrap", align)}>
-                <span className={cx("kicker block text-[0.62rem] md:text-[0.68rem]", future ? "text-ink-faint" : "text-ink")}>
+                <span className={cx("block font-sans text-[0.75rem] font-semibold md:text-[0.8rem]", future ? "text-ink-soft" : "text-ink")}>
                   {milestone.label}
                 </span>
-                <span className="hidden font-display text-[0.85rem] italic leading-tight text-ink-soft md:block">
+                <span className="hidden text-[0.9rem] italic leading-tight text-ink-soft md:block">
                   {milestone.note}
                 </span>
               </span>
@@ -158,11 +131,11 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
         })}
 
         <span
-          className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-bordo"
+          className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-red"
           style={{ left: `${todayX}%`, top: `${y(todayValue)}%` }}
         />
         <span
-          className={cx("kicker absolute bottom-2 whitespace-nowrap text-bordo", todayX > 20 ? "-translate-x-full pr-2" : "pl-2")}
+          className={cx("label absolute bottom-2 whitespace-nowrap font-semibold text-red", todayX > 20 ? "-translate-x-full pr-2" : "pl-2")}
           style={{ left: `${todayX}%` }}
         >
           Dziś · {pct(todayValue)}
@@ -173,7 +146,7 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
         {MONTHS_SHORT.map((month, i) => (
           <span
             key={month}
-            className={cx("absolute font-mono text-[0.7rem] text-ink-faint", i % 2 === 1 && "hidden sm:block")}
+            className={cx("absolute font-sans text-[0.75rem] font-medium text-ink-soft", i % 2 === 1 && "hidden sm:block")}
             style={{ left: `${x(dayOfYear(year, i + 1, 1))}%` }}
           >
             {month}
@@ -181,7 +154,7 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
         ))}
       </div>
 
-      <p className="kicker mt-8 text-ink-faint">
+      <p className="label mt-8 text-ink-soft">
         Źródło: IBD, obserwacje terenowe.{" "}
         <Link href="/indeks#metodologia" className="link text-ink">
           Metodologia

@@ -1,75 +1,56 @@
 import Link from "next/link";
-import type { Bulletin } from "@/lib/bulletin";
-import { roman } from "@/lib/typo";
-import { SealMark, Wordmark } from "./brand";
+import { Mark, Wordmark } from "./brand";
 
-const NAV = [
-  { href: "/test", label: "Test" },
+export const NAV = [
   { href: "/atlas", label: "Atlas" },
   { href: "/slownik", label: "Słownik" },
   { href: "/raporty", label: "Raporty" },
   { href: "/indeks", label: "Indeks" },
 ];
 
-export function SiteHeader({ bulletin }: { bulletin: Bulletin }) {
-  const { season } = bulletin.index;
-
+export function SiteHeader() {
   return (
     <>
       <a
         href="#tresc"
-        className="kicker sr-only z-50 bg-ink px-4 py-3 text-paper focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        className="label sr-only z-50 bg-ink px-4 py-3 text-paper focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
       >
         Przejdź do treści
       </a>
 
-      <div className="border-b border-rule">
-        <div className="wrap kicker flex items-center justify-between gap-6 py-2.5 text-ink-soft">
-          <p>
-            {bulletin.dateLong}
-            <span className="hidden sm:inline">
-              <span className="mx-2.5 text-rule">|</span>Biuletyn dzienny nr {bulletin.issue}
-            </span>
-          </p>
-          <Link href="/indeks#sezony" className="hidden items-center gap-2 hover:text-ink md:flex">
-            <span className="size-1.5 rounded-full bg-bordo" aria-hidden="true" />
-            Ostrzeżenie {roman(season.level)} stopnia · {season.title}
-          </Link>
-        </div>
-      </div>
-
-      <header className="sticky top-0 z-40 border-b border-ink bg-paper">
-        <div className="wrap flex h-16 items-center justify-between gap-3 md:h-[4.5rem] md:gap-6">
-          <Link href="/" className="group flex items-center gap-3" aria-label="DZIADER.SI, strona główna">
-            <SealMark className="size-10 shrink-0 text-bordo transition-transform duration-300 group-hover:-rotate-12 md:size-11" />
+      <header className="border-b border-ink">
+        <div className="wrap flex items-center justify-between gap-4 py-4 md:py-5">
+          <Link href="/" className="group flex items-center gap-2.5 md:gap-4" aria-label="DZIADER.SI, strona główna">
+            <Mark className="size-10 shrink-0 text-ink transition-transform duration-300 group-hover:-rotate-12 md:size-14" />
             <span className="flex flex-col">
-              <Wordmark className="text-[1.55rem] leading-none md:text-[1.75rem]" />
-              <span className="kicker mt-1 hidden text-[0.58rem] text-ink-faint sm:block">
+              <Wordmark className="text-[1.35rem] leading-none min-[400px]:text-[1.55rem] sm:text-[1.75rem] md:text-[2.45rem]" />
+              <span className="label mt-1 hidden text-[0.8rem] text-ink-soft sm:block md:text-[0.875rem]">
                 Instytut Badań nad Dziaderstwem
               </span>
             </span>
           </Link>
 
-          <nav aria-label="Główna" className="hidden lg:block">
-            <ul className="kicker flex items-center gap-8 text-[0.72rem]">
-              {NAV.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="py-2 transition-colors hover:text-green">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <Link href="/test" className="btn shrink-0 whitespace-nowrap bg-green px-3 py-3 text-[0.72rem] text-paper hover:bg-ink sm:text-[0.8125rem] md:px-5">
-            Wykonaj test
-          </Link>
+          <div className="flex items-center gap-8">
+            <nav aria-label="Główna" className="hidden lg:block">
+              <ul className="flex items-center gap-7 font-sans text-[1.0625rem] font-medium">
+                {NAV.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className="py-2 transition-colors hover:text-red">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <Link href="/test" className="btn bg-ink px-3.5 text-[0.95rem] text-paper hover:bg-red sm:px-4 sm:text-base md:px-5">
+              Wykonaj test
+            </Link>
+          </div>
         </div>
       </header>
 
       <nav aria-label="Główna" className="border-b border-rule lg:hidden">
-        <ul className="wrap kicker flex gap-7 overflow-x-auto py-3 [scrollbar-width:none]">
+        <ul className="wrap flex gap-6 overflow-x-auto py-3 font-sans text-[1rem] font-medium [scrollbar-width:none]">
           {NAV.map((item) => (
             <li key={item.href} className="shrink-0">
               <Link href={item.href}>{item.label}</Link>

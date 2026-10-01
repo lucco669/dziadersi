@@ -12,14 +12,6 @@ const partsFormat = new Intl.DateTimeFormat("en-CA", {
   hourCycle: "h23",
 });
 
-const longFormat = new Intl.DateTimeFormat("pl-PL", {
-  timeZone: TIME_ZONE,
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
 const dateFormat = new Intl.DateTimeFormat("pl-PL", {
   timeZone: TIME_ZONE,
   day: "numeric",
@@ -81,10 +73,6 @@ export function easterDay(year: number) {
   const day = ((h + l - 7 * m + 114) % 31) + 1;
   return dayOfYear(year, month, day);
 }
-
-const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
-
-export const formatLongDate = (date: Date) => capitalize(longFormat.format(date));
 
 export const formatDate = (date: Date) => dateFormat.format(date);
 

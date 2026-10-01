@@ -107,9 +107,9 @@ export function ResultActions({
   ];
 
   return (
-    <div className="mt-10 border-t-2 border-ink pt-6">
+    <div className="mt-10 border-t border-ink pt-6">
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={share} className="btn bg-green text-paper hover:bg-ink">
+        <button type="button" onClick={share} className="btn bg-ink text-paper hover:bg-red">
           Udostępnij wynik <span aria-hidden="true">→</span>
         </button>
         <button type="button" onClick={copy} className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
@@ -125,8 +125,8 @@ export function ResultActions({
         {copied ? "Link skopiowany do schowka." : ""}
       </p>
 
-      <dl className="mt-7 grid gap-x-8 gap-y-3 text-[0.95rem] sm:grid-cols-[auto_1fr]">
-        <dt className="kicker pt-1 text-ink-faint">Certyfikat</dt>
+      <dl className="mt-7 grid gap-x-8 gap-y-3 font-sans text-[0.95rem] sm:grid-cols-[auto_1fr]">
+        <dt className="label pt-0.5 text-ink-soft">Certyfikat</dt>
         <dd className="flex flex-wrap gap-x-5 gap-y-1">
           <a href={image("post")} download onClick={() => track("Udostępnienie", { kanal: "post" })} className="link">
             Pobierz post 4:5
@@ -135,7 +135,7 @@ export function ResultActions({
             Pobierz relację 9:16
           </a>
         </dd>
-        <dt className="kicker pt-1 text-ink-faint">Rozdzielnik</dt>
+        <dt className="label pt-0.5 text-ink-soft">Wyślij</dt>
         <dd className="flex flex-wrap gap-x-5 gap-y-1">
           {outlets.map((outlet) => (
             <a
@@ -150,7 +150,7 @@ export function ResultActions({
             </a>
           ))}
         </dd>
-        <dt className="kicker pt-1 text-ink-faint">Osoba badana</dt>
+        <dt className="label pt-0.5 text-ink-soft">Osoba badana</dt>
         <dd>
           {editing ? (
             <form onSubmit={saveName} className="flex flex-wrap items-end gap-x-4 gap-y-2">
@@ -168,9 +168,9 @@ export function ResultActions({
                 maxLength={24}
                 autoComplete="given-name"
                 placeholder="Imię na certyfikat"
-                className="w-56 border-0 border-b-2 border-ink bg-transparent px-0 py-1 font-display text-xl italic text-green placeholder:text-ink/25 focus:border-green focus-visible:outline-none"
+                className="w-56 border-0 border-b-2 border-ink bg-transparent px-0 py-1 font-serif text-xl font-bold placeholder:font-normal placeholder:text-ink/30 focus:border-red focus-visible:outline-none"
               />
-              <button type="submit" className="kicker py-1.5 text-green hover:text-ink">
+              <button type="submit" className="label py-1.5 font-semibold text-ink hover:text-red">
                 Zapisz
               </button>
               <button
@@ -180,18 +180,18 @@ export function ResultActions({
                   setNameError(false);
                   setNameDraft(name);
                 }}
-                className="kicker py-1.5 text-ink-faint hover:text-ink"
+                className="label py-1.5 text-ink-soft hover:text-ink"
               >
                 Anuluj
               </button>
               {nameError && (
-                <p className="w-full text-sm text-bordo" role="alert">
+                <p className="w-full font-sans text-sm text-red" role="alert">
                   Tego Instytut nie wpisze na certyfikat. Spróbuj samego imienia.
                 </p>
               )}
             </form>
           ) : (
-            <button type="button" onClick={() => setEditing(true)} className={cx("link text-left", !name && "text-green")}>
+            <button type="button" onClick={() => setEditing(true)} className={cx("link text-left", !name && "text-red")}>
               {name ? `${name} · zmień` : "Dopisz imię do certyfikatu"}
             </button>
           )}

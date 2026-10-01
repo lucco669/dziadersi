@@ -42,10 +42,10 @@ export function ShareBar({ path, text, kind }: { path: string; text: string; kin
   ];
 
   return (
-    <div className="kicker flex flex-wrap items-center gap-x-5 gap-y-3">
-      <span className="text-ink-faint">Rozdzielnik</span>
+    <div className="label flex flex-wrap items-center gap-x-5 gap-y-3">
+      <span className="text-ink-soft">Udostępnij</span>
       {canShare && (
-        <button type="button" onClick={share} className="link uppercase text-ink">
+        <button type="button" onClick={share} className="link text-ink">
           Udostępnij
         </button>
       )}
@@ -61,7 +61,7 @@ export function ShareBar({ path, text, kind }: { path: string; text: string; kin
           {outlet.label}
         </a>
       ))}
-      <button type="button" onClick={copy} className="link uppercase text-ink">
+      <button type="button" onClick={copy} className="link text-ink">
         {copied ? "Skopiowano ✓" : "Kopiuj link"}
       </button>
       <span className="sr-only" aria-live="polite">
