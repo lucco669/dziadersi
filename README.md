@@ -26,7 +26,12 @@ Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
 | --- | --- |
 | `src/app/` | Routes, metadata, OG image, icons, robots, sitemap, 404 |
 | `src/components/` | Page sections and brand primitives (`brand.tsx`: wordmark, seal, stamp, section heading) |
-| `src/content/` | All copy: species, regions, dictionary, daily briefs, departments |
+| `src/content/` | All copy: 22 species, 26 dictionary entries, 5 reports, regions, daily briefs, departments, and the 24 test questions (`test.ts`) |
+| `src/lib/test.ts` | Test scoring, species diagnosis, and stateless result codes (answers, date and name in the URL) |
+| `src/lib/certificate-image.tsx` | Generated certificates: link preview, Instagram post and story |
+| `src/app/test`, `src/app/wynik/[kod]` | The test runner and the shareable result pages |
+| `src/app/atlas`, `src/app/slownik`, `src/app/raporty`, `src/app/indeks` | Content sections; each `[slug]` page is prerendered from `src/content/` |
+| `src/lib/og-cards.tsx` | Share cards for species, dictionary entries, reports and section pages |
 | `src/lib/indeks.ts` | The Narodowy Indeks Dziaderstwa model: seasons, calendar peaks, deterministic noise |
 | `src/lib/bulletin.ts` | Everything date-dependent, computed in Europe/Warsaw time and cached for an hour (`"use cache"`) |
 | `src/lib/typo.ts` | Polish typesetting helper (non-breaking spaces after one-letter words), number formatting |

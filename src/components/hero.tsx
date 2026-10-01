@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Bulletin } from "@/lib/bulletin";
 import { ZONES } from "@/lib/indeks";
 import { cx, pct, roman, typo } from "@/lib/typo";
@@ -22,12 +23,12 @@ export function Hero({ bulletin }: { bulletin: Bulletin }) {
           )}
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
-          <a href="#test" className="btn bg-green text-paper hover:bg-ink">
+          <Link href="/test" className="btn bg-green text-paper hover:bg-ink">
             Wykonaj test <span aria-hidden="true">→</span>
-          </a>
-          <a href="#atlas" className="link font-display text-lg italic">
+          </Link>
+          <Link href="/atlas" className="link font-display text-lg italic">
             Przeglądaj Atlas Dziadersów
-          </a>
+          </Link>
         </div>
         <p className="kicker mt-8 text-ink-faint">
           Czas badania: ok. 3 min <span className="mx-1.5">·</span> 24 pytania{" "}
@@ -42,7 +43,7 @@ export function Hero({ bulletin }: { bulletin: Bulletin }) {
   );
 }
 
-function IndexPanel({ bulletin }: { bulletin: Bulletin }) {
+export function IndexPanel({ bulletin }: { bulletin: Bulletin }) {
   const { value, delta, season, zone } = bulletin.index;
   const trendLabel = delta === 0 ? "■ bez zmian" : `${delta > 0 ? "▲" : "▼"} ${pct(Math.abs(delta))} pkt`;
 

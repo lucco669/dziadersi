@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { cx, typo } from "@/lib/typo";
 import { Stamp } from "./brand";
@@ -66,7 +67,9 @@ export function SampleQuestion() {
                 {answer.verdict}
               </Stamp>
               <p className="mt-6 text-lg leading-relaxed text-paper/90">{typo(answer.note)}</p>
-              <p className="kicker mt-5 text-paper/55">Pełne badanie: 24 pytania. Otwarcie laboratorium wkrótce.</p>
+              <Link href="/test" className="kicker mt-6 inline-block border-b border-paper/50 pb-0.5 hover:border-paper">
+                Pełne badanie: 24 pytania <span aria-hidden="true">→</span>
+              </Link>
             </div>
           ) : (
             <p className="max-w-sm border-l border-paper/30 pl-5 text-lg leading-relaxed text-paper/60">

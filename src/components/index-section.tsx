@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { MAP_REGIONS } from "@/content/map";
 import type { Bulletin } from "@/lib/bulletin";
 import { MONTHS_SHORT, dayOfYear } from "@/lib/calendar";
 import { cx, pct, typo } from "@/lib/typo";
@@ -21,7 +23,7 @@ export function IndexSection({ bulletin }: { bulletin: Bulletin }) {
 
         <div className="mt-14 grid gap-16 lg:grid-cols-12 lg:gap-12">
           <IndexChart bulletin={bulletin} className="lg:col-span-8" />
-          <RegionMap className="lg:col-span-4" />
+          <RegionMap regions={MAP_REGIONS} className="lg:col-span-4" />
         </div>
       </div>
     </section>
@@ -32,7 +34,7 @@ const Y_MIN = 58;
 const Y_MAX = 82;
 const GRID = [60, 70, 80];
 
-function IndexChart({ bulletin, className }: { bulletin: Bulletin; className?: string }) {
+export function IndexChart({ bulletin, className }: { bulletin: Bulletin; className?: string }) {
   const { year, today, total, chart } = bulletin;
   const x = (day: number) => (day / (total - 1)) * 100;
   const y = (value: number) => (1 - (value - Y_MIN) / (Y_MAX - Y_MIN)) * 100;
@@ -180,7 +182,10 @@ function IndexChart({ bulletin, className }: { bulletin: Bulletin; className?: s
       </div>
 
       <p className="kicker mt-8 text-ink-faint">
-        Źródło: IBD, obserwacje terenowe. Metodologia objęta tajemnicą służbową.
+        Źródło: IBD, obserwacje terenowe.{" "}
+        <Link href="/indeks#metodologia" className="link text-ink">
+          Metodologia
+        </Link>
       </p>
     </figure>
   );

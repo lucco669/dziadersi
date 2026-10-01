@@ -1,9 +1,11 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
-import { ESTIMATED_SPECIES, SPECIES, STATUSES, type Species, type Status } from "@/content/species";
-import { cx, typo } from "@/lib/typo";
+import { ESTIMATED_SPECIES, SPECIES, statusLabel, type Species } from "@/content/species";
+import { cx, plural, typo } from "@/lib/typo";
 import { SectionHeading, Stamp } from "./brand";
+import { StatusScale, TraitBars } from "./species-parts";
 
-const statusLabel = (status: Status) => STATUSES.find((item) => item.code === status)?.label ?? status;
+const NATIONWIDE = SPECIES.filter((species) => !species.region);
 
 export function AtlasSection({ week }: { week: number }) {
   const featured = SPECIES[week % SPECIES.length];
@@ -46,7 +48,9 @@ function SpeciesEntry({ species, week, className }: { species: Species; week: nu
               id={`${species.code}-name`}
               className="font-display text-[clamp(2.25rem,4.6vw,3.75rem)] font-bold leading-[0.95] tracking-[-0.025em]"
             >
-              {species.name}
+              <Link href={`/atlas/${species.slug}`} className="transition-colors hover:text-green">
+                {species.name}
+              </Link>
             </h3>
             <p className="mt-3 text-lg">
               <em>{species.latin}</em> <span className="text-ink-faint">({species.authority})</span>
@@ -75,6 +79,12 @@ function SpeciesEntry({ species, week, className }: { species: Species; week: nu
           <TraitBars traits={species.traits} />
           <StatusScale status={species.status} note={species.statusNote} />
         </div>
+
+        <p className="kicker mt-10 border-t border-rule pt-5">
+          <Link href={`/atlas/${species.slug}`} className="link">
+            Pełna karta gatunku: 7 objawów i postępowanie w kontakcie →
+          </Link>
+        </p>
       </div>
     </article>
   );
@@ -89,98 +99,50 @@ function Field({ label, wide, children }: { label: string; wide?: boolean; child
   );
 }
 
-function TraitBars({ traits }: { traits: Species["traits"] }) {
-  return (
-    <div>
-      <p className="kicker text-ink-faint">Profil behawioralny (0–100)</p>
-      <ul className="mt-5 space-y-4">
-        {traits.map((trait) => (
-          <li key={trait.label}>
-            <div className="flex items-baseline justify-between gap-4 text-[0.95rem] leading-snug">
-              <span>{trait.label}</span>
-              <span className="font-mono text-[0.8rem] tabular-nums">{trait.value}</span>
-            </div>
-            <div className="mt-1.5 h-1.5 bg-ink/10">
-              <div className="h-full bg-green" style={{ width: `${trait.value}%` }} />
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function StatusScale({ status, note }: { status: Status; note: string }) {
-  const label = statusLabel(status);
-
-  return (
-    <div>
-      <p className="kicker text-ink-faint">Status ochrony</p>
-      <ol className="mt-5 grid grid-cols-7 border border-ink">
-        {STATUSES.map((item, i) => (
-          <li
-            key={item.code}
-            aria-current={item.code === status ? "true" : undefined}
-            className={cx(
-              "py-2 text-center font-mono text-[0.72rem] font-semibold",
-              i > 0 && "border-l border-ink",
-              item.code === status ? "bg-ink text-paper" : "text-ink-faint",
-            )}
-          >
-            <abbr title={item.label} className="no-underline">
-              {item.code}
-            </abbr>
-          </li>
-        ))}
-      </ol>
-      <p className="kicker mt-2 flex justify-between text-[0.58rem] text-ink-faint">
-        <span>Wymarły</span>
-        <span>Najmniejszej troski</span>
-      </p>
-      <p className="mt-4 text-[0.95rem] leading-snug">
-        <span className="font-semibold">{label.charAt(0).toUpperCase() + label.slice(1)}.</span> {typo(note)}
-      </p>
-    </div>
-  );
-}
-
 function SpeciesIndex({ featured, className }: { featured: string; className?: string }) {
+  const regional = SPECIES.length - NATIONWIDE.length;
   return (
     <div className={className}>
       <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
-        <h3 className="kicker">Indeks gatunków</h3>
+        <h3 className="kicker">Gatunki ogólnopolskie</h3>
         <span className="kicker text-ink-faint">
-          {SPECIES.length} / {ESTIMATED_SPECIES}
+          {NATIONWIDE.length} / {SPECIES.length}
         </span>
       </div>
       <ol>
-        {SPECIES.map((species) => (
-          <li
-            key={species.code}
-            className="grid grid-cols-[4.1rem_1fr_auto] items-baseline gap-3 border-b border-rule py-3.5"
-          >
-            <span className="kicker text-ink-faint">{species.code}</span>
-            <span>
-              <span
-                className={cx(
-                  "block font-display text-[1.15rem] font-semibold leading-tight",
-                  species.code === featured && "text-green",
-                )}
-              >
-                {species.name}
+        {NATIONWIDE.map((species) => (
+          <li key={species.code} className="border-b border-rule">
+            <Link
+              href={`/atlas/${species.slug}`}
+              className="group grid grid-cols-[4.1rem_1fr_auto] items-baseline gap-3 py-3.5"
+            >
+              <span className="kicker text-ink-faint">{species.code}</span>
+              <span>
+                <span
+                  className={cx(
+                    "block font-display text-[1.15rem] font-semibold leading-tight transition-colors group-hover:text-green",
+                    species.code === featured && "text-green",
+                  )}
+                >
+                  {species.name}
+                </span>
+                <span className="mt-0.5 block text-[0.9rem] leading-snug text-ink-soft">{typo(species.teaser)}</span>
               </span>
-              <span className="mt-0.5 block text-[0.9rem] leading-snug text-ink-soft">{typo(species.teaser)}</span>
-              {species.code === featured && (
-                <span className="kicker mt-1.5 block text-[0.58rem] text-green">◆ Gatunek tygodnia</span>
-              )}
-            </span>
-            <abbr title={statusLabel(species.status)} className="font-mono text-[0.7rem] text-ink-faint no-underline">
-              {species.status}
-            </abbr>
+              <abbr title={statusLabel(species.status)} className="font-mono text-[0.7rem] text-ink-faint no-underline">
+                {species.status}
+              </abbr>
+            </Link>
           </li>
         ))}
       </ol>
-      <p className="kicker mt-6 text-ink-faint">Osobne karty gatunków — wkrótce</p>
+      <p className="mt-6">
+        <Link href="/atlas" className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
+          Pełny Atlas <span aria-hidden="true">→</span>
+        </Link>
+      </p>
+      <p className="kicker mt-4 text-ink-faint">
+        W tym {regional} {plural(regional, "gatunek regionalny", "gatunki regionalne", "gatunków regionalnych")}
+      </p>
     </div>
   );
 }

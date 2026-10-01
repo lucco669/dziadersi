@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, Newsreader } from "next/font/google";
+import { Analytics } from "@/components/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getBulletin } from "@/lib/bulletin";
@@ -66,6 +67,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader bulletin={bulletin} />
         {children}
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

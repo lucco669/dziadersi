@@ -2,6 +2,7 @@ export type Brief = {
   category: string;
   title: string;
   dek: string;
+  href?: string;
 };
 
 /**
@@ -13,26 +14,31 @@ export const BRIEFS: Brief[] = [
     category: "Badanie",
     title: "73% badanych ojców posiada kabel, którego przeznaczenia nie zna.",
     dek: "Kolejne 19% twierdzi, że zna, ale „nie będzie teraz szukać”. Pozostali odmówili otwarcia szuflady.",
+    href: "/raporty/kabel-nieznanego-przeznaczenia",
   },
   {
     category: "Badanie",
     title: "Od „zaraz to naprawię” do wezwania fachowca mijają średnio 3 lata i 2 miesiące.",
     dek: "W 41% przypadków fachowcem okazuje się szwagier.",
+    href: "/raporty/zaraz-to-naprawie",
   },
   {
     category: "Badanie",
     title: "Każde „Panie, to jest dobry samochód” wydłuża zakupy o 11 minut.",
     dek: "Dane z parkingów marketów budowlanych, soboty w godzinach 9:00–13:00.",
+    href: "/atlas/dziaders-motoryzacyjny",
   },
   {
     category: "Nowy gatunek",
     title: "Do Atlasu wpisano Dziadersa Smart-Home.",
     dek: "Kupił inteligentne żarówki, ale wyłącza je wyłącznikiem. Aplikację zainstalował wnuk, hasło jest na karteczce pod routerem.",
+    href: "/atlas/dziaders-smart-home",
   },
   {
     category: "Raport",
     title: "Sandał a skarpeta. Przegląd systematyczny 412 obserwacji terenowych.",
     dek: "Wniosek główny: skarpeta jest biała. Wniosek poboczny: zawsze.",
+    href: "/raporty/sandal-a-skarpeta",
   },
   {
     category: "Obserwacja",
@@ -43,6 +49,7 @@ export const BRIEFS: Brief[] = [
     category: "Komunikat",
     title: "„Ja nie potrzebuję instrukcji” to objaw, a nie kompetencja.",
     dek: "Jeżeli po montażu zostały dwie zapasowe śrubki, prosimy o kontakt z najbliższą placówką Instytutu.",
+    href: "/slownik/ja-nie-potrzebuje-instrukcji",
   },
   {
     category: "Alert",
@@ -53,6 +60,7 @@ export const BRIEFS: Brief[] = [
     category: "Komunikat",
     title: "Pilot od telewizora pozostaje w rękach najstarszego mężczyzny w 87% domów.",
     dek: "W pozostałych 13% pilot zaginął w fotelu. Poszukiwania trwają.",
+    href: "/raporty/pilot-od-telewizora",
   },
 ];
 

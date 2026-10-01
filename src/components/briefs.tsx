@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { briefsFor } from "@/content/briefs";
 import type { Bulletin } from "@/lib/bulletin";
 import { cx, typo } from "@/lib/typo";
@@ -27,7 +28,13 @@ export function Briefs({ bulletin }: { bulletin: Bulletin }) {
             >
               <p className="kicker text-green">{brief.category}</p>
               <h3 className="mt-3 font-display text-[1.3rem] font-semibold leading-[1.15] tracking-[-0.01em]">
-                {typo(brief.title)}
+                {brief.href ? (
+                  <Link href={brief.href} className="transition-colors hover:text-green">
+                    {typo(brief.title)}
+                  </Link>
+                ) : (
+                  typo(brief.title)
+                )}
               </h3>
               <p className="mt-3 text-[0.98rem] leading-relaxed text-ink-soft">{typo(brief.dek)}</p>
             </li>

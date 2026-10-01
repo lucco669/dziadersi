@@ -4,11 +4,11 @@ import { roman } from "@/lib/typo";
 import { SealMark, Wordmark } from "./brand";
 
 const NAV = [
-  { href: "/#test", label: "Test" },
-  { href: "/#atlas", label: "Atlas" },
-  { href: "/#indeks", label: "Indeks" },
-  { href: "/#slownik", label: "Słownik" },
-  { href: "/#dzialy", label: "Działy" },
+  { href: "/test", label: "Test" },
+  { href: "/atlas", label: "Atlas" },
+  { href: "/slownik", label: "Słownik" },
+  { href: "/raporty", label: "Raporty" },
+  { href: "/indeks", label: "Indeks" },
 ];
 
 export function SiteHeader({ bulletin }: { bulletin: Bulletin }) {
@@ -31,7 +31,7 @@ export function SiteHeader({ bulletin }: { bulletin: Bulletin }) {
               <span className="mx-2.5 text-rule">|</span>Biuletyn dzienny nr {bulletin.issue}
             </span>
           </p>
-          <Link href="/#indeks" className="hidden items-center gap-2 hover:text-ink md:flex">
+          <Link href="/indeks#sezony" className="hidden items-center gap-2 hover:text-ink md:flex">
             <span className="size-1.5 rounded-full bg-bordo" aria-hidden="true" />
             Ostrzeżenie {roman(season.level)} stopnia · {season.title}
           </Link>
@@ -62,7 +62,7 @@ export function SiteHeader({ bulletin }: { bulletin: Bulletin }) {
             </ul>
           </nav>
 
-          <Link href="/#test" className="btn shrink-0 whitespace-nowrap bg-green px-3 py-3 text-[0.72rem] text-paper hover:bg-ink sm:text-[0.8125rem] md:px-5">
+          <Link href="/test" className="btn shrink-0 whitespace-nowrap bg-green px-3 py-3 text-[0.72rem] text-paper hover:bg-ink sm:text-[0.8125rem] md:px-5">
             Wykonaj test
           </Link>
         </div>

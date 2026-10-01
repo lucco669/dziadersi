@@ -4,10 +4,11 @@ import { typo } from "@/lib/typo";
 import { Wordmark } from "./brand";
 
 const SECTIONS = [
-  { href: "/#test", label: "Test Dziadersa" },
-  { href: "/#atlas", label: "Atlas Dziadersów" },
-  { href: "/#indeks", label: "Narodowy Indeks Dziaderstwa" },
-  { href: "/#slownik", label: "Słownik Dziaderski" },
+  { href: "/test", label: "Test Dziadersa" },
+  { href: "/atlas", label: "Atlas Dziadersów" },
+  { href: "/slownik", label: "Słownik Dziaderski" },
+  { href: "/raporty", label: "Raporty Instytutu" },
+  { href: "/indeks", label: "Narodowy Indeks Dziaderstwa" },
   { href: "/#dzialy", label: "Plan działalności" },
 ];
 

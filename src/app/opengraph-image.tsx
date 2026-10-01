@@ -1,25 +1,10 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { MUSTACHE_PATH } from "@/components/brand";
+import { C, OG_FONTS, OgSeal, display, italic, mono } from "@/lib/og";
 import { site } from "@/lib/site";
 
 export const alt = `${site.name}, ${site.institute}. ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
-const fontDir = join(process.cwd(), "assets/fonts");
-const [frauncesBlack, frauncesItalic, plexMono] = await Promise.all([
-  readFile(join(fontDir, "Fraunces-144pt-Black.ttf")),
-  readFile(join(fontDir, "Fraunces-72pt-MediumItalic.ttf")),
-  readFile(join(fontDir, "IBMPlexMono-Medium.ttf")),
-]);
-
-const PAPER = "#f1ebdd";
-const INK = "#1b1a17";
-const SOFT = "#4b463d";
-const GREEN = "#1f3b30";
-const BORDO = "#8c1f2e";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -31,20 +16,20 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           padding: "52px 72px",
-          background: PAPER,
-          color: INK,
-          fontFamily: "Plex Mono",
+          background: C.paper,
+          color: C.ink,
         }}
       >
         <div
           style={{
+            ...mono,
             display: "flex",
             justifyContent: "space-between",
             paddingBottom: 20,
-            borderBottom: `2px solid ${INK}`,
+            borderBottom: `2px solid ${C.ink}`,
             fontSize: 21,
             letterSpacing: 3,
-            color: SOFT,
+            color: C.soft,
           }}
         >
           <span>INSTYTUT BADAŃ NAD DZIADERSTWEM</span>
@@ -52,31 +37,20 @@ export default function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", flex: 1, justifyContent: "center" }}>
-          <div style={{ display: "flex", fontFamily: "Fraunces", fontWeight: 900, fontSize: 178, lineHeight: 1, letterSpacing: -7 }}>
-            DZIADER<span style={{ color: BORDO }}>.</span>SI
+          <div style={{ ...display, display: "flex", fontSize: 178, lineHeight: 1, letterSpacing: -7 }}>
+            DZIADER<span style={{ color: C.bordo }}>.</span>SI
           </div>
-          <div
-            style={{
-              display: "flex",
-              maxWidth: 720,
-              marginTop: 22,
-              fontFamily: "Fraunces",
-              fontWeight: 500,
-              fontStyle: "italic",
-              fontSize: 52,
-              lineHeight: 1.08,
-              color: GREEN,
-            }}
-          >
+          <div style={{ ...italic, display: "flex", maxWidth: 720, marginTop: 22, fontSize: 52, lineHeight: 1.08, color: C.green }}>
             Dokumentujemy zjawisko, zanim będzie za późno.
           </div>
         </div>
 
         <div
           style={{
+            ...mono,
             display: "flex",
             paddingTop: 20,
-            borderTop: `2px solid ${INK}`,
+            borderTop: `2px solid ${C.ink}`,
             fontSize: 19,
             letterSpacing: 3,
           }}
@@ -84,51 +58,11 @@ export default function OpengraphImage() {
           TEST DZIADERSA · ATLAS · INDEKS · SŁOWNIK
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            right: 92,
-            bottom: 50,
-            width: 230,
-            height: 230,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: `7px solid ${BORDO}`,
-            borderRadius: 999,
-            transform: "rotate(-12deg)",
-            opacity: 0.92,
-          }}
-        >
-          <div
-            style={{
-              width: 196,
-              height: 196,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              border: `2px solid ${BORDO}`,
-              borderRadius: 999,
-            }}
-          >
-            <svg width="132" height="48" viewBox="0 0 100 36">
-              <path d={MUSTACHE_PATH} fill={BORDO} />
-            </svg>
-            <div style={{ display: "flex", marginTop: 6, fontFamily: "Fraunces", fontWeight: 900, fontSize: 40, letterSpacing: 4, color: BORDO }}>
-              IBD
-            </div>
-          </div>
+        <div style={{ position: "absolute", right: 92, bottom: 50, display: "flex" }}>
+          <OgSeal size={230} />
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        { name: "Fraunces", data: frauncesBlack, weight: 900, style: "normal" },
-        { name: "Fraunces", data: frauncesItalic, weight: 500, style: "italic" },
-        { name: "Plex Mono", data: plexMono, weight: 500, style: "normal" },
-      ],
-    },
+    { ...size, fonts: OG_FONTS },
   );
 }

@@ -17,25 +17,27 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - OG image, icons, robots, sitemap, 404.
 - Fully static. Date-dependent parts regenerate every hour, so the site looks alive with no backend.
 
-### Phase 1: Test Dziadersa and the certificate (the viral loop). Highest priority.
+### Phase 1: Test Dziadersa and the certificate (the viral loop) ✅
 
-- `/test`: 24 questions, one per screen, styled as form "IBD-T1" with a progress bar. Client-side only, no login.
-- Scoring: every answer adds to a 0–100 score and to weights for each Atlas species. The result is the score plus the top one or two species, for example "Dziaders Grillowo-Motoryzacyjny".
-- `/wynik/[kod]`: a shareable result page. The code encodes the score and species (for example in base36), so no database is needed.
-- A per-result `opengraph-image.tsx` renders the certificate, so a shared link previews as the certificate itself in Messenger, WhatsApp, X and Slack.
-- "Pobierz certyfikat" downloads the same image at 1080×1350 (feed) and 1080×1920 (stories).
-- Analytics events: `test_start`, `test_complete`, `share_click`.
-- **Done when** someone finishes the test, pastes the link into Messenger, and sees the certificate preview.
+- `/test`: form "IBD-T1". An intro with an optional "signature" (the name on the certificate), then 24 questions, one per screen. Each answer is crossed out in ink before the next question. Keys 1–4 answer, Backspace goes back, and progress survives a reload. A short "Instytut analizuje wyniki" sequence runs while the result is prefetched.
+- Scoring (`src/lib/test.ts`): every answer gives 0–3 points (the score is the percentage of 72) and weights towards Atlas species. Each species' affinity is measured against what random answering would give, and damped for species with few questions. The result is one species, or a hybrid ("Dziaders Grillowo-Motoryzacyjny") when two are close. "Utajony" and "Pospolity" cover answers with no clear species. In simulations every species wins about equally often, and a respondent's own species is recognised about 72% of the time.
+- `/wynik/[kod]`: the code stores the 24 answers and the test date in 14 characters, plus the name as base64url after `~`. No database is involved. The page shows the score, the verdict stamp, the diagnosis, a scale against today's NID, the certificate, the case description with recommendations, species notes from the Atlas, and the examination protocol. Names are sanitised, and vulgar ones are filtered, both when written and when read.
+- Sharing: native share (which reaches Messenger and Instagram on phones), copy link, Facebook, WhatsApp, X and e-mail. On phones the story image can be sent directly as a file. The name can be added or changed on the result page.
+- Images: `/wynik/[kod]/opengraph-image` (the link preview certificate, 1200×630) and `/wynik/[kod]/certyfikat?format=post|relacja` (1080×1350 and 1080×1920 PNGs). A code always renders the same image, so images are CDN-cached for a year. `/test` has its own share card.
+- Result pages are `noindex`. One sample is prerendered, and every other code renders on its first visit and is then served from cache.
 
-### Phase 2: Atlas, Słownik and Raporty (search traffic)
+### Phase 2: Atlas, Słownik, Raporty and Indeks (search traffic) ✅
 
-- `/atlas` and `/atlas/[slug]`: one page per species, statically generated (`generateStaticParams`), each with its own OG image (a specimen card). The schema already exists in `src/content/species.ts`.
-- `/slownik/[slug]`: one page per phrase.
-- `/raporty/[slug]`: pseudo-research reports. These work well on social media too.
-- Listicle-style entry pages such as "7 objawów Dziadersa Grillowego", each ending in the test.
-- JSON-LD (Article, BreadcrumbList) and a sitemap generated from content.
-- If content volume grows, move from TS files to MDX (`@next/mdx`) or a light CMS.
-- Target before promotion: 50 species, 50 dictionary entries, 10 reports.
+- `/atlas` covers 22 species: 10 nationwide (the ones the test diagnoses) and 12 regional ones, one per voivodeship on the map.
+  - The index page has species cards with activity strips, the regional map, a dichotomous identification key, and the conservation categories.
+  - Each `/atlas/[slug]` page has a description, "7 objawów …" (the title targets searches like "objawy dziadersa"), vocalisations, handling advice, and a species card: traits, status, a 12-month activity calendar, and the range.
+  - Each also links to related species, dictionary phrases, reports, and the test.
+- `/slownik` holds 26 phrases in an A–Z index with the word of the day. Each `/slownik/[slug]` page has the definition, pronunciation, example, cross-references, and the species it belongs to.
+- `/raporty` holds 5 papers. Each `/raporty/[slug]` page has headline figures, an abstract, sections, conclusions, a bar chart, methodology, "Jak cytować" and share links.
+- `/indeks` has the live panel, the full-year chart, the seasons and warning levels, this year's risk calendar, the regional ranking, and the methodology.
+- Every page has its own OG card, all prerendered at build. JSON-LD covers BreadcrumbList, Article, DefinedTerm(Set), CollectionPage and Dataset on the relevant pages, and WebSite + Organization on the homepage. The sitemap is generated from content.
+- Content is plain TS under `src/content/`. URL slugs are explicit and must never change once published.
+- **Still to grow before heavy promotion:** 50 species, 50 dictionary entries and 10 reports. Adding an entry is one object in the relevant file, and its page, OG image, sitemap entry and links are generated automatically.
 
 ### Phase 3: toys (cheap, shareable, no backend)
 
@@ -116,7 +118,7 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - **The index is a model, not data:** seasonal peaks plus deterministic noise, so every visitor sees the same number, the chart has a real-looking history and forecast, and it never needs a database.
 - **No database until Phase 4.** Test results live in the URL.
 - **OG images** use `next/og` with TTFs bundled in `assets/fonts` (no network at build time).
-- **Analytics:** add Vercel Web Analytics (cookieless) or Plausible when the test launches.
+- **Analytics:** Vercel Web Analytics (`src/components/analytics.tsx`), cookieless. The name part of result URLs (`~…`) is stripped before anything is sent. Page views of `/test` against `/wynik/[kod]` give the completion funnel. Custom events (`Test rozpoczęty`, `Test ukończony` with zone and species, `Udostępnienie` with the channel) are only visible on Vercel's Pro plan.
 
 ## 7. Launch checklist
 
@@ -124,7 +126,8 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - [ ] Check the link preview in the Facebook Sharing Debugger, the LinkedIn Post Inspector and a real Messenger chat
 - [ ] Google Search Console with the sitemap submitted
 - [ ] Privacy page before adding analytics; terms before any user-generated content
-- [ ] Phase 1 shipped before any promotion. The test is what turns visits into shares.
+- [x] Phase 1 shipped before any promotion. The test is what turns visits into shares.
+- [ ] Paste a real result link into Messenger and WhatsApp and check the certificate preview
 
 ## 8. Deploying to Vercel with dziader.si
 

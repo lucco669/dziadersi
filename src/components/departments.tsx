@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { DEPARTMENTS, STATUS_LABEL, type DepartmentStatus } from "@/content/departments";
 import { cx, typo } from "@/lib/typo";
 import { SectionHeading } from "./brand";
@@ -32,9 +33,9 @@ export function Departments() {
             <span className="kicker text-ink-faint md:pt-1">{String(i + 1).padStart(2, "0")}</span>
             <h3 className="font-display text-xl font-semibold leading-tight tracking-[-0.01em] md:text-2xl">
               {department.href ? (
-                <a href={department.href} className="transition-colors hover:text-green">
+                <Link href={department.href} className="transition-colors hover:text-green">
                   {department.name}
-                </a>
+                </Link>
               ) : (
                 department.name
               )}

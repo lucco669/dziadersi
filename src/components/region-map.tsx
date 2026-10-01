@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { REGION_BINS, REGION_GRID, REGIONS } from "@/content/regions";
+import { REGION_BINS, REGION_GRID, type Region } from "@/content/regions";
 import { cx, pct, typo } from "@/lib/typo";
+
+export type MapRegion = Region & { speciesName: string; speciesSlug: string };
 
 const SHADES = [
   "bg-[#e3dac3] text-ink",
@@ -16,11 +19,11 @@ const LEGEND = [`<${REGION_BINS[0]}`, ...REGION_BINS.slice(1).map((bin, i) => `$
 
 const shadeFor = (value: number) => SHADES[REGION_BINS.filter((bin) => value >= bin).length];
 
-const HIGHEST = Object.values(REGIONS).reduce((top, region) => (region.value > top.value ? region : top));
-
-export function RegionMap({ className }: { className?: string }) {
-  const [active, setActive] = useState(HIGHEST.code);
-  const region = REGIONS[active];
+export function RegionMap({ regions, className }: { regions: Record<string, MapRegion>; className?: string }) {
+  const [active, setActive] = useState(
+    () => Object.values(regions).reduce((top, region) => (region.value > top.value ? region : top)).code,
+  );
+  const region = regions[active];
 
   return (
     <figure className={className}>
@@ -28,7 +31,7 @@ export function RegionMap({ className }: { className?: string }) {
 
       <div role="group" aria-label="Województwa" className="mt-6 grid grid-cols-4 gap-1.5">
         {REGION_GRID.flat().map((code) => {
-          const item = REGIONS[code];
+          const item = regions[code];
           const selected = code === active;
           return (
             <button
@@ -67,7 +70,11 @@ export function RegionMap({ className }: { className?: string }) {
         <p className="kicker text-ink-faint">
           {region.name} · {pct(region.value)}%
         </p>
-        <p className="mt-2 font-display text-2xl font-semibold leading-tight tracking-[-0.01em]">{region.species}</p>
+        <p className="mt-2 font-display text-2xl font-semibold leading-tight tracking-[-0.01em]">
+          <Link href={`/atlas/${region.speciesSlug}`} className="transition-colors hover:text-green">
+            {region.speciesName} <span aria-hidden="true">→</span>
+          </Link>
+        </p>
         <p className="mt-2 leading-snug text-ink-soft">{typo(region.note)}</p>
       </div>
 

@@ -1,11 +1,12 @@
-import { DICTIONARY } from "@/content/dictionary";
+import Link from "next/link";
+import { DICTIONARY, entryByHeadword } from "@/content/dictionary";
 import type { Bulletin } from "@/lib/bulletin";
-import { typo } from "@/lib/typo";
+import { plural, typo } from "@/lib/typo";
 import { SectionHeading } from "./brand";
 
 export function DictionarySection({ bulletin }: { bulletin: Bulletin }) {
   const entry = DICTIONARY[bulletin.today % DICTIONARY.length];
-  const others = DICTIONARY.filter((item) => item !== entry);
+  const others = [1, 2, 3, 4, 5, 6].map((k) => DICTIONARY[(bulletin.today + k) % DICTIONARY.length]);
 
   return (
     <section id="slownik" aria-labelledby="slownik-title" className="wrap scroll-mt-20 py-20 md:py-28">
@@ -27,7 +28,9 @@ export function DictionarySection({ bulletin }: { bulletin: Bulletin }) {
             id="haslo-dnia"
             className="mt-5 font-display text-[clamp(2.75rem,6.6vw,5.5rem)] font-black leading-[0.92] tracking-[-0.03em]"
           >
-            {entry.headword}
+            <Link href={`/slownik/${entry.slug}`} className="transition-colors hover:text-green">
+              {entry.headword}
+            </Link>
           </h3>
           <p className="mt-5 text-lg text-ink-soft">
             <em>{entry.grammar}</em>
@@ -54,29 +57,48 @@ export function DictionarySection({ bulletin }: { bulletin: Bulletin }) {
 
           <p className="mt-9 text-ink-soft">
             <span className="kicker mr-3 text-ink">Zob. też</span>
-            {entry.seeAlso.map((term, i) => (
-              <span key={term}>
-                {i > 0 && <span className="mx-2 text-rule">·</span>}
-                <em>{term}</em>
-              </span>
-            ))}
+            {entry.seeAlso.map((term, i) => {
+              const related = entryByHeadword(term);
+              return (
+                <span key={term}>
+                  {i > 0 && <span className="mx-2 text-rule">·</span>}
+                  {related ? (
+                    <Link href={`/slownik/${related.slug}`} className="hover:text-green">
+                      <em>{term}</em>
+                    </Link>
+                  ) : (
+                    <em>{term}</em>
+                  )}
+                </span>
+              );
+            })}
           </p>
         </article>
 
         <aside className="lg:col-span-4" aria-label="Inne hasła">
           <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
             <h3 className="kicker">Inne hasła</h3>
-            <span className="kicker text-ink-faint">{DICTIONARY.length} haseł</span>
+            <span className="kicker text-ink-faint">
+              {DICTIONARY.length} {plural(DICTIONARY.length, "hasło", "hasła", "haseł")}
+            </span>
           </div>
           <ul>
             {others.map((item) => (
-              <li key={item.headword} className="border-b border-rule py-3.5">
-                <p className="font-display text-xl font-semibold leading-tight">{item.headword}</p>
-                <p className="mt-0.5 text-[0.9rem] text-ink-soft">{item.grammar}</p>
+              <li key={item.slug} className="border-b border-rule">
+                <Link href={`/slownik/${item.slug}`} className="group block py-3.5">
+                  <span className="block font-display text-xl font-semibold leading-tight transition-colors group-hover:text-green">
+                    {item.headword}
+                  </span>
+                  <span className="mt-0.5 block text-[0.9rem] text-ink-soft">{item.grammar}</span>
+                </Link>
               </li>
             ))}
           </ul>
-          <p className="kicker mt-6 text-ink-faint">Pełny słownik — wkrótce</p>
+          <p className="mt-6">
+            <Link href="/slownik" className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
+              Pełny słownik <span aria-hidden="true">→</span>
+            </Link>
+          </p>
         </aside>
       </div>
     </section>
