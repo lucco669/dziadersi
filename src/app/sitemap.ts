@@ -24,5 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: report.date,
     })),
     page("/indeks", "daily", 0.6),
+    page("/generator", "daily", 0.6),
+    page("/bingo", "monthly", 0.6),
   ];
 }

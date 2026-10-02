@@ -6,6 +6,8 @@ export const NAV = [
   { href: "/slownik", label: "Słownik" },
   { href: "/raporty", label: "Raporty" },
   { href: "/indeks", label: "Indeks" },
+  { href: "/generator", label: "Rozmówki" },
+  { href: "/bingo", label: "Bingo" },
 ];
 
 export function SiteHeader() {
@@ -18,7 +20,7 @@ export function SiteHeader() {
         Przejdź do treści
       </a>
 
-      <header className="border-b border-ink">
+      <header className="border-b border-ink print:hidden">
         <div className="wrap flex items-center justify-between gap-4 py-4 md:py-5">
           <Link href="/" className="group flex items-center gap-2.5 md:gap-4" aria-label="DZIADER.SI, strona główna">
             <Mark className="size-10 shrink-0 text-ink transition-transform duration-300 group-hover:-rotate-12 md:size-14" />
@@ -32,7 +34,7 @@ export function SiteHeader() {
 
           <div className="flex items-center gap-8">
             <nav aria-label="Główna" className="hidden lg:block">
-              <ul className="flex items-center gap-7 font-sans text-[1.0625rem] font-medium">
+              <ul className="flex items-center gap-6 font-sans text-[1.0625rem] font-medium xl:gap-7">
                 {NAV.map((item) => (
                   <li key={item.href}>
                     <Link href={item.href} className="py-2 transition-colors hover:text-red">
@@ -49,7 +51,7 @@ export function SiteHeader() {
         </div>
       </header>
 
-      <nav aria-label="Główna" className="border-b border-rule lg:hidden">
+      <nav aria-label="Główna" className="border-b border-rule lg:hidden print:hidden">
         <ul className="wrap flex gap-6 overflow-x-auto py-3 font-sans text-[1rem] font-medium [scrollbar-width:none]">
           {NAV.map((item) => (
             <li key={item.href} className="shrink-0">

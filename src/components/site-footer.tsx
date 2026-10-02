@@ -5,7 +5,7 @@ import { Mark, Wordmark } from "./brand";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-ink">
+    <footer className="border-t border-ink print:hidden">
       <div className="wrap grid gap-12 py-14 md:grid-cols-12 md:py-20">
         <div className="md:col-span-6">
           <Link href="/" className="flex items-center gap-3" aria-label="DZIADER.SI, strona główna">

@@ -38,4 +38,14 @@ export const SECTIONS = [
     label: "Narodowy Indeks Dziaderstwa",
     summary: "Natężenie dziaderstwa w Polsce, aktualizowane co godzinę, z prognozą na Wigilię.",
   },
+  {
+    href: "/generator",
+    label: "Rozmówki dziaderskie",
+    summary: "Generator wypowiedzi na każdą okazję: samochód, remont, urlop, restauracja, komputer i dzieci sąsiadów.",
+  },
+  {
+    href: "/bingo",
+    label: "Dziaders Bingo",
+    summary: "Karty bingo na wesele, Wigilię, majówkę i plażę, do skreślania na telefonie albo do druku.",
+  },
 ] as const;

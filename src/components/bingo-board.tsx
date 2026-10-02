@@ -1,0 +1,199 @@
+"use client";
+
+import { track } from "@vercel/analytics";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useSyncExternalStore, type ReactNode } from "react";
+import { CARD_SIZE, CENTRE, LINES, randomSeed, type Card } from "@/lib/bingo";
+import { cx, plural, typo } from "@/lib/typo";
+import { BingoGrid } from "./bingo-grid";
+import { Stamp } from "./brand";
+
+/*
+ * Marks live in this browser only: a module-level copy (so play works when storage is blocked)
+ * persisted to localStorage per card code.
+ */
+
+type Saved = { marks: number; at?: string };
+
+const memory = new Map<string, string>();
+const listeners = new Set<() => void>();
+const keyOf = (code: string) => `ibd-bingo:${code}`;
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    listeners.delete(listener);
+    window.removeEventListener("storage", listener);
+  };
+}
+
+function load(key: string) {
+  if (!memory.has(key)) {
+    try {
+      memory.set(key, localStorage.getItem(key) ?? "");
+    } catch {
+      memory.set(key, "");
+    }
+  }
+  return memory.get(key) ?? "";
+}
+
+function save(key: string, saved: Saved | null) {
+  const value = saved ? JSON.stringify(saved) : "";
+  memory.set(key, value);
+  try {
+    if (saved) localStorage.setItem(key, value);
+    else localStorage.removeItem(key);
+  } catch {
+    // Storage blocked: the card still works until the tab is closed.
+  }
+  listeners.forEach((listener) => listener());
+}
+
+function parse(raw: string): Saved {
+  try {
+    const saved = raw ? (JSON.parse(raw) as Saved) : null;
+    return saved && Number.isInteger(saved.marks) ? saved : { marks: 0 };
+  } catch {
+    return { marks: 0 };
+  }
+}
+
+const isMarked = (marks: number, i: number) => i === CENTRE || ((marks >>> i) & 1) === 1;
+const linesOf = (marks: number) => LINES.filter((line) => line.every((i) => isMarked(marks, i)));
+
+const time = () => new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit" }).format(new Date());
+
+/** Where a line runs across the grid, in percent: from the centre of its first square to its last. */
+function lineEnds(line: number[]) {
+  const centre = (i: number) => [((i % 5) + 0.5) * 20, (Math.floor(i / 5) + 0.5) * 20];
+  const [x1, y1] = centre(line[0]);
+  const [x2, y2] = centre(line[4]);
+  // Run a little past the outer squares.
+  const dx = (x2 - x1) * 0.08;
+  const dy = (y2 - y1) * 0.08;
+  return { x1: x1 - dx, y1: y1 - dy, x2: x2 + dx, y2: y2 + dy };
+}
+
+const randomCardPath = (slug: string) => `/bingo/${slug}-${randomSeed().toString(36).padStart(5, "0")}`;
+
+/** A fresh card for an occasion: every guest at the table should get a different one. */
+export function NewCardButton({ slug, className, children }: { slug: string; className?: string; children: ReactNode }) {
+  const router = useRouter();
+  return (
+    <button type="button" onClick={() => router.push(randomCardPath(slug))} className={className}>
+      {children}
+    </button>
+  );
+}
+
+/** The playable card: tap to cross out, five in a line is bingo. */
+export function BingoBoard({ card }: { card: Card }) {
+  const router = useRouter();
+  const key = keyOf(card.code);
+  const raw = useSyncExternalStore(subscribe, () => load(key), () => "");
+  const saved = parse(raw);
+  const [fresh, setFresh] = useState(false);
+
+  const marked = Array.from({ length: CARD_SIZE }, (_, i) => isMarked(saved.marks, i));
+  const lines = linesOf(saved.marks);
+  const crossed = marked.filter(Boolean).length - 1;
+  const full = crossed === CARD_SIZE - 1;
+
+  function toggle(i: number) {
+    const marks = saved.marks ^ (1 << i);
+    const before = lines.length;
+    const after = linesOf(marks).length;
+    const at = after > 0 ? (saved.at ?? time()) : undefined;
+    save(key, marks ? { marks, at } : null);
+    if (after > before) {
+      setFresh(true);
+      track("Bingo", { okazja: card.occasion.slug, linie: after });
+    }
+  }
+
+  function reset() {
+    if (!window.confirm("Wyczyścić kartę? Skreślenia przepadną.")) return;
+    save(key, null);
+    setFresh(false);
+  }
+
+  const another = () => router.push(randomCardPath(card.occasion.slug));
+
+  const overlay =
+    lines.length > 0 ? (
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+        {lines.map((line) => {
+          const ends = lineEnds(line);
+          return (
+            <line
+              key={line.join("-")}
+              {...ends}
+              pathLength={1}
+              stroke="var(--color-red)"
+              strokeWidth={6}
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+              opacity={0.75}
+              className="animate-draw [stroke-dasharray:1] [animation-duration:450ms]"
+            />
+          );
+        })}
+      </svg>
+    ) : null;
+
+  return (
+    <div>
+      <div className="relative">
+        <BingoGrid card={card} marked={marked} onToggle={toggle} overlay={overlay} className="border border-ink" />
+        {lines.length > 0 && (
+          <Stamp
+            key={lines.length}
+            className={cx(
+              "absolute -right-2 -top-3 bg-card/90 text-[1.15rem] md:text-[1.5rem] [--stamp-rotate:8deg]",
+              fresh ? "animate-stamp" : "rotate-[8deg]",
+            )}
+          >
+            {full ? "Pełna karta" : lines.length > 1 ? `Bingo × ${lines.length}` : "Bingo!"}
+          </Stamp>
+        )}
+      </div>
+
+      <p className="label mt-4 flex flex-wrap justify-between gap-x-6 gap-y-1 text-ink-soft print:hidden" aria-live="polite">
+        <span>
+          Skreślono {crossed} z {CARD_SIZE - 1}
+          {lines.length > 0 && ` · ${lines.length} ${plural(lines.length, "linia", "linie", "linii")}`}
+        </span>
+        {saved.at && <span className="text-red">Pierwsze bingo o {saved.at}</span>}
+      </p>
+      {lines.length > 0 && (
+        <p className="mt-3 max-w-xl text-lg leading-snug print:hidden">
+          {typo(
+            full
+              ? "Karta zapełniona. Instytut gratuluje rodzinie i prosi o zachowanie karty do celów naukowych."
+              : "Bingo! Należy wstać i krzyknąć. Instytut nie odpowiada za reakcję wujka.",
+          )}
+        </p>
+      )}
+
+      <div className="mt-8 flex flex-wrap items-center gap-3 print:hidden">
+        <button type="button" onClick={another} className="btn bg-ink text-paper hover:bg-red">
+          Nowa karta <span aria-hidden="true">↻</span>
+        </button>
+        <button type="button" onClick={() => window.print()} className="btn border border-ink hover:bg-ink hover:text-paper">
+          Drukuj
+        </button>
+        <Link href={`/bingo/${card.code}/druk`} className="btn border border-ink hover:bg-ink hover:text-paper">
+          Cztery karty do druku
+        </Link>
+        {crossed > 0 && (
+          <button type="button" onClick={reset} className="link ml-1 font-sans font-medium text-ink-soft">
+            Wyczyść kartę
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}

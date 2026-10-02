@@ -46,10 +46,11 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - Content is plain TS under `src/content/`. URL slugs are explicit and must never change once published.
 - **Still to grow before heavy promotion:** 50 species, 50 dictionary entries and 10 reports. Adding an entry is one object in the relevant file, and its page, OG image, sitemap entry and links are generated automatically.
 
-### Phase 3: toys (cheap, shareable, no backend)
+### Phase 3: toys (cheap, shareable, no backend) ✅
 
-- **Generator wypowiedzi**: template-based lines by situation (car, renovation, holiday, restaurant, computer, the neighbour's kids).
-- **Dziaders Bingo**: seeded boards for a wedding, Christmas Eve, a long weekend or the seaside, printable and shareable by URL.
+- **Rozmówki dziaderskie** (`/generator`): a phrasebook in six chapters (samochód, remont, urlop, restauracja, komputer, dzieci sąsiadów). A line is an opener, a claim and a punchline, each a whole sentence, so any three read as one line (7,200 in all). The parts spin like reels, any of them can be held ("Zostaw", keys 1–3), the figure reads the line aloud (Web Speech, Polish voice when available), and a "rozbiór" underlines the parts the way Polish lessons mark parts of a sentence. Each line has its own page and share card at `/generator/[kod]` ("samochod-3b7": chapter plus one base36 digit per part). Content: `src/content/phrasebook.ts`, append-only.
+- **Dziaders Bingo** (`/bingo`): cards for a wedding, Christmas Eve, the May long weekend and the seaside. A card (`/bingo/[karta]`, "wesele-3k9fz") is 24 squares drawn from the occasion's pool by a seed, around a free centre. Tap to cross out in red ink; five in a line draws a red line and stamps BINGO. Marks stay in this browser only. Each card has a share card, a print style (A4, without the site around it) and `/bingo/[karta]/druk` with four different cards on one sheet. Content: `src/content/bingo.ts`; changing a pool reshuffles that occasion's cards.
+- Drawings: six chapter icons and two new occasion plates (the wedding with a tie on the forehead, Christmas Eve with the tree), in `src/components/occasions.tsx`; the long weekend and the seaside reuse the Grillowy and Wakacyjny plates.
 
 ### Phase 4: Supabase, accounts and community (next)
 
@@ -77,7 +78,7 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 | `/slownik`, `/slownik/[slug]` | 2 |
 | `/raporty`, `/raporty/[slug]` | 2 |
 | `/indeks` (methodology and archive) | 2 |
-| `/generator`, `/bingo` | 3 |
+| `/generator`, `/generator/[kod]`, `/bingo`, `/bingo/[karta]`, `/bingo/[karta]/druk` | 3 |
 | `/spis`, `/czy-to-juz-dziaderstwo`, `/hall-of-fame` | 4 |
 | `/o-instytucie`, `/regulamin`, `/prywatnosc` | before Phase 4, or as soon as analytics is added |
 

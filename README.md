@@ -32,6 +32,9 @@ Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
 | `src/components/test-runner.tsx`, `src/components/test/` | The test: intro, routing slip, and one view per task format (choice, SMS, Rorschach plate, words, horn test, map, inventory, thermometer, rapid series) |
 | `src/lib/lab.ts`, `src/lib/lab-image.tsx` | Lab results for a result code, on the page and as a PNG |
 | `src/lib/group.ts`, `src/app/grupa/[lista]` | Rankings: result codes joined with dots, duel and group views |
+| `src/content/phrasebook.ts`, `src/lib/phrasebook.ts`, `src/components/phrasebook.tsx` | Rozmówki dziaderskie: lines, codes and the generator |
+| `src/content/bingo.ts`, `src/lib/bingo.ts`, `src/components/bingo-*.tsx` | Dziaders Bingo: squares, seeded cards and the playable and printable card |
+| `src/components/occasions.tsx`, `src/lib/toy-cards.tsx` | Chapter icons, occasion plates and the share cards of both toys |
 | `public/plansze/`, `assets/plansze/` | Rorschach plates (generated with ChatGPT): WebP for the site, PNG for share images |
 | `src/lib/certificate-image.tsx` | Generated certificates: link preview, Instagram post and story |
 | `src/app/test`, `src/app/wynik/[kod]` | The test page and the shareable result pages, with certificate and lab images |

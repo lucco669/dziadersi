@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useRef, useSyncExternalStore, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { Task } from "@/content/test";
 import { cx, typo } from "@/lib/typo";
 
@@ -16,61 +16,8 @@ export type TaskProps<T extends Task> = {
 
 export const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
-/** Small seeded generator (mulberry32), so a reload shows the same order. */
-export function random(seed: number) {
-  let state = seed >>> 0;
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let r = Math.imul(state ^ (state >>> 15), 1 | state);
-    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
-    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** Options in a per-respondent order: the dziaderski answer is never always the last one. */
-export function shuffled(count: number, seed: number) {
-  const next = random(seed);
-  const order = Array.from({ length: count }, (_, i) => i);
-  for (let i = count - 1; i > 0; i--) {
-    const j = Math.floor(next() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  return order;
-}
-
-/** Timeouts that are cleared when the task unmounts. */
-export function useLater() {
-  const timers = useRef<number[]>([]);
-  useEffect(() => () => timers.current.forEach((id) => window.clearTimeout(id)), []);
-  return (ms: number, fn: () => void) => {
-    timers.current.push(window.setTimeout(fn, ms));
-  };
-}
-
-/** Keyboard shortcuts while a task is on screen; typing in a field is left alone. */
-export function useKeys(handler: (key: string, event: KeyboardEvent) => void, active = true) {
-  const onKey = useEffectEvent((event: KeyboardEvent) => handler(event.key.toLowerCase(), event));
-  useEffect(() => {
-    if (!active) return;
-    const listener = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey || event.target instanceof HTMLInputElement) return;
-      onKey(event);
-    };
-    window.addEventListener("keydown", listener);
-    return () => window.removeEventListener("keydown", listener);
-  }, [active]);
-}
-
-const noSubscription = () => () => {};
-
-/** Readers who asked for less motion get no countdowns. */
-export function useReducedMotion() {
-  return useSyncExternalStore(
-    noSubscription,
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    () => false,
-  );
-}
+export { shuffled } from "@/lib/random";
+export { useKeys, useLater, useReducedMotion } from "../hooks";
 
 /** The index of a pressed key among 1–9 or a–i, or -1. */
 export function keyIndex(key: string) {

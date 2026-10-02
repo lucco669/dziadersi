@@ -7,7 +7,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     // Generated images (next/og) render <img> with Satori; next/image does not apply there.
-    files: ["src/lib/og*.tsx", "src/lib/certificate-image.tsx", "src/app/**/opengraph-image.tsx"],
+    files: ["src/lib/og*.tsx", "src/lib/*-image.tsx", "src/lib/toy-cards.tsx", "src/app/**/opengraph-image.tsx"],
     rules: { "@next/next/no-img-element": "off" },
   },
   // Override default ignores of eslint-config-next.

@@ -256,7 +256,7 @@ export function Pouch() {
   );
 }
 
-function Tie() {
+export function Tie() {
   return (
     <g>
       <path d="M14.4 18.6H19.2L17.6 23.4ZM25.6 18.6H20.8L22.4 23.4Z" fill={PAPER} />
@@ -279,7 +279,7 @@ function Vest() {
   );
 }
 
-function Sweater() {
+export function Sweater() {
   return (
     <g fill="none" stroke={PAPER} strokeWidth={1.1} strokeLinejoin="round">
       <polyline points="7.6,30 10.6,27 13.6,30 16.6,27 19.6,30 22.6,27 25.6,30 28.6,27 31.6,30" />
@@ -288,7 +288,7 @@ function Sweater() {
   );
 }
 
-function Jacket() {
+export function Jacket() {
   return (
     <g>
       <polyline points="13.2,19 20,35.4 26.8,19" fill="none" stroke={PAPER} strokeWidth={1.2} />
@@ -317,7 +317,7 @@ export function SummerTorso() {
 
 /* Small objects. */
 
-function Note({ x, y, size = 1 }: { x: number; y: number; size?: number }) {
+export function Note({ x, y, size = 1 }: { x: number; y: number; size?: number }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${size})`}>
       <ellipse cx={0} cy={6} rx={2.4} ry={1.8} transform="rotate(-20 0 6)" fill={INK} />
@@ -338,7 +338,7 @@ function Z({ x, y, size }: { x: number; y: number; size: number }) {
   );
 }
 
-function Pine({ x, scale = 1, color = INK }: { x: number; scale?: number; color?: string }) {
+export function Pine({ x, scale = 1, color = INK }: { x: number; scale?: number; color?: string }) {
   return (
     <g transform={`translate(${x} 94) scale(${scale})`} fill={color}>
       <rect x={-1.4} y={-8} width={2.8} height={8} />

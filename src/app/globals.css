@@ -30,6 +30,7 @@
   --animate-blink: blink 0.8s steps(1, end) infinite;
   --animate-honk: honk 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-drive-away: drive-away 1.6s cubic-bezier(0.5, 0, 0.7, 0.4) both;
+  --animate-talk: talk 220ms ease-in-out infinite alternate;
 
   @keyframes stamp {
     0% {
@@ -120,6 +121,13 @@
     }
   }
 
+  /* The mustache while the figure reads a line aloud. */
+  @keyframes talk {
+    to {
+      transform: translateY(1.4px) scaleY(0.82);
+    }
+  }
+
   @keyframes drive-away {
     to {
       opacity: 0;
@@ -128,8 +136,21 @@
   }
 }
 
+/* Bingo cards print on plain white A4, without the site around them. */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: #fff;
+  }
+}
+
 /* SVG pieces scale and move around their own centre. */
 .animate-park,
+.animate-talk,
 .animate-drop,
 .animate-honk,
 .animate-drive-away {
