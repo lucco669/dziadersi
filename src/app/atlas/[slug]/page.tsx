@@ -10,7 +10,7 @@ import { DICTIONARY } from "@/content/dictionary";
 import { REGIONS } from "@/content/regions";
 import { REPORTS } from "@/content/reports";
 import { SPECIES, speciesByKey, speciesBySlug, statusLabel } from "@/content/species";
-import { institute, pageMetadata } from "@/lib/seo";
+import { describe, institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { typo } from "@/lib/typo";
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps<"/atlas/[slug]">): 
   if (!species) return {};
   return pageMetadata({
     title: headline(species.name),
-    description: species.summary,
+    description: describe(species.summary, " Objawy, siedlisko i naturalni wrogowie w Atlasie Dziadersów.", " Atlas Dziadersów."),
     path: `/atlas/${species.slug}`,
     shareTitle: `${species.name} · Atlas Dziadersów`,
     type: "article",
@@ -68,6 +68,7 @@ export default async function SpeciesPage({ params }: PageProps<"/atlas/[slug]">
             image: `${url}/opengraph-image`,
             inLanguage: "pl",
             articleSection: "Atlas Dziadersów",
+            datePublished: site.launched,
             about: { "@type": "Thing", name: species.name, alternateName: species.latin },
             author: institute,
             publisher: institute,

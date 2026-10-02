@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 
 const title = "Test Dziadersa";
 const description =
-  "Test Dziadersa: badanie okresowe w pięciu gabinetach, od plansz Rorschacha po próbę klaksonową. Wynik od 0 do 100%, rozpoznanie gatunku, wyniki laboratoryjne i certyfikat. Także jako wywiad rodzinny i ranking znajomych.";
+  "Test Dziadersa: badanie okresowe w pięciu gabinetach, od plansz Rorschacha po próbę klaksonową. Wynik w procentach, rozpoznanie gatunku i certyfikat.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Test Dziadersa: sprawdź, ile masz w sobie dziadersa",

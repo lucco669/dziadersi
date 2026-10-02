@@ -8,6 +8,8 @@ export type Report = {
   date: string;
   category: string;
   title: string;
+  /** For search results and the browser tab, when `title` is longer than 70 characters. */
+  shortTitle?: string;
   /** One or two sentences: the listing, meta description and share text. */
   lede: string;
   sample: string;
@@ -150,6 +152,7 @@ export const REPORTS: Report[] = [
     date: "2026-05-12",
     category: "Badanie eksperymentalne",
     title: "Wpływ systemu start-stop na poziom irytacji kierowców po pięćdziesiątce",
+    shortTitle: "System start-stop a irytacja kierowców po pięćdziesiątce",
     lede: "96% badanych kierowców wyłącza system start-stop natychmiast po uruchomieniu silnika. Średni czas reakcji: 1,8 sekundy.",
     sample: "240 kierowców w wieku 50+, trasa z trzema skrzyżowaniami",
     abstract:
@@ -273,6 +276,7 @@ export const REPORTS: Report[] = [
     date: "2026-02-16",
     category: "Badanie terenowe",
     title: "Kabel nieznanego przeznaczenia. Inwentaryzacja szuflad w 1 200 gospodarstwach domowych",
+    shortTitle: "Kabel nieznanego przeznaczenia: inwentaryzacja szuflad",
     lede: "73% badanych ojców ma co najmniej jeden kabel, którego przeznaczenia nie zna. Instytut przeprowadził pierwszą w Polsce inwentaryzację szuflad z kablami.",
     sample: "1 200 gospodarstw domowych, 2 847 szuflad, 5 640 kabli",
     abstract:

@@ -10,7 +10,8 @@
   --color-card: #fbf8f1;
   --color-ink: #161513;
   --color-ink-soft: #57524a;
-  --color-ink-faint: #8a8376;
+  /* The lightest text colour: still 4.5:1 on paper and paper-deep (WCAG AA). */
+  --color-ink-faint: #6c665a;
   --color-rule: #d8d0c0;
   --color-red: #c4362c;
   --color-red-deep: #a32a21;
@@ -134,6 +135,30 @@
 .animate-drive-away {
   transform-box: fill-box;
   transform-origin: center;
+}
+
+/*
+ * System fonts resized to the metrics of the web fonts (the values next/font computes),
+ * so text does not jump when the web fonts arrive.
+ */
+@font-face {
+  font-family: "Poltawski Fallback";
+  src: local("Times New Roman");
+  font-display: swap;
+  ascent-override: 90.48%;
+  descent-override: 27.14%;
+  line-gap-override: 0%;
+  size-adjust: 110.52%;
+}
+
+@font-face {
+  font-family: "Schibsted Fallback";
+  src: local("Arial");
+  font-display: swap;
+  ascent-override: 93.46%;
+  descent-override: 24.67%;
+  line-gap-override: 0%;
+  size-adjust: 104.49%;
 }
 
 @theme inline {

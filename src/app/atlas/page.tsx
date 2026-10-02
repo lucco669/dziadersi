@@ -15,7 +15,7 @@ const NATIONWIDE = SPECIES.filter((species) => !species.region);
 const REGIONAL = SPECIES.filter((species) => species.region);
 
 const title = "Atlas Dziadersów";
-const description = `Katalog ${SPECIES.length} gatunków dziadersów występujących w Polsce, od Grillowego po Bieszczadzkiego: objawy, siedliska, wokalizacje, naturalni wrogowie, status ochrony i klucz do oznaczania.`;
+const description = `Katalog ${SPECIES.length} gatunków dziadersów występujących w Polsce, od Grillowego po Bieszczadzkiego: objawy, siedliska, naturalni wrogowie i klucz do oznaczania.`;
 
 export const metadata: Metadata = pageMetadata({
   title: "Atlas Dziadersów: gatunki, objawy i klucz do oznaczania",

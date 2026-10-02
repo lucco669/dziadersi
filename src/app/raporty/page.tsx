@@ -9,7 +9,7 @@ import { plural, typo } from "@/lib/typo";
 
 const title = "Raporty Instytutu";
 const description =
-  "Wyniki badań Instytutu Badań nad Dziaderstwem: szuflada z kablami, skarpety do sandałów, system start-stop i pilot od telewizora. Wszystkie dane są zmyślone, a mimo to się zgadzają.";
+  "Wyniki badań Instytutu: szuflada z kablami, skarpety do sandałów, system start-stop i pilot od telewizora. Dane są zmyślone, a mimo to się zgadzają.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Raporty Instytutu: badania nad dziaderstwem",

@@ -7,15 +7,20 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 // Antykwa Półtawskiego, the typeface of Polish schoolbooks, in its 2020 revival.
+// Both fonts fall back to the metric-matched faces in globals.css, which carry font-display too.
 const poltawski = Poltawski_Nowy({
   variable: "--font-poltawski",
   subsets: ["latin", "latin-ext"],
   style: ["normal", "italic"],
+  adjustFontFallback: false,
+  fallback: ["Poltawski Fallback"],
 });
 
 const schibsted = Schibsted_Grotesk({
   variable: "--font-schibsted",
   subsets: ["latin", "latin-ext"],
+  adjustFontFallback: false,
+  fallback: ["Schibsted Fallback"],
 });
 
 export const metadata: Metadata = {

@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
 import { site } from "./site";
 
+/** Search results cut titles and descriptions longer than these. */
+const MAX_TITLE = 70;
+const MAX_DESCRIPTION = 160;
+
+/** A meta description: the text with the first of `endings` that still fits in 160 characters. */
+export function describe(text: string, ...endings: string[]) {
+  for (const ending of [...endings, ""]) {
+    if (text.length + ending.length <= MAX_DESCRIPTION) return text + ending;
+  }
+  return `${text.slice(0, text.lastIndexOf(" ", MAX_DESCRIPTION - 1))}…`;
+}
+
 type PageMeta = {
-  /** Browser title; the layout appends " · DZIADER.SI". */
+  /** Browser title; the layout appends " · DZIADER.SI" when the whole stays within 70 characters. */
   title: string;
   description: string;
   path: string;
@@ -27,8 +39,9 @@ export function pageMetadata({
 }: PageMeta): Metadata {
   const ogTitle = shareTitle ?? `${title} · ${site.name}`;
   const ogDescription = shareDescription ?? description;
+  const branded = `${title} · ${site.name}`;
   return {
-    title,
+    title: branded.length <= MAX_TITLE ? title : { absolute: title },
     description,
     alternates: { canonical: path },
     openGraph: {
@@ -48,6 +61,7 @@ export function pageMetadata({
 /** schema.org reference to the Institute, for author, publisher and creator fields. */
 export const institute = {
   "@type": "Organization",
+  "@id": `${site.url}/#instytut`,
   name: site.institute,
   url: site.url,
   logo: `${site.url}/icon-512.png`,

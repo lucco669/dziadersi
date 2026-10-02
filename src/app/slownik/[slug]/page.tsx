@@ -6,7 +6,7 @@ import { SpeciesPlate } from "@/components/pictograms";
 import { Saying } from "@/components/saying";
 import { DICTIONARY, DICTIONARY_SORTED, entryByHeadword, entryBySlug } from "@/content/dictionary";
 import { speciesByKey } from "@/content/species";
-import { pageMetadata } from "@/lib/seo";
+import { describe, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { typo } from "@/lib/typo";
 
@@ -24,7 +24,11 @@ export async function generateMetadata({ params }: PageProps<"/slownik/[slug]">)
   if (!entry) return {};
   return pageMetadata({
     title: `„${capitalize(entry.headword)}”: znaczenie i przykłady`,
-    description: `${capitalize(entry.headword)}: ${entry.grammar}. ${entry.senses[0].text} Słownik Dziaderski.`,
+    description: describe(
+      `${capitalize(entry.headword)}: ${entry.grammar}. ${entry.senses[0].text}`,
+      " Znaczenie i przykłady użycia w Słowniku Dziaderskim.",
+      " Słownik Dziaderski.",
+    ),
     path: `/slownik/${entry.slug}`,
     shareTitle: `${capitalize(entry.headword)} · Słownik Dziaderski`,
     shareDescription: entry.senses[0].text,

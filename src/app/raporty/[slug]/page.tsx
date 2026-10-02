@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/raporty/[slug]">)
   const report = reportBySlug((await params).slug);
   if (!report) return {};
   return pageMetadata({
-    title: report.title,
+    title: report.shortTitle ?? report.title,
     description: report.lede,
     path: `/raporty/${report.slug}`,
     shareTitle: report.title,

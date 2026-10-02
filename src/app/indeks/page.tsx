@@ -13,10 +13,10 @@ import { cx, pct, plural, roman, typo } from "@/lib/typo";
 
 const title = "Narodowy Indeks Dziaderstwa";
 const description =
-  "Natężenie dziaderstwa w Polsce, aktualizowane co godzinę: bieżąca wartość, przebieg w tym roku, prognoza na Wigilię, sezony ostrzeżeń, mapa województw i metodologia.";
+  "Natężenie dziaderstwa w Polsce, aktualizowane co godzinę: bieżąca wartość, przebieg w tym roku, prognoza na Wigilię, mapa województw i metodologia.";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Narodowy Indeks Dziaderstwa: natężenie dziaderstwa w Polsce",
+  title: "Narodowy Indeks Dziaderstwa: natężenie w Polsce",
   description,
   path: "/indeks",
   shareTitle: `${title} · ${site.name}`,
@@ -81,6 +81,8 @@ export default async function IndexPage() {
             inLanguage: "pl",
             creator: institute,
             isAccessibleForFree: true,
+            datePublished: site.launched,
+            dateModified: bulletin.updated,
             temporalCoverage: String(bulletin.year),
             spatialCoverage: { "@type": "Place", name: "Polska" },
             variableMeasured: "Natężenie dziaderstwa (0–100)",
@@ -94,7 +96,15 @@ export default async function IndexPage() {
         lead={typo(
           "Natężenie dziaderstwa w skali kraju, aktualizowane co godzinę. Indeks łączy sezonowość zjawiska, kalendarz wydarzeń wysokiego ryzyka i wyniki obserwacji terenowych.",
         )}
-        meta={`Aktualizacja: ${bulletin.date}, godz. ${bulletin.time} · Źródło: IBD`}
+        meta={
+          <>
+            Aktualizacja:{" "}
+            <time dateTime={bulletin.updated}>
+              {bulletin.date}, godz. {bulletin.time}
+            </time>{" "}
+            · Źródło: IBD
+          </>
+        }
       />
 
       <Section id="dzis" title="Stan na dziś" aside={`${season.title.charAt(0).toUpperCase()}${season.title.slice(1)}`}>

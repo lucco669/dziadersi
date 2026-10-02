@@ -14,7 +14,7 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 
 - The Institute's front page, five blocks with one idea each: the hero with Rys. 1 (the labelled specimen), the live National Index drawn as 100 figures, the Atlas plate of the ten nationwide species, the test with the certificate, and the dictionary entry of the day next to the latest report.
 - Brand primitives: the head mark, the wordmark, the seal, stamps and the pictogram set (`src/components/pictograms.tsx`).
-- Share images for every page, the favicon set (`favicon.ico`, adaptive `icon.svg`, `apple-icon.png`, manifest icons including a maskable one), the web manifest, robots, sitemap, 404.
+- Share images for every page, the favicon set (`favicon.ico`, adaptive `icon.svg`, `apple-touch-icon.png`, manifest icons including a maskable one), the web manifest, robots, sitemap, 404.
 - Fully static. Date-dependent parts regenerate every hour, so the site looks alive with no backend.
 
 ### Phase 1: Test Dziadersa and the certificate (the viral loop) ✅
@@ -130,7 +130,7 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - **The index is a model, not data:** seasonal peaks plus deterministic noise, so every visitor sees the same number, the chart has a real-looking history and forecast, and it never needs a database.
 - **No database until Phase 4.** Test results live in the URL.
 - **OG images** use `next/og` with static TTFs bundled in `assets/fonts` (no network at build time). Pictograms are embedded as SVG data URIs via `src/lib/svg-string.ts`.
-- **Icons:** `src/app/favicon.ico` (16, 32 and 48 px), `src/app/icon.svg` (switches to paper on ink in dark mode), `src/app/apple-icon.png`, and `public/icon-192.png`, `icon-512.png` and `icon-maskable-512.png` for the manifest (`src/app/manifest.ts`). They are all drawn from the head mark.
+- **Icons:** `src/app/favicon.ico` (16, 32 and 48 px), `src/app/icon.svg` (switches to paper on ink in dark mode), `public/apple-touch-icon.png` (no link tag: iOS fetches it from the root by name), and `public/icon-192.png`, `icon-512.png` and `icon-maskable-512.png` for the manifest (`src/app/manifest.ts`). They are all drawn from the head mark.
 - **Analytics:** Vercel Web Analytics (`src/components/analytics.tsx`), cookieless. The name part of result URLs (`~…`) is stripped before anything is sent. Page views of `/test` against `/wynik/[kod]` give the completion funnel. Custom events (`Test rozpoczęty`, `Test ukończony` with zone and species, `Udostępnienie` with the channel) are only visible on Vercel's Pro plan.
 
 ## 7. Launch checklist

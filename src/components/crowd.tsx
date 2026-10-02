@@ -1,4 +1,4 @@
-import { useId, type CSSProperties } from "react";
+import { Fragment, useId, type CSSProperties } from "react";
 import { Figure, GREY, INK } from "./pictograms";
 
 /** A fixed, random-looking order, so the same people turn every time. */
@@ -45,15 +45,18 @@ export function Crowd({
           <Figure color={INK} />
         </g>
       </defs>
+      {/* Bare <use> elements, positioned with x and y: the crowd is the largest part of the front page's DOM. */}
       {Array.from({ length: total }, (_, cell) => {
         const order = rank.get(cell) ?? 0;
+        const x = (cell % columns) * 44 + 2;
+        const y = Math.floor(cell / columns) * 104 + 4;
         return (
-          <g key={cell} transform={`translate(${(cell % columns) * 44 + 2} ${Math.floor(cell / columns) * 104 + 4})`}>
-            <use href={`#${id}-plain`} />
+          <Fragment key={cell}>
+            <use href={`#${id}-plain`} x={x} y={y} />
             {order < count && (
-              <use href={`#${id}-dziaders`} className="crowd-on" style={{ "--i": order } as CSSProperties} />
+              <use href={`#${id}-dziaders`} x={x} y={y} className="crowd-on" style={{ "--i": order } as CSSProperties} />
             )}
-          </g>
+          </Fragment>
         );
       })}
     </svg>

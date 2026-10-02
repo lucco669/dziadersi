@@ -30,6 +30,8 @@ export async function getBulletin() {
     week: isoWeek(year, local.month, local.day),
     date: formatDate(now),
     time: `${pad(local.hour)}:${pad(local.minute)}`,
+    /** The same moment for machines: `<time>` and schema.org dateModified. */
+    updated: now.toISOString(),
     index: {
       value,
       delta,

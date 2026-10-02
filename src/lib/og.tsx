@@ -26,7 +26,7 @@ export const C = {
   card: "#fbf8f1",
   ink: "#161513",
   soft: "#57524a",
-  faint: "#8a8376",
+  faint: "#6c665a",
   rule: "#d8d0c0",
   red: "#c4362c",
 };

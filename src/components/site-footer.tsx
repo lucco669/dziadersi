@@ -1,15 +1,7 @@
 import Link from "next/link";
-import { site } from "@/lib/site";
+import { SECTIONS, site } from "@/lib/site";
 import { typo } from "@/lib/typo";
 import { Mark, Wordmark } from "./brand";
-
-const SECTIONS = [
-  { href: "/test", label: "Test Dziadersa" },
-  { href: "/atlas", label: "Atlas Dziadersów" },
-  { href: "/slownik", label: "Słownik Dziaderski" },
-  { href: "/raporty", label: "Raporty Instytutu" },
-  { href: "/indeks", label: "Narodowy Indeks Dziaderstwa" },
-];
 
 export function SiteFooter() {
   return (
@@ -43,7 +35,7 @@ export function SiteFooter() {
         <div className="md:col-span-3">
           <p className="label text-ink-faint">Zastrzeżenie</p>
           <p className="mt-4 font-sans text-[0.95rem] leading-relaxed text-ink-soft">
-            {typo("Serwis satyryczny. Wszystkie dane są zmyślone, a mimo to się zgadzają. Instytut wyśmiewa nawyki, nie ludzi.")}
+            {typo(site.disclaimer)}
           </p>
         </div>
       </div>

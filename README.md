@@ -25,7 +25,7 @@ Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
 
 | Path | What |
 | --- | --- |
-| `src/app/` | Routes, metadata, share images, favicon set and manifest, robots, sitemap, 404 |
+| `src/app/` | Routes, metadata, share images, favicon set and manifest, robots, sitemap, llms.txt, 404 |
 | `src/components/` | Page template (`page.tsx`: header, sections, test band, pager), brand (`brand.tsx`: head mark, wordmark, seal, stamp), pictograms (`pictograms.tsx`, `specimen.tsx`, `crowd.tsx`) |
 | `src/content/` | All copy: 22 species, 26 dictionary entries, 5 reports, regions, the 16 test tasks in five rooms (`test.ts`), the retired 24 questions kept for old links (`test-v1.ts`) and the lab parameters (`lab.ts`) |
 | `src/lib/test.ts` | Test scoring, species diagnosis, and stateless result codes (answers, date and name in the URL), both editions |

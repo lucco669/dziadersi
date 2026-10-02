@@ -50,7 +50,9 @@ export function IndexBand({ bulletin }: { bulletin: Bulletin }) {
             Narodowy Indeks Dziaderstwa
           </h2>
           <p className="label mt-1 text-ink-soft">
-            {bulletin.date}, godz. {bulletin.time}
+            <time dateTime={bulletin.updated}>
+              {bulletin.date}, godz. {bulletin.time}
+            </time>
           </p>
           <p className="mt-6 text-[clamp(4.5rem,9vw,7rem)] font-bold leading-[0.85] tracking-[-0.03em] tabular-nums">
             {pct(value)}
