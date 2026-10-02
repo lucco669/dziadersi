@@ -24,6 +24,196 @@ export type Report = {
 
 export const REPORTS: Report[] = [
   {
+    slug: "sezon-grzewczy",
+    number: "IBD/2026/08",
+    date: "2026-10-01",
+    category: "Raport sezonowy",
+    title: "„Ubierz się cieplej”. Polityka grzewcza polskiego domu",
+    lede: "Na zgłoszenie „zimno mi” w 61% przypadków pada odpowiedź „ubierz się cieplej”. Zawór podkręcony bez zgody gospodarza wraca na 2,5 średnio po 12 minutach.",
+    sample: "1 040 gospodarstw domowych, 5 824 grzejniki, sezon grzewczy 2025/2026",
+    abstract:
+      "Instytut zbadał, kto i na jakich zasadach steruje ogrzewaniem w 1 040 polskich gospodarstwach domowych. W 83% domów zawory grzejnikowe obsługiwała wyłącznie jedna osoba, która najczęściej ustawiała je na 2,5. Na 61% zgłoszeń „zimno mi” odpowiedziano radą „ubierz się cieplej”. Zawór podkręcony przez innego domownika wracał na 2,5 średnio po 12 minutach.",
+    findings: [
+      { value: "61%", label: "zgłoszeń „zimno mi” kończy się radą „ubierz się cieplej”" },
+      { value: "2,5", label: "najczęstsza nastawa zaworu grzejnikowego w badanych domach" },
+      { value: "12 min", label: "mija średnio, zanim podkręcony zawór wróci na 2,5" },
+    ],
+    chart: {
+      title: "Odpowiedź na zgłoszenie „zimno mi”",
+      unit: "%",
+      bars: [
+        { label: "„Ubierz się cieplej”", value: 61 },
+        { label: "„Przecież grzeje”", value: 18 },
+        { label: "„Rusz się, to się rozgrzejesz”", value: 11 },
+        { label: "Wskazanie termometru na ścianie", value: 7 },
+        { label: "Podkręcenie zaworu", value: 3 },
+      ],
+    },
+    sections: [
+      {
+        heading: "Wprowadzenie",
+        paragraphs: [
+          "Formalnie sezon grzewczy zaczyna się wtedy, gdy spółdzielnia uruchomi ogrzewanie albo w piwnicy ruszy piec. W praktyce zaczyna się dopiero wtedy, gdy pozwoli na to osoba, która w domu odpowiada za zawory. Instytut postanowił ustalić, kim jest ta osoba i na jakich zasadach rozdziela ciepło.",
+        ],
+      },
+      {
+        heading: "Przebieg badania",
+        paragraphs: [
+          "Obserwacje prowadzono przez cały sezon grzewczy 2025/2026 w 1 040 gospodarstwach domowych, w blokach i w domach jednorodzinnych. Na 5 824 grzejnikach rejestrowano każdą zmianę nastawy zaworu, a w pokojach dziennych i sypialniach mierzono temperaturę. Domownicy notowali w dziennikach wszystkie zgłoszenia „zimno mi” i odpowiedzi, które na nie padły. Zgłoszeń było 2 316.",
+        ],
+      },
+      {
+        heading: "Wyniki",
+        paragraphs: [
+          "W 83% domów zawory obsługiwała wyłącznie jedna osoba, w dalszej części raportu nazywana gospodarzem. Najczęściej wybierano nastawę 2,5 (44% grzejników). Jeśli inny domownik podkręcił zawór, wracał on na 2,5 średnio po 12 minutach. Średnia temperatura w pokojach dziennych wyniosła 19,2°C, a gospodarze, zapytani o nią, podawali 22°C.",
+          "Na zgłoszenie „zimno mi” najczęściej odpowiadano radą „ubierz się cieplej” (61%), a w 18% przypadków słowami „przecież grzeje”, po uprzednim dotknięciu grzejnika wierzchem dłoni. Zawór podkręcano tylko wtedy, gdy zimno było wnukom, czyli w odpowiedzi na 3% zgłoszeń. Rada była przy tym wykonalna: na jednego domownika przypadało średnio 4,3 swetra.",
+          "W 57% sypialni okno było przez całą noc otwarte na mikrowentylację, a zawór grzejnika pod nim ustawiony na 2,5. W 81 z 94 domów z inteligentnymi głowicami termostatycznymi nastawę zmieniano wyłącznie ręcznie. Aplikację, zainstalowaną przez wnuka, otwierano tylko po to, żeby sprawdzić, czy nikt niczego nie przestawiał.",
+        ],
+      },
+      {
+        heading: "Dyskusja",
+        paragraphs: [
+          "Ogrzewanie w polskim domu podlega nie tyle prawom fizyki, ile zasadom. Nastawa 2,5 nie jest kompromisem między ciepłem a rachunkiem, tylko sygnałem, że ktoś panuje nad sytuacją. Sweter pełni w tym systemie funkcję grzejnika uzupełniającego, który ma tę zaletę, że nie wisi na nim podzielnik. Okno otwarte na mikrowentylację nie jest zaś w rozumieniu gospodarzy oknem otwartym, więc nie narusza zasady „nie będziemy ogrzewać podwórka”.",
+        ],
+      },
+    ],
+    conclusions: [
+      "Zgłoszenie „zimno mi” rozpatruje się w polskim domu odzieżowo, a nie grzewczo.",
+      "Nastawa 2,5 nie jest ustawieniem, tylko stanowiskiem.",
+      "Okno otwarte na mikrowentylację nie jest oknem otwartym.",
+      "Prawo do podkręcenia zaworu przysługuje wyłącznie wnukom.",
+    ],
+    methodology:
+      "Ciągły pomiar temperatury i nastaw zaworów, uzupełniony dziennikami domowników. Badacze odwiedzali domy co dwa tygodnie. Gdy mówili, że jest im zimno, otrzymywali radę zgodną z wynikami badania.",
+    species: ["oszczednosciowy", "smart"],
+  },
+  {
+    slug: "kartka-za-wycieraczka",
+    number: "IBD/2026/07",
+    date: "2026-09-22",
+    category: "Analiza korpusowa",
+    title: "Kartka za wycieraczką. Analiza korpusowa korespondencji parkingowej",
+    lede: "Instytut przeanalizował 1 274 kartki zostawione za wycieraczkami. W 97% z nich pada słowo „uprzejmie”, a w 64% zapowiedź powiadomienia „odpowiednich służb”.",
+    sample: "1 274 kartki z 38 miast, zebrane w latach 2019–2026",
+    abstract:
+      "Instytut zgromadził pierwszy w Polsce korpus kartek zostawianych za wycieraczkami samochodów: 1 274 egzemplarze z 38 miast. Wielkimi literami napisano 94% z nich, a przeciętna kartka liczyła 27 słów. Słowo „uprzejmie” wystąpiło w 97% kartek, a w 64% autor zapowiadał powiadomienie „odpowiednich służb”. Żadna kartka nie wskazywała, o które służby chodzi.",
+    findings: [
+      { value: "97%", label: "kartek zawiera słowo „uprzejmie”" },
+      { value: "64%", label: "kartek zapowiada powiadomienie „odpowiednich służb”" },
+      { value: "27", label: "słów liczy przeciętna kartka" },
+    ],
+    chart: {
+      title: "Materiał, na którym napisano kartkę",
+      unit: "%",
+      bars: [
+        { label: "Odwrót paragonu", value: 34 },
+        { label: "Kartka z zeszytu w kratkę", value: 25 },
+        { label: "Koperta po rachunku", value: 18 },
+        { label: "Tektura z opakowania", value: 14 },
+        { label: "Margines gazetki promocyjnej", value: 9 },
+      ],
+    },
+    sections: [
+      {
+        heading: "Wprowadzenie",
+        paragraphs: [
+          "Kartka za wycieraczką jest gatunkiem wypowiedzi równie wyraźnie ukształtowanym jak podanie czy list oficjalny, choć w przeciwieństwie do nich nie uczy się jej w szkole. Mimo to wszyscy jej autorzy stosują te same reguły. Instytut postanowił je opisać.",
+        ],
+      },
+      {
+        heading: "Materiał i metody",
+        paragraphs: [
+          "Korpus obejmuje 1 274 kartki zebrane w latach 2019–2026 w 38 miastach. Przekazali je Instytutowi adresaci wraz z opisem okoliczności: gdzie i na jak długo zaparkowali. Każdą kartkę przepisano z zachowaniem pisowni, podkreśleń i liczby wykrzykników, a następnie oznaczono pod względem nośnika, długości, treści i podpisu. Kartki zamoczone przez deszcz odczytywano w świetle bocznym.",
+        ],
+      },
+      {
+        heading: "Wyniki",
+        paragraphs: [
+          "Wielkimi literami napisano 94% kartek. Najczęstszym nośnikiem był odwrót paragonu (34%). Z drugiej strony paragonów wynika, że autorzy kupowali głównie chleb, masło i płyn do spryskiwaczy. Przeciętna kartka liczyła 27 słów, najdłuższa 318: zajmowała obie strony koperty, a przejście na drugą stronę autor oznaczył dopiskiem „verte”.",
+          "Słowo „uprzejmie” wystąpiło w 97% kartek. W pozostałych 3% zostało napisane i przekreślone. W 64% kartek autor zapowiadał powiadomienie „odpowiednich służb”, średnio 9 słów po „uprzejmie”. Żadna kartka nie wskazywała, o które służby chodzi.",
+          "Podpisem „Życzliwy” opatrzono 14% kartek, a 36% nie podpisano wcale. Nie przeszkodziło to adresatom ustalić autora, zwykle jeszcze tego samego dnia. W 52 przypadkach adresat odpowiedział własną kartką. Korespondencja trwała wtedy średnio 7 miesięcy i kończyła się zwykle przeprowadzką jednej ze stron.",
+        ],
+      },
+      {
+        heading: "Dyskusja",
+        paragraphs: [
+          "Kartka za wycieraczką łączy dwa rejestry: urzędową uprzejmość i groźbę. Słowo „uprzejmie” nie łagodzi groźby, tylko nadaje jej formę pisma urzędowego. Najstaranniej napisane kartki pojawiały się za wycieraczką średnio 6 minut po zaparkowaniu, co wskazuje na autora, który obserwuje parking z okna, z łokciami na poduszce, i ma czas na kaligrafię.",
+        ],
+      },
+    ],
+    conclusions: [
+      "„Uprzejmie” jest w korespondencji parkingowej zapowiedzią groźby.",
+      "„Odpowiednie służby” pozostają niezidentyfikowane.",
+      "Na kartkę za wycieraczką nie należy odpowiadać kartką.",
+    ],
+    methodology:
+      "Analiza korpusowa z elementami grafologii. W trakcie badania zespół znalazł 14 kartek za wycieraczkami własnych samochodów. Nie włączono ich do korpusu ze względu na konflikt interesów.",
+    species: ["parking", "parapetowy"],
+  },
+  {
+    slug: "ja-tylko-zapytac",
+    number: "IBD/2026/06",
+    date: "2026-09-10",
+    category: "Eksperyment terenowy",
+    title: "„Ja tylko zapytać”. Ile trwa pytanie zadane z pominięciem kolejki",
+    lede: "„Ja tylko zapytać” trwa średnio 4 minuty i obejmuje 3,4 pytania dodatkowego. W 71% przypadków pytający załatwia przy okazji całą sprawę.",
+    sample: "572 zdarzenia przy 120 kasach i okienkach, czerwiec–sierpień 2026",
+    abstract:
+      "Instytut zarejestrował 572 zdarzenia „ja tylko zapytać”, czyli przypadki ominięcia kolejki do kasy lub okienka pod pretekstem jednego pytania. Zdarzenie, które według zapowiedzi miało zająć „dosłownie sekundkę”, trwało średnio 4 minuty i obejmowało 3,4 pytania dodatkowego. W 71% przypadków pytający załatwiał przy okazji całą sprawę. Tabliczka „Informacji udzielamy wyłącznie w kolejce” zwiększyła liczbę takich zdarzeń o 8%.",
+    findings: [
+      { value: "4 min", label: "trwa średnio „ja tylko zapytać”" },
+      { value: "3,4", label: "pytania dodatkowego pada średnio po pytaniu, które miało być jedyne" },
+      { value: "71%", label: "pytających załatwia przy okazji całą sprawę" },
+    ],
+    chart: {
+      title: "Reakcja kolejki na „ja tylko zapytać”",
+      unit: "%",
+      bars: [
+        { label: "Milczenie i westchnienie", value: 41 },
+        { label: "Komentarz do osoby obok", value: 24 },
+        { label: "„Wszyscy tu tylko zapytać”", value: 17 },
+        { label: "Spojrzenie na zegarek", value: 12 },
+        { label: "Podejście z własnym pytaniem", value: 6 },
+      ],
+    },
+    sections: [
+      {
+        heading: "Wprowadzenie",
+        paragraphs: [
+          "Polska kolejka ma jedną zasadę: kto przyszedł później, stoi dalej. Od tej zasady istnieje wyjątek, nigdzie niezapisany, ale powszechnie stosowany. Zapowiadają go słowa „przepraszam, ja tylko zapytać”. Instytut postanowił sprawdzić, ile trwa pytanie, które nie wymaga stania w kolejce.",
+        ],
+      },
+      {
+        heading: "Przebieg badania",
+        paragraphs: [
+          "Od czerwca do sierpnia badacze stali w kolejkach do 120 kas i okienek: w sklepach, na poczcie, w urzędach i na dworcach. Rejestrowali każde zdarzenie „ja tylko zapytać”: czas trwania, liczbę pytań i reakcję kolejki. Przy połowie stanowisk umieszczono tabliczkę „Informacji udzielamy wyłącznie w kolejce”. Łącznie zarejestrowano 572 zdarzenia.",
+        ],
+      },
+      {
+        heading: "Wyniki",
+        paragraphs: [
+          "Pytający zapowiadali zwykle, że zajmie to „dosłownie sekundkę”. Średni czas zdarzenia wyniósł 4 minuty, a najdłuższe trwało 26 minut i zakończyło się nadaniem trzech paczek. Po pierwszym pytaniu padało średnio 3,4 pytania dodatkowego, przy czym niemal każde zaczynało się od słów „a jeszcze”. W 71% przypadków pytanie przechodziło płynnie w załatwienie całej sprawy, z płatnością włącznie.",
+          "Pytający stawali zwykle bokiem do kolejki, z łokciem na ladzie. Przy kasach sklepowych najczęściej pytali, dlaczego produkt z gazetki promocyjnej kosztuje na półce inaczej. Gazetkę mieli przy sobie. Kolejka reagowała najczęściej milczeniem i westchnieniem (41%). Otwarty sprzeciw, „Wszyscy tu tylko zapytać”, odnotowano w 17% przypadków, a w 6% ktoś z kolejki wykorzystał okazję i podszedł z własnym pytaniem.",
+          "Tabliczka „Informacji udzielamy wyłącznie w kolejce” nie zmniejszyła liczby zdarzeń. Zwiększyła ją o 8% (297 wobec 275), ponieważ część pytających podchodziła tylko po to, żeby zapytać, czy tabliczka dotyczy także ich.",
+        ],
+      },
+      {
+        heading: "Dyskusja",
+        paragraphs: [
+          "„Ja tylko zapytać” nie jest pytaniem, tylko trybem obsługi. Słowo „tylko” działa w nim jak przepustka: zapowiada sprawę tak drobną, że stanie w kolejce byłoby wobec niej nieproporcjonalne. Kolejka przyjmuje tę zapowiedź, bo sprzeciw wobec jednego pytania wydaje się małostkowy. Gdy padają pytania dodatkowe, na sprzeciw jest już za późno.",
+        ],
+      },
+    ],
+    conclusions: [
+      "„Tylko” trwa średnio 4 minuty.",
+      "Pytanie, które miało być jedyne, jest średnio pierwszym z 4,4.",
+      "Tabliczka „Informacji udzielamy wyłącznie w kolejce” zwiększa liczbę pytań zadawanych poza kolejką.",
+    ],
+    methodology:
+      "Eksperyment terenowy z grupą kontrolną: stanowiska z tabliczką i bez niej. Czas mierzono od słów „przepraszam, ja tylko…” do odejścia od kasy lub okienka. Słowa „dziękuję” nie uznawano za koniec pomiaru, ponieważ zwykle padało po nim jeszcze jedno pytanie.",
+    species: ["kolejkowy", "oszczednosciowy"],
+  },
+  {
     slug: "pilot-od-telewizora",
     number: "IBD/2026/05",
     date: "2026-09-03",

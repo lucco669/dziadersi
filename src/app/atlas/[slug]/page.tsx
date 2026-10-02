@@ -5,13 +5,16 @@ import type { ReactNode } from "react";
 import { Stamp } from "@/components/brand";
 import { breadcrumbList, JsonLd, PageHeader, Pager, TestPromo } from "@/components/page";
 import { SpeciesPlate } from "@/components/pictograms";
+import { SightingPanel } from "@/components/sighting";
 import { ActivityCalendar, RangeMap, SpeciesTile, StatusScale, TraitBars } from "@/components/species-parts";
 import { DICTIONARY } from "@/content/dictionary";
 import { REGIONS } from "@/content/regions";
 import { REPORTS } from "@/content/reports";
 import { SPECIES, speciesByKey, speciesBySlug, statusLabel } from "@/content/species";
+import { getCommunity } from "@/lib/community";
 import { describe, institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
+import { DIAGNOSABLE } from "@/lib/test";
 import { typo } from "@/lib/typo";
 
 // Every species is prerendered; unknown slugs 404.
@@ -48,7 +51,12 @@ export default async function SpeciesPage({ params }: PageProps<"/atlas/[slug]">
   const phrases = DICTIONARY.filter((entry) => entry.species === species.key);
   const reports = REPORTS.filter((report) => report.species.includes(species.key));
   const url = `${site.url}/atlas/${species.slug}`;
-  const range = species.region ? `Gatunek regionalny: ${REGIONS[species.region].name}` : "Gatunek ogólnopolski";
+  const range = species.region
+    ? `Gatunek regionalny: ${REGIONS[species.region].name}`
+    : species.occasion
+      ? `Gatunek okazjonalny, spotykany ${species.occasion}`
+      : "Gatunek ogólnopolski";
+  const community = await getCommunity();
 
   return (
     <main id="tresc">
@@ -172,11 +180,18 @@ export default async function SpeciesPage({ params }: PageProps<"/atlas/[slug]">
                 </div>
               ))}
             </dl>
+            <SightingPanel
+              species={species.key}
+              slug={species.slug}
+              diagnosable={DIAGNOSABLE.some((item) => item.key === species.key)}
+              total={community ? (community.sightings.species[species.key] ?? 0) : null}
+              week={community?.sightings.week[species.key] ?? 0}
+            />
             <div className="space-y-10 pt-8">
               <TraitBars traits={species.traits} />
               <StatusScale status={species.status} note={species.statusNote} />
               <ActivityCalendar months={species.calendar} />
-              <RangeMap region={species.region} />
+              <RangeMap region={species.region} occasion={species.occasion} />
             </div>
           </aside>
         </div>
@@ -225,7 +240,11 @@ export default async function SpeciesPage({ params }: PageProps<"/atlas/[slug]">
 
       <TestPromo
         title="Rozpoznajesz te objawy?"
-        text={typo(`Test Dziadersa sprawdzi, czy to ${species.name}, czy coś poważniejszego. Dwadzieścia cztery pytania, około trzech minut.`)}
+        text={typo(
+          species.occasion || species.region
+            ? `${species.name} nie jest rozpoznawany w teście, ale jego krewni z Atlasu tak. Pięć gabinetów, około czterech minut, certyfikat.`
+            : `Test Dziadersa sprawdzi, czy to ${species.name}, czy coś poważniejszego. Pięć gabinetów, około czterech minut, certyfikat.`,
+        )}
       />
     </main>
   );

@@ -32,7 +32,13 @@ export type SpeciesKey =
   | "jurajski"
   | "meteorologiczny"
   | "krupowkowy"
-  | "bieszczadzki";
+  | "bieszczadzki"
+  | "weselny"
+  | "wigilijny"
+  | "parapetowy"
+  | "kolejkowy"
+  | "kibicowski"
+  | "kempingowy";
 
 export type Species = {
   key: SpeciesKey;
@@ -65,6 +71,12 @@ export type Species = {
   related: SpeciesKey[];
   /** Voivodeship code for regional species. */
   region?: string;
+  /**
+   * Occasional species: nationwide, but seen only in certain circumstances (a wedding, Christmas
+   * Eve, a queue, a match on TV). Not diagnosed by the test. The phrase names the circumstance:
+   * "na weselu", "w kolejce".
+   */
+  occasion?: string;
   isNew?: boolean;
 };
 
@@ -1056,6 +1068,284 @@ export const SPECIES: Species[] = [
     calendar: [1, 1, 1, 2, 2, 3, 3, 3, 3, 3, 1, 1],
     related: ["krupowkowy", "wedka", "korpo"],
     region: "PK",
+  },
+  {
+    key: "weselny",
+    code: "DZI-23",
+    slug: "dziaders-weselny",
+    name: "Dziaders Weselny",
+    genitive: "Dziadersa Weselnego",
+    latin: "Dziadersus nuptialis",
+    authority: "Majewski, 1986",
+    status: "LC",
+    statusNote: "Populacja stabilna. Na każdym weselu występuje co najmniej jeden osobnik.",
+    teaser: "Krawat na czole. Przemówienie, o które nikt nie prosił.",
+    summary:
+      "Gatunek okazjonalny, związany z weselami. Ocenia orkiestrę, szacuje zawartość kopert, a po północy przenosi krawat z szyi na czoło.",
+    description: [
+      "Dziaders Weselny zjawia się na sali w garniturze z własnego wesela z 1986 roku i od razu zajmuje miejsce z widokiem na orkiestrę. Do północy zachowuje powagę. Ocenia rosół, szacuje cenę talerzyka i jako pierwszy woła „gorzko”, zwykle zanim młodzi zdążą usiąść.",
+      "Po północy następuje przemiana. Krawat wędruje z szyi na czoło, marynarka na oparcie krzesła, a gatunek prosi orkiestrę o mikrofon, żeby powiedzieć „tylko dwa słowa”. Przemówienie trwa kwadrans i dotyczy głównie jego własnego wesela. Na poprawinach omawia z rodziną zawartość kopert i podaje kwoty z dokładnością do pięćdziesięciu złotych, choć żadnej nie otwierał.",
+    ],
+    habitat: "Sale bankietowe, domy weselne i remizy w całej Polsce. Zawsze przy stole z widokiem na orkiestrę.",
+    activity: "Ocenianie orkiestry. Wygłaszanie przemówień. Szacowanie zawartości kopert.",
+    calls: ["Ja tylko dwa słowa.", "Klawiszowiec dobry, reszta do wymiany."],
+    enemies: "DJ zamiast orkiestry, wesele bez oczepin, wodzirej, który nie oddaje mikrofonu.",
+    fieldMarks: "Krawat na czole, wciąż zawiązany węzłem windsorskim. Marynarka na oparciu krzesła.",
+    traits: [
+      { label: "Gotowość do przemówienia", value: 96 },
+      { label: "Precyzja szacowania kopert", value: 84 },
+      { label: "Trzymanie krawata na szyi po północy", value: 4 },
+    ],
+    symptoms: [
+      "Przychodzi w garniturze z własnego wesela.",
+      "Woła „gorzko”, zanim młodzi usiądą do stołu.",
+      "Ocenia orkiestrę po pierwszym utworze. Klawiszowca osobno.",
+      "Po północy wiąże krawat na czole.",
+      "Prosi o mikrofon na „dwa słowa”. Mówi piętnaście minut.",
+      "Zna kwoty w kopertach, choć żadnej nie otwierał.",
+      "Uważa, że ślub bierze się tylko w miesiącu z literą „r”.",
+    ],
+    handling: [
+      "Nie podawać mu mikrofonu. Weźmie go sam.",
+      "Nie pytać, ile dał w kopercie. Powie, ile dali wszyscy pozostali.",
+      "Chwalić krawat, niezależnie od jego położenia.",
+    ],
+    calendar: [1, 1, 0, 1, 1, 3, 2, 3, 3, 2, 1, 1],
+    related: ["wigilijny", "uzdrowiskowy", "festiwalowy"],
+    occasion: "na weselach",
+    isNew: true,
+  },
+  {
+    key: "wigilijny",
+    code: "DZI-24",
+    slug: "dziaders-wigilijny",
+    name: "Dziaders Wigilijny",
+    genitive: "Dziadersa Wigilijnego",
+    latin: "Dziadersus vigilans",
+    authority: "Wróbel, 1976",
+    status: "LC",
+    statusNote: "Pojawia się raz w roku, za to w niemal każdym domu.",
+    teaser: "Liczy potrawy. Wychodzi mu jedenaście.",
+    summary:
+      "Gatunek okazjonalny, aktywny przez jeden wieczór w roku. Liczy potrawy, opowiada o karpiu w wannie i zasypia przed telewizorem przy kolędach.",
+    description: [
+      "Dziaders Wigilijny ujawnia się 24 grudnia, mniej więcej wtedy, gdy ktoś przy oknie ogłasza pierwszą gwiazdkę. Zanim usiądzie do stołu, przelicza potrawy. Zwykle wychodzi mu jedenaście: barszcz z uszkami liczy jako jedno danie, a kompotu z suszu nie uznaje za potrawę. Gdyby wyszło dwanaście, liczy jeszcze raz, inną metodą.",
+      "Przy rybie gatunek przechodzi do części wspomnieniowej. Co roku, tymi samymi słowami, opowiada o karpiu, który pływał w wannie trzy dni, więc nikt w domu nie mógł się wykąpać. Następnie objaśnia, jak należy kroić karpia w dzwonka, choć sam robił to ostatnio w 1998 roku. Po kolacji zajmuje fotel przed telewizorem i zasypia przy kolędach. Budzi się na makowiec i oświadcza, że nie spał.",
+    ],
+    habitat:
+      "Miejsce przy stole wigilijnym najbliżej półmiska z karpiem, następnie fotel przed telewizorem. Cała Polska, wyłącznie 24 grudnia.",
+    activity: "Liczenie potraw. Opowiadanie o karpiu w wannie. Drzemka przy kolędach.",
+    calls: ["Policzyłem. Jest jedenaście.", "Ja nie śpię, ja słucham kolęd."],
+    enemies: "Karp w filetach, barszcz z kartonika, propozycja, żeby w tym roku zamówić catering.",
+    fieldMarks: "Sweter w renifery na odświętnej koszuli zapiętej pod szyję. Po kolacji: fotel i oczy zamknięte „na chwilę”.",
+    traits: [
+      { label: "Liczenie potraw na głos", value: 96 },
+      { label: "Powtarzalność opowieści o karpiu", value: 99 },
+      { label: "Czuwanie po kolacji", value: 5 },
+    ],
+    symptoms: [
+      "Przelicza potrawy na stole, wskazując każdą widelcem.",
+      "Co roku opowiada o karpiu, który pływał w wannie. Tymi samymi słowami.",
+      "Objaśnia, jak kroić karpia w dzwonka. Nad pokrojonym karpiem.",
+      "Ocenia barszcz jednym słowem: „inny”.",
+      "Rozpakowuje prezent tak, żeby papier nadawał się na przyszły rok.",
+      "Zasypia przed telewizorem przy kolędach.",
+      "Budzi się na makowiec i twierdzi, że nie spał.",
+    ],
+    handling: [
+      "Nie przerywać opowieści o karpiu w wannie. Wszyscy znają zakończenie, ale tradycja to tradycja.",
+      "Wskazać mu dwunastą potrawę. Najczęściej jest nią kompot z suszu.",
+      "Nie budzić go przy kolędach.",
+    ],
+    calendar: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+    related: ["weselny", "festiwalowy", "oszczednosciowy"],
+    occasion: "w Wigilię",
+    isNew: true,
+  },
+  {
+    key: "parapetowy",
+    code: "DZI-25",
+    slug: "dziaders-parapetowy",
+    name: "Dziaders Parapetowy",
+    genitive: "Dziadersa Parapetowego",
+    latin: "Dziadersus fenestralis",
+    authority: "Jabłoński, 1972",
+    status: "NT",
+    statusNote: "Wypierany przez monitoring osiedlowy, który widzi mniej, ale za to nagrywa.",
+    teaser: "Wie, kto wrócił o 2:40. I czym.",
+    summary:
+      "Gatunek okazjonalny, obserwowany wyłącznie w oknie. Opiera łokcie na poduszce i wie o podwórku więcej niż spółdzielnia mieszkaniowa.",
+    description: [
+      "Dziaders Parapetowy zajmuje stanowisko w oknie od strony podwórka, najchętniej na pierwszym lub drugim piętrze, skąd ma najlepszy widok na parking, śmietnik i wejście do klatki. Łokcie opiera na poduszce przeznaczonej wyłącznie do tego celu. Poduszka jest starsza niż większość samochodów na parkingu i znacznie lepiej utrzymana.",
+      "Gatunek prowadzi ciągłą ewidencję. Wie, kto zaparkował na trawniku, kto wrócił o 2:40 i czy przyjechał taksówką. Szczególnie ożywia się na widok kuriera: notuje rozmiar paczki oraz numer klatki, do której ją zaniesiono, i sprawdza, czy kurier w ogóle dzwonił, zanim zostawił awizo. Przeprowadzki obserwuje od pierwszego kartonu do ostatniego i ocenia nowych lokatorów po meblach.",
+    ],
+    habitat: "Okna od strony podwórka w blokach z wielkiej płyty i w kamienicach. Najchętniej pierwsze i drugie piętro.",
+    activity: "Obserwacja parkingu i śmietnika. Odnotowywanie godzin powrotów. Ocenianie przeprowadzek.",
+    calls: ["Ten z czwórki znowu stanął na trawniku.", "Kurier był, ale nie dzwonił. Widziałem."],
+    enemies: "Drzewo posadzone pod oknem przez spółdzielnię, rolety zewnętrzne, sąsiad, który parkuje za rogiem.",
+    fieldMarks: "Poduszka na parapecie, łokcie na poduszce. Firanka odsunięta na szerokość głowy.",
+    traits: [
+      { label: "Znajomość godzin powrotów sąsiadów", value: 98 },
+      { label: "Wiedza o cudzych przesyłkach", value: 89 },
+      { label: "Gotowość do odejścia od okna", value: 4 },
+    ],
+    symptoms: [
+      "Trzyma na parapecie poduszkę wyłącznie do opierania łokci.",
+      "Zna godziny powrotów wszystkich sąsiadów z dokładnością do pięciu minut.",
+      "Zgaduje zawartość cudzych paczek po ich rozmiarze.",
+      "Ocenia nowych lokatorów po meblach wnoszonych w czasie przeprowadzki.",
+      "Gdy coś dzieje się poza zasięgiem okna, przechodzi do kuchni. Tam ma drugie okno.",
+      "Zimą obserwuje przez zamknięte okno i przeciera szybę rękawem.",
+      "Na pytanie „Co słychać?” relacjonuje, co słychać u sąsiadów.",
+    ],
+    handling: [
+      "Wracając po północy, nie liczyć na to, że nikt nie widział.",
+      "Pytać go, czy był kurier. Wie lepiej niż aplikacja.",
+      "Przy przeprowadzce pomachać mu. Ocena mebli będzie łagodniejsza.",
+    ],
+    calendar: [2, 1, 2, 2, 3, 3, 3, 3, 3, 2, 2, 3],
+    related: ["parking", "kolejkowy", "meteorologiczny"],
+    occasion: "w oknie",
+    isNew: true,
+  },
+  {
+    key: "kolejkowy",
+    code: "DZI-26",
+    slug: "dziaders-kolejkowy",
+    name: "Dziaders Kolejkowy",
+    genitive: "Dziadersa Kolejkowego",
+    latin: "Dziadersus expectans",
+    authority: "Wieczorek, 1995",
+    status: "NT",
+    statusNote: "Zagrożony przez automaty z numerkami. Numerek pobiera, ale osoby przed sobą i tak liczy.",
+    teaser: "Liczy osoby przed sobą. Co pięć minut, na głos.",
+    summary:
+      "Gatunek okazjonalny, występujący w kolejkach na poczcie, w banku i przy ladzie z wędlinami. Liczy osoby przed sobą i komentuje tempo obsługi.",
+    description: [
+      "Dziaders Kolejkowy zasiedla kolejki na poczcie, w banku, przy ladzie z wędlinami i na sobotnim targowisku. Po wejściu najpierw liczy osoby przed sobą, potem robi to jeszcze raz, na głos, i ogłasza wynik osobie, która stoi za nim. Co kilka minut aktualizuje stan i podaje szacowany czas oczekiwania, zawsze zawyżony o połowę. Komentuje przy tym tempo pracy pani w okienku i zauważa, że z czterech okienek czynne jest jedno.",
+      "Gatunek pilnuje porządku. Osobę, która podchodzi do okienka ze słowami „ja tylko zapytać”, zatrzymuje uwagą: „Wszyscy tu tylko zapytać”. Sam stosuje tę formułę wyłącznie w kolejkach, w których, jak twierdzi, sytuacja jest zupełnie inna. Gdy przychodzi jego kolej, nadaje trzy paczki, opłaca dwa rachunki i pyta o znaczki okolicznościowe, nie oglądając się na kolejkę.",
+    ],
+    habitat:
+      "Urzędy pocztowe, oddziały banków, lady z wędlinami, sobotnie targowiska. Najliczniej tam, gdzie czynne jest jedno okienko.",
+    activity: "Liczenie osób przed sobą. Komentowanie tempa obsługi. Pilnowanie kolejności.",
+    calls: ["Wszyscy tu tylko zapytać.", "Cztery okienka, a czynne jedno."],
+    enemies: "Automat z numerkami, kasa samoobsługowa, osoba, która „stała tu wcześniej, tylko odeszła”.",
+    fieldMarks: "Awizo w dłoni, dokumenty w foliowej koszulce. Stoi tak blisko osoby przed sobą, że nikt się nie wciśnie.",
+    traits: [
+      { label: "Liczenie osób przed sobą", value: 99 },
+      { label: "Czujność wobec wpychających się", value: 94 },
+      { label: "Tempo załatwiania własnej sprawy", value: 6 },
+    ],
+    symptoms: [
+      "Liczy osoby przed sobą. Potem jeszcze raz, na głos.",
+      "Co pięć minut informuje osobę za sobą, ile jeszcze postoją.",
+      "Zauważa, że z czterech okienek czynne jest jedno, i pyta, po co są pozostałe trzy.",
+      "Na „ja tylko zapytać” odpowiada „wszyscy tu tylko zapytać”.",
+      "Przy okienku załatwia pięć spraw i pyta o szóstą.",
+      "Prosi o dziesięć deko szynki, „tylko cieniutko”, i ogląda plasterki pod światło.",
+      "Na targowisku ustawia się do stoiska z najdłuższą kolejką, bo „tam musi być dobre”.",
+    ],
+    handling: [
+      "Nie podchodzić do okienka ze słowami „ja tylko zapytać”.",
+      "Nie zajmować kolejki i nie odchodzić. Zostanie to zapamiętane.",
+      "W razie wątpliwości zapytać go, kto jest ostatni. Wie.",
+    ],
+    calendar: [2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 3],
+    related: ["oszczednosciowy", "parapetowy", "przygraniczny"],
+    occasion: "w kolejkach",
+    isNew: true,
+  },
+  {
+    key: "kibicowski",
+    code: "DZI-27",
+    slug: "dziaders-kibicowski",
+    name: "Dziaders Kibicowski",
+    genitive: "Dziadersa Kibicowskiego",
+    latin: "Dziadersus futbolicus",
+    authority: "Malinowski, 1974",
+    status: "LC",
+    statusNote: "Liczebność gwałtownie rośnie co dwa lata, w czerwcu.",
+    teaser: "Z kanapy widzi lepiej niż sędzia. I lepiej niż trener.",
+    summary:
+      "Gatunek okazjonalny, aktywny w trakcie transmisji meczów. Z kanapy ocenia sędziego, zwalnia trenera i wie, jak należało strzelić.",
+    description: [
+      "Dziaders Kibicowski zajmuje kanapę kwadrans przed pierwszym gwizdkiem i nie opuszcza jej aż do końca studia pomeczowego. Mecz ogląda pochylony do przodu, z łokciami na kolanach, gotów w każdej chwili wstać i pokazać, jak należało dośrodkować. Każdą niewykorzystaną sytuację kwituje słowami „ja bym to strzelił”, bez względu na odległość od bramki i kąt.",
+      "Gatunek dysponuje pełną wiedzą sędziowską i trenerską. Spalonego widzi bez powtórki, a trenera zwalnia średnio dwa razy w trakcie meczu i po zwycięstwie przywraca go na stanowisko bez słowa wyjaśnienia. Punktem odniesienia pozostają dla niego reprezentacje z mundiali w latach 1974 i 1982, których składy recytuje z pamięci, najchętniej w przerwie, przekrzykując reklamy.",
+    ],
+    habitat: "Kanapy i fotele przed telewizorem w całej Polsce. W czasie wielkich turniejów także strefy kibica.",
+    activity: "Ocenianie sędziów. Zwalnianie trenera. Pokazywanie z kanapy, jak należało strzelić.",
+    calls: ["Ja bym to strzelił.", "Trenera to ja bym zmienił już w przerwie."],
+    enemies: "System VAR, reklama w przerwie, komentator, który chwali przeciwnika.",
+    fieldMarks: "Szalik na szyi, także w lipcu. Pochylony do przodu, łokcie na kolanach, pilot w zaciśniętej dłoni.",
+    traits: [
+      { label: "Pewność w ocenie spalonego", value: 97 },
+      { label: "Znajomość składu z 1974 roku", value: 100 },
+      { label: "Zaufanie do sędziego", value: 3 },
+    ],
+    symptoms: [
+      "Mówi „ja bym to strzelił”, także o rzutach wolnych z czterdziestu metrów.",
+      "Spalonego widzi szybciej niż sędzia liniowy.",
+      "Zwalnia trenera dwa razy w trakcie meczu.",
+      "Zwraca się do sędziego bezpośrednio, przez telewizor.",
+      "Recytuje składy z mundiali w latach 1974 i 1982. Z rezerwowymi.",
+      "Wstaje z kanapy, żeby pokazać, jak należało dośrodkować.",
+      "Po przegranym meczu ogłasza, że więcej nie ogląda. Ogląda następny.",
+    ],
+    handling: [
+      "Nie przechodzić przed telewizorem w trakcie akcji.",
+      "Nie pytać, kto wygrywa. Zapytać, kto powinien.",
+      "Po meczu nie wspominać o rzutach karnych.",
+    ],
+    calendar: [1, 1, 2, 2, 2, 3, 3, 2, 2, 2, 2, 1],
+    related: ["festiwalowy", "golebiarz", "wigilijny"],
+    occasion: "przy transmisjach meczów",
+    isNew: true,
+  },
+  {
+    key: "kempingowy",
+    code: "DZI-28",
+    slug: "dziaders-kempingowy",
+    name: "Dziaders Kempingowy",
+    genitive: "Dziadersa Kempingowego",
+    latin: "Dziadersus campestris",
+    authority: "Adamczyk, 1977",
+    status: "VU",
+    statusNote: "Pola kempingowe nad morzem ustępują miejsca apartamentowcom.",
+    teaser: "Poziomuje przyczepę od godziny. Jeszcze nie.",
+    summary:
+      "Gatunek okazjonalny, spotykany na kempingach od maja do września. Godzinę poziomuje przyczepę, a potem przez dwa tygodnie siedzi przed nią na składanym krześle.",
+    description: [
+      "Dziaders Kempingowy przyjeżdża na kemping z przyczepą, którą ciągnie za samochodem od 1988 roku. Najczęściej jest to klasyczna przyczepa Niewiadów, odnawiana co zimę w garażu. Rozbicie obozu trwa całe popołudnie, a najwięcej czasu zajmuje poziomowanie. Gatunek kładzie poziomicę na podłodze przyczepy, podkłada pod koła deski i klocki, sprawdza, przestawia i sprawdza ponownie. Pęcherzyk musi stać dokładnie pośrodku. W tym czasie rodzina zdąża rozpakować samochód, zjeść kanapki i wrócić znad jeziora.",
+      "Po wypoziomowaniu gatunek rozkłada przedsionek, stolik i składane krzesło, na którym spędza resztę urlopu. Obiad gotuje na dwupalnikowej kuchence gazowej, a każdą nowo przybyłą przyczepę ocenia przy cofaniu, najpierw w milczeniu, potem na głos. Kierownika kempingu zna po imieniu, a stałych bywalców po numerach parcel.",
+    ],
+    habitat: "Kempingi nad jeziorami Mazur i Kaszub oraz nad morzem. Zawsze ta sama parcela, zajmowana od 1993 roku.",
+    activity: "Poziomowanie przyczepy. Rozkładanie przedsionka. Ocenianie, jak inni cofają z przyczepą.",
+    calls: ["Jeszcze nie. Pęcherzyk ucieka w lewo.", "Kierownicą w drugą stronę, panie."],
+    enemies: "Krzywa parcela, apartamentowiec z widokiem na morze, kamper z automatycznym poziomowaniem.",
+    fieldMarks: "Poziomica w kieszeni. Składane krzesło pod przedsionkiem, ustawione przodem do alejki.",
+    traits: [
+      { label: "Precyzja poziomowania", value: 99 },
+      { label: "Ocena cudzego cofania z przyczepą", value: 92 },
+      { label: "Szacunek dla kamperów", value: 6 },
+    ],
+    symptoms: [
+      "Poziomuje przyczepę przez godzinę. Pęcherzyk ma stać idealnie pośrodku.",
+      "Wozi w bagażniku komplet klocków do podkładania pod koła.",
+      "Rozkłada przedsionek, nawet jeśli zostaje na jedną noc.",
+      "Spędza urlop na składanym krześle, przodem do alejki.",
+      "Gotuje na kuchence gazowej, nawet jeśli na kempingu jest bar.",
+      "Doradza przy cofaniu każdemu, kto przyjechał z przyczepą. Gestami i na głos.",
+      "Zna stałych bywalców po numerach parcel.",
+    ],
+    handling: [
+      "Nie stawać na stopniu przyczepy w trakcie poziomowania.",
+      "Cofając z przyczepą, nie patrzeć w jego stronę.",
+      "Nie mówić, że przyczepa i tak stoi prosto.",
+    ],
+    calendar: [0, 0, 0, 1, 2, 3, 3, 3, 1, 0, 0, 0],
+    related: ["wakacje", "wedka", "zeglarz"],
+    occasion: "na kempingach",
+    isNew: true,
   },
 ];
 

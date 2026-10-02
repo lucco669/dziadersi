@@ -260,7 +260,7 @@ export default async function IndexPage() {
 
       <TestPromo
         title="Podnieś indeks osobiście."
-        text={typo("Każdy wynik powyżej średniej krajowej jest wkładem w naukę. Test Dziadersa: dwadzieścia cztery pytania, około trzech minut.")}
+        text={typo("Każdy wynik powyżej średniej krajowej jest wkładem w naukę. Test Dziadersa: pięć gabinetów, około czterech minut.")}
       />
     </main>
   );

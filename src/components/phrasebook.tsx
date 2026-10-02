@@ -5,7 +5,9 @@ import { useRef, useState, useSyncExternalStore } from "react";
 import { SITUATIONS } from "@/content/phrasebook";
 import { line as compose, listsOf, type Line, type Picks } from "@/lib/phrasebook";
 import { site } from "@/lib/site";
+import { tally } from "@/lib/tally";
 import { cx, typo } from "@/lib/typo";
+import { BookmarkButton } from "./bookmark";
 import { useKeys, useLater, useReducedMotion } from "./hooks";
 import { SituationIcon } from "./occasions";
 import { Figure } from "./pictograms";
@@ -69,6 +71,7 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
     setPicks(target);
     if (speaking) speechSynthesis.cancel();
     track("Rozmówki", { rozdzial: next.slug });
+    tally("rozmowki");
 
     if (reduced) {
       setShown(target);
@@ -121,11 +124,13 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
     setSpeaking(true);
     speak(current.text, () => setSpeaking(false));
     track("Rozmówki", { akcja: "czytaj" });
+    tally("rozmowki-glos");
   }
 
   async function share() {
     const url = `${origin}/generator/${current.code}`;
     track("Udostępnienie", { kanal: canShare ? "natywne" : "link", typ: "rozmowki" });
+    tally("udostepnienie");
     if (canShare) {
       try {
         await navigator.share({ text: `„${current.text}”`, url });
@@ -230,6 +235,13 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
         <button type="button" onClick={share} className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
           {canShare ? "Udostępnij" : "Kopiuj link"}
         </button>
+        <BookmarkButton
+          key={current.code}
+          kind="rozmowki"
+          code={current.code}
+          label="Zachowaj"
+          className="btn border border-ink text-ink hover:bg-ink hover:text-paper"
+        />
         <button type="button" onClick={copy} className="link ml-1 font-sans font-medium">
           Kopiuj tekst
         </button>

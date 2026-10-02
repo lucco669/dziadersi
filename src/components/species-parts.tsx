@@ -83,14 +83,17 @@ export function ActivityCalendar({ months }: { months: number[] }) {
 }
 
 /** Where a regional species lives, on the same tile grid as the national map. */
-export function RangeMap({ region }: { region?: string }) {
+export function RangeMap({ region, occasion }: { region?: string; occasion?: string }) {
   return (
     <figure>
       <figcaption className="label text-ink-soft">Zasięg występowania</figcaption>
       <div className="mt-4 flex items-center gap-5">
         <div className="grid w-28 shrink-0 grid-cols-4 gap-[3px]" aria-hidden="true">
           {REGION_GRID.flat().map((code) => (
-            <span key={code} className={cx("aspect-square", region ? (code === region ? "bg-red" : "bg-ink/10") : "bg-ink/70")} />
+            <span
+              key={code}
+              className={cx("aspect-square", region ? (code === region ? "bg-red" : "bg-ink/10") : occasion ? "bg-ink/30" : "bg-ink/70")}
+            />
           ))}
         </div>
         <p className="leading-snug">
@@ -98,6 +101,11 @@ export function RangeMap({ region }: { region?: string }) {
             <>
               <span className="font-bold">{REGIONS[region].name}.</span> Gatunek regionalny, poza tym województwem występuje
               sporadycznie.
+            </>
+          ) : occasion ? (
+            <>
+              <span className="font-bold">Cała Polska, ale tylko {occasion}.</span> Gatunek okazjonalny: poza swoją okazją
+              zachowuje się jak gatunek pospolity.
             </>
           ) : (
             <>

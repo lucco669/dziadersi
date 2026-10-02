@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BLUE, Figure, INK, Jacket, Note, OCHRE, PAPER, Pine, plateDrawing, RED, Sweater } from "./pictograms";
+import { BLUE, Figure, GREY, INK, Note, OCHRE, PAPER, plateDrawing, RED, Sweater } from "./pictograms";
 
 /*
  * Drawings for the Rozmówki chapters (48 × 40 icons) and the bingo occasions (120 × 100 plates,
@@ -69,6 +69,34 @@ export const SITUATION_ICONS: Record<string, ReactNode> = {
       </g>
     </g>
   ),
+
+  pogoda: (
+    <g>
+      <path d="M8 22A6 6 0 0 1 9.6 10.4A8.6 8.6 0 0 1 26 8.6A6.4 6.4 0 0 1 30 21.4Z" fill={INK} />
+      <g fill={BLUE}>
+        <ellipse cx={12} cy={28} rx={1.1} ry={2} />
+        <ellipse cx={18.6} cy={32} rx={1.1} ry={2} />
+        <ellipse cx={25} cy={28.4} rx={1.1} ry={2} />
+      </g>
+      <rect x={36.6} y={4} width={5.2} height={24} rx={2.6} fill={PAPER} stroke={INK} strokeWidth={1.6} />
+      <rect x={38.4} y={14} width={1.6} height={14} fill={RED} />
+      <circle cx={39.2} cy={31.6} r={4.4} fill={RED} />
+      {[9, 13, 17, 21].map((y) => (
+        <line key={y} x1={41.8} y1={y} x2={44} y2={y} stroke={INK} strokeWidth={1} />
+      ))}
+    </g>
+  ),
+  zakupy: (
+    <g>
+      <path d="M14 13Q14 4 20 4T26 13" fill="none" stroke={INK} strokeWidth={2} />
+      <path d="M7 12H33L35 37H5Z" fill={PAPER} stroke={INK} strokeWidth={2} strokeLinejoin="round" />
+      <rect x={6.4} y={20} width={27.6} height={4.4} fill={RED} />
+      <path d="M33 26H44V35Q41 37 38.6 35T33.6 35Z" fill={PAPER} stroke={INK} strokeWidth={1.4} strokeLinejoin="round" />
+      {[29, 31.6].map((y) => (
+        <line key={y} x1={35.6} y1={y} x2={42} y2={y} stroke={INK} strokeWidth={0.8} />
+      ))}
+    </g>
+  ),
 };
 
 export function SituationIcon({ slug, className }: { slug: string; className?: string }) {
@@ -81,57 +109,76 @@ export function SituationIcon({ slug, className }: { slug: string; className?: s
 
 const at = (x: number, children: ReactNode) => <g transform={`translate(${x} 0)`}>{children}</g>;
 
-/** A tie worn on the forehead, as at every wedding after midnight. */
-function HeadTie() {
-  return (
-    <g>
-      <rect x={12} y={2} width={16.4} height={2.6} fill={RED} transform="rotate(-10 20 3.4)" />
-      <path d="M26.6 1.6L29.4 1.2L36 13.4L33.2 15.4Z" fill={RED} />
-      <path d="M33.2 15.4L36 13.4L36.6 16.6Z" fill={RED} />
-    </g>
-  );
-}
-
 const DRAWINGS: Record<string, () => ReactNode> = {
-  wesele: () => (
+  wesele: () => plateDrawing("weselny"),
+  wigilia: () => plateDrawing("wigilijny"),
+  imieniny: () => (
     <>
-      <g className="pg-notes">
-        <Note x={54} y={16} />
-        <Note x={62} y={6} size={0.8} />
+      <rect x={60} y={22} width={58} height={72} fill={GREY} />
+      {[0, 1, 2].map((col) => (
+        <g key={col}>
+          <rect x={63 + col * 18.4} y={26} width={15} height={30} fill={col === 1 ? BLUE : PAPER} stroke={INK} strokeWidth={0.8} />
+          <rect x={63 + col * 18.4} y={60} width={15} height={30} fill={PAPER} stroke={INK} strokeWidth={0.8} />
+          <circle cx={col === 1 ? 70.5 + col * 18.4 : 75 + col * 18.4} cy={75} r={0.9} fill={INK} />
+        </g>
+      ))}
+      <g stroke={PAPER} strokeWidth={0.7}>
+        <line x1={84} y1={30} x2={92} y2={40} />
+        <line x1={84} y1={36} x2={90} y2={44} />
       </g>
-      <path d="M68 64H116L118 94H66Z" fill={PAPER} stroke={INK} strokeWidth={1} />
-      <line x1={64} y1={64} x2={120} y2={64} stroke={INK} strokeWidth={1.6} />
-      <rect x={81} y={47} width={22} height={17} fill={PAPER} stroke={INK} strokeWidth={1} />
-      <rect x={85} y={36} width={14} height={11} fill={PAPER} stroke={INK} strokeWidth={1} />
-      <line x1={81} y1={55} x2={103} y2={55} stroke={RED} strokeWidth={1.4} />
-      <circle cx={92} cy={33.6} r={2.6} fill={RED} />
+      <path d="M68 26V20Q68 16 71 16T74 20V26Z" fill={BLUE} opacity={0.75} />
+      <path d="M100 26L102 16H108L110 26Z" fill={OCHRE} />
+      <path d="M50 70H86L82 76H54Z" fill={INK} />
+      <path d="M58 70Q58 61 68 61T78 70Z" fill={PAPER} stroke={INK} strokeWidth={0.9} />
+      {[
+        [63, 65, RED],
+        [68, 63.6, OCHRE],
+        [73, 65.4, RED],
+        [66, 67.4, BLUE],
+        [71, 67.6, OCHRE],
+      ].map(([x, y, fill]) => (
+        <circle key={`${x}-${y}`} cx={x as number} cy={y as number} r={1.3} fill={fill as string} />
+      ))}
       {at(
-        8,
+        6,
         <>
-          <Figure left="up" right="up" legs="trousers" torso={<Jacket />} />
-          <HeadTie />
+          <Figure left="hip" right="up" legs="trousers" torso={<Sweater />} />
+          <path d="M35.6 -6H41.6L39.8 -0.6H37.4Z" fill={RED} />
+          <line x1={38.6} y1={-0.6} x2={38.6} y2={3} stroke={INK} strokeWidth={0.8} />
         </>,
       )}
+      <g className="pg-notes">
+        <Note x={58} y={10} size={0.8} />
+      </g>
     </>
   ),
-  wigilia: () => (
+  podroz: () => (
     <>
-      <Pine x={92} scale={1.2} />
-      <path d="M92 36.6L93.6 40.4H97.6L94.4 42.8L95.6 46.6L92 44.2L88.4 46.6L89.6 42.8L86.4 40.4H90.4Z" fill={OCHRE} />
-      {[
-        [86, 58, RED],
-        [99, 62, OCHRE],
-        [90, 72, BLUE],
-        [80, 80, OCHRE],
-        [104, 80, RED],
-      ].map(([x, y, fill]) => (
-        <circle key={`${x}-${y}`} cx={x as number} cy={y as number} r={2.4} fill={fill as string} />
-      ))}
-      <rect x={64} y={82} width={14} height={12} fill={RED} />
-      <rect x={70} y={82} width={2.4} height={12} fill={PAPER} />
-      <rect x={104} y={84} width={14} height={10} fill={BLUE} />
-      <rect x={110} y={84} width={2.4} height={10} fill={PAPER} />
-      {at(6, <Figure left="hip" legs="trousers" torso={<Sweater />} />)}
+      <path d="M52 86V74Q52 70.6 56 70L66 68.6L74 59Q75.6 57 78.6 57H104Q107 57 108.6 59.6L114 68.6Q118 69.6 118 73V86Z" fill={BLUE} />
+      <path d="M77 60.6L70.6 68.2H89V60.6ZM92 60.6V68.2H110L105.6 60.6Z" fill={PAPER} />
+      <rect x={76} y={50} width={30} height={6} rx={2} fill={INK} />
+      <rect x={79} y={44} width={11} height={6} fill={OCHRE} />
+      <rect x={91} y={45.6} width={12} height={4.4} fill={RED} />
+      <line x1={81} y1={56} x2={81} y2={58.6} stroke={INK} strokeWidth={1.2} />
+      <line x1={101} y1={56} x2={101} y2={58.6} stroke={INK} strokeWidth={1.2} />
+      <g className="pg-tyre">
+        <circle cx={66} cy={86} r={8} fill={INK} />
+        <circle cx={66} cy={86} r={3.4} fill={GREY} />
+      </g>
+      <circle cx={104} cy={86} r={8} fill={INK} />
+      <circle cx={104} cy={86} r={3.4} fill={GREY} />
+      {at(
+        4,
+        <>
+          <Figure left="cross" right="cross" glasses="eyes" hat="cap" />
+          <path d="M-4 27L6 29L16 27L26 29L36 27L46 29V45L36 43L26 45L16 43L6 45L-4 43Z" fill={PAPER} stroke={INK} strokeWidth={0.9} strokeLinejoin="round" />
+          {[6, 16, 26, 36].map((x) => (
+            <line key={x} x1={x} y1={x % 20 === 6 ? 29 : 27} x2={x} y2={x % 20 === 6 ? 45 : 43} stroke={INK} strokeWidth={0.4} />
+          ))}
+          <path d="M0 40Q8 34 14 37T26 33T40 36" fill="none" stroke={RED} strokeWidth={1.2} strokeDasharray="2 1.4" />
+          <circle cx={40} cy={36} r={1.6} fill={RED} />
+        </>,
+      )}
     </>
   ),
   majowka: () => plateDrawing("grill"),

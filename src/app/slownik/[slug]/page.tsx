@@ -146,7 +146,7 @@ export default async function EntryPage({ params }: PageProps<"/slownik/[slug]">
 
       <TestPromo
         title="Mówisz tak?"
-        text={typo("Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Dwadzieścia cztery pytania, około trzech minut.")}
+        text={typo("Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Pięć gabinetów, około czterech minut.")}
       />
     </main>
   );

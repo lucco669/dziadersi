@@ -3,16 +3,19 @@ import Link from "next/link";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { SpeciesPlate } from "@/components/pictograms";
 import { RegionMap } from "@/components/region-map";
+import { Sightings } from "@/components/sightings";
 import { SpeciesTile } from "@/components/species-parts";
 import { MAP_REGIONS } from "@/content/map";
 import { ESTIMATED_SPECIES, SPECIES, speciesByKey, type SpeciesKey } from "@/content/species";
 import { getBulletin } from "@/lib/bulletin";
+import { getCommunity } from "@/lib/community";
 import { institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { plural, typo } from "@/lib/typo";
 
-const NATIONWIDE = SPECIES.filter((species) => !species.region);
+const NATIONWIDE = SPECIES.filter((species) => !species.region && !species.occasion);
 const REGIONAL = SPECIES.filter((species) => species.region);
+const OCCASIONAL = SPECIES.filter((species) => species.occasion);
 
 const title = "Atlas Dziadersów";
 const description = `Katalog ${SPECIES.length} gatunków dziadersów występujących w Polsce, od Grillowego po Bieszczadzkiego: objawy, siedliska, naturalni wrogowie i klucz do oznaczania.`;
@@ -67,7 +70,7 @@ const KEY: [Step, Step][] = [
 ];
 
 export default async function AtlasPage() {
-  const bulletin = await getBulletin();
+  const [bulletin, community] = await Promise.all([getBulletin(), getCommunity()]);
   const featured = SPECIES[bulletin.week % SPECIES.length];
 
   return (
@@ -103,7 +106,7 @@ export default async function AtlasPage() {
         lead={typo(
           "Systematyczny katalog gatunków występujących na terenie Rzeczypospolitej. Każdy wpis zawiera opis, siedem objawów rozpoznawczych, typowe wokalizacje, naturalnych wrogów, kalendarz aktywności i status ochrony.",
         )}
-        meta={`Opisano ${SPECIES.length} z ok. ${ESTIMATED_SPECIES} gatunków: ${NATIONWIDE.length} ogólnopolskich i ${REGIONAL.length} regionalnych`}
+        meta={`Opisano ${SPECIES.length} z ok. ${ESTIMATED_SPECIES} gatunków: ${NATIONWIDE.length} ogólnopolskich, ${REGIONAL.length} regionalnych i ${OCCASIONAL.length} okazjonalnych`}
         aside={
           <Link href={`/atlas/${featured.slug}`} className="group block border-t border-ink pt-4">
             <span className="label text-red">Gatunek tygodnia</span>
@@ -148,6 +151,25 @@ export default async function AtlasPage() {
       </Section>
 
       <Section
+        id="okazjonalne"
+        title="Gatunki okazjonalne"
+        aside={`${OCCASIONAL.length} ${plural(OCCASIONAL.length, "gatunek", "gatunki", "gatunków")} · nowość`}
+        intro={typo(
+          "Występują w całym kraju, ale tylko w określonych okolicznościach: na weselu, w Wigilię, w kolejce, w oknie, przy transmisji meczu i na kempingu. Poza swoją okazją zachowują się jak gatunki pospolite.",
+        )}
+      >
+        <ol className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-6">
+          {OCCASIONAL.map((species) => (
+            <li key={species.key}>
+              <SpeciesTile species={species} />
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      <Sightings community={community} />
+
+      <Section
         id="klucz"
         title="Klucz do oznaczania gatunków"
         intro={typo("Zacznij od punktu 1 i wybieraj opis, który pasuje do obserwowanego osobnika. Klucz prowadzi do jednego z dziesięciu gatunków ogólnopolskich.")}
@@ -186,7 +208,7 @@ export default async function AtlasPage() {
 
       <TestPromo
         title="Nie wiesz, do którego gatunku należysz?"
-        text={typo("Test Dziadersa ustali to w dwudziestu czterech pytaniach. Wynik od 0 do 100%, rozpoznanie gatunku i certyfikat.")}
+        text={typo("Test Dziadersa ustali to w pięciu gabinetach. Wynik od 0 do 100%, rozpoznanie gatunku i certyfikat.")}
       />
     </main>
   );

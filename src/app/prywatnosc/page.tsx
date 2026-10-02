@@ -66,9 +66,24 @@ export default function PrivacyPage() {
           Konto wymaga adresu e-mail. Przechowujemy go razem z pseudonimem (jeśli go podasz), zapisanymi wynikami i datami logowania. Robimy to, żeby prowadzić konto (art. 6 ust. 1 lit. b RODO), i tylko tak długo, jak konto istnieje.
         </P>
         <P>
-          Konto usuwa się przyciskiem w Profilu Dziaderskim, natychmiast i na zawsze, razem z pseudonimem i kartoteką. Anonimowe wpisy w Narodowym Spisie zostają, bo nie wiadomo, czyje są.
+          Konto usuwa się przyciskiem w Profilu Dziaderskim, natychmiast i na zawsze, razem z pseudonimem, kartoteką, obserwacjami, zakładkami i zgłoszonymi sprawami. Anonimowe wpisy w Narodowym Spisie zostają, bo nie wiadomo, czyje są. Głosy w Komisji Orzekającej zostają w statystyce, ale tracą powiązanie z kontem.
         </P>
         <P>Na adres e-mail wysyłamy wyłącznie wiadomości potrzebne do konta: skierowania do logowania i potwierdzenia zmian. Nie ma newslettera ani reklam.</P>
+      </Part>
+
+      <Part id="spolecznosc" title="Obserwacje, zakładki i Komisja Orzekająca">
+        <P>
+          Obserwacja terenowa zgłoszona z Profilu Dziaderskiego to gatunek, data i godzina, a także województwo, jeśli je wskażesz. Zakładki to kody wypowiedzi z Rozmówek, kart bingo i egzaminów, które zachowasz. Obie rzeczy są przypisane do konta, widzisz je w Profilu i możesz je tam usunąć. W zestawieniach publicznych (Atlas, Mały Rocznik Statystyczny) pokazujemy je wyłącznie zbiorczo, bez pseudonimów.
+        </P>
+        <P>
+          Głos w Komisji Orzekającej zapisujemy z nazwą sprawy i rodzajem orzeczenia. Głos osoby niezalogowanej jest anonimowy; o tym, że już głosowała, pamięta tylko jej przeglądarka. Głos osoby zalogowanej jest przypisany do konta, żeby można było głosować raz w sprawie i widzieć swoje orzeczenia w Profilu.
+        </P>
+        <P>
+          Sprawę zgłoszoną do Komisji czytamy ręcznie. Nic nie jest publikowane automatycznie. Jeśli sprawa trafi na wokandę, publikujemy ją zredagowaną i bez danych zgłaszającego. Prosimy nie wpisywać imion, nazwisk, adresów ani innych danych, po których można rozpoznać konkretną osobę. Zgłoszenia przechowujemy, dopóki istnieje konto.
+        </P>
+        <P>
+          Liczniki do Małego Rocznika Statystycznego (na przykład ile wypowiedzi wylosowały Rozmówki albo ile razy zatrąbiono w teście) to dzienne sumy bez żadnych identyfikatorów. Podstawą tych zestawień jest prawnie uzasadniony interes Instytutu w prowadzeniu statystyki (art. 6 ust. 1 lit. f RODO), a dla danych przypisanych do konta prowadzenie konta (art. 6 ust. 1 lit. b RODO).
+        </P>
       </Part>
 
       <Part id="dostawcy" title="Kto jeszcze ma dostęp">
@@ -82,7 +97,7 @@ export default function PrivacyPage() {
           Plików cookie używamy tylko do logowania: bez nich nie da się utrzymać sesji. Nie ma cookies reklamowych ani śledzących.
         </P>
         <P>
-          W pamięci przeglądarki zostają: postęp testu (do zamknięcia karty), ostatni własny wynik (żeby spis policzył powtórki bez żadnego identyfikatora) i skreślenia w Dziaders Bingo. Te dane nie opuszczają przeglądarki, poza poprzednim wynikiem dołączanym do kolejnego badania.
+          W pamięci przeglądarki zostają: postęp testu (do zamknięcia karty), ostatni własny wynik (żeby spis policzył powtórki bez żadnego identyfikatora), skreślenia w Dziaders Bingo, głosy oddane w Komisji bez logowania, województwo wybrane przy obserwacjach i, po zalogowaniu, podsumowanie konta na minutę, żeby nie pytać serwera przy każdej stronie. Te dane nie opuszczają przeglądarki, poza poprzednim wynikiem dołączanym do kolejnego badania.
         </P>
       </Part>
 

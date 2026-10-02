@@ -200,7 +200,7 @@ export default async function ReportPage({ params }: PageProps<"/raporty/[slug]"
 
       <TestPromo
         title="Chcesz trafić do statystyk?"
-        text={typo("Test Dziadersa to dwadzieścia cztery pytania i około trzech minut. Wynik zostaje w linku, nie w bazie Instytutu.")}
+        text={typo("Test Dziadersa to pięć gabinetów i około czterech minut. Wynik z imieniem zostaje w linku, do Spisu trafia anonimowo.")}
       />
     </main>
   );

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { AtlasPlates, Hero, IndexBand, Shelf, TestBand } from "@/components/home";
+import { AtlasPlates, CaseOfTheDay, Hero, IndexBand, Shelf, TestBand } from "@/components/home";
 import { JsonLd } from "@/components/page";
 import { getBulletin } from "@/lib/bulletin";
+import { getCommunity } from "@/lib/community";
 import { institute, pageMetadata } from "@/lib/seo";
 import { SECTIONS, site } from "@/lib/site";
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const bulletin = await getBulletin();
+  const [bulletin, community] = await Promise.all([getBulletin(), getCommunity()]);
   const website = { "@id": `${site.url}/#serwis` };
   const publisher = { "@id": institute["@id"] };
 
@@ -79,6 +80,7 @@ export default async function Home() {
       <IndexBand bulletin={bulletin} />
       <AtlasPlates />
       <TestBand />
+      <CaseOfTheDay bulletin={bulletin} counts={community?.verdicts.cases ?? null} />
       <Shelf bulletin={bulletin} />
     </main>
   );

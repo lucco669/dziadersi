@@ -40,3 +40,25 @@ export async function deleteAccount(formData: FormData) {
   await supabase.auth.signOut();
   redirect("/?konto=usuniete");
 }
+
+export async function removeSighting(formData: FormData) {
+  const { supabase, user } = await signedIn();
+  await supabase
+    .from("sightings")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("species", String(formData.get("gatunek") ?? ""))
+    .eq("observed_on", String(formData.get("dzien") ?? ""));
+  revalidatePath("/profil");
+}
+
+export async function removeBookmark(formData: FormData) {
+  const { supabase, user } = await signedIn();
+  await supabase
+    .from("saved_items")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("kind", String(formData.get("rodzaj") ?? ""))
+    .eq("code", String(formData.get("kod") ?? ""));
+  revalidatePath("/profil");
+}

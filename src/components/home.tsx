@@ -1,17 +1,21 @@
 import Link from "next/link";
+import { CASES } from "@/content/cases";
 import { DICTIONARY } from "@/content/dictionary";
 import { REPORTS, formatReportDate } from "@/content/reports";
 import { SPECIES } from "@/content/species";
 import type { Bulletin } from "@/lib/bulletin";
+import type { VerdictCounts } from "@/lib/community";
 import { encodeResult, evaluate, SAMPLE_DRAFT } from "@/lib/test";
 import { pct, plural, typo } from "@/lib/typo";
 import { Certificate } from "./certificate";
 import { Crowd } from "./crowd";
+import { CollectionLine } from "./profile-notes";
 import { SpeciesPlate } from "./pictograms";
 import { Section } from "./page";
 import { Specimen } from "./specimen";
+import { CaseFile } from "./verdict";
 
-const NATIONWIDE = SPECIES.filter((species) => !species.region);
+const NATIONWIDE = SPECIES.filter((species) => !species.region && !species.occasion);
 const sample = evaluate(SAMPLE_DRAFT);
 
 export function Hero() {
@@ -135,7 +139,7 @@ export function AtlasPlates() {
     <Section
       id="atlas"
       title="Atlas Dziadersów"
-      aside={`${SPECIES.length} ${plural(SPECIES.length, "gatunek", "gatunki", "gatunków")}, w tym ${SPECIES.length - NATIONWIDE.length} regionalnych`}
+      aside={`${SPECIES.length} ${plural(SPECIES.length, "gatunek", "gatunki", "gatunków")} w Atlasie`}
       intro={typo("Dziesięć gatunków występuje w całej Polsce. Test rozpoznaje każdy z nich, a także ich krzyżówki.")}
     >
       <ol className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
@@ -151,9 +155,33 @@ export function AtlasPlates() {
           </li>
         ))}
       </ol>
-      <p className="mt-12">
+      <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-5">
         <Link href="/atlas" className="btn border border-ink hover:bg-ink hover:text-paper">
           Cały Atlas <span aria-hidden="true">→</span>
+        </Link>
+        <CollectionLine species={NATIONWIDE.map((species) => species.key)} />
+      </div>
+    </Section>
+  );
+}
+
+/** Today's case before the Komisja Orzekająca, to vote on right here. */
+export function CaseOfTheDay({ bulletin, counts }: { bulletin: Bulletin; counts: Record<string, VerdictCounts> | null }) {
+  const item = CASES[bulletin.today % CASES.length];
+  return (
+    <Section
+      id="wokanda-dnia"
+      title="Sprawa dnia"
+      aside={
+        <Link href="/czy-to-juz-dziaderstwo" className="transition-colors hover:text-red">
+          Komisja Orzekająca
+        </Link>
+      }
+    >
+      <CaseFile item={item} initial={counts?.[item.slug] ?? null} position={`Sprawa ${item.number} z ${CASES.length}`} />
+      <p className="mt-10">
+        <Link href="/czy-to-juz-dziaderstwo#wokanda" className="link font-sans font-medium">
+          Cała wokanda: {CASES.length} spraw
         </Link>
       </p>
     </Section>

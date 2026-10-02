@@ -11,7 +11,9 @@ import { sameAnswer } from "@/lib/answer-stats";
 import type { AnswerCounts } from "@/lib/census";
 import { DIAGNOSABLE, dayNumber, decodeGroup, encodeResult, evaluate, GROUP_LIMIT, groupPath, suspect } from "@/lib/test";
 import { cx, plural, typo } from "@/lib/typo";
+import { refreshAccount } from "./account";
 import { Seal } from "./brand";
+import { TestProfileNote } from "./profile-notes";
 import { SpeciesPlate } from "./pictograms";
 import { BlotView, ChoiceView, SmsView } from "./test/choice";
 import { InventoryView } from "./test/inventory";
@@ -241,7 +243,9 @@ export function TestRunner() {
       keepalive: true,
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ code, region: region || undefined, previous }),
-    }).catch(() => {});
+    })
+      .then(() => refreshAccount())
+      .catch(() => {});
   }
 
   function answer(value: number) {
@@ -624,6 +628,7 @@ function Intro({
                 `${TOTAL} zadań, około czterech minut. W gabinecie III jest próba klaksonowa, z dźwiękiem. Odpowiedzi trafiają anonimowo do Narodowego Spisu Dziadersów, bez imienia. Wynik z imieniem jest tylko w linku, którym zdecydujesz się podzielić.`,
               )}
             </p>
+            <TestProfileNote />
           </form>
         </div>
 

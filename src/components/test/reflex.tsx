@@ -7,6 +7,7 @@ import { cx, typo } from "@/lib/typo";
 import { Stamp } from "../brand";
 import { BLUE, GREY, INK, OCHRE, PAPER, RED } from "../pictograms";
 import { NextButton, useKeys, type TaskProps } from "./shared";
+import { tally } from "@/lib/tally";
 
 type Phase = "ready" | "red" | "amber" | "green" | "done";
 
@@ -25,6 +26,7 @@ const STATUS: Record<Phase, string> = {
 
 /** A short two-tone car horn, only ever played in response to a press. */
 function honk() {
+  tally("klakson");
   try {
     const context = new AudioContext();
     const now = context.currentTime;

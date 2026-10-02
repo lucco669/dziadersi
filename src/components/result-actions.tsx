@@ -4,6 +4,7 @@ import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 import { site } from "@/lib/site";
+import { tally } from "@/lib/tally";
 import { cleanName, decodeResult, encodeResult } from "@/lib/test";
 import { cx } from "@/lib/typo";
 
@@ -53,6 +54,7 @@ export function ResultActions({
 
   async function copy() {
     track("Udostępnienie", { kanal: "link" });
+    tally("udostepnienie");
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -65,6 +67,7 @@ export function ResultActions({
   async function share() {
     if (!canShare) return copy();
     track("Udostępnienie", { kanal: "natywne" });
+    tally("udostepnienie");
     try {
       await navigator.share({ title: `${score}% · ${diagnosis}`, text, url });
     } catch {
@@ -75,6 +78,7 @@ export function ResultActions({
   async function shareImage() {
     if (!storyFile) return;
     track("Udostępnienie", { kanal: "obraz" });
+    tally("certyfikat");
     try {
       await navigator.share({ files: [storyFile], text: `${text} ${url}` });
     } catch {
@@ -128,16 +132,25 @@ export function ResultActions({
       <dl className="mt-7 grid gap-x-8 gap-y-3 font-sans text-[0.95rem] sm:grid-cols-[auto_1fr]">
         <dt className="label pt-0.5 text-ink-soft">Certyfikat</dt>
         <dd className="flex flex-wrap gap-x-5 gap-y-1">
-          <a href={image("post")} download onClick={() => track("Udostępnienie", { kanal: "post" })} className="link">
+          <a href={image("post")} download onClick={() => {
+              track("Udostępnienie", { kanal: "post" });
+              tally("certyfikat");
+            }} className="link">
             Pobierz post 4:5
           </a>
-          <a href={image("relacja")} download onClick={() => track("Udostępnienie", { kanal: "relacja" })} className="link">
+          <a href={image("relacja")} download onClick={() => {
+              track("Udostępnienie", { kanal: "relacja" });
+              tally("certyfikat");
+            }} className="link">
             Pobierz relację 9:16
           </a>
           <a
             href={`/wynik/${code}/badania?pobierz`}
             download
-            onClick={() => track("Udostępnienie", { kanal: "badania" })}
+            onClick={() => {
+              track("Udostępnienie", { kanal: "badania" });
+              tally("certyfikat");
+            }}
             className="link"
           >
             Wyniki badań
@@ -151,7 +164,10 @@ export function ResultActions({
               href={outlet.href}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => track("Udostępnienie", { kanal: outlet.label })}
+              onClick={() => {
+                track("Udostępnienie", { kanal: outlet.label });
+                tally("udostepnienie");
+              }}
               className="link"
             >
               {outlet.label}

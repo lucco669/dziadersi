@@ -35,22 +35,23 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 
 ### Phase 2: Atlas, Słownik, Raporty and Indeks (search traffic) ✅
 
-- `/atlas` covers 22 species: 10 nationwide (the ones the test diagnoses) and 12 regional ones, one per voivodeship on the map.
+- `/atlas` covers 28 species: 10 nationwide (the ones the test diagnoses), 12 regional ones (one per voivodeship on the map) and 6 occasional ones (`occasion` set: seen only at weddings, on Christmas Eve, in the window, in queues, at football on TV, on campsites). Occasional and regional species are never diagnosed; the test edition is frozen.
   - The index page has the species plates (pictograms), the regional map and a dichotomous identification key.
   - Each `/atlas/[slug]` page has a description, "7 objawów …" (the title targets searches like "objawy dziadersa"), vocalisations, handling advice, and a species card: traits, status, a 12-month activity calendar, and the range.
   - Each also links to related species, dictionary phrases, reports, and the test.
-- `/slownik` holds 26 phrases in an A–Z index with the word of the day. Each `/slownik/[slug]` page has the definition, pronunciation, example, cross-references, and the species it belongs to.
-- `/raporty` holds 5 papers. Each `/raporty/[slug]` page has headline figures, an abstract, sections, conclusions, a bar chart, methodology, "Jak cytować" and share links.
+- `/slownik` holds 50 phrases in an A–Z index with the word of the day. Each `/slownik/[slug]` page has the definition, pronunciation, example, cross-references, and the species it belongs to.
+- `/raporty` holds 8 papers. Each `/raporty/[slug]` page has headline figures, an abstract, sections, conclusions, a bar chart, methodology, "Jak cytować" and share links.
 - `/indeks` has the live panel, the full-year chart, the seasons and warning levels, this year's risk calendar, the regional ranking, and the methodology.
 - Every page has its own OG card, all prerendered at build. JSON-LD covers BreadcrumbList, Article, Report, DefinedTerm(Set), CollectionPage with an ItemList, and Dataset on the relevant pages, and WebSite + Organization on the homepage. Metadata for every page comes from one helper, `pageMetadata()` in `src/lib/seo.ts` (canonical, Open Graph, Twitter). The sitemap is generated from content.
 - Content is plain TS under `src/content/`. URL slugs are explicit and must never change once published.
-- **Still to grow before heavy promotion:** 50 species, 50 dictionary entries and 10 reports. Adding an entry is one object in the relevant file, and its page, OG image, sitemap entry and links are generated automatically.
+- **Still to grow before heavy promotion:** 50 species and 10 reports (the dictionary reached 50). Adding an entry is one object in the relevant file, and its page, OG image, sitemap entry and links are generated automatically.
 
 ### Phase 3: toys (cheap, shareable, no backend) ✅
 
-- **Rozmówki dziaderskie** (`/generator`): a phrasebook in six chapters (samochód, remont, urlop, restauracja, komputer, dzieci sąsiadów). A line is an opener, a claim and a punchline, each a whole sentence, so any three read as one line (7,200 in all). The parts spin like reels, any of them can be held ("Zostaw", keys 1–3), the figure reads the line aloud (Web Speech, Polish voice when available), and a "rozbiór" underlines the parts the way Polish lessons mark parts of a sentence. Each line has its own page and share card at `/generator/[kod]` ("samochod-3b7": chapter plus one base36 digit per part). Content: `src/content/phrasebook.ts`, append-only.
-- **Dziaders Bingo** (`/bingo`): cards for a wedding, Christmas Eve, the May long weekend and the seaside. A card (`/bingo/[karta]`, "wesele-3k9fz") is 24 squares drawn from the occasion's pool by a seed, around a free centre. Tap to cross out in red ink; five in a line draws a red line and stamps BINGO. Marks stay in this browser only. Each card has a share card, a print style (A4, without the site around it) and `/bingo/[karta]/druk` with four different cards on one sheet. Content: `src/content/bingo.ts`; changing a pool reshuffles that occasion's cards.
-- Drawings: six chapter icons and two new occasion plates (the wedding with a tie on the forehead, Christmas Eve with the tree), in `src/components/occasions.tsx`; the long weekend and the seaside reuse the Grillowy and Wakacyjny plates.
+- **Rozmówki dziaderskie** (`/generator`): a phrasebook in eight chapters (samochód, remont, urlop, restauracja, komputer, dzieci sąsiadów, pogoda, zakupy). A line is an opener, a claim and a punchline, each a whole sentence, so any three read as one line (9,600 in all). The parts spin like reels, any of them can be held ("Zostaw", keys 1–3), the figure reads the line aloud (Web Speech, Polish voice when available), and a "rozbiór" underlines the parts the way Polish lessons mark parts of a sentence. Each line has its own page and share card at `/generator/[kod]` ("samochod-3b7": chapter plus one base36 digit per part). Content: `src/content/phrasebook.ts`, append-only.
+- **Dziaders Bingo** (`/bingo`): cards for a wedding, Christmas Eve, a name day, the May long weekend, a family car trip and the seaside. A card (`/bingo/[karta]`, "wesele-3k9fz") is 24 squares drawn from the occasion's pool by a seed, around a free centre. Tap to cross out in red ink; five in a line draws a red line and stamps BINGO. Marks stay in this browser only. Each card has a share card, a print style (A4, without the site around it) and `/bingo/[karta]/druk` with four different cards on one sheet. Content: `src/content/bingo.ts`; changing a pool reshuffles that occasion's cards.
+- Drawings: eight chapter icons and occasion plates in `src/components/occasions.tsx`. The wedding and Christmas Eve reuse the Weselny and Wigilijny species plates, the long weekend and the seaside the Grillowy and Wakacyjny ones; the name day (sweater, raised glass, wall unit, salad bowl) and the car trip (paper map, estate car with a roof box) have their own.
+- Signed-in players get more: a winning bingo card files itself in the profile, and any Rozmówki line can be kept with "Zachowaj".
 
 ### Phase 4: Supabase, accounts and community (in progress)
 
@@ -61,8 +62,17 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - **Profil Dziaderski** ✅: magic-link accounts (`/konto`: email, then the link or the six-digit code). `/profil` shows the species collection (10 plates, missing ones faded), nine badges computed from saved results, the test history, nickname, sign-out and account deletion. Tests finished while signed in are filed automatically; older results via "Zapisz w Profilu Dziaderskim" on the result page (`/profil/zapisz/[kod]`). `src/proxy.ts` refreshes sessions on these routes only; the rest of the site stays static.
 - **Branded email** ✅: Supabase's Send Email Hook calls `/api/auth/email` (Standard Webhooks signature checked), which renders the Institute's letterhead (`src/emails/`: paper card, red certificate stripe, ink button, the code as a red stamp, text version included) and sends through Brevo.
 - **Privacy** ✅: `/prywatnosc`. The data controller (`site.controller` in `src/lib/site.ts`) must be filled in before launch.
-- Next: rankings as real groups that update for everyone; a weekly census email; Google sign-in.
-- Still needs moderation before launch: **Czy to już dziaderstwo?** (user-submitted situations, votes TAK / NIE / DZIADERSTWO KLINICZNE) and the **Hall of Fame**. Pre-moderation queue, report button and terms of use first.
+- **Community migration** (`supabase/migrations/20261002160000_community.sql`, run it by hand like the others): sightings, bookmarks (`saved_items`), verdicts, case submissions and daily tallies, plus `community_summary()`, `case_tally()` and `tally()`. Everything reads through `getCommunity()` (`src/lib/community.ts`), cached for minutes, and every page degrades to dots and dashes while the migration is missing.
+- **Account presence, quietly** ✅: the header shows "Profil" (a red dot and the nickname once signed in), and one-line mentions sit where they help: under the test's start button, under the certificate on a result page, next to "Cały Atlas" on the front page, under the census figures, after a bingo and after a guest's verdict. Static pages stay static: `src/components/account.tsx` checks for the Supabase cookie first, and only signed-in visitors call `/api/konto` (cached a minute in sessionStorage).
+- **Obserwacje terenowe** ✅: on every species page a signed-in visitor reports a sighting (one per species per day, voivodeship optional). The Atlas shows totals, this week's most observed species and the latest reports; the profile keeps the observation log (all 28 plates, counts, first dates).
+- **Zakładki** ✅: Rozmówki lines, winning bingo cards and exams, kept with one button. Guests go through `/profil/zachowaj?rodzaj=…&kod=…`, which signs them in and files the bookmark.
+- **Badges** now number 16, all computed: the original nine plus Obserwator, Sieć terenowa, Regionalista, Egzamin zdany, Ławnik, Sygnalista and Bingo.
+- **Komisja Orzekająca** (`/czy-to-juz-dziaderstwo`) ✅: 30 curated cases (`src/content/cases.ts`, docket numbers IBD-K n/26, append-only). A case shows the facts and the party's defence; visitors vote with three stamps (to jeszcze nie / to już / kliniczne), then see the split and the Commission's justification and verdict. Anonymous votes are remembered by the browser, signed-in judges vote once per case and see their verdicts in the profile. The front page carries the case of the day. Signed-in judges can propose cases (three a day) into a moderation queue that is never published automatically: read `case_submissions` in the Supabase table editor and write accepted cases into `cases.ts`.
+- **Egzamin terenowy** (`/egzamin`) ✅: 12 identification questions drawn by a seed from a frozen pool of the 28 species (`src/lib/exam.ts`), with seven kinds of clue (call, symptom, habitat, enemies, field marks, plate, Latin). Graded on the Polish school scale, 1 to 6; grades 5 and 6 get the red stripe on the certificate. Result codes are stateless like the test's (`/egzamin/[kod]`, "1" + seed + answers + day), with a share card.
+- **Mały Rocznik Statystyczny** (`/statystyki`) ✅: the yearbook in the manner of GUS: six divisions (badania, obserwacje, Komisja, pomoce naukowe, zbiory, przeliczenia), numbered tables, Isotype rows where the last symbol is cut to the remainder (one pot of rosół = three hours of testing), unit conversions with their methodology, and the GUS legend of conventional signs ("–" did not occur, "·" no information, "x" not applicable). Tallies come from `/api/licznik` (sendBeacon, allowlisted kinds, no identifiers): Rozmówki lines and readings, bingo cards, squares and bingos, exams, horn presses in the test, certificate downloads and shares.
+- **O Instytucie** and **Regulamin** ✅: the statute, history, organisation chart (each unit runs a real department) and FAQ in `src/content/institute.ts`; plain terms of use, needed before user-submitted cases.
+- **Navigation** ✅: a mega menu grouped like an organisation chart (Badania, Zbiory, Dane, Pomoce naukowe), with a pictogram per department (`src/components/menu-icons.tsx`) and the profile line at the bottom. Phones get a "Działy" sheet and a scrolling row of the departments. The footer uses the same groups.
+- Next: the Hall of Fame; rankings as real groups that update for everyone; a weekly census email; Google sign-in; a public map of observations by voivodeship.
 
 ### Phase 5: shop
 
@@ -79,8 +89,10 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 | `/raporty`, `/raporty/[slug]` | 2 |
 | `/indeks` (methodology and archive) | 2 |
 | `/generator`, `/generator/[kod]`, `/bingo`, `/bingo/[karta]`, `/bingo/[karta]/druk` | 3 |
-| `/spis`, `/konto`, `/profil`, `/prywatnosc` (done); `/czy-to-juz-dziaderstwo`, `/hall-of-fame` | 4 |
-| `/o-instytucie`, `/regulamin`, `/prywatnosc` | before Phase 4, or as soon as analytics is added |
+| `/spis`, `/konto`, `/profil`, `/profil/zachowaj`, `/prywatnosc` | 4 |
+| `/czy-to-juz-dziaderstwo`, `/czy-to-juz-dziaderstwo/[slug]`, `/egzamin`, `/egzamin/[kod]`, `/statystyki` | 4 |
+| `/o-instytucie`, `/regulamin` | 4 |
+| `/hall-of-fame` | next |
 
 ## 4. Design system
 
@@ -109,6 +121,9 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - The same drawings render in generated images through `src/lib/svg-string.ts`.
 - Motion: plates animate on hover and where marked `animated` (smoke, the kick, the float, rain). The hero diagram draws its leader lines and the mustache twitches. Everything stops for `prefers-reduced-motion`.
 - Test scenes are drawn in the same language (`src/components/test/`): the car park and the beach from above, the crossing for the horn test, the drawer and the boot with 18 small objects, the thermometer with the sock. The traffic light's green (`#4e8b5f`) is the only colour outside the palette.
+- The Komisja's bench (three judges, the chair with a gavel that comes down now and then) is in `src/components/court.tsx`; the field observer with binoculars (`Binoculars` torso) heads the exam.
+- Menu pictograms (`src/components/menu-icons.tsx`, 48 × 40): one per department, each with one small movement on hover (the stamp lands, the gavel strikes, the bars grow, the cross is drawn).
+- Isotype symbols for the Rocznik (`src/components/isotype.tsx`, 24 × 24): a pot of rosół, a horn, a speech bubble, a crossed square, binoculars, a gavel, a certificate, a fridge. `IsoRow` picks a round unit and cuts the last symbol to the remainder.
 
 **Raster art:** the Rorschach plates are the one place where drawing by hand would look fake. They were generated with ChatGPT image generation (through the Codex CLI), converted to transparent WebP (`public/plansze/`, colour-to-alpha against white, so they sit on any background) and kept as PNG for share images (`assets/plansze/`). Plansza IV appears only on the `/test` share card.
 
@@ -139,7 +154,9 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - [ ] Vercel project connected to `main`, `dziader.si` added, `www` redirecting to the apex
 - [ ] Check the link preview in the Facebook Sharing Debugger, the LinkedIn Post Inspector and a real Messenger chat
 - [ ] Google Search Console with the sitemap submitted
-- [ ] Privacy page before adding analytics; terms before any user-generated content
+- [x] Privacy page before adding analytics; terms before any user-generated content
+- [ ] Run `supabase/migrations/20261002160000_community.sql` (observations, bookmarks, Komisja, tallies)
+- [ ] Fill in `site.controller` (name and email) in `src/lib/site.ts`: the privacy policy, terms and About page point to it
 - [x] Phase 1 shipped before any promotion. The test is what turns visits into shares.
 - [ ] Paste a real result link into Messenger and WhatsApp and check the certificate preview
 

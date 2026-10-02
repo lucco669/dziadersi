@@ -5,14 +5,15 @@ import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/compon
 import { Phrasebook } from "@/components/phrasebook";
 import { SITUATIONS } from "@/content/phrasebook";
 import { getBulletin } from "@/lib/bulletin";
-import { seededLine, TOTAL_LINES } from "@/lib/phrasebook";
+import { line, seededLine, TOTAL_LINES } from "@/lib/phrasebook";
+import { shuffled } from "@/lib/random";
 import { institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { typo } from "@/lib/typo";
 
 const title = "Rozmówki dziaderskie";
 const description =
-  "Generator tekstów dziadersa: samochód, remont, urlop, restauracja, komputer i dzieci sąsiadów. Losuj, zostaw najlepszą puentę i wyślij rodzinie.";
+  "Generator tekstów dziadersa: samochód, remont, urlop, restauracja, komputer, dzieci sąsiadów, pogoda i zakupy. Losuj, zostaw najlepszą puentę i wyślij rodzinie.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Rozmówki dziaderskie: generator tekstów dziadersa",
@@ -51,7 +52,7 @@ export default async function GeneratorPage() {
         crumbs={[{ label: title }]}
         title={title}
         lead={typo(
-          "Wypowiedzi na każdą okazję, w sześciu rozdziałach. Każda składa się z zagajenia, tezy i puenty, a każda część była słyszana w terenie.",
+          "Wypowiedzi na każdą okazję, w ośmiu rozdziałach. Każda składa się z zagajenia, tezy i puenty, a każda część była słyszana w terenie.",
         )}
         meta={`${lines} wypowiedzi · wydanie I, ${site.founded} · na dziś: ${daily.situation.name.toLowerCase()}`}
       />
@@ -69,16 +70,19 @@ export default async function GeneratorPage() {
                 <h3 className="text-[1.6rem] font-bold leading-tight">{situation.name}</h3>
               </div>
               <ul className="mt-4">
-                {[0, 1, 2].map((n) => {
-                  const sample = seededLine(101 + i * 13 + n, situation);
-                  return (
-                    <li key={sample.code} className="border-b border-rule py-3">
-                      <Link href={`/generator/${sample.code}`} className="group block leading-snug">
-                        <span className="italic transition-colors group-hover:text-red">„{typo(sample.parts[1])}”</span>
-                      </Link>
-                    </li>
-                  );
-                })}
+                {shuffled(situation.claims.length, 101 + i * 13)
+                  .slice(0, 3)
+                  .map((claim, n) => {
+                    const base = seededLine(101 + i * 13 + n, situation);
+                    const sample = line(situation, [base.picks[0], claim, base.picks[2]]);
+                    return (
+                      <li key={sample.code} className="border-b border-rule py-3">
+                        <Link href={`/generator/${sample.code}`} className="group block leading-snug">
+                          <span className="italic transition-colors group-hover:text-red">„{typo(sample.parts[1])}”</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
               </ul>
             </li>
           ))}

@@ -7,6 +7,7 @@ import { Certificate } from "@/components/certificate";
 import { LabSheet } from "@/components/lab-sheet";
 import { Section } from "@/components/page";
 import { Figure, SpeciesPlate, INK, PAPER } from "@/components/pictograms";
+import { ResultProfileNote } from "@/components/profile-notes";
 import { ResultActions } from "@/components/result-actions";
 import type { Species } from "@/content/species";
 import { TASKS } from "@/content/test";
@@ -153,6 +154,10 @@ function Summary({
               Wykonaj test
             </Link>
           </p>
+          <ResultProfileNote
+            code={result.code}
+            species={result.diagnosis.species.map((species) => ({ key: species.key, name: species.name }))}
+          />
         </div>
       </div>
     </section>

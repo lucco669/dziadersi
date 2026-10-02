@@ -17,7 +17,7 @@ export default function OpengraphImage() {
           <span>nie wybiera.</span>
         </div>
         <div style={{ ...italic, display: "flex", marginTop: 26, fontSize: 40, color: C.soft }}>{site.tagline}</div>
-        <div style={{ ...sans, display: "flex", marginTop: 26, fontSize: 22, color: C.red }}>Test Dziadersa: 24 pytania, wynik i certyfikat</div>
+        <div style={{ ...sans, display: "flex", marginTop: 26, fontSize: 22, color: C.red }}>Test Dziadersa: 5 gabinetów, wynik i certyfikat</div>
       </div>
       <img src={svgDataUri("-6 -1 52 97", <Figure glasses="forehead" torso={<SummerTorso />} />)} width={226} height={421} alt="" />
     </OgFrame>,

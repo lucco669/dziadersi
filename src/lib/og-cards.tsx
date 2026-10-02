@@ -1,10 +1,12 @@
 import { ImageResponse } from "next/og";
 import type { ReactElement, ReactNode } from "react";
-import { Figure, GREY, INK, plateDrawing } from "@/components/pictograms";
+import { ISO, type IsoKind } from "@/components/isotype";
+import { Binoculars, Figure, GREY, INK, plateDrawing } from "@/components/pictograms";
 import type { Entry } from "@/content/dictionary";
 import { formatReportDate, type Report } from "@/content/reports";
 import { statusLabel, type Species, type SpeciesKey } from "@/content/species";
-import { C, OG_FONTS, OgFrame, bold, italic, sans, serif } from "./og";
+import type { ExamResult } from "./exam";
+import { C, OG_FONTS, OgFrame, OgStamp, bold, italic, sans, serif } from "./og";
 import { svgDataUri } from "./svg-string";
 
 export const OG_SIZE = { width: 1200, height: 630 };
@@ -155,4 +157,60 @@ export function OgCrowd({ count, width }: { count: number; width: number }) {
     </g>
   ));
   return <img src={svgDataUri("0 0 440 520", drawing)} width={width} height={(width * 520) / 440} alt="" />;
+}
+
+/** The field observer: bucket hat, glasses, binoculars. */
+export function OgBinoculars({ height }: { height: number }) {
+  return (
+    <img
+      src={svgDataUri("-4 -1 48 97", <Figure left="hip" glasses="eyes" hat="bucket" torso={<Binoculars />} />)}
+      width={(height * 48) / 97}
+      height={height}
+      alt=""
+    />
+  );
+}
+
+/** An exam result: the grade, its name and title, twelve squares for the answers. */
+export function examCard(result: ExamResult, headers?: Record<string, string>) {
+  const squares = result.questions.map((question, i) => (
+    <rect key={i} x={i * 36} y={0} width={32} height={32} fill={result.answers[i] === question.correct ? C.ink : C.red} />
+  ));
+  return render(
+    <OgFrame section={`Egzamin terenowy · ${result.date}`} url="dziader.si/egzamin">
+      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <div style={{ ...bold, display: "flex", fontSize: 230, lineHeight: 0.8, letterSpacing: -6 }}>{result.grade.value}</div>
+          <div style={{ display: "flex", flexDirection: "column", marginLeft: 34, paddingBottom: 8 }}>
+            <div style={{ ...bold, display: "flex", fontSize: 64, lineHeight: 1 }}>{result.grade.name}</div>
+            <div style={{ ...sans, display: "flex", marginTop: 12, fontSize: 26, color: C.soft }}>{`${result.points} z 12 oznaczeń poprawnych`}</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", marginTop: 34 }}>
+          <OgStamp label={result.grade.title} fontSize={24} />
+        </div>
+        <div style={{ display: "flex", marginTop: 34 }}>
+          <img src={svgDataUri("0 0 428 32", squares)} width={642} height={48} alt="" />
+        </div>
+      </div>
+      <OgBinoculars height={400} />
+    </OgFrame>,
+    headers,
+  );
+}
+
+/** A block of Isotype symbols from the Rocznik, `count` of them, the last one cut to `part`. */
+export function OgIsotype({ kind, count, part = 1, columns, width }: { kind: IsoKind; count: number; part?: number; columns: number; width: number }) {
+  const rows = Math.ceil(count / columns);
+  const drawing = Array.from({ length: count }, (_, i) => {
+    const fraction = i === count - 1 ? part : 1;
+    return (
+      <svg key={i} x={(i % columns) * 28} y={Math.floor(i / columns) * 30} width={24 * fraction} height={24} viewBox={`0 0 ${24 * fraction} 24`}>
+        {ISO[kind]}
+      </svg>
+    );
+  });
+  const viewWidth = columns * 28 - 4;
+  const viewHeight = rows * 30 - 6;
+  return <img src={svgDataUri(`0 0 ${viewWidth} ${viewHeight}`, drawing)} width={width} height={(width * viewHeight) / viewWidth} alt="" />;
 }

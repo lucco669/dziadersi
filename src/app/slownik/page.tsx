@@ -123,7 +123,7 @@ export default async function DictionaryPage() {
 
       <TestPromo
         title="Używasz tych zwrotów?"
-        text={typo("Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Dwadzieścia cztery pytania, około trzech minut.")}
+        text={typo("Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Pięć gabinetów, około czterech minut.")}
       />
     </main>
   );

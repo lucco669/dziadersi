@@ -7,18 +7,18 @@ import { OCCASIONS } from "@/content/bingo";
 import { sampleCard } from "@/lib/bingo";
 import { institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
-import { typo } from "@/lib/typo";
+import { plural, typo } from "@/lib/typo";
 
 const title = "Dziaders Bingo";
 const description =
-  "Bingo na wesele, Wigilię, majówkę i plażę: karty z tym, co zawsze mówi wujek. Skreślaj na telefonie albo wydrukuj cztery karty na stół.";
+  "Bingo na wesele, Wigilię, imieniny, majówkę, podróż autem i plażę: karty z tym, co zawsze mówi wujek. Skreślaj na telefonie albo wydrukuj cztery karty na stół.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Dziaders Bingo: karty na wesele, Wigilię i majówkę",
   description,
   path: "/bingo",
   shareTitle: `${title} · ${site.name}`,
-  shareDescription: "Karty bingo na wesele, Wigilię, majówkę i plażę. Pięć w linii wygrywa.",
+  shareDescription: "Karty bingo na wesele, Wigilię, imieniny, majówkę, podróż autem i plażę. Pięć w linii wygrywa.",
 });
 
 const RULES = [
@@ -54,7 +54,7 @@ export default function BingoPage() {
         lead={typo(
           "Karty na okazje, przy których dziaderstwo osiąga szczyt sezonowy. Skreślaj na telefonie albo wydrukuj karty dla całego stołu.",
         )}
-        meta={`${OCCASIONS.length} okazje · ${OCCASIONS.reduce((sum, occasion) => sum + occasion.squares.length, 0)} pól w puli · każda karta inna`}
+        meta={`${OCCASIONS.length} ${plural(OCCASIONS.length, "okazja", "okazje", "okazji")} · ${OCCASIONS.reduce((sum, occasion) => sum + occasion.squares.length, 0)} pól w puli · każda karta inna`}
       />
 
       <Section id="okazje" title="Wybierz okazję" aside="Karta losowana przy każdym kliknięciu">

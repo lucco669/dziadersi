@@ -5,8 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useSyncExternalStore, type ReactNode } from "react";
 import { CARD_SIZE, CENTRE, LINES, randomSeed, type Card } from "@/lib/bingo";
+import { tally } from "@/lib/tally";
 import { cx, plural, typo } from "@/lib/typo";
+import { patchAccount, useAccount } from "./account";
 import { BingoGrid } from "./bingo-grid";
+import { BookmarkButton } from "./bookmark";
 import { Stamp } from "./brand";
 
 /*
@@ -83,7 +86,14 @@ const randomCardPath = (slug: string) => `/bingo/${slug}-${randomSeed().toString
 export function NewCardButton({ slug, className, children }: { slug: string; className?: string; children: ReactNode }) {
   const router = useRouter();
   return (
-    <button type="button" onClick={() => router.push(randomCardPath(slug))} className={className}>
+    <button
+      type="button"
+      onClick={() => {
+        tally("bingo-karta");
+        router.push(randomCardPath(slug));
+      }}
+      className={className}
+    >
       {children}
     </button>
   );
@@ -92,6 +102,7 @@ export function NewCardButton({ slug, className, children }: { slug: string; cla
 /** The playable card: tap to cross out, five in a line is bingo. */
 export function BingoBoard({ card }: { card: Card }) {
   const router = useRouter();
+  const account = useAccount();
   const key = keyOf(card.code);
   const raw = useSyncExternalStore(subscribe, () => load(key), () => "");
   const saved = parse(raw);
@@ -108,10 +119,24 @@ export function BingoBoard({ card }: { card: Card }) {
     const after = linesOf(marks).length;
     const at = after > 0 ? (saved.at ?? time()) : undefined;
     save(key, marks ? { marks, at } : null);
+    if (marks & (1 << i)) tally("bingo-pole");
     if (after > before) {
       setFresh(true);
       track("Bingo", { okazja: card.occasion.slug, linie: after });
+      tally("bingo");
+      fileWinner();
     }
+  }
+
+  /** A signed-in player's winning card goes to the profile by itself. */
+  function fileWinner() {
+    if (account.status !== "member" || account.account.saved.bingo.includes(card.code)) return;
+    patchAccount((current) => ({ ...current, saved: { ...current.saved, bingo: [...current.saved.bingo, card.code] } }));
+    fetch("/api/zakladki", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ kind: "bingo", code: card.code }),
+    }).catch(() => {});
   }
 
   function reset() {
@@ -120,7 +145,10 @@ export function BingoBoard({ card }: { card: Card }) {
     setFresh(false);
   }
 
-  const another = () => router.push(randomCardPath(card.occasion.slug));
+  const another = () => {
+    tally("bingo-karta");
+    router.push(randomCardPath(card.occasion.slug));
+  };
 
   const overlay =
     lines.length > 0 ? (
@@ -174,6 +202,18 @@ export function BingoBoard({ card }: { card: Card }) {
             full
               ? "Karta zapełniona. Instytut gratuluje rodzinie i prosi o zachowanie karty do celów naukowych."
               : "Bingo! Należy wstać i krzyknąć. Instytut nie odpowiada za reakcję wujka.",
+          )}
+        </p>
+      )}
+      {lines.length > 0 && (
+        <p className="label mt-3 max-w-xl text-ink-soft print:hidden">
+          {account.status === "member" ? (
+            <>Wygrana karta trafiła do zakładek w Profilu Dziaderskim. Odznaka „Bingo” przyznana.</>
+          ) : (
+            <>
+              {typo("Wygrane karty zbiera Profil Dziaderski, razem z odznaką „Bingo”.")}{" "}
+              <BookmarkButton kind="bingo" code={card.code} label="Zachowaj kartę" className="link text-ink" />
+            </>
           )}
         </p>
       )}

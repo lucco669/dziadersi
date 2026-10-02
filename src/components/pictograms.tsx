@@ -359,6 +359,44 @@ function Pigeon({ x, y, flip, color = BLUE }: { x: number; y: number; flip?: boo
   );
 }
 
+/** Field binoculars on a strap, over the belly: the field observer's kit. */
+export function Binoculars() {
+  return (
+    <g>
+      <path d="M14.6 18.8L16.4 28M25.4 18.8L23.6 28" stroke={PAPER} strokeWidth={0.8} fill="none" />
+      <rect x={18.4} y={29.6} width={3.2} height={2.4} fill={PAPER} />
+      <circle cx={15.6} cy={32.4} r={3.6} fill={INK} stroke={PAPER} strokeWidth={0.9} />
+      <circle cx={24.4} cy={32.4} r={3.6} fill={INK} stroke={PAPER} strokeWidth={0.9} />
+      <circle cx={15.6} cy={32.4} r={1.4} fill={BLUE} />
+      <circle cx={24.4} cy={32.4} r={1.4} fill={BLUE} />
+    </g>
+  );
+}
+
+/** A tie worn on the forehead, as at every wedding after midnight. */
+export function HeadTie() {
+  return (
+    <g>
+      <rect x={12} y={2} width={16.4} height={2.6} fill={RED} transform="rotate(-10 20 3.4)" />
+      <path d="M26.6 1.6L29.4 1.2L36 13.4L33.2 15.4Z" fill={RED} />
+      <path d="M33.2 15.4L36 13.4L36.6 16.6Z" fill={RED} />
+    </g>
+  );
+}
+
+/** A club scarf, knotted once and hanging over the belly. */
+function Scarf() {
+  return (
+    <g>
+      <path d="M11.6 18.4H28.4L27.4 22.4H12.6Z" fill={RED} />
+      <rect x={21.4} y={20} width={5} height={22} fill={RED} transform="rotate(-6 24 31)" />
+      {[25, 30, 35, 40].map((y) => (
+        <line key={y} x1={21.6} y1={y + 0.6} x2={26.6} y2={y} stroke={PAPER} strokeWidth={1.4} />
+      ))}
+    </g>
+  );
+}
+
 /* Species plates, 120 × 100. */
 
 type Plate = { figure: ReactNode; scene?: ReactNode; front?: ReactNode };
@@ -917,6 +955,174 @@ const PLATES: Record<SpeciesKey, () => Plate> = {
         <path d="M51.6 72H66.6" stroke={INK} strokeWidth={0.7} />
         <rect x={55} y={78} width={8.2} height={7} rx={1} fill="none" stroke={INK} strokeWidth={0.7} />
       </>
+    ),
+  }),
+
+  weselny: () => ({
+    scene: (
+      <>
+        <g className="pg-notes">
+          <Note x={54} y={16} />
+          <Note x={62} y={6} size={0.8} />
+        </g>
+        <path d="M68 64H116L118 94H66Z" fill={PAPER} stroke={INK} strokeWidth={1} />
+        <line x1={64} y1={64} x2={120} y2={64} stroke={INK} strokeWidth={1.6} />
+        <rect x={81} y={47} width={22} height={17} fill={PAPER} stroke={INK} strokeWidth={1} />
+        <rect x={85} y={36} width={14} height={11} fill={PAPER} stroke={INK} strokeWidth={1} />
+        <line x1={81} y1={55} x2={103} y2={55} stroke={RED} strokeWidth={1.4} />
+        <circle cx={92} cy={33.6} r={2.6} fill={RED} />
+      </>
+    ),
+    figure: at(
+      8,
+      <>
+        <Figure left="up" right="up" legs="trousers" torso={<Jacket />} />
+        <HeadTie />
+      </>,
+    ),
+  }),
+
+  wigilijny: () => ({
+    scene: (
+      <>
+        <Pine x={92} scale={1.2} />
+        <path d="M92 36.6L93.6 40.4H97.6L94.4 42.8L95.6 46.6L92 44.2L88.4 46.6L89.6 42.8L86.4 40.4H90.4Z" fill={OCHRE} />
+        {[
+          [86, 58, RED],
+          [99, 62, OCHRE],
+          [90, 72, BLUE],
+          [80, 80, OCHRE],
+          [104, 80, RED],
+        ].map(([x, y, fill]) => (
+          <circle key={`${x}-${y}`} cx={x as number} cy={y as number} r={2.4} fill={fill as string} />
+        ))}
+        <rect x={64} y={82} width={14} height={12} fill={RED} />
+        <rect x={70} y={82} width={2.4} height={12} fill={PAPER} />
+        <rect x={104} y={84} width={14} height={10} fill={BLUE} />
+        <rect x={110} y={84} width={2.4} height={10} fill={PAPER} />
+      </>
+    ),
+    figure: at(6, <Figure left="hip" legs="trousers" torso={<Sweater />} />),
+  }),
+
+  parapetowy: () => ({
+    scene: (
+      <>
+        <rect x={10} y={2} width={100} height={98} fill={GREY} />
+        <rect x={24} y={8} width={72} height={55} fill={PAPER} />
+        <g className="pg-float" fill="none" stroke={INK} strokeWidth={0.6}>
+          {[27, 30, 33, 87, 90, 93].map((x) => (
+            <path key={x} d={`M${x} 8q1.2 4 0 8t0 8t0 8t0 8t0 8`} />
+          ))}
+          <path d="M25 48q2 2 4 0t4 0t4 0M83 48q2 2 4 0t4 0t4 0" />
+        </g>
+        <rect x={24} y={8} width={72} height={55} fill="none" stroke={INK} strokeWidth={1.6} />
+        <rect x={39} y={50.6} width={42} height={12} rx={3.4} fill={RED} />
+        <path d="M42 53.4H78" stroke={PAPER} strokeWidth={0.8} strokeDasharray="2 1.6" />
+      </>
+    ),
+    figure: (
+      <g transform="translate(40 18)">
+        <Figure left="cross" right="cross" glasses="eyes" />
+      </g>
+    ),
+    front: (
+      <>
+        <rect x={10} y={63} width={100} height={37} fill={GREY} />
+        <rect x={20} y={62} width={80} height={3.6} fill={INK} />
+        <path d="M85.4 52H95.6L94.4 62H86.6Z" fill={OCHRE} />
+        <g fill={INK}>
+          <ellipse cx={87.4} cy={50} rx={3} ry={1.6} transform="rotate(-20 87.4 50)" />
+          <ellipse cx={93.6} cy={50} rx={3} ry={1.6} transform="rotate(20 93.6 50)" />
+        </g>
+        {[
+          [88.6, 45.6],
+          [92.4, 44.4],
+          [90.4, 41.6],
+        ].map(([x, y]) => (
+          <circle key={`${x}-${y}`} cx={x} cy={y} r={2.1} fill={RED} />
+        ))}
+        <g stroke={PAPER} strokeWidth={0.6} opacity={0.7}>
+          {[72, 80, 88, 96].map((y, i) => (
+            <line key={y} x1={10} y1={y} x2={110} y2={y} strokeDasharray={i % 2 ? "6 2" : "3 2 6 2"} />
+          ))}
+        </g>
+      </>
+    ),
+  }),
+
+  kolejkowy: () => ({
+    scene: (
+      <>
+        <g transform="translate(-8 4) scale(0.92)">
+          <Figure color={GREY} cutout={PAPER} />
+        </g>
+        <g transform="translate(17 4) scale(0.92)">
+          <Figure color={GREY} cutout={PAPER} left="cross" right="cross" />
+        </g>
+        <rect x={100} y={26} width={20} height={68} fill={INK} />
+        <rect x={103} y={40} width={17} height={18} fill={PAPER} />
+        <line x1={103} y1={49} x2={120} y2={49} stroke={INK} strokeWidth={0.6} />
+        <rect x={98} y={58} width={22} height={3} fill={INK} />
+        <rect x={102} y={30} width={16} height={6} fill={RED} />
+        <line x1={105} y1={33} x2={115} y2={33} stroke={PAPER} strokeWidth={1} />
+        <g className="pg-bubble">
+          <path d="M70 4H94Q96 4 96 6V18Q96 20 94 20H80L74 26V20H70Q68 20 68 18V6Q68 4 70 4Z" fill={RED} />
+          <path d="M79.4 9.4Q79.4 6.6 82 6.6T84.6 9.2Q84.6 11 82 12V14" fill="none" stroke={PAPER} strokeWidth={1.6} strokeLinecap="round" />
+          <circle cx={82} cy={16.8} r={1} fill={PAPER} />
+        </g>
+      </>
+    ),
+    figure: at(50, <Figure right="point" glasses="eyes" torso={<Pouch />} />),
+  }),
+
+  kibicowski: () => ({
+    scene: (
+      <>
+        <rect x={66} y={74} width={46} height={4} fill={INK} />
+        <line x1={70} y1={78} x2={70} y2={94} stroke={INK} strokeWidth={1.8} />
+        <line x1={108} y1={78} x2={108} y2={94} stroke={INK} strokeWidth={1.8} />
+        <rect x={68} y={36} width={42} height={36} rx={3} fill={INK} />
+        <rect x={72} y={40} width={30} height={28} rx={4} fill={BLUE} />
+        <g stroke={PAPER} strokeWidth={0.7} fill="none" opacity={0.8}>
+          <line x1={87} y1={40} x2={87} y2={68} />
+          <circle cx={87} cy={54} r={5} />
+        </g>
+        <g className="pg-float">
+          <circle cx={95} cy={60} r={2.6} fill={PAPER} />
+        </g>
+        <circle cx={106} cy={46} r={1.4} fill={OCHRE} />
+        <circle cx={106} cy={51} r={1.4} fill={RED} />
+        <path d="M80 36L72 22M98 36L106 22" stroke={INK} strokeWidth={1.2} strokeLinecap="round" />
+      </>
+    ),
+    figure: at(12, <Figure left="up" right="point" torso={<Scarf />} />),
+  }),
+
+  kempingowy: () => ({
+    scene: (
+      <>
+        <path d="M60 85V62Q60 46 78 46H104Q118 46 118 60V85Z" fill={PAPER} stroke={INK} strokeWidth={1.4} />
+        <rect x={60.7} y={66} width={56.6} height={4} fill={RED} />
+        <rect x={66} y={52} width={16} height={10} rx={1.4} fill={BLUE} />
+        <rect x={98} y={53} width={11} height={30} fill="none" stroke={INK} strokeWidth={1.2} />
+        <circle cx={100.6} cy={69} r={0.9} fill={INK} />
+        <line x1={60} y1={81} x2={50} y2={88} stroke={INK} strokeWidth={1.8} strokeLinecap="round" />
+        <line x1={52} y1={86.6} x2={52} y2={94} stroke={INK} strokeWidth={1.2} />
+        <circle cx={84} cy={87} r={7} fill={INK} />
+        <circle cx={84} cy={87} r={2.8} fill={GREY} />
+      </>
+    ),
+    figure: at(
+      8,
+      <>
+        <Figure left="cross" right="cross" hat="straw" />
+        <rect x={1} y={33.6} width={38} height={5} rx={0.8} fill={OCHRE} />
+        <rect x={16} y={34.4} width={8} height={3.4} rx={1.6} fill={PAPER} />
+        <g className="pg-level">
+          <circle cx={20} cy={36.1} r={1.1} fill={BLUE} />
+        </g>
+      </>,
     ),
   }),
 };

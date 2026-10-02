@@ -1,9 +1,11 @@
 # Supabase: census, accounts and branded email
 
-The project uses Supabase for three things:
+The project uses Supabase for these things:
 
 - **Narodowy Spis Dziadersów** (`/spis`): every finished test is stored anonymously in `public.results`.
-- **Profil Dziaderski** (`/konto`, `/profil`): magic-link accounts with saved results, species collection and badges.
+- **Profil Dziaderski** (`/konto`, `/profil`): magic-link accounts with saved results, species collection, field observations, bookmarks and badges.
+- **Komisja Orzekająca** (`/czy-to-juz-dziaderstwo`): votes on curated cases, and a moderation queue of cases proposed by signed-in judges.
+- **Mały Rocznik Statystyczny** (`/statystyki`): anonymous daily tallies (Rozmówki lines, bingo squares, horn presses…) and the aggregates of everything above.
 - **Branded auth emails**: Supabase's Send Email Hook calls `/api/auth/email`, which renders the Institute's letters and sends them through Brevo.
 
 ## 1. Run the migrations
@@ -12,6 +14,9 @@ Open the Supabase dashboard → **SQL Editor** and run the files in `migrations/
 
 1. `20261002130000_results.sql`: the anonymous results table and the three statistics functions (server-only).
 2. `20261002130100_accounts.sql`: profiles, saved results, row-level security and the signup trigger.
+3. `20261002160000_community.sql`: sightings, bookmarks (`saved_items`), verdicts, case submissions, tallies and the server-only functions `community_summary()`, `case_tally()` and `tally()`.
+
+Until the third migration runs, the Atlas, the Komisja and the Rocznik show "·" (no information) instead of figures and nothing breaks.
 
 Never edit a migration that has already run. Changes go into a new file with a later timestamp.
 
@@ -61,5 +66,10 @@ For local testing of the hook itself, Supabase must reach your machine (a tunnel
 - `public.results`: result code **without** the name, version, family-interview flag, score, diagnosed species, answers, optional voivodeship, retake flag with the previous score, time. No names, IPs or identifiers. Only the server (secret key) can read or write it.
 - `public.profiles`: nickname per account.
 - `public.saved_results`: result codes saved to a profile (with the name part, which is the owner's own data). Readable and deletable only by the owner.
+- `public.sightings`: field observations per account: species, optional voivodeship, day. One per species per day. Owner-only through row-level security; published only as totals.
+- `public.saved_items`: bookmarks per account (`rozmowki`, `bingo`, `egzamin`) with the item's code.
+- `public.verdicts`: votes in the Komisja: case, verdict, and the account for signed-in judges (set to null when the account is deleted). Written by the server only.
+- `public.case_submissions`: cases proposed by signed-in judges, with a status (`nowe`, `przyjete`, `odrzucone`). Nothing is published automatically: review them in the Table Editor, and change the status when you accept or reject one. The profile shows the status to the author.
+- `public.tallies`: daily counters by kind, no identifiers. Server only.
 
-Deleting an account (button in the profile) removes the auth user, which cascades to the profile and saved results. Anonymous census rows stay.
+Deleting an account (button in the profile) removes the auth user, which cascades to the profile, saved results, sightings, bookmarks and case submissions. Anonymous census rows and tallies stay, and verdicts stay without their owner.

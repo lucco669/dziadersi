@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Crowd, Tally } from "@/components/crowd";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { Figure, SpeciesPlate } from "@/components/pictograms";
+import { CensusProfileNote } from "@/components/profile-notes";
 import { REGION_GRID, REGIONS } from "@/content/regions";
 import { TASKS, VERDICTS } from "@/content/test";
 import { getAnswerCounts, getCensus, MIN_RESULTS, type AnswerCounts, type Census } from "@/lib/census";
@@ -55,6 +56,7 @@ function Figures({ census }: { census: Census }) {
               </div>
             ))}
           </dl>
+          <CensusProfileNote />
         </div>
         <figure className="lg:col-span-8">
           <Crowd count={perHundred} columns={25} className="w-full" label={`${perHundred} na 100 zbadanych ma dziaderstwo co najmniej podwyższone`} />
