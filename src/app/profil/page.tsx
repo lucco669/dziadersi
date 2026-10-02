@@ -9,13 +9,13 @@ import { REGIONS } from "@/content/regions";
 import { SPECIES, speciesByKey } from "@/content/species";
 import { decodeCard } from "@/lib/bingo";
 import { decodeLine } from "@/lib/phrasebook";
-import { buildProfile, loadRecords, type Badge } from "@/lib/profile";
+import { buildProfile, loadRecords, warsawToday, type Badge } from "@/lib/profile";
 import { pageMetadata } from "@/lib/seo";
 import { hasAuth } from "@/lib/supabase/config";
 import { currentUser } from "@/lib/supabase/server";
 import { DIAGNOSABLE } from "@/lib/test";
 import { cx, plural, typo } from "@/lib/typo";
-import { deleteAccount, removeBookmark, removeResult, removeSighting, saveNickname, signOut } from "./actions";
+import { deleteAccount, removeBookmark, removeResult, removeSighting, saveNickname, saveSettings, signOut } from "./actions";
 
 export const metadata: Metadata = pageMetadata({
   title: "Profil Dziaderski",
@@ -81,7 +81,8 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/prof
   if (!user) redirect("/konto?dalej=/profil");
   const params = await searchParams;
 
-  const profile = buildProfile(await loadRecords(supabase, user));
+  const records = await loadRecords(supabase, user);
+  const profile = buildProfile(records);
   const earned = profile.badges.filter((badge) => badge.earned).length;
   const voted = CASES.filter((item) => profile.verdicts[item.slug]);
   const agreed = voted.filter((item) => profile.verdicts[item.slug] === item.expert).length;
@@ -94,6 +95,12 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/prof
     return card ? [{ ...item, card }] : [];
   });
   const bookmarks = lines.length + cards.length + profile.exams.length;
+  const today = warsawToday();
+  const torn = new Set(profile.calendar.total ? records.calendar : []);
+  const last30 = Array.from({ length: 30 }, (_, i) => {
+    const key = new Date(Date.parse(`${today}T12:00:00Z`) - (29 - i) * 86_400_000).toISOString().slice(0, 10);
+    return { key, torn: torn.has(key) };
+  });
   const notice = params.zapisano ? "Wynik dopisany do kartoteki." : typeof params.zachowano === "string" ? SAVED_NOTICE[params.zachowano] : null;
 
   return (
@@ -121,9 +128,11 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/prof
         </dl>
         <nav aria-label="Działy kartoteki" className="label mt-4 flex flex-wrap gap-x-5 gap-y-1 text-ink-soft">
           {[
+            ["#legitymacja", "Legitymacja"],
             ["#kolekcja", "Kolekcja"],
             ["#obserwacje", "Dziennik obserwacji"],
             ["#odznaki", "Odznaki"],
+            ["#kalendarz", "Kalendarz"],
             ["#kartoteka", "Badania"],
             ["#zakladki", "Zakładki"],
             ["#komisja", "Komisja"],
@@ -135,6 +144,32 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/prof
           ))}
         </nav>
       </section>
+
+      <Section
+        id="legitymacja"
+        title="Legitymacja Obserwatora"
+        aside="Ważna do odwołania"
+        intro={typo("Legitymacja aktualizuje się sama: pseudonim, stopień, dziennik obserwacji i odznaki. Do pobrania jako obraz, do pokazania przy grillu.")}
+      >
+        <div className="grid items-center gap-10 lg:grid-cols-12">
+          {/* eslint-disable-next-line @next/next/no-img-element -- generated per account, never optimised */}
+          <img
+            src="/profil/legitymacja"
+            alt={`Legitymacja Obserwatora Terenowego: ${profile.nickname || "bez pseudonimu"}, ${profile.observed.size} z ${SPECIES.length} gatunków w dzienniku`}
+            width={1240}
+            height={800}
+            className="w-full lg:col-span-8"
+          />
+          <div className="lg:col-span-4">
+            <a href="/profil/legitymacja?pobierz" download className="btn bg-ink text-paper hover:bg-red">
+              Pobierz legitymację <span aria-hidden="true">↓</span>
+            </a>
+            <p className="label mt-4 max-w-xs text-ink-soft">
+              {typo(profile.nickname ? "Obraz PNG, 1240 × 800." : "Bez pseudonimu legitymacja jest anonimowa. Pseudonim ustawia się niżej, w ustawieniach.")}
+            </p>
+          </div>
+        </div>
+      </Section>
 
       <Section
         id="kolekcja"
@@ -216,11 +251,45 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/prof
       </Section>
 
       <Section id="odznaki" title="Odznaki" aside={`${earned} z ${profile.badges.length}`}>
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {profile.badges.map((badge) => (
             <BadgeStamp key={badge.key} badge={badge} />
           ))}
         </ul>
+      </Section>
+
+      <Section
+        id="kalendarz"
+        title="Kartki z kalendarza"
+        aside={`Seria: ${profile.calendar.streak} ${plural(profile.calendar.streak, "dzień", "dni", "dni")}`}
+        intro={typo("Każda kartka zerwana na stronie Kalendarza trafia tutaj. Siedem dni z rzędu daje odznakę Zdzieraka, trzydzieści kartek odznakę Kalendarza ściennego.")}
+      >
+        <ol className="grid grid-cols-10 gap-1 sm:grid-cols-[repeat(30,minmax(0,1fr))]" aria-label="Ostatnie 30 dni">
+          {last30.map((day) => (
+            <li
+              key={day.key}
+              title={day.key}
+              className={cx("aspect-square", day.torn ? "bg-red" : "bg-ink/10", day.key === today && "outline outline-2 outline-offset-1 outline-ink")}
+            >
+              <span className="sr-only">{`${day.key}: ${day.torn ? "kartka zerwana" : "bez kartki"}`}</span>
+            </li>
+          ))}
+        </ol>
+        <dl className="mt-8 grid max-w-xl grid-cols-3 border-t border-ink">
+          {[
+            [String(profile.calendar.total), "kartek w kolekcji"],
+            [String(profile.calendar.streak), "dni z rzędu"],
+            [String(profile.calendar.best), "rekord serii"],
+          ].map(([value, label]) => (
+            <div key={label} className="pt-3">
+              <dd className="text-3xl font-bold leading-none">{value}</dd>
+              <dt className="label mt-1 text-ink-soft">{label}</dt>
+            </div>
+          ))}
+        </dl>
+        <Link href="/kalendarz" className="btn mt-8 border border-ink hover:bg-ink hover:text-paper">
+          {profile.calendar.today ? "Dzisiejsza kartka" : "Zerwij dzisiejszą kartkę"} <span aria-hidden="true">→</span>
+        </Link>
       </Section>
 
       <Section
@@ -370,6 +439,29 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/prof
       </Section>
 
       <Section id="ustawienia" title="Ustawienia">
+        <form action={saveSettings} className="mb-14 grid gap-6 border-t border-ink pt-5 lg:grid-cols-3">
+          <label className="flex items-start gap-3">
+            <input type="checkbox" name="biuletyn" value="tak" defaultChecked={profile.newsletter} className="mt-1 size-5 shrink-0 accent-red" />
+            <span>
+              <span className="block font-bold leading-tight">Biuletyn tygodniowy</span>
+              <span className="label mt-1 block text-ink-soft">{typo("List w poniedziałek rano: tydzień w liczbach i twój tydzień. Wypisanie jednym kliknięciem.")}</span>
+            </span>
+          </label>
+          <label className="flex items-start gap-3">
+            <input type="checkbox" name="tablica" value="tak" defaultChecked={profile.honor} className="mt-1 size-5 shrink-0 accent-red" />
+            <span>
+              <span className="block font-bold leading-tight">Pseudonim na Tablicy Honorowej</span>
+              <span className="label mt-1 block text-ink-soft">
+                {typo(profile.nickname ? "Tylko pseudonim i liczby: obserwacje, orzeczenia, kartki." : "Najpierw ustaw pseudonim poniżej. Bez niego Tablica cię nie pokaże.")}
+              </span>
+            </span>
+          </label>
+          <div>
+            <button type="submit" className="btn border border-ink hover:bg-ink hover:text-paper">
+              Zapisz zgody
+            </button>
+          </div>
+        </form>
         <div className="grid gap-12 lg:grid-cols-3">
           <form action={saveNickname} className="border-t border-ink pt-5">
             <label htmlFor="pseudonim" className="label text-ink-soft">

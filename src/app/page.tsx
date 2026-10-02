@@ -38,6 +38,11 @@ export default async function Home() {
             description: site.description,
             inLanguage: "pl",
             publisher,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: { "@type": "EntryPoint", urlTemplate: `${site.url}/szukaj?q={zapytanie}` },
+              "query-input": "required name=zapytanie",
+            },
           },
           {
             "@context": "https://schema.org",

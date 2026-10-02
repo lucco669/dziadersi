@@ -17,7 +17,12 @@ function contact(value: string) {
   return match ? { name: match[1].replace(/^"|"$/g, ""), email: match[2] } : { email: value.trim() };
 }
 
-export async function sendLetter(to: string, letter: Letter, origin?: string) {
+export async function sendLetter(
+  to: string,
+  letter: Letter,
+  origin?: string,
+  options: { tags?: string[]; headers?: Record<string, string> } = {},
+) {
   if (!canSendEmail) throw new Error("Brak BREVO_API_KEY.");
   const response = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
@@ -28,7 +33,8 @@ export async function sendLetter(to: string, letter: Letter, origin?: string) {
       subject: letter.subject,
       htmlContent: renderHtml(letter, origin),
       textContent: renderText(letter),
-      tags: ["auth"],
+      tags: options.tags ?? ["auth"],
+      ...(options.headers ? { headers: options.headers } : {}),
       ...(EMAIL_REPLY_TO ? { replyTo: contact(EMAIL_REPLY_TO) } : {}),
     }),
   });

@@ -8,6 +8,7 @@ import { cx, plural, typo } from "@/lib/typo";
 import { AccountSync, useAccount } from "./account";
 import { MenuIcon } from "./menu-icons";
 import { Figure } from "./pictograms";
+import { SearchButton } from "./search";
 
 const byGroup = (group: GroupKey) => SECTIONS.filter((section) => section.group === group);
 const isCurrent = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -34,7 +35,7 @@ function Item({ item, pathname, onNavigate, compact }: { item: Department; pathn
             {item.label}
             {item.isNew && <span className="label text-[0.75rem] font-semibold text-red">Nowość</span>}
           </span>
-          <span className={cx("mt-1 font-sans text-[0.85rem] leading-snug text-ink-soft", compact ? "hidden xl:block" : "block")}>
+          <span className={cx("mt-1 font-sans text-[0.85rem] leading-snug text-ink-soft", compact ? "hidden xl:line-clamp-2" : "block")}>
             {typo(item.summary)}
           </span>
         </span>
@@ -257,6 +258,7 @@ export function MobileMenu() {
           </svg>
           Działy
         </button>
+        <SearchButton className="flex shrink-0 items-center border-r border-rule px-4" />
         <ul className="flex gap-6 overflow-x-auto px-5 py-3 font-sans text-[1rem] font-medium [scrollbar-width:none]">
           {SECTIONS.filter((section) => section.href !== "/test").map((item) => (
             <li key={item.href} className="shrink-0">

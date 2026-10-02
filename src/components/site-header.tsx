@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mark, Wordmark } from "./brand";
 import { AccountLink, DesktopMenu, MobileMenu } from "./main-menu";
+import { SearchButton, SearchDialog } from "./search";
 
 export function SiteHeader() {
   return (
@@ -28,6 +29,7 @@ export function SiteHeader() {
             <nav aria-label="Główna" className="hidden lg:block">
               <DesktopMenu />
             </nav>
+            <SearchButton className="hidden py-2 transition-colors hover:text-red lg:block" />
             <div className="hidden lg:block">
               <AccountLink />
             </div>
@@ -41,6 +43,7 @@ export function SiteHeader() {
       <nav aria-label="Działy" className="lg:hidden print:hidden">
         <MobileMenu />
       </nav>
+      <SearchDialog />
     </>
   );
 }

@@ -24,6 +24,7 @@ export function GET() {
     CASES.map((item) => link(`${docket(item)}: ${item.title}`, `/czy-to-juz-dziaderstwo/${item.slug}`, item.facts)).join("\n"),
     "## O serwisie",
     [
+      link("Wyszukiwarka", "/szukaj", "Gatunki, hasła, sprawy, raporty i działy Instytutu; zapytanie w parametrze ?q=."),
       link("O Instytucie", "/o-instytucie", "Statut, historia, struktura organizacyjna i najczęstsze pytania."),
       link("Regulamin", "/regulamin", "Zasady korzystania z serwisu, kont i Komisji Orzekającej."),
       link("Polityka prywatności", "/prywatnosc", "Jakie dane zbiera Instytut, po co i jak je usunąć."),

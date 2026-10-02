@@ -32,6 +32,8 @@ const RULES: { id: string; title: string; points: string[] }[] = [
       "Konto zakłada się, podając adres e-mail. Logowanie odbywa się przez link albo kod wysłany na ten adres; serwis nie używa haseł.",
       "Konto jest osobiste. Nie zakładaj kont na cudze adresy e-mail.",
       "Konto można w każdej chwili usunąć w Profilu Dziaderskim. Usunięcie jest natychmiastowe i nieodwracalne.",
+      "Pseudonim jest widoczny publicznie wyłącznie na Tablicy Honorowej i wyłącznie po zaznaczeniu tej zgody w Profilu. Pseudonim nie może naśladować cudzego imienia i nazwiska ani zawierać treści obraźliwych; Instytut może go usunąć z Tablicy bez uprzedzenia.",
+      "Biuletyn tygodniowy jest wysyłany tylko na życzenie, raz w tygodniu, i można z niego zrezygnować jednym kliknięciem.",
       "Instytut może zablokować albo usunąć konto, które narusza ten regulamin, w szczególności służy do manipulowania statystykami albo do zgłaszania treści wskazujących konkretne osoby.",
     ],
   },

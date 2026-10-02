@@ -62,3 +62,25 @@ export async function removeBookmark(formData: FormData) {
     .eq("code", String(formData.get("kod") ?? ""));
   revalidatePath("/profil");
 }
+
+/** The two opt-ins: the weekly bulletin and the nickname on the Tablica Honorowa. */
+export async function saveSettings(formData: FormData) {
+  const { supabase, user } = await signedIn();
+  const newsletter = formData.get("biuletyn") === "tak";
+  await supabase
+    .from("profiles")
+    .update({ newsletter, honor: formData.get("tablica") === "tak", ...(newsletter ? { newsletter_at: new Date().toISOString() } : {}) })
+    .eq("id", user.id);
+  revalidatePath("/profil");
+}
+
+/** "Zapisz się" on /biuletyn, for a signed-in visitor. Returns the new state. */
+export async function setNewsletter(on: boolean) {
+  const { supabase, user } = await currentUser();
+  if (!user) return null;
+  const { error } = await supabase
+    .from("profiles")
+    .update({ newsletter: on, ...(on ? { newsletter_at: new Date().toISOString() } : {}) })
+    .eq("id", user.id);
+  return error ? null : on;
+}

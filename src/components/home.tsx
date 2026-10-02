@@ -3,8 +3,11 @@ import { CASES } from "@/content/cases";
 import { DICTIONARY } from "@/content/dictionary";
 import { REPORTS, formatReportDate } from "@/content/reports";
 import { SPECIES } from "@/content/species";
+import { sheetFor } from "@/lib/almanac";
 import type { Bulletin } from "@/lib/bulletin";
+import { warsawTime } from "@/lib/calendar";
 import type { VerdictCounts } from "@/lib/community";
+import { pageFor } from "@/lib/tear-off";
 import { encodeResult, evaluate, SAMPLE_DRAFT } from "@/lib/test";
 import { pct, plural, typo } from "@/lib/typo";
 import { Certificate } from "./certificate";
@@ -192,9 +195,12 @@ export function Shelf({ bulletin }: { bulletin: Bulletin }) {
   const entry = DICTIONARY[bulletin.today % DICTIONARY.length];
   const report = REPORTS[0];
   const finding = report.findings[0];
+  const local = warsawTime(new Date(bulletin.updated));
+  const page = pageFor(sheetFor(local.year, local.month, local.day));
+  const [first, second] = page.proverb.split(" / ");
 
   return (
-    <section aria-label="Słownik i raporty" className="wrap grid gap-14 py-20 md:py-28 lg:grid-cols-2 lg:gap-10">
+    <section aria-label="Słownik, raporty i kalendarz" className="wrap grid gap-14 py-20 md:py-28 lg:grid-cols-3 lg:gap-10">
       <article className="border-t border-ink pt-5">
         <p className="label text-ink-soft">Hasło dnia · Słownik Dziaderski</p>
         <h2 className="mt-6 text-[clamp(2.4rem,4.6vw,3.75rem)] font-bold leading-[0.95] tracking-[-0.02em]">
@@ -223,6 +229,29 @@ export function Shelf({ bulletin }: { bulletin: Bulletin }) {
         </h2>
         <Link href="/raporty" className="link mt-7 inline-block font-sans font-medium">
           Wszystkie raporty Instytutu
+        </Link>
+      </article>
+
+      <article className="border-t border-ink pt-5">
+        <p className="label text-ink-soft">Kartka z kalendarza · {page.weekday}</p>
+        <Link href="/kalendarz" className="group mt-6 flex items-end gap-5">
+          <span className={`text-[clamp(5rem,9vw,7.5rem)] font-bold leading-[0.8] tracking-[-0.03em] ${page.red ? "text-red" : ""}`}>{page.day}</span>
+          <span className="pb-1 text-2xl font-bold leading-tight transition-colors group-hover:text-red">{page.monthGenitive}</span>
+        </Link>
+        <p className="mt-6 max-w-sm text-[1.15rem] italic leading-snug">
+          {typo(first)}
+          {second && (
+            <>
+              <br />
+              {typo(second)}
+            </>
+          )}
+        </p>
+        <p className="label mt-4 text-ink-soft">
+          Wschód {page.sunrise} · zachód {page.sunset}
+        </p>
+        <Link href="/kalendarz" className="link mt-7 inline-block font-sans font-medium">
+          Zerwij dzisiejszą kartkę
         </Link>
       </article>
     </section>

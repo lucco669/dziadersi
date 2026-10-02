@@ -65,6 +65,10 @@ const nextConfig: NextConfig = {
     "/atlas/**": ["./assets/fonts/*.ttf"],
     "/slownik/**": ["./assets/fonts/*.ttf"],
     "/raporty/**": ["./assets/fonts/*.ttf"],
+    "/profil/**": ["./assets/fonts/*.ttf"],
+    "/egzamin/**": ["./assets/fonts/*.ttf"],
+    "/czy-to-juz-dziaderstwo/**": ["./assets/fonts/*.ttf"],
+    "/kalendarz/**": ["./assets/fonts/*.ttf"],
   },
   async headers() {
     return [

@@ -14,7 +14,8 @@ export type AccountStatus = { status: "loading" } | { status: "guest" } | { stat
 
 const LOADING: AccountStatus = { status: "loading" };
 const GUEST: AccountStatus = { status: "guest" };
-const CACHE_KEY = "ibd-konto";
+/** Bump when AccountState changes shape, so old cached copies are ignored. */
+const CACHE_KEY = "ibd-konto-2";
 const CACHE_MS = 60_000;
 
 let state: AccountStatus = LOADING;

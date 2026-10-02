@@ -81,6 +81,14 @@ export const SECTIONS: Department[] = [
     summary: "Wyniki badań terenowych, przeglądów systematycznych i eksperymentów Instytutu.",
   },
   {
+    href: "/biuletyn",
+    label: "Biuletyn tygodniowy",
+    short: "Biuletyn",
+    group: "zbiory",
+    summary: "Tydzień w liczbach: badania, obserwacje, sprawa tygodnia i prognoza. Co poniedziałek na stronie, a po zapisaniu także e-mailem.",
+    isNew: true,
+  },
+  {
     href: "/indeks",
     label: "Narodowy Indeks Dziaderstwa",
     short: "Indeks",
@@ -103,6 +111,22 @@ export const SECTIONS: Department[] = [
     isNew: true,
   },
   {
+    href: "/obserwacje",
+    label: "Mapa obserwacji",
+    short: "Mapa",
+    group: "dane",
+    summary: "Gdzie widziano dziadersa: zgłoszenia obserwatorów terenowych według województw, z podziałem na gatunki.",
+    isNew: true,
+  },
+  {
+    href: "/tablica-honorowa",
+    label: "Tablica Honorowa",
+    short: "Tablica",
+    group: "dane",
+    summary: "Przodownicy obserwacji, ławnicy i zdzieracze kalendarza. Sprawy, które podzieliły naród, i gatunki najlepiej obserwowane.",
+    isNew: true,
+  },
+  {
     href: "/generator",
     label: "Rozmówki dziaderskie",
     short: "Rozmówki",
@@ -116,4 +140,21 @@ export const SECTIONS: Department[] = [
     group: "pomoce",
     summary: "Karty bingo na wesele, Wigilię, imieniny, majówkę, podróż autem i plażę, do skreślania na telefonie albo do druku.",
   },
+  {
+    href: "/kalendarz",
+    label: "Kartka z kalendarza",
+    short: "Kalendarz",
+    group: "pomoce",
+    summary: "Codziennie nowa kartka: wschód słońca, przysłowie, porada i patron dnia. Zrywać rano, najlepiej przy herbacie.",
+    isNew: true,
+  },
+];
+
+/** Pages outside the departments, for search and the bottom of the menu. */
+export const EXTRA_PAGES: Pick<Department, "href" | "label" | "summary">[] = [
+  { href: "/profil", label: "Profil Dziaderski", summary: "Kartoteka badań, kolekcja gatunków, dziennik obserwacji, zakładki, odznaki i legitymacja obserwatora." },
+  { href: "/szukaj", label: "Wyszukiwarka", summary: "Gatunki, hasła, sprawy, raporty i działy Instytutu w jednym miejscu." },
+  { href: "/o-instytucie", label: "O Instytucie", summary: "Statut, historia, struktura organizacyjna i najczęstsze pytania." },
+  { href: "/regulamin", label: "Regulamin", summary: "Zasady korzystania z serwisu, kont, obserwacji i Komisji Orzekającej." },
+  { href: "/prywatnosc", label: "Polityka prywatności", summary: "Jakie dane zbiera Instytut, po co, jak długo je trzyma i jak je usunąć." },
 ];

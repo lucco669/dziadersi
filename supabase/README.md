@@ -16,7 +16,9 @@ Open the Supabase dashboard → **SQL Editor** and run the files in `migrations/
 2. `20261002130100_accounts.sql`: profiles, saved results, row-level security and the signup trigger.
 3. `20261002160000_community.sql`: sightings, bookmarks (`saved_items`), verdicts, case submissions, tallies and the server-only functions `community_summary()`, `case_tally()` and `tally()`.
 
-Until the third migration runs, the Atlas, the Komisja and the Rocznik show "·" (no information) instead of figures and nothing breaks.
+4. `20261002190000_bulletin_calendar.sql`: the newsletter and honour-board opt-ins on `profiles`, `calendar_pages`, `bulletin_issues`, and `sightings_map()`, `honor_board()`, `weekly_summary()`, `newsletter_recipients()`.
+
+Until a migration runs, the pages that depend on it show "·" (no information) instead of figures and nothing breaks.
 
 Never edit a migration that has already run. Changes go into a new file with a later timestamp.
 
@@ -31,6 +33,7 @@ Never edit a migration that has already run. Changes go into a new file with a l
 | `BREVO_API_KEY` | Brevo → SMTP & API → API Keys (`xkeysib-…`) | Sensitive |
 | `EMAIL_FROM` | optional, default `Instytut Badań nad Dziaderstwem <instytut@dziader.si>`; must be a verified Brevo sender | Config |
 | `EMAIL_REPLY_TO` | optional: where replies to the letters go | Config |
+| `CRON_SECRET` | any long random string; Vercel Cron sends it to `/api/cron/biuletyn`, and it signs unsubscribe links | Sensitive |
 
 Put the same values in `.env.local` for local development.
 
@@ -71,5 +74,12 @@ For local testing of the hook itself, Supabase must reach your machine (a tunnel
 - `public.verdicts`: votes in the Komisja: case, verdict, and the account for signed-in judges (set to null when the account is deleted). Written by the server only.
 - `public.case_submissions`: cases proposed by signed-in judges, with a status (`nowe`, `przyjete`, `odrzucone`). Nothing is published automatically: review them in the Table Editor, and change the status when you accept or reject one. The profile shows the status to the author.
 - `public.tallies`: daily counters by kind, no identifiers. Server only.
+- `public.profiles.newsletter` / `honor`: the two opt-ins, off by default; `newsletter_at` records when the bulletin was ordered.
+- `public.calendar_pages`: one row per account per day a calendar page was torn. Owner-only.
+- `public.bulletin_issues`: one row per Monday, with how many letters went out. Server only.
+
+## The weekly bulletin
+
+Vercel Cron calls `/api/cron/biuletyn` on Mondays at 06:00 UTC (`vercel.json`) with `Authorization: Bearer $CRON_SECRET`. The handler claims the week in `bulletin_issues` (a retry finds it taken and stops), reads `newsletter_recipients()`, and sends through Brevo in batches of five, with `List-Unsubscribe` and one-click unsubscribe. To send an issue again, delete that week's row. In development, `http://localhost:3000/api/cron/biuletyn?podglad` shows the letter.
 
 Deleting an account (button in the profile) removes the auth user, which cascades to the profile, saved results, sightings, bookmarks and case submissions. Anonymous census rows and tallies stay, and verdicts stay without their owner.

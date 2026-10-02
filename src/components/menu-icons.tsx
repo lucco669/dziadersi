@@ -156,6 +156,100 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       <path className="mi-cross" d="M11 5L37 35M37 5L11 35" stroke={RED} strokeWidth={2.4} strokeLinecap="round" pathLength={1} />
     </g>
   ),
+  "/obserwacje": (
+    <g>
+      {[0, 1, 2, 3].flatMap((col) =>
+        [0, 1, 2].map((row) => {
+          const shade = (col * 7 + row * 3) % 5;
+          const fill = col === 2 && row === 1 ? RED : shade > 2 ? INK : shade > 0 ? GREY : PAPER;
+          return (
+            <rect
+              key={`${col}-${row}`}
+              className={col === 2 && row === 1 ? "mi-tile" : undefined}
+              x={6 + col * 9.4}
+              y={5 + row * 10.4}
+              width={8.4}
+              height={9.4}
+              fill={fill}
+              stroke={INK}
+              strokeWidth={fill === PAPER ? 1 : 0}
+            />
+          );
+        }),
+      )}
+    </g>
+  ),
+  "/tablica-honorowa": (
+    <g className="mi-swing">
+      <path d="M15 2H22L27 18H20Z" fill={RED} />
+      <path d="M33 2H26L21 18H28Z" fill={BLUE} />
+      <circle cx={24} cy={26} r={10} fill={OCHRE} />
+      <circle cx={24} cy={26} r={7} fill="none" stroke={PAPER} strokeWidth={1} />
+      <g transform="translate(19.2 24.6) scale(0.096)">
+        <path d={MUSTACHE_PATH} fill={INK} />
+      </g>
+    </g>
+  ),
+  "/kalendarz": (
+    <g>
+      <rect x={9} y={8} width={30} height={30} fill={PAPER} stroke={INK} strokeWidth={2} />
+      <rect x={9} y={4} width={30} height={7} fill={INK} />
+      <circle cx={17} cy={7.5} r={1.4} fill={PAPER} />
+      <circle cx={31} cy={7.5} r={1.4} fill={PAPER} />
+      <g className="mi-tear">
+        <path d="M10 12H38V30L33 37H10Z" fill={PAPER} stroke={INK} strokeWidth={1.2} strokeLinejoin="round" />
+        <rect x={16} y={16} width={16} height={9} fill={RED} />
+        <line x1={14} y1={29} x2={30} y2={29} stroke={INK} strokeWidth={1} />
+        <path d="M33 37V30H38Z" fill={GREY} />
+      </g>
+    </g>
+  ),
+  "/biuletyn": (
+    <g className="mi-letter">
+      <rect x={5} y={9} width={38} height={25} fill={PAPER} stroke={INK} strokeWidth={2} />
+      <path d="M5 9L24 24L43 9" fill="none" stroke={INK} strokeWidth={2} strokeLinejoin="round" />
+      <rect x={33} y={12} width={7} height={8} fill={RED} />
+      <line x1={9} y1={30} x2={20} y2={30} stroke={INK} strokeWidth={1} />
+    </g>
+  ),
+  "/szukaj": (
+    <g className="mi-look">
+      <line x1={28} y1={26} x2={40} y2={37} stroke={INK} strokeWidth={4} strokeLinecap="round" />
+      <circle cx={20} cy={17} r={12} fill={PAPER} stroke={INK} strokeWidth={3} />
+      <g transform="translate(13.6 14.4) scale(0.128)">
+        <path d={MUSTACHE_PATH} fill={INK} />
+      </g>
+    </g>
+  ),
+  "/o-instytucie": (
+    <g>
+      <path d="M4 14L24 3L44 14Z" fill={INK} />
+      <circle cx={24} cy={10} r={2.4} fill={RED} />
+      {[9, 18.5, 28, 37.5].map((x) => (
+        <rect key={x} x={x} y={16} width={3} height={16} fill={INK} />
+      ))}
+      <rect x={4} y={32} width={40} height={4} fill={INK} />
+      <rect x={2} y={36} width={44} height={2.4} fill={INK} />
+    </g>
+  ),
+  "/regulamin": (
+    <g>
+      <rect x={10} y={3} width={28} height={34} fill={PAPER} stroke={INK} strokeWidth={2} />
+      {[10, 15, 20, 25].map((y) => (
+        <line key={y} x1={15} y1={y} x2={y === 25 ? 26 : 33} y2={y} stroke={INK} strokeWidth={1.2} />
+      ))}
+      <path d="M30 30L28 39L31 37L34 39L32 30Z" fill={RED} />
+      <circle cx={31} cy={30} r={4.4} fill={RED} />
+    </g>
+  ),
+  "/prywatnosc": (
+    <g>
+      <path d="M16 18V12Q16 4 24 4T32 12V18" fill="none" stroke={INK} strokeWidth={3} />
+      <rect x={11} y={17} width={26} height={20} rx={2} fill={INK} />
+      <circle cx={24} cy={25} r={2.6} fill={PAPER} />
+      <rect x={23} y={26} width={2} height={6} fill={PAPER} />
+    </g>
+  ),
   "/profil": (
     <g>
       <path d="M5 9H17L20 5H32V9H43V36H5Z" fill={PAPER} stroke={INK} strokeWidth={2} strokeLinejoin="round" />

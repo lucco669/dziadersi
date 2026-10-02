@@ -19,6 +19,10 @@ export type Sighting = { species: SpeciesKey; region: string | null; observedOn:
 
 export type Records = {
   nickname: string;
+  newsletter: boolean;
+  honor: boolean;
+  /** Torn calendar pages, newest first: "2026-10-02". */
+  calendar: string[];
   results: { code: string; saved_at: string }[];
   sightings: { species: string; region: string | null; observed_on: string }[];
   items: { kind: string; code: string; saved_at: string }[];
@@ -28,16 +32,22 @@ export type Records = {
 
 /** Everything the account owns, read as the visitor (row-level security applies). Missing tables read as empty. */
 export async function loadRecords(supabase: SupabaseClient, user: User): Promise<Records> {
-  const [profile, results, sightings, items, verdicts, submissions] = await Promise.all([
-    supabase.from("profiles").select("nickname").eq("id", user.id).maybeSingle(),
+  const [profile, results, sightings, items, verdicts, submissions, calendar] = await Promise.all([
+    // "*": columns added by later migrations are simply absent until they run.
+    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
     supabase.from("saved_results").select("code, saved_at").order("saved_at", { ascending: false }),
     supabase.from("sightings").select("species, region, observed_on").order("created_at", { ascending: false }),
     supabase.from("saved_items").select("kind, code, saved_at").order("saved_at", { ascending: false }),
     supabase.from("verdicts").select("case_slug, verdict").eq("user_id", user.id),
     supabase.from("case_submissions").select("body, status, created_at").order("created_at", { ascending: false }),
+    supabase.from("calendar_pages").select("day").order("day", { ascending: false }),
   ]);
+  const row = (profile.data ?? {}) as { nickname?: string | null; newsletter?: boolean; honor?: boolean };
   return {
-    nickname: profile.data?.nickname ?? "",
+    nickname: row.nickname ?? "",
+    newsletter: row.newsletter ?? false,
+    honor: row.honor ?? false,
+    calendar: (calendar.data ?? []).map((page: { day: string }) => page.day),
     results: results.data ?? [],
     sightings: sightings.data ?? [],
     items: items.data ?? [],
@@ -48,8 +58,40 @@ export async function loadRecords(supabase: SupabaseClient, user: User): Promise
 
 const SPECIES_KEYS = new Set<string>(SPECIES.map((species) => species.key));
 
+export type Calendar = {
+  total: number;
+  /** Consecutive days up to today, or up to yesterday while today's page is still on the wall. */
+  streak: number;
+  best: number;
+  today: boolean;
+};
+
+const DAY_MS = 86_400_000;
+const dayIndex = (day: string) => Math.round(Date.parse(`${day}T00:00:00Z`) / DAY_MS);
+
+/** Streaks from torn pages; `today` is Warsaw's date as Postgres writes it. */
+export function calendarOf(days: string[], today: string): Calendar {
+  const indices = [...new Set(days.map(dayIndex))].sort((a, b) => b - a);
+  const now = dayIndex(today);
+  let best = 0;
+  let run = 0;
+  for (let i = 0; i < indices.length; i++) {
+    run = i > 0 && indices[i - 1] - indices[i] === 1 ? run + 1 : 1;
+    best = Math.max(best, run);
+  }
+  let streak = 0;
+  if (indices[0] === now || indices[0] === now - 1) {
+    streak = 1;
+    while (streak < indices.length && indices[streak - 1] - indices[streak] === 1) streak++;
+  }
+  return { total: indices.length, streak, best, today: indices[0] === now };
+}
+
 export type Profile = {
   nickname: string;
+  newsletter: boolean;
+  honor: boolean;
+  calendar: Calendar;
   results: (Result & { savedAt: string })[];
   collected: Set<SpeciesKey>;
   average: number | null;
@@ -63,7 +105,7 @@ export type Profile = {
   badges: Badge[];
 };
 
-export function buildProfile(records: Records): Profile {
+export function buildProfile(records: Records, today = warsawToday()): Profile {
   const results = records.results.flatMap((row) => {
     const draft = decodeResult(row.code);
     return draft ? [{ ...evaluate(draft), savedAt: row.saved_at }] : [];
@@ -95,6 +137,7 @@ export function buildProfile(records: Records): Profile {
   });
   const verdicts = Object.fromEntries(records.verdicts.map((row) => [row.case_slug, row.verdict as Verdict]));
   const verdictCount = records.verdicts.length;
+  const calendar = calendarOf(records.calendar, today);
 
   const rules: (Omit<Badge, "earned"> & { test: boolean })[] = [
     { key: "pierwsze", name: "Pierwsze badanie", hint: "Zapisz pierwszy wynik.", test: results.length >= 1 },
@@ -128,10 +171,15 @@ export function buildProfile(records: Records): Profile {
     { key: "lawnik", name: "Ławnik", hint: "Dziesięć orzeczeń w Komisji.", test: verdictCount >= 10 },
     { key: "sygnalista", name: "Sygnalista", hint: "Zgłoś sprawę do Komisji.", test: records.submissions.length >= 1 },
     { key: "bingo", name: "Bingo", hint: "Wygrana karta bingo w Profilu.", test: bookmarks.bingo.length >= 1 },
+    { key: "zdzierak", name: "Zdzierak", hint: "Siedem kartek z kalendarza z rzędu.", test: calendar.best >= 7 },
+    { key: "kalendarz", name: "Kalendarz ścienny", hint: "Trzydzieści zerwanych kartek.", test: calendar.total >= 30 },
   ];
 
   return {
     nickname: records.nickname,
+    newsletter: records.newsletter,
+    honor: records.honor,
+    calendar,
     results,
     collected,
     average,
@@ -157,6 +205,9 @@ export type AccountState = {
   saved: Record<BookmarkKind, string[]>;
   verdicts: Record<string, Verdict>;
   badges: { earned: number; total: number };
+  calendar: Calendar;
+  newsletter: boolean;
+  honor: boolean;
 };
 
 export function accountState(profile: Profile, email: string, today: string): AccountState {
@@ -170,6 +221,9 @@ export function accountState(profile: Profile, email: string, today: string): Ac
     saved: Object.fromEntries(BOOKMARK_KINDS.map((kind) => [kind, profile.bookmarks[kind].map((item) => item.code)])) as AccountState["saved"],
     verdicts: profile.verdicts,
     badges: { earned: profile.badges.filter((badge) => badge.earned).length, total: profile.badges.length },
+    calendar: profile.calendar,
+    newsletter: profile.newsletter,
+    honor: profile.honor,
   };
 }
 

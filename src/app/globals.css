@@ -569,6 +569,22 @@
   .mi:is(:hover, :focus-visible) .mi-talk {
     animation: talk 180ms ease-in-out 4 alternate;
   }
+  .mi:is(:hover, :focus-visible) .mi-tile {
+    animation: blink 0.5s steps(1, end) 3;
+  }
+  .mi:is(:hover, :focus-visible) .mi-swing {
+    animation: mi-swing 900ms ease-in-out;
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+  }
+  .mi:is(:hover, :focus-visible) .mi-tear {
+    animation: mi-tear 700ms cubic-bezier(0.5, 0, 0.3, 1);
+    transform-box: fill-box;
+    transform-origin: 0% 0%;
+  }
+  .mi:is(:hover, :focus-visible) .mi-letter {
+    animation: pg-bob 500ms ease-in-out 2;
+  }
 }
 
 @keyframes mi-stamp {
@@ -620,6 +636,24 @@
   }
 }
 
+@keyframes mi-swing {
+  25% {
+    transform: rotate(9deg);
+  }
+  60% {
+    transform: rotate(-6deg);
+  }
+  85% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes mi-tear {
+  50% {
+    transform: rotate(8deg) translateY(2px);
+  }
+}
+
 @keyframes mi-tilt {
   50% {
     transform: rotate(-8deg);
@@ -653,5 +687,22 @@
 @keyframes grow-x {
   from {
     transform: scaleX(0);
+  }
+}
+
+/* Yesterday's calendar page, torn off and falling. */
+@keyframes tear-off {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg) translateY(6px);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-26deg) translate(-40px, 110vh);
+    opacity: 0;
   }
 }

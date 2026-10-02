@@ -40,5 +40,6 @@ export const config = {
     "/api/obserwacje",
     "/api/zakladki",
     "/api/orzeczenia",
+    "/api/kalendarz",
   ],
 };

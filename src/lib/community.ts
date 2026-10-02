@@ -65,6 +65,8 @@ export async function caseTally(slug: string): Promise<VerdictCounts | null> {
  * so a curious visitor can't invent new rows.
  */
 export const TALLY_KINDS = [
+  "kartka",
+  "szukaj",
   "rozmowki",
   "rozmowki-glos",
   "bingo-karta",
@@ -85,4 +87,62 @@ export async function addTally(kind: TallyKind, amount = 1) {
   if (!hasAdmin) return;
   const { error } = await createAdminClient().rpc("tally", { what: kind, amount });
   if (error) console.error("Rocznik:", error.message);
+}
+
+/** Mapa obserwacji: sightings per voivodeship (null when not given) and species. */
+export type SightingsMap = { region: string | null; species: string; n: number }[];
+
+export async function getSightingsMap(): Promise<SightingsMap | null> {
+  "use cache";
+  cacheLife("minutes");
+  if (!hasAdmin) return null;
+  const { data, error } = await createAdminClient().rpc("sightings_map");
+  if (error) {
+    console.error("Mapa:", error.message);
+    return null;
+  }
+  return (data as SightingsMap).map((row) => ({ ...row, n: Number(row.n) }));
+}
+
+/** Tablica Honorowa: leaders among the accounts that opted in, by nickname only. */
+export type HonorBoard = {
+  observers: { nickname: string; species: number; sightings: number }[];
+  jurors: { nickname: string; votes: number }[];
+  calendar: { nickname: string; pages: number; best: number }[];
+  visible: number;
+};
+
+export async function getHonorBoard(): Promise<HonorBoard | null> {
+  "use cache";
+  cacheLife("minutes");
+  if (!hasAdmin) return null;
+  const { data, error } = await createAdminClient().rpc("honor_board");
+  if (error) {
+    console.error("Tablica:", error.message);
+    return null;
+  }
+  return data as HonorBoard;
+}
+
+/** Biuletyn tygodniowy: the last seven days. */
+export type Weekly = {
+  results: { total: number; average: number; clinical: number; species: Record<string, number> };
+  sightings: { total: number; observers: number; species: Record<string, number>; regions: Record<string, number> };
+  verdicts: { total: number; cases: Record<string, VerdictCounts> };
+  accounts: number;
+  pages: number;
+  tallies: Record<string, number>;
+  updated: string;
+};
+
+export async function getWeekly(): Promise<Weekly | null> {
+  "use cache";
+  cacheLife("hours");
+  if (!hasAdmin) return null;
+  const { data, error } = await createAdminClient().rpc("weekly_summary");
+  if (error) {
+    console.error("Biuletyn:", error.message);
+    return null;
+  }
+  return { ...(data as Omit<Weekly, "updated">), updated: new Date().toISOString() };
 }

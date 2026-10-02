@@ -53,6 +53,9 @@ export function Sightings({ community }: { community: Community | null }) {
           <div className="mt-8">
             <ObserverCta species={SPECIES.length} />
           </div>
+          <Link href="/obserwacje" className="link mt-6 inline-block font-sans font-medium">
+            Mapa obserwacji według województw
+          </Link>
         </div>
 
         <div className="lg:col-span-4">

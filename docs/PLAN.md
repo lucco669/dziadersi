@@ -72,7 +72,14 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - **Mały Rocznik Statystyczny** (`/statystyki`) ✅: the yearbook in the manner of GUS: six divisions (badania, obserwacje, Komisja, pomoce naukowe, zbiory, przeliczenia), numbered tables, Isotype rows where the last symbol is cut to the remainder (one pot of rosół = three hours of testing), unit conversions with their methodology, and the GUS legend of conventional signs ("–" did not occur, "·" no information, "x" not applicable). Tallies come from `/api/licznik` (sendBeacon, allowlisted kinds, no identifiers): Rozmówki lines and readings, bingo cards, squares and bingos, exams, horn presses in the test, certificate downloads and shares.
 - **O Instytucie** and **Regulamin** ✅: the statute, history, organisation chart (each unit runs a real department) and FAQ in `src/content/institute.ts`; plain terms of use, needed before user-submitted cases.
 - **Navigation** ✅: a mega menu grouped like an organisation chart (Badania, Zbiory, Dane, Pomoce naukowe), with a pictogram per department (`src/components/menu-icons.tsx`) and the profile line at the bottom. Phones get a "Działy" sheet and a scrolling row of the departments. The footer uses the same groups.
-- Next: the Hall of Fame; rankings as real groups that update for everyone; a weekly census email; Google sign-in; a public map of observations by voivodeship.
+- **Second community migration** (`supabase/migrations/20261002190000_bulletin_calendar.sql`): two opt-ins on `profiles` (`newsletter`, `honor`), `calendar_pages`, `bulletin_issues`, and the server-only functions `sightings_map()`, `honor_board()`, `weekly_summary()` and `newsletter_recipients()` (security definer: it reads `auth.users`).
+- **Tablica Honorowa** (`/tablica-honorowa`) ✅: a PRL honour board. Leaders among accounts that opted in (nickname only): observers by species then sightings, jurors by verdicts, calendar tearers by their longest streak, with medals for the top three (Order Złotej Lornetki, Złotego Młotka, Złotej Kartki). Also the most disputed, most unanimous and most clinical cases (from five votes), the best-observed species, the species of the week, the most watchful voivodeship and the most frequent diagnoses (from 30 results).
+- **Legitymacja Obserwatora** (`/profil/legitymacja`) ✅: the member card as a PNG, generated per request from the account (`src/lib/id-card.tsx`): nickname, rank from the observation log (stażysta → honorowy), counts, up to six badges as stamps, the seal and guilloche lines. Shown and downloadable in the profile; `?podglad` renders a sample in development.
+- **Mapa obserwacji** (`/obserwacje`) ✅: the voivodeship tile map shaded by sightings, for all species or one; a region shows its total, share and top three species.
+- **Biuletyn tygodniowy** (`/biuletyn`) ✅: the last seven days composed once (`src/lib/weekly.ts`) for the page and for a Monday email to opted-in accounts. Vercel Cron (`vercel.json`, Mondays 06:00 UTC) calls `/api/cron/biuletyn` with `CRON_SECRET`; one issue per week (`bulletin_issues`), batches of five through Brevo, `List-Unsubscribe` with one-click POST, and a signed unsubscribe page (`/biuletyn/wypisz`). `/api/cron/biuletyn?podglad` shows the letter in development.
+- **Kartka z kalendarza** (`/kalendarz`) ✅: a PRL tear-off calendar. Yesterday's page hangs over today's until the visitor tears it off (the tear is an animation). The front has sunrise and sunset for Warsaw, the moon, the day of the year, days to Christmas Eve and red numbers on Sundays and days off (`src/lib/almanac.ts`, pure arithmetic), plus a seasonal rhymed proverb and the Institute's invented observances; the back has a tip, the Institute's order of the day, the patron species, the word and case of the day (`src/content/calendar.ts`). Signed-in visitors collect pages, streaks and two badges (Zdzierak, Kalendarz ścienny); everyone is counted in the day's tally. The front page carries today's number and proverb.
+- **Wyszukiwarka** ✅: the whole site as one static index (`/szukaj/indeks.json`, built from the content files, Polish letters folded), searched in the browser. A dialog in the header (the magnifier, `/` or Ctrl+K) and a full page at `/szukaj?q=`; the home page declares a SearchAction.
+- Next: rankings as real groups that update for everyone; Google sign-in; a public observer page with the legitymacja.
 
 ### Phase 5: shop
 
@@ -92,7 +99,7 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 | `/spis`, `/konto`, `/profil`, `/profil/zachowaj`, `/prywatnosc` | 4 |
 | `/czy-to-juz-dziaderstwo`, `/czy-to-juz-dziaderstwo/[slug]`, `/egzamin`, `/egzamin/[kod]`, `/statystyki` | 4 |
 | `/o-instytucie`, `/regulamin` | 4 |
-| `/hall-of-fame` | next |
+| `/tablica-honorowa`, `/obserwacje`, `/biuletyn`, `/biuletyn/wypisz`, `/kalendarz`, `/szukaj`, `/profil/legitymacja` | 4 |
 
 ## 4. Design system
 
@@ -155,7 +162,9 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - [ ] Check the link preview in the Facebook Sharing Debugger, the LinkedIn Post Inspector and a real Messenger chat
 - [ ] Google Search Console with the sitemap submitted
 - [x] Privacy page before adding analytics; terms before any user-generated content
-- [ ] Run `supabase/migrations/20261002160000_community.sql` (observations, bookmarks, Komisja, tallies)
+- [x] Run `supabase/migrations/20261002160000_community.sql` (observations, bookmarks, Komisja, tallies)
+- [ ] Run `supabase/migrations/20261002190000_bulletin_calendar.sql` (opt-ins, calendar, honour board, bulletin)
+- [ ] Add `CRON_SECRET` in Vercel (any long random string) so the Monday bulletin can be sent
 - [ ] Fill in `site.controller` (name and email) in `src/lib/site.ts`: the privacy policy, terms and About page point to it
 - [x] Phase 1 shipped before any promotion. The test is what turns visits into shares.
 - [ ] Paste a real result link into Messenger and WhatsApp and check the certificate preview

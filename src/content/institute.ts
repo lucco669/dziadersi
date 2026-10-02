@@ -51,7 +51,7 @@ export const HISTORY: Milestone[] = [
   },
   {
     date: "Październik 2026",
-    text: "Powstają Komisja Orzekająca „Czy to już dziaderstwo?”, Egzamin terenowy i Mały Rocznik Statystyczny. Zalogowani odwiedzający zaczynają zgłaszać obserwacje terenowe gatunków z Atlasu. Po raz pierwszy w historii Instytut przyjmuje ławników i obserwatorów spoza rodziny założycieli.",
+    text: "Powstają Komisja Orzekająca „Czy to już dziaderstwo?”, Egzamin terenowy, Mały Rocznik Statystyczny, Tablica Honorowa, Biuletyn tygodniowy i Kalendarz Instytutu. Zalogowani odwiedzający zaczynają zgłaszać obserwacje terenowe gatunków z Atlasu. Po raz pierwszy w historii Instytut przyjmuje ławników i obserwatorów spoza rodziny założycieli.",
   },
 ];
 
@@ -114,6 +114,12 @@ export const UNITS: Unit[] = [
     head: "Koordynator: dyżur na balkonie",
     text: "Zrzesza zalogowanych odwiedzających, którzy zgłaszają obserwacje gatunków z Atlasu. Obserwatorzy pracują społecznie, w godzinach, w których i tak by patrzyli. Każdy gatunek można zgłosić raz dziennie: kolejne zgłoszenia tego samego dnia Instytut uznaje za tego samego osobnika.",
     href: "/profil",
+  },
+  {
+    name: "Wydawnictwo Instytutu",
+    head: "Redaktor naczelny: kto pierwszy wstanie",
+    text: "Wydaje Kalendarz Instytutu i Biuletyn tygodniowy. Kalendarz ukazuje się codziennie o północy, biuletyn w poniedziałki rano. Kartek na zapas Wydawnictwo nie drukuje, bo kto zrywa na zapas, ten oszukuje sam siebie.",
+    href: "/kalendarz",
   },
   {
     name: "Archiwum Wokalizacji",

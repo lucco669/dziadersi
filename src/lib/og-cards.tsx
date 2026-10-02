@@ -214,3 +214,32 @@ export function OgIsotype({ kind, count, part = 1, columns, width }: { kind: Iso
   const viewHeight = rows * 30 - 6;
   return <img src={svgDataUri(`0 0 ${viewWidth} ${viewHeight}`, drawing)} width={width} height={(width * viewHeight) / viewWidth} alt="" />;
 }
+
+/** The tile map of voivodeships, shaded in a fixed pattern: art for the observation map. */
+export function OgTileMap({ width }: { width: number }) {
+  const shades = [C.ink, "#5d574e", "#a69d8c", "#d3cbbb", C.red];
+  const tiles = Array.from({ length: 16 }, (_, i) => (
+    <rect key={i} x={(i % 4) * 26} y={Math.floor(i / 4) * 26} width={24} height={24} fill={i === 6 ? shades[4] : shades[(i * 7 + 3) % 4]} />
+  ));
+  return <img src={svgDataUri("0 0 102 102", tiles)} width={width} height={width} alt="" />;
+}
+
+/** Three medals on ribbons, second, first and third: art for the Tablica Honorowa. */
+export function OgMedals({ width }: { width: number }) {
+  const medal = (x: number, y: number, scale: number, fill: string) => (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <path d="M11 0H19L23 18H15Z" fill={C.red} />
+      <path d="M29 0H21L17 18H25Z" fill="#3d6696" />
+      <circle cx={20} cy={30} r={14} fill={fill} />
+      <circle cx={20} cy={30} r={10.4} fill="none" stroke={C.paper} strokeWidth={1.2} />
+    </g>
+  );
+  return (
+    <img
+      src={svgDataUri("0 0 130 80", <>{[medal(0, 14, 1, "#cec6b6"), medal(42, 0, 1.25, "#d49a2a"), medal(92, 22, 0.95, C.red)]}</>)}
+      width={width}
+      height={(width * 80) / 130}
+      alt=""
+    />
+  );
+}

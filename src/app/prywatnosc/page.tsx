@@ -66,9 +66,9 @@ export default function PrivacyPage() {
           Konto wymaga adresu e-mail. Przechowujemy go razem z pseudonimem (jeśli go podasz), zapisanymi wynikami i datami logowania. Robimy to, żeby prowadzić konto (art. 6 ust. 1 lit. b RODO), i tylko tak długo, jak konto istnieje.
         </P>
         <P>
-          Konto usuwa się przyciskiem w Profilu Dziaderskim, natychmiast i na zawsze, razem z pseudonimem, kartoteką, obserwacjami, zakładkami i zgłoszonymi sprawami. Anonimowe wpisy w Narodowym Spisie zostają, bo nie wiadomo, czyje są. Głosy w Komisji Orzekającej zostają w statystyce, ale tracą powiązanie z kontem.
+          Konto usuwa się przyciskiem w Profilu Dziaderskim, natychmiast i na zawsze, razem z pseudonimem, kartoteką, obserwacjami, zakładkami, kartkami z kalendarza, zgodami i zgłoszonymi sprawami. Anonimowe wpisy w Narodowym Spisie zostają, bo nie wiadomo, czyje są. Głosy w Komisji Orzekającej zostają w statystyce, ale tracą powiązanie z kontem.
         </P>
-        <P>Na adres e-mail wysyłamy wyłącznie wiadomości potrzebne do konta: skierowania do logowania i potwierdzenia zmian. Nie ma newslettera ani reklam.</P>
+        <P>Na adres e-mail wysyłamy wiadomości potrzebne do konta (skierowania do logowania i potwierdzenia zmian), a Biuletyn tygodniowy tylko wtedy, gdy go zamówisz. Reklam nie wysyłamy.</P>
       </Part>
 
       <Part id="spolecznosc" title="Obserwacje, zakładki i Komisja Orzekająca">
@@ -83,6 +83,18 @@ export default function PrivacyPage() {
         </P>
         <P>
           Liczniki do Małego Rocznika Statystycznego (na przykład ile wypowiedzi wylosowały Rozmówki albo ile razy zatrąbiono w teście) to dzienne sumy bez żadnych identyfikatorów. Podstawą tych zestawień jest prawnie uzasadniony interes Instytutu w prowadzeniu statystyki (art. 6 ust. 1 lit. f RODO), a dla danych przypisanych do konta prowadzenie konta (art. 6 ust. 1 lit. b RODO).
+        </P>
+      </Part>
+
+      <Part id="zgody" title="Biuletyn, Tablica Honorowa i kalendarz">
+        <P>
+          Biuletyn tygodniowy wysyłamy tylko osobom, które zaznaczyły go w Profilu Dziaderskim (zgoda, art. 6 ust. 1 lit. a RODO). Zgodę można cofnąć w każdej chwili: w Profilu albo jednym kliknięciem w stopce każdego listu. W liście, oprócz liczb ogólnych, są twoje liczby z ostatniego tygodnia: obserwacje, kartki z kalendarza, liczba badań i orzeczeń. Zapamiętujemy, kiedy zgoda została wyrażona.
+        </P>
+        <P>
+          Pseudonim na Tablicy Honorowej pokazujemy tylko wtedy, gdy zaznaczysz to w Profilu (zgoda). Obok pseudonimu widać wyłącznie liczby: zaobserwowane gatunki, zgłoszenia, orzeczenia, kartki i najdłuższą serię. Odznaczenie zgody usuwa pseudonim z Tablicy przy najbliższym odświeżeniu, zwykle w ciągu kilku minut.
+        </P>
+        <P>
+          Zerwana kartka z kalendarza to data przypisana do konta, potrzebna do serii dni i odznak. Bez konta liczymy ją tylko anonimowo, w dziennej sumie. Legitymacja Obserwatora powstaje na bieżąco z danych konta i nie jest nigdzie zapisywana.
         </P>
       </Part>
 

@@ -20,6 +20,12 @@ export type Letter = {
   code?: { label: string; value: string };
   /** Small print under the signature. */
   note: string;
+  /** Headline figures, two to a row: the weekly bulletin. */
+  figures?: { value: string; label: string }[];
+  /** Who signs the letter; the registry by default. */
+  signature?: string;
+  /** Unsubscribe link for mailings, shown in the footer. */
+  unsubscribe?: string;
 };
 
 const C = {
@@ -60,6 +66,23 @@ export function renderHtml(letter: Letter, origin = site.url) {
       </tr></table>`
     : "";
 
+  const figures = letter.figures?.length
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:22px 0 4px 0;border-top:1px solid ${C.ink};">
+        ${Array.from({ length: Math.ceil(letter.figures.length / 2) }, (_, row) =>
+          `<tr>${letter.figures!
+            .slice(row * 2, row * 2 + 2)
+            .map(
+              (item) =>
+                `<td width="50%" style="padding:12px 12px 10px 0;border-bottom:1px solid ${C.rule};vertical-align:top;">
+                  <div style="font-family:${SERIF};font-size:30px;font-weight:700;line-height:1;color:${C.ink};">${escape(item.value)}</div>
+                  <div style="margin-top:4px;font-family:${SANS};font-size:13px;line-height:1.35;color:${C.soft};">${prose(item.label)}</div>
+                </td>`,
+            )
+            .join("")}</tr>`,
+        ).join("")}
+      </table>`
+    : "";
+
   return `<!doctype html>
 <html lang="pl">
 <head>
@@ -90,15 +113,16 @@ export function renderHtml(letter: Letter, origin = site.url) {
                   `<p style="margin:16px 0 0 0;font-family:${SERIF};font-size:17px;line-height:1.55;color:${C.ink};">${prose(paragraph)}</p>`,
               )
               .join("\n            ")}
+            ${figures}
             ${button}
             ${code}
-            <p style="margin:30px 0 0 0;padding-top:16px;border-top:1px solid ${C.rule};font-family:${SERIF};font-size:16px;font-style:italic;line-height:1.4;color:${C.ink};">Z poważaniem<br>Rejestracja Instytutu</p>
+            <p style="margin:30px 0 0 0;padding-top:16px;border-top:1px solid ${C.rule};font-family:${SERIF};font-size:16px;font-style:italic;line-height:1.4;color:${C.ink};">Z poważaniem<br>${escape(letter.signature ?? "Rejestracja Instytutu")}</p>
           </td></tr>
         </table>
       </td></tr>
       <tr><td style="padding:18px 2px 0 2px;font-family:${SANS};font-size:12px;line-height:1.55;color:${C.faint};">
         ${prose(letter.note)}<br>
-        <a href="${origin}" style="color:${C.faint};">dziader.si</a> &middot; serwis satyryczny &middot; <a href="${origin}/prywatnosc" style="color:${C.faint};">prywatność</a>
+        <a href="${origin}" style="color:${C.faint};">dziader.si</a> &middot; serwis satyryczny &middot; <a href="${origin}/prywatnosc" style="color:${C.faint};">prywatność</a>${letter.unsubscribe ? ` &middot; <a href="${escape(letter.unsubscribe)}" style="color:${C.faint};">wypisz się</a>` : ""}
       </td></tr>
     </table>
   </td></tr>
@@ -114,13 +138,15 @@ export function renderText(letter: Letter) {
     letter.title.toUpperCase(),
     "",
     ...letter.paragraphs.flatMap((paragraph) => [paragraph, ""]),
+    ...(letter.figures?.length ? [...letter.figures.map((item) => `${item.value}: ${item.label}`), ""] : []),
     ...(letter.button ? [`${letter.button.label}: ${letter.button.href}`, ""] : []),
     ...(letter.code ? [`${letter.code.label} ${spaced(letter.code.value)}`, ""] : []),
     "Z poważaniem",
-    "Rejestracja Instytutu",
+    letter.signature ?? "Rejestracja Instytutu",
     "",
     "--",
     letter.note,
     "dziader.si · serwis satyryczny",
+    ...(letter.unsubscribe ? [`Wypisz się: ${letter.unsubscribe}`] : []),
   ].join("\n");
 }
