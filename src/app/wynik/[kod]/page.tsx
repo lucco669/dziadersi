@@ -11,7 +11,9 @@ import { ResultActions } from "@/components/result-actions";
 import type { Species } from "@/content/species";
 import { TASKS } from "@/content/test";
 import { QUESTIONS_V1 } from "@/content/test-v1";
+import { sameAnswer } from "@/lib/answer-stats";
 import { getBulletin } from "@/lib/bulletin";
+import { getAnswerCounts, getScoreHistogram, realPercentile, type AnswerCounts } from "@/lib/census";
 import { ZONES } from "@/lib/indeks";
 import { pageMetadata } from "@/lib/seo";
 import { decodeResult, encodeResult, evaluate, groupPath, SAMPLE_DRAFT, type Diagnosis, type Result } from "@/lib/test";
@@ -57,14 +59,19 @@ export default async function ResultPage({ params }: PageProps<"/wynik/[kod]">) 
   // Normalised codes only, e.g. when a name was filtered out.
   if (requested !== result.code) redirect(`/wynik/${result.code}`);
 
-  const bulletin = await getBulletin();
+  const [bulletin, histogram, counts] = await Promise.all([
+    getBulletin(),
+    getScoreHistogram(),
+    result.version === 2 ? getAnswerCounts() : null,
+  ]);
+  const real = realPercentile(histogram, result.score);
 
   return (
     <main id="tresc">
-      <Summary result={result} nid={bulletin.index.value} />
+      <Summary result={result} nid={bulletin.index.value} real={real} />
       <CaseDescription result={result} />
       <Lab result={result} />
-      <Protocol result={result} />
+      <Protocol result={result} counts={counts} />
       <Referral code={result.code} />
     </main>
   );
@@ -72,7 +79,16 @@ export default async function ResultPage({ params }: PageProps<"/wynik/[kod]">) 
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-function Summary({ result, nid }: { result: Result; nid: number }) {
+function Summary({
+  result,
+  nid,
+  real,
+}: {
+  result: Result;
+  nid: number;
+  /** From the census, once it has enough results; until then the model's estimate. */
+  real: { percentile: number; total: number } | null;
+}) {
   return (
     <section className="wrap pb-16 pt-8 md:pb-24 md:pt-12">
       <p className="label flex flex-wrap justify-between gap-x-6 gap-y-1 text-ink-soft">
@@ -106,7 +122,14 @@ function Summary({ result, nid }: { result: Result; nid: number }) {
 
           <ScoreScale score={result.score} nid={nid} />
           <p className="mt-5 max-w-xl text-ink-soft">
-            {typo(`Wynik wyższy niż u ${result.percentile}% badanych. Narodowy Indeks Dziaderstwa wynosi dziś ${pct(nid)}%.`)}
+            {typo(
+              real
+                ? `Wynik wyższy niż u ${real.percentile}% z ${real.total.toLocaleString("pl-PL")} zbadanych w Narodowym Spisie. Narodowy Indeks Dziaderstwa wynosi dziś ${pct(nid)}%.`
+                : `Wynik wyższy niż u ${result.percentile}% badanych. Narodowy Indeks Dziaderstwa wynosi dziś ${pct(nid)}%.`,
+            )}{" "}
+            <Link href="/spis" className="link text-ink">
+              Narodowy Spis
+            </Link>
           </p>
 
           <ResultActions code={result.code} score={result.score} diagnosis={result.diagnosis.name} name={result.name} />
@@ -279,7 +302,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function Protocol({ result }: { result: Result }) {
+function Protocol({ result, counts }: { result: Result; counts: AnswerCounts | null }) {
   return (
     <Section
       id="protokol"
@@ -301,7 +324,10 @@ function Protocol({ result }: { result: Result }) {
                 {typo(symptom.question)}
                 <span className="label mt-1.5 block text-ink-faint">{symptom.section}</span>
               </span>
-              <span className="text-xl italic leading-snug">{typo(symptom.answer)}</span>
+              <span className="text-xl italic leading-snug">
+                {typo(symptom.answer)}
+                {result.version === 2 && <SameAnswer result={result} number={symptom.number} counts={counts} />}
+              </span>
               <span className="label font-semibold text-red md:text-right">+{symptom.points} pkt</span>
             </li>
           ))}
@@ -340,6 +366,13 @@ function Lab({ result }: { result: Result }) {
       </div>
     </Section>
   );
+}
+
+/** "Tak samo odpowiedziało 23% badanych", under a protocol entry. */
+function SameAnswer({ result, number, counts }: { result: Result; number: number; counts: AnswerCounts | null }) {
+  const index = number - 1;
+  const same = sameAnswer(TASKS[index], index, result.answers[index], counts);
+  return same ? <span className="label mt-1.5 block not-italic text-ink-soft">{same.text}</span> : null;
 }
 
 /** One more person: a ranking with friends, an interview about someone at home, or the test again. */

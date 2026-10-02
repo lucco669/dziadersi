@@ -34,8 +34,8 @@ const securityHeaders = [
   { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
 ];
 
-/** Images other sites may embed: share cards, certificates, lab results. */
-const EMBEDDABLE = ["/opengraph-image", "/:path*/opengraph-image", "/wynik/:kod/certyfikat", "/wynik/:kod/badania"];
+/** Images other sites may embed: share cards, certificates, lab results, and the letterhead in emails. */
+const EMBEDDABLE = ["/opengraph-image", "/:path*/opengraph-image", "/wynik/:kod/certyfikat", "/wynik/:kod/badania", "/email/:file*"];
 
 /** Files outside /_next/static that rarely change: icons, the manifest, the Rorschach plates. */
 const LONG_LIVED = [
@@ -46,6 +46,7 @@ const LONG_LIVED = [
   "/icon-maskable-:size.png",
   "/manifest.webmanifest",
   "/plansze/:file*",
+  "/email/:file*",
 ];
 
 const nextConfig: NextConfig = {

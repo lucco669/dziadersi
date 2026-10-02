@@ -26,5 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/indeks", "daily", 0.6),
     page("/generator", "daily", 0.6),
     page("/bingo", "monthly", 0.6),
+    page("/spis", "hourly", 0.7),
+    page("/prywatnosc", "yearly", 0.2),
   ];
 }

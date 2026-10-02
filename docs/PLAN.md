@@ -52,17 +52,17 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - **Dziaders Bingo** (`/bingo`): cards for a wedding, Christmas Eve, the May long weekend and the seaside. A card (`/bingo/[karta]`, "wesele-3k9fz") is 24 squares drawn from the occasion's pool by a seed, around a free centre. Tap to cross out in red ink; five in a line draws a red line and stamps BINGO. Marks stay in this browser only. Each card has a share card, a print style (A4, without the site around it) and `/bingo/[karta]/druk` with four different cards on one sheet. Content: `src/content/bingo.ts`; changing a pool reshuffles that occasion's cards.
 - Drawings: six chapter icons and two new occasion plates (the wedding with a tie on the forehead, Christmas Eve with the tree), in `src/components/occasions.tsx`; the long weekend and the seaside reuse the Grillowy and Wakacyjny plates.
 
-### Phase 4: Supabase, accounts and community (next)
+### Phase 4: Supabase, accounts and community (in progress)
 
-- **Supabase** (Postgres, auth, row-level security) is the backend for everything below. Store results as codes plus region and time, never names.
-- **Narodowy Spis Dziadersów** (`/spis`): real statistics in the manner of the statistics office, drawn with the Isotype figures: tests taken, species and hybrid frequencies, the most common answer to each task, the most dziaderski hour, regions (an optional voivodeship question feeds the map), and how many people retook the test to improve their score. The same data replaces the modelled percentile on the result page and can show "tak samo odpowiedziało 38% badanych" after each answer.
-- **Accounts:** a "Profil Dziaderski" with the history of results and badges; rankings become real groups that update for everyone.
+Setup, environment variables and the email hook: `supabase/README.md`. SQL migrations live in `supabase/migrations/` and are run by hand in the SQL Editor.
 
-- **Czy to już dziaderstwo?**: users submit situations and the community votes TAK / NIE / DZIADERSTWO KLINICZNE.
-- **Dziaderometr** (a daily 0–10 poll) and **Hall of Fame**.
-- Requirements: a database (Neon/Postgres via the Vercel Marketplace, or Supabase), rate limiting, a **pre-moderation** queue, a report button, terms of use and a privacy policy (GDPR/RODO).
-- Do not launch user content without moderation. Real people's stories and photos create real legal risk (image rights, personal rights).
-- Later: optional accounts with a "Profil Dziaderski", badges and the history of test results.
+- **Narodowy Spis Dziadersów** (`/spis`) ✅: every finished test goes to `/api/wyniki`, which validates the code and stores it in `public.results` without the name, with the optional voivodeship from the test intro and a retake flag (the last own score is remembered in the browser; no identifier is sent). The page shows totals, the share with at least "podwyższone", zones, species ranking, top hybrids, the most common answer to every task, the falstart share, results by hour with the most dziaderski time, voivodeships and retakes. Aggregates come from server-only SQL functions, cached for minutes; nothing is published below 30 results.
+- **Live comparisons** ✅: between rooms the test shows "tak samo odpowiedziało X% badanych" for the room just finished (`/api/spis/odpowiedzi`), the result protocol shows it per finding, and the percentile on the result page becomes real once the census has 30 results.
+- **Profil Dziaderski** ✅: magic-link accounts (`/konto`: email, then the link or the six-digit code). `/profil` shows the species collection (10 plates, missing ones faded), nine badges computed from saved results, the test history, nickname, sign-out and account deletion. Tests finished while signed in are filed automatically; older results via "Zapisz w Profilu Dziaderskim" on the result page (`/profil/zapisz/[kod]`). `src/proxy.ts` refreshes sessions on these routes only; the rest of the site stays static.
+- **Branded email** ✅: Supabase's Send Email Hook calls `/api/auth/email` (Standard Webhooks signature checked), which renders the Institute's letterhead (`src/emails/`: paper card, red certificate stripe, ink button, the code as a red stamp, text version included) and sends through Brevo.
+- **Privacy** ✅: `/prywatnosc`. The data controller (`site.controller` in `src/lib/site.ts`) must be filled in before launch.
+- Next: rankings as real groups that update for everyone; a weekly census email; Google sign-in.
+- Still needs moderation before launch: **Czy to już dziaderstwo?** (user-submitted situations, votes TAK / NIE / DZIADERSTWO KLINICZNE) and the **Hall of Fame**. Pre-moderation queue, report button and terms of use first.
 
 ### Phase 5: shop
 
@@ -79,7 +79,7 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 | `/raporty`, `/raporty/[slug]` | 2 |
 | `/indeks` (methodology and archive) | 2 |
 | `/generator`, `/generator/[kod]`, `/bingo`, `/bingo/[karta]`, `/bingo/[karta]/druk` | 3 |
-| `/spis`, `/czy-to-juz-dziaderstwo`, `/hall-of-fame` | 4 |
+| `/spis`, `/konto`, `/profil`, `/prywatnosc` (done); `/czy-to-juz-dziaderstwo`, `/hall-of-fame` | 4 |
 | `/o-instytucie`, `/regulamin`, `/prywatnosc` | before Phase 4, or as soon as analytics is added |
 
 ## 4. Design system

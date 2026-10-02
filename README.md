@@ -10,7 +10,7 @@ Production: https://dziader.si · Roadmap and design rules: [docs/PLAN.md](docs/
 - Tailwind CSS 4, with design tokens in `src/app/globals.css`
 - Fonts via `next/font`: Poltawski Nowy (headlines and text) and Schibsted Grotesk (interface)
 - Illustrations are hand-written SVG pictograms (`src/components/pictograms.tsx`), reused in the generated share images
-- No database and no external services. The homepage is static and regenerates hourly.
+- Supabase (Postgres, Auth) for the anonymous census and accounts, Brevo for branded email. Everything else is static; the homepage regenerates hourly. Setup: [supabase/README.md](supabase/README.md)
 
 ## Develop
 
@@ -35,6 +35,11 @@ Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
 | `src/content/phrasebook.ts`, `src/lib/phrasebook.ts`, `src/components/phrasebook.tsx` | Rozmówki dziaderskie: lines, codes and the generator |
 | `src/content/bingo.ts`, `src/lib/bingo.ts`, `src/components/bingo-*.tsx` | Dziaders Bingo: squares, seeded cards and the playable and printable card |
 | `src/components/occasions.tsx`, `src/lib/toy-cards.tsx` | Chapter icons, occasion plates and the share cards of both toys |
+| `supabase/migrations/`, `supabase/README.md` | Database schema (run by hand in the SQL Editor) and the Supabase, Brevo and hook setup |
+| `src/lib/supabase/`, `src/proxy.ts` | Supabase clients (visitor with cookies, server with the secret key) and session refresh on account routes |
+| `src/app/api/wyniki`, `src/lib/census.ts`, `src/app/spis` | Recording finished tests and the Narodowy Spis Dziadersów |
+| `src/app/konto`, `src/app/profil`, `src/app/auth`, `src/lib/profile.ts` | Magic-link sign-in and the Profil Dziaderski |
+| `src/emails/`, `src/app/api/auth/email` | Branded auth emails via Supabase's Send Email Hook and Brevo |
 | `public/plansze/`, `assets/plansze/` | Rorschach plates (generated with ChatGPT): WebP for the site, PNG for share images |
 | `src/lib/certificate-image.tsx` | Generated certificates: link preview, Instagram post and story |
 | `src/app/test`, `src/app/wynik/[kod]` | The test page and the shareable result pages, with certificate and lab images |
@@ -48,4 +53,4 @@ Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
 
 ## Deploy
 
-On Vercel: import the repository, keep the Next.js defaults (pnpm is detected from the lockfile), and add `dziader.si` under Project → Settings → Domains. No environment variables are required. `NEXT_PUBLIC_SITE_URL` only needs to be set if the canonical domain changes.
+On Vercel: import the repository, keep the Next.js defaults (pnpm is detected from the lockfile), and add `dziader.si` under Project → Settings → Domains. Environment variables are listed in [supabase/README.md](supabase/README.md); without them the census and accounts show a closed state and the rest of the site works. `NEXT_PUBLIC_SITE_URL` only needs to be set if the canonical domain changes.

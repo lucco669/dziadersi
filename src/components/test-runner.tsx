@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import type { SpeciesKey } from "@/content/species";
+import { REGIONS } from "@/content/regions";
 import { STATIONS, TASKS, type Task } from "@/content/test";
+import { sameAnswer } from "@/lib/answer-stats";
+import type { AnswerCounts } from "@/lib/census";
 import { DIAGNOSABLE, dayNumber, decodeGroup, encodeResult, evaluate, GROUP_LIMIT, groupPath, suspect } from "@/lib/test";
 import { cx, plural, typo } from "@/lib/typo";
 import { Seal } from "./brand";
@@ -22,6 +25,9 @@ import { WordsView } from "./test/words";
 
 const TOTAL = TASKS.length;
 const PROGRESS_KEY = "ibd-t2";
+/** The last own score in this browser, so the census can count retakes without any identifier. */
+const LAST_SCORE_KEY = "ibd-ostatni-wynik";
+const REGION_OPTIONS = Object.values(REGIONS).sort((a, b) => a.name.localeCompare(b.name, "pl"));
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -44,6 +50,7 @@ type Progress = {
   proxy: boolean;
   seed: number;
   group: string;
+  region: string;
 };
 
 const noSubscription = () => () => {};
@@ -117,6 +124,8 @@ export function TestRunner() {
   const [mode, setMode] = useState<"self" | "proxy" | null>(null);
   const [seed, setSeed] = useState(1);
   const [group, setGroup] = useState("");
+  const [region, setRegion] = useState("");
+  const [counts, setCounts] = useState<AnswerCounts | null>(null);
   const [step, setStep] = useState(0);
   const timers = useRef<number[]>([]);
   const top = useRef<HTMLDivElement>(null);
@@ -164,6 +173,14 @@ export function TestRunner() {
     { label: "Przybijanie pieczątki", detail: "gotowe" },
   ];
 
+  /** How others answered, for the notes between rooms. Optional: without it the notes stay quiet. */
+  function loadCounts() {
+    fetch("/api/spis/odpowiedzi")
+      .then((response) => (response.ok ? (response.json() as Promise<AnswerCounts>) : null))
+      .then((data) => setCounts(data && Object.keys(data).length ? data : null))
+      .catch(() => {});
+  }
+
   function start(event?: FormEvent) {
     event?.preventDefault();
     const fresh = TASKS.map(() => null);
@@ -176,6 +193,7 @@ export function TestRunner() {
     setMode(proxy ? "proxy" : "self");
     setPhase("task");
     writeProgress(null);
+    loadCounts();
     track("Test rozpoczęty", { tryb: proxy ? "wywiad" : "osobiście", ranking: joined ? "tak" : "nie" });
   }
 
@@ -186,7 +204,9 @@ export function TestRunner() {
     setMode(progress.proxy ? "proxy" : "self");
     setSeed(progress.seed);
     setGroup(progress.group);
+    setRegion(progress.region ?? "");
     setPhase("task");
+    loadCounts();
   }
 
   function finish(final: number[]) {
@@ -195,12 +215,33 @@ export function TestRunner() {
     const href = group ? groupPath([...group.split("."), code]) : `/wynik/${code}`;
     const result = evaluate(draft);
     track("Test ukończony", { strefa: result.verdict.label, gatunek: result.diagnosis.name, tryb: proxy ? "wywiad" : "osobiście" });
+    record(code, result.score);
     writeProgress(null);
     setPhase("processing");
     window.scrollTo({ top: 0 });
     router.prefetch(href);
     steps.forEach((_, i) => later(400 + i * 480, () => setStep(i + 1)));
     later(400 + steps.length * 480 + 650, () => router.push(href));
+  }
+
+  /** Into the anonymous census (and the profile, when signed in). Fire and forget: the result page doesn't wait. */
+  function record(code: string, score: number) {
+    let previous: number | undefined;
+    if (!proxy) {
+      try {
+        const last = localStorage.getItem(LAST_SCORE_KEY);
+        previous = last === null ? undefined : Number(last);
+        localStorage.setItem(LAST_SCORE_KEY, String(score));
+      } catch {
+        // Storage blocked: the result still goes in, just not as a retake.
+      }
+    }
+    fetch("/api/wyniki", {
+      method: "POST",
+      keepalive: true,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ code, region: region || undefined, previous }),
+    }).catch(() => {});
   }
 
   function answer(value: number) {
@@ -213,7 +254,7 @@ export function TestRunner() {
     }
     setCurrent(current + 1);
     setPhase(TASKS[current + 1].station !== TASKS[current].station ? "break" : "task");
-    writeProgress({ answers: next, current: current + 1, name, proxy, seed, group });
+    writeProgress({ answers: next, current: current + 1, name, proxy, seed, group, region });
   }
 
   function back() {
@@ -242,6 +283,8 @@ export function TestRunner() {
       <Intro
         name={name}
         setName={setName}
+        region={region}
+        setRegion={setRegion}
         proxy={proxy}
         setProxy={(value) => setMode(value ? "proxy" : "self")}
         invite={invite}
@@ -290,6 +333,12 @@ export function TestRunner() {
     const finished = TASKS[current - 1].station;
     const station = STATIONS[TASKS[current].station];
     const suspected = suspect(answers.map((value) => value ?? undefined));
+    const comparisons = TASKS.flatMap((task, index) => {
+      const value = answers[index];
+      if (task.station !== finished || value === null) return [];
+      const same = sameAnswer(task, index, value, counts);
+      return same ? [{ section: task.section, text: same.text }] : [];
+    });
     return (
       <section ref={top} className="wrap scroll-mt-6 pb-16 pt-8 md:pb-24 md:pt-12">
         <div className="mx-auto max-w-4xl">
@@ -332,6 +381,19 @@ export function TestRunner() {
                 </>
               ) : (
                 <p className="mt-4 text-xl leading-snug">{typo("Na razie bez podejrzeń. Instytut zachowuje czujność.")}</p>
+              )}
+              {comparisons.length > 0 && (
+                <div className="mt-10 border-t border-ink pt-5">
+                  <p className="label text-ink-soft">Na tle Narodowego Spisu</p>
+                  <ul className="mt-2">
+                    {comparisons.map((item) => (
+                      <li key={item.section} className="border-b border-rule py-2.5 leading-snug">
+                        <span className="label block text-ink-faint">{item.section}</span>
+                        {typo(item.text)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </aside>
           </div>
@@ -393,6 +455,8 @@ export function TestRunner() {
 function Intro({
   name,
   setName,
+  region,
+  setRegion,
   proxy,
   setProxy,
   invite,
@@ -402,6 +466,8 @@ function Intro({
 }: {
   name: string;
   setName: (name: string) => void;
+  region: string;
+  setRegion: (region: string) => void;
   proxy: boolean;
   setProxy: (proxy: boolean) => void;
   invite: ReturnType<typeof evaluate>[] | null;
@@ -513,6 +579,23 @@ function Intro({
               className="mt-2 block w-full max-w-md border-0 border-b-2 border-ink bg-transparent px-0 py-2 font-serif text-3xl font-bold placeholder:font-normal placeholder:text-ink/25 focus:border-red focus-visible:outline-none"
             />
 
+            <label htmlFor="wojewodztwo" className="label mt-8 block text-ink-soft">
+              {proxy ? "Województwo osoby badanej (nieobowiązkowe)" : "Województwo (nieobowiązkowe)"}
+            </label>
+            <select
+              id="wojewodztwo"
+              value={region}
+              onChange={(event) => setRegion(event.target.value)}
+              className="mt-2 block w-full max-w-md cursor-pointer border-0 border-b-2 border-ink bg-transparent px-0 py-2 font-serif text-xl focus:border-red focus-visible:outline-none"
+            >
+              <option value="">Nie podaję</option>
+              {REGION_OPTIONS.map((item) => (
+                <option key={item.code} value={item.code}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+
             <ol className="mt-10 max-w-xl border-t border-ink">
               {rules.map((rule, i) => (
                 <li key={rule} className="grid grid-cols-[2.5rem_1fr] border-b border-rule py-3.5 leading-snug">
@@ -538,7 +621,7 @@ function Intro({
             </div>
             <p className="label mt-6 max-w-md text-ink-soft">
               {typo(
-                `${TOTAL} zadań, około czterech minut. W gabinecie III jest próba klaksonowa, z dźwiękiem. Odpowiedzi nie są nigdzie zapisywane: wynik trafia tylko do linku, którym zdecydujesz się podzielić.`,
+                `${TOTAL} zadań, około czterech minut. W gabinecie III jest próba klaksonowa, z dźwiękiem. Odpowiedzi trafiają anonimowo do Narodowego Spisu Dziadersów, bez imienia. Wynik z imieniem jest tylko w linku, którym zdecydujesz się podzielić.`,
               )}
             </p>
           </form>

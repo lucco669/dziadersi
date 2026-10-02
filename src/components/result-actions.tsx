@@ -158,6 +158,12 @@ export function ResultActions({
             </a>
           ))}
         </dd>
+        <dt className="label pt-0.5 text-ink-soft">Profil</dt>
+        <dd>
+          <a href={`/profil/zapisz/${code}`} onClick={() => track("Profil", { akcja: "zapisz" })} className="link">
+            Zapisz w Profilu Dziaderskim
+          </a>
+        </dd>
         <dt className="label pt-0.5 text-ink-soft">Osoba badana</dt>
         <dd>
           {editing ? (

@@ -9,6 +9,9 @@ export const site = {
   description:
     "Instytut Badań nad Dziaderstwem: Test Dziadersa z certyfikatem, Atlas Dziadersów, Słownik Dziaderski i Narodowy Indeks Dziaderstwa. Serwis satyryczny.",
   disclaimer: "Serwis satyryczny. Wszystkie dane są zmyślone, a mimo to się zgadzają. Instytut wyśmiewa nawyki, nie ludzi.",
+  /** The data controller named in the privacy policy. Fill in before accounts go live. */
+  controller: { name: "", email: "" },
+  privacyDate: "2 października 2026",
 } as const;
 
 /** The departments of the Institute, in the order of the footer. */
@@ -37,6 +40,11 @@ export const SECTIONS = [
     href: "/indeks",
     label: "Narodowy Indeks Dziaderstwa",
     summary: "Natężenie dziaderstwa w Polsce, aktualizowane co godzinę, z prognozą na Wigilię.",
+  },
+  {
+    href: "/spis",
+    label: "Narodowy Spis Dziadersów",
+    summary: "Wyniki wszystkich badań Instytutu, na żywo: gatunki, krzyżówki, najczęstsze odpowiedzi i województwa.",
   },
   {
     href: "/generator",

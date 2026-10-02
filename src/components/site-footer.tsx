@@ -45,7 +45,15 @@ export function SiteFooter() {
           <span>
             © {site.founded} {site.institute}
           </span>
-          <span>dziader.si</span>
+          <span className="flex gap-5">
+            <Link href="/profil" className="transition-colors hover:text-red">
+              Profil Dziaderski
+            </Link>
+            <Link href="/prywatnosc" className="transition-colors hover:text-red">
+              Prywatność
+            </Link>
+            <span>dziader.si</span>
+          </span>
         </p>
       </div>
     </footer>
