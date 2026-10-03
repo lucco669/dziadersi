@@ -9,7 +9,7 @@ Production: https://dziader.si · Roadmap and design rules: [docs/PLAN.md](docs/
 - Next.js 16.3 (App Router, Turbopack, Cache Components), React 19.2, TypeScript
 - Tailwind CSS 4, with design tokens in `src/app/globals.css`
 - Fonts via `next/font`: Poltawski Nowy (headlines and text) and Schibsted Grotesk (interface)
-- Illustrations are hand-written SVG pictograms (`src/components/pictograms.tsx`), reused in the generated share images
+- All 28 Atlas species use the same SVG pictogram system, including homepage previews, related-species lists, results, certificates and share images. Icons, charts and interactive scenes also stay SVG. Generated schoolbook illustrations are reserved for the homepage hero and three report scenes (`public/illustrations/`); source PNGs and exact prompts are in `assets/illustrations/`. The three unused species illustration studies are retained there for reference; do not introduce partial raster replacements into the Atlas.
 - Supabase (Postgres, Auth) for the anonymous census and accounts, Brevo for branded email. Everything else is static; the homepage regenerates hourly. Setup: [supabase/README.md](supabase/README.md)
 
 ## Develop
@@ -20,6 +20,14 @@ pnpm dev
 ```
 
 Open http://localhost:3000. Before pushing, run `pnpm lint` and `pnpm build`.
+
+Also run `pnpm test` and `pnpm typecheck`. Tests cover published T1/T2 codes, scoring, resumable tests, privacy filtering, write validation, and the new SQL migration in ephemeral Postgres (PGlite). Tests need no hosted database credentials.
+
+For isolated browser QA, run `pnpm exec tsx scripts/dev-fixture.ts`, then start Next with `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54329`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=local-fixture`, and `SUPABASE_SECRET_KEY=local-fixture` set in that process. The fixture never connects to Supabase; it implements only the result/group APIs and intentionally leaves account and community services unavailable. Never deploy the fixture or these environment values.
+
+The test now asks for a signature after the last task, offers “Bez pośpiechu”, and records one anonymous completion event per room. Persistent family groups use `/grupy/[id]`; existing snapshot rankings at `/grupa/[lista]` are unchanged. Apply the new migration listed in `supabase/README.md` before deploying.
+
+Browser QA on 3 October 2026 covered a complete 16-task examination at the mobile breakpoint, resuming saved untimed progress, optional final signature, the result and downloaded 4:5 certificate, family creation, invitation disclosure and automatic ranking updates. HTTP checks against the isolated fixture covered duplicate submissions/joins, invalid and oversized bodies, cross-origin rejection, missing groups, private response headers and cron authentication. Desktop checks covered the homepage, three featured species and an illustrated report. Local screenshots are kept in ignored `artifacts/qa/`.
 
 ## Where things live
 

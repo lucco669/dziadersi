@@ -20,6 +20,12 @@ Open the Supabase dashboard → **SQL Editor** and run the files in `migrations/
 
 Until a migration runs, the pages that depend on it show "·" (no information) instead of figures and nothing breaks.
 
+5. `20261003100000_groups_and_write_limits.sql`: stable family invitations, atomic membership limits, submission idempotency and database-backed write budgets. **Apply this before deploying the new API handlers.** Their writes return 503 if the budget function is unavailable; result calculation remains independent of the database.
+
+Family invitations are private by possession of an unguessable link, not by account membership. Members explicitly see that signatures and results are shared with link holders. Links expire after 90 days. `/api/cron/porzadki` removes expired groups (with their members) and stale budget rows daily, authorised by `CRON_SECRET`. Configure that secret even if the newsletter is disabled. Existing `/grupa/…` snapshot links still work.
+
+Write budgets use a daily HMAC of Vercel's trusted `x-vercel-forwarded-for` header and retain no raw IP. The existing Supabase secret keys the HMAC. See [Vercel request headers](https://vercel.com/docs/headers/request-headers#x-vercel-forwarded-for). Local and non-Vercel deployments share a conservative fallback bucket; configure a trusted edge identity before moving production to another host. The database limiter is not a substitute for the deployment firewall: verify Vercel's managed DDoS protection and application firewall settings before promotion.
+
 Never edit a migration that has already run. Changes go into a new file with a later timestamp.
 
 ## 2. Environment variables
@@ -66,7 +72,9 @@ For local testing of the hook itself, Supabase must reach your machine (a tunnel
 
 ## What is stored
 
-- `public.results`: result code **without** the name, version, family-interview flag, score, diagnosed species, answers, optional voivodeship, retake flag with the previous score, time. No names, IPs or identifiers. Only the server (secret key) can read or write it.
+- `public.results`: result code **without** the name, version, family-interview flag, score, diagnosed species, answers, optional voivodeship, retake flag with the previous score, time, and a random per-examination submission key for retry deduplication. No names, raw IPs or account/device IDs. Only the server (secret key) can read or write it.
+- `public.family_groups` / `public.family_members`: private invitation IDs, expiry, result codes including optional signatures, per-examination join keys and join times. The API permits access to anyone possessing the invitation link; expired groups are hidden and removed by daily cleanup.
+- `public.write_budgets`: daily-rotating keyed network hashes and per-scope ten-minute counters; raw IPs are never stored here. Rows older than one day are removed on writes and by daily cleanup.
 - `public.profiles`: nickname per account.
 - `public.saved_results`: result codes saved to a profile (with the name part, which is the owner's own data). Readable and deletable only by the owner.
 - `public.sightings`: field observations per account: species, optional voivodeship, day. One per species per day. Owner-only through row-level security; published only as totals.

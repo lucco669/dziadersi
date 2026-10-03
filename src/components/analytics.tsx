@@ -1,10 +1,9 @@
 "use client";
 
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
+import { analyticsUrl } from "@/lib/analytics-url";
 
-const NAME_IN_RESULT = /(\/wynik\/[0-9a-z]+)~[^/?#]*/;
-
-/** Vercel Web Analytics: cookieless. The name on a result link never leaves the browser. */
+/** Strip result codes, names, invitations and queries before sending analytics. */
 export function Analytics() {
-  return <VercelAnalytics beforeSend={(event) => ({ ...event, url: event.url.replace(NAME_IN_RESULT, "$1") })} />;
+  return <VercelAnalytics beforeSend={(event) => ({ ...event, url: analyticsUrl(event.url) })} />;
 }

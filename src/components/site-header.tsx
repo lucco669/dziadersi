@@ -25,7 +25,7 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4 xl:gap-6">
+          <div className="test-navigation flex items-center gap-4 xl:gap-6">
             <nav aria-label="Główna" className="hidden lg:block">
               <DesktopMenu />
             </nav>
@@ -40,7 +40,7 @@ export function SiteHeader() {
         </div>
       </header>
 
-      <nav aria-label="Działy" className="lg:hidden print:hidden">
+      <nav aria-label="Działy" className="test-navigation lg:hidden print:hidden">
         <MobileMenu />
       </nav>
       <SearchDialog />

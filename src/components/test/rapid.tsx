@@ -7,12 +7,13 @@ import { cx, typo } from "@/lib/typo";
 import { Countdown, useKeys, useLater, useReducedMotion, type TaskProps } from "./shared";
 
 /** Ten statements against the clock. Silence counts as consent. */
-export function RapidView({ task, onAnswer }: TaskProps<RapidTask>) {
+export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
   const [phase, setPhase] = useState<"ready" | "running" | "done">("ready");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<boolean[]>([]);
   const [flash, setFlash] = useState<"tak" | "nie" | "cisza" | null>(null);
-  const reduced = useReducedMotion();
+  const reducedMotion = useReducedMotion();
+  const reduced = reducedMotion || untimed;
   const later = useLater();
   const total = task.statements.length;
 
@@ -61,7 +62,7 @@ export function RapidView({ task, onAnswer }: TaskProps<RapidTask>) {
         <p className="text-[clamp(1.3rem,2.2vw,1.6rem)] leading-snug">
           {typo(
             reduced
-              ? `${total} stwierdzeń. Odpowiadaj TAK albo NIE, bez zastanowienia.`
+              ? `${total} stwierdzeń. Odpowiadaj TAK albo NIE, we własnym tempie. Czas nie jest ograniczony.`
               : `${total} stwierdzeń, ${task.seconds} sekund na każde. Odpowiadaj TAK albo NIE, bez zastanowienia. Milczenie oznacza zgodę.`,
           )}
         </p>

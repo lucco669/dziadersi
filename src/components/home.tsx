@@ -19,6 +19,7 @@ import { Specimen } from "./specimen";
 import { CaseFile } from "./verdict";
 
 const NATIONWIDE = SPECIES.filter((species) => !species.region && !species.occasion);
+const FEATURED = ["grill", "parking", "wakacje"].map((key) => NATIONWIDE.find((species) => species.key === key)!);
 const sample = evaluate(SAMPLE_DRAFT);
 
 export function Hero() {
@@ -143,13 +144,13 @@ export function AtlasPlates() {
       id="atlas"
       title="Atlas Dziadersów"
       aside={`${SPECIES.length} ${plural(SPECIES.length, "gatunek", "gatunki", "gatunków")} w Atlasie`}
-      intro={typo("Dziesięć gatunków występuje w całej Polsce. Test rozpoznaje każdy z nich, a także ich krzyżówki.")}
+      intro={typo("Trzy okazy z kolekcji Instytutu. Brzmi znajomo? Test rozpoznaje dziesięć gatunków i ich krzyżówki.")}
     >
-      <ol className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
-        {NATIONWIDE.map((species) => (
+      <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-3">
+        {FEATURED.map((species) => (
           <li key={species.key}>
             <Link href={`/atlas/${species.slug}`} className="group block">
-              <SpeciesPlate species={species.key} className="w-full" />
+              <SpeciesPlate species={species.key} className="mx-auto w-full max-w-80 transition-transform duration-300 motion-safe:group-hover:-translate-y-1" />
               <span className="mt-3 block text-[1.2rem] font-bold leading-tight transition-colors group-hover:text-red">
                 {species.name}
               </span>

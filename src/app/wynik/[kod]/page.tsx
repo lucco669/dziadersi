@@ -343,7 +343,7 @@ function Protocol({ result, counts }: { result: Result; counts: AnswerCounts | n
         </p>
       )}
       <p className="label mt-6 text-ink-soft">
-        Suma punktów: {result.points} z {result.max}. Pełny protokół jest zapisany wyłącznie w linku do wyniku.
+        Suma punktów: {result.points} z {result.max}. Link do wyniku zawiera pełny protokół badania.
       </p>
     </Section>
   );

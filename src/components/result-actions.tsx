@@ -7,6 +7,7 @@ import { site } from "@/lib/site";
 import { tally } from "@/lib/tally";
 import { cleanName, decodeResult, encodeResult } from "@/lib/test";
 import { cx } from "@/lib/typo";
+import { CreateFamilyGroup } from "./family-group";
 
 const noSubscription = () => () => {};
 
@@ -227,6 +228,7 @@ export function ResultActions({
           )}
         </dd>
       </dl>
+      <CreateFamilyGroup code={code} />
     </div>
   );
 }

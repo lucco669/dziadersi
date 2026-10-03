@@ -3,20 +3,18 @@ import { createAdminClient, hasAdmin } from "@/lib/supabase/admin";
 import { hasAuth } from "@/lib/supabase/config";
 import { currentUser } from "@/lib/supabase/server";
 import { dayNumber, decodeResult, encodeResult, evaluate } from "@/lib/test";
-
-type Body = { code?: unknown; region?: unknown; previous?: unknown };
+import { limitWrite } from "@/lib/write-limit";
+import { isAttemptId, readWriteBody } from "@/lib/write-policy";
 
 /**
  * A finished test, sent by the test page. Goes into the anonymous census (code without the
- * name, no identifiers) and, for a signed-in visitor, into their Profil Dziaderski.
+ * name, with a per-examination retry key) and, for a signed-in visitor, into their Profil Dziaderski.
  */
 export async function POST(request: Request) {
-  let body: Body;
-  try {
-    body = (await request.json()) as Body;
-  } catch {
-    return new Response(null, { status: 400 });
-  }
+  const rejected = await limitWrite(request, "results");
+  if (rejected) return rejected;
+  const body = await readWriteBody(request);
+  if (!body || !isAttemptId(body.attempt)) return new Response(null, { status: 400 });
 
   const draft = typeof body.code === "string" ? decodeResult(body.code) : null;
   // Only fresh results of the current edition: a code from last month is a shared link, not a test.
@@ -36,7 +34,8 @@ export async function POST(request: Request) {
     writes.push(
       createAdminClient()
         .from("results")
-        .insert({
+        .upsert({
+          submission_key: body.attempt,
           code: encodeResult({ ...draft, name: "" }),
           version: draft.version,
           proxy: result.proxy,
@@ -46,8 +45,8 @@ export async function POST(request: Request) {
           region,
           retake: previous !== null,
           previous_score: previous,
-        })
-        .then(({ error }) => error && console.error("Spis:", error.message)),
+        }, { onConflict: "submission_key", ignoreDuplicates: true })
+        .then(({ error }) => { if (error) throw error; }),
     );
   }
   if (hasAuth) {
@@ -57,11 +56,15 @@ export async function POST(request: Request) {
         supabase
           .from("saved_results")
           .upsert({ user_id: user.id, code: result.code }, { onConflict: "user_id,code", ignoreDuplicates: true })
-          .then(({ error }) => error && console.error("Profil:", error.message)),
+          .then(({ error }) => { if (error) throw error; }),
       );
     }
   }
-  await Promise.all(writes);
+  try {
+    await Promise.all(writes);
+  } catch {
+    return new Response(null, { status: 503 });
+  }
 
   return new Response(null, { status: 204 });
 }

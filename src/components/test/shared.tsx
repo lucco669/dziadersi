@@ -11,6 +11,8 @@ export type TaskProps<T extends Task> = {
   value: number | undefined;
   /** Per-respondent seed for the order of options. */
   seed: number;
+  /** Remove answer deadlines without changing the frozen scoring format. */
+  untimed?: boolean;
   onAnswer: (value: number) => void;
 };
 

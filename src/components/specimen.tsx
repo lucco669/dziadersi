@@ -1,25 +1,24 @@
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import { cx } from "@/lib/typo";
-import { Figure, INK, SummerTorso } from "./pictograms";
+import { INK } from "./pictograms";
 
 type Part = { name: string; note: string; side: "l" | "r"; at: [number, number]; y: number };
 
 /** Field marks of the common dziaders, as labelled on Rys. 1. Anchors are in figure units. */
 const PARTS: Part[] = [
-  { name: "Okulary", note: "na czole, szukane po całym domu", side: "l", at: [16.4, 3.6], y: 8 },
-  { name: "Wąs", note: "noszony bez przerwy od 1987 r.", side: "r", at: [25.2, 12.4], y: 12 },
-  { name: "Długopis", note: "w kieszonce koszuli, nie pisze", side: "r", at: [25.6, 26.6], y: 31 },
-  { name: "Saszetka", note: "dokumenty, klucze, paragony z 2014 r.", side: "l", at: [12.4, 56.4], y: 54 },
-  { name: "Telefon", note: "w kaburze przy pasku", side: "r", at: [31.4, 58.4], y: 56 },
-  { name: "Skarpety", note: "białe, frotte, do połowy łydki", side: "l", at: [11.8, 85.4], y: 84 },
-  { name: "Sandały", note: "skórzane, na rzepy", side: "r", at: [28.8, 92.6], y: 94 },
+  { name: "Okulary", note: "na czole, szukane po całym domu", side: "l", at: [60, 4], y: 8 },
+  { name: "Wąs", note: "noszony bez przerwy od 1987 r.", side: "r", at: [62, 14], y: 12 },
+  { name: "Długopis", note: "w kieszonce koszuli, nie pisze", side: "r", at: [67, 28], y: 31 },
+  { name: "Saszetka", note: "dokumenty, klucze, paragony z 2014 r.", side: "l", at: [49, 48], y: 54 },
+  { name: "Telefon", note: "w kaburze przy pasku", side: "r", at: [72, 47], y: 56 },
+  { name: "Skarpety", note: "białe, frotte, do połowy łydki", side: "l", at: [54, 84], y: 84 },
+  { name: "Sandały", note: "skórzane, na rzepy", side: "r", at: [73, 97], y: 94 },
 ];
 
 // The drawing is 120 × 104; the figure stands at (40, 4), labels end at x = 32 and start at x = 88.
 const W = 120;
 const H = 104;
-const FX = 40;
-const FY = 4;
 const LEFT = 32;
 const RIGHT = 88;
 
@@ -30,13 +29,10 @@ export function Specimen({ className }: { className?: string }) {
   return (
     <figure className={className}>
       <div className="relative" style={{ aspectRatio: `${W} / ${H}` }}>
+        <Image src="/illustrations/specimen.webp" alt="Dziaders pospolity: okulary na czole, wąs, długopis, saszetka, telefon przy pasku, skarpety i sandały." width={960} height={1440} preload sizes="(max-width: 1023px) 60vw, 380px" className="absolute left-[20%] top-0 h-full w-[60%] object-contain" />
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
-          <g transform={`translate(${FX} ${FY})`}>
-            <Figure glasses="forehead" torso={<SummerTorso />} mustacheClassName="specimen-mustache" />
-          </g>
           {PARTS.map((part, i) => {
-            const x = FX + part.at[0];
-            const y = FY + part.at[1];
+            const [x, y] = part.at;
             const end = part.side === "l" ? LEFT : RIGHT;
             return (
               <g key={part.name}>

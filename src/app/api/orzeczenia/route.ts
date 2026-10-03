@@ -3,20 +3,18 @@ import { caseTally } from "@/lib/community";
 import { createAdminClient, hasAdmin } from "@/lib/supabase/admin";
 import { hasAuth } from "@/lib/supabase/config";
 import { currentUser } from "@/lib/supabase/server";
-
-type Body = { slug?: unknown; verdict?: unknown };
+import { limitWrite } from "@/lib/write-limit";
+import { readWriteBody } from "@/lib/write-policy";
 
 /**
  * A lay judge's vote in the Komisja Orzekająca. Anonymous votes are allowed (the browser keeps
  * track of them); a signed-in judge votes once per case. Answers with the fresh counts.
  */
 export async function POST(request: Request) {
-  let body: Body;
-  try {
-    body = (await request.json()) as Body;
-  } catch {
-    return new Response(null, { status: 400 });
-  }
+  const rejected = await limitWrite(request, "verdicts");
+  if (rejected) return rejected;
+  const body = await readWriteBody(request);
+  if (!body) return new Response(null, { status: 400 });
   const item = typeof body.slug === "string" ? caseBySlug(body.slug) : undefined;
   const verdict = VERDICTS.find((option) => option.key === body.verdict)?.key as Verdict | undefined;
   if (!item || !verdict) return new Response(null, { status: 400 });

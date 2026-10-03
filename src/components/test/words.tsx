@@ -9,12 +9,13 @@ import { Countdown, keyIndex, LETTERS, shuffled, useKeys, useLater, useReducedMo
 const SECONDS = 5;
 
 /** Word association: one word at a time, a few seconds each. Hesitation is noted, not punished. */
-export function WordsView({ task, seed, onAnswer }: TaskProps<WordsTask>) {
+export function WordsView({ task, seed, onAnswer, untimed }: TaskProps<WordsTask>) {
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number[]>([]);
   const [chosen, setChosen] = useState<number | null>(null);
   const [late, setLate] = useState(false);
-  const reduced = useReducedMotion();
+  const reducedMotion = useReducedMotion();
+  const reduced = reducedMotion || untimed;
   const later = useLater();
   const word = task.words[index];
   const order = useMemo(() => shuffled(word.options.length, seed + index * 31), [word.options.length, seed, index]);
@@ -56,7 +57,7 @@ export function WordsView({ task, seed, onAnswer }: TaskProps<WordsTask>) {
         <span>
           Słowo {index + 1} z {task.words.length}
         </span>
-        <span className={cx("transition-opacity", late ? "text-red opacity-100" : "opacity-0")}>Instytut odnotował wahanie.</span>
+        <span className={cx("transition-opacity", late ? "text-red opacity-100" : "opacity-0")}>{late ? "Instytut odnotował wahanie." : ""}</span>
       </p>
       <div key={index} className="animate-question-in">
         <p className="mt-6 text-center text-[clamp(3.5rem,13vw,7.5rem)] font-bold uppercase leading-none tracking-[0.04em]">

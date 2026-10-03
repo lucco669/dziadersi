@@ -54,7 +54,7 @@ function honk() {
 }
 
 /** The horn test: wait for green, then honk at the car that doesn't move. */
-export function ReflexView({ task, onAnswer }: TaskProps<ReflexTask>) {
+export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
   const [phase, setPhase] = useState<Phase>("ready");
   const [value, setValue] = useState<number | null>(null);
   const [honked, setHonked] = useState(false);
@@ -76,7 +76,7 @@ export function ReflexView({ task, onAnswer }: TaskProps<ReflexTask>) {
         green.current = performance.now();
         setPhase("green");
       }, red + 1000),
-      window.setTimeout(() => finish(reflexValue("none"), false), red + 1000 + PATIENCE_MS),
+      ...(!untimed ? [window.setTimeout(() => finish(reflexValue("none"), false), red + 1000 + PATIENCE_MS)] : []),
     );
   }
 
@@ -202,6 +202,11 @@ export function ReflexView({ task, onAnswer }: TaskProps<ReflexTask>) {
               <NextButton onClick={next} />
             </div>
           </div>
+        )}
+        {untimed && phase === "green" && (
+          <button type="button" onClick={() => finish(reflexValue("none"), false)} className="btn mt-4 border border-ink">
+            Czekam spokojnie, nie trąbię
+          </button>
         )}
       </div>
     </div>

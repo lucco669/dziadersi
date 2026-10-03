@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import { REPORT_ART } from "@/lib/illustrations";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Tally } from "@/components/crowd";
@@ -85,6 +87,10 @@ export default async function ReportPage({ params }: PageProps<"/raporty/[slug]"
         />
 
         <div className="wrap">
+          {REPORT_ART[report.slug] && <figure className="mt-8 max-w-3xl">
+            <Image src={`/illustrations/${report.slug}.webp`} width={1200} height={800} alt={REPORT_ART[report.slug].alt} sizes="(max-width: 767px) 90vw, 768px" className="h-auto w-full" />
+            <figcaption className="label mt-3 text-ink-soft">{REPORT_ART[report.slug].caption}</figcaption>
+          </figure>}
           <dl className="mt-12 grid border-y border-ink md:grid-cols-3">
             {report.findings.map((finding, i) => {
               const percent = percentOf(finding.value);

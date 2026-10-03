@@ -64,8 +64,8 @@ export function ResultProfileNote({ code, species }: { code: string; species: { 
         <p className="leading-snug text-ink-soft">
           {typo(
             species.length
-              ? `Ten wynik żyje tylko w linku. W Profilu Dziaderskim trafi do kartoteki, a ${species.map((item) => item.name).join(" i ")} do kolekcji gatunków.`
-              : "Ten wynik żyje tylko w linku. W Profilu Dziaderskim trafi do kartoteki badań, obok odznak i kolekcji gatunków.",
+              ? `Zachowaj link do wyniku. W Profilu Dziaderskim wynik trafi do kartoteki, a ${species.map((item) => item.name).join(" i ")} do kolekcji gatunków.`
+              : "Zachowaj link do wyniku. W Profilu Dziaderskim wynik trafi do kartoteki badań, obok odznak i kolekcji gatunków.",
           )}{" "}
           <Link href={`/profil/zapisz/${code}`} className="link font-sans text-[0.95rem] text-ink">
             Zapisz w Profilu

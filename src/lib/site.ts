@@ -9,9 +9,9 @@ export const site = {
   description:
     "Instytut Badań nad Dziaderstwem: Test Dziadersa z certyfikatem, Atlas Dziadersów, Słownik Dziaderski i Narodowy Indeks Dziaderstwa. Serwis satyryczny.",
   disclaimer: "Serwis satyryczny. Wszystkie dane są zmyślone, a mimo to się zgadzają. Instytut wyśmiewa nawyki, nie ludzi.",
-  /** The data controller named in the privacy policy. Fill in before accounts go live. */
-  controller: { name: "", email: "" },
-  privacyDate: "2 października 2026",
+  /** The data controller and contact supplied by the site owner. */
+  controller: { name: "Łukasz Szramuk", email: "admin@dziader.si" },
+  privacyDate: "3 października 2026",
 } as const;
 
 export type GroupKey = "badania" | "zbiory" | "dane" | "pomoce";

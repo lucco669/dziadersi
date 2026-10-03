@@ -46,7 +46,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pl" className={`${poltawski.variable} ${schibsted.variable}`}>
+    <html lang="pl" data-scroll-behavior="smooth" className={`${poltawski.variable} ${schibsted.variable}`}>
       <body>
         <SiteHeader />
         {children}

@@ -82,10 +82,10 @@ export default async function Home() {
         ]}
       />
       <Hero />
-      <IndexBand bulletin={bulletin} />
-      <AtlasPlates />
       <TestBand />
+      <AtlasPlates />
       <CaseOfTheDay bulletin={bulletin} counts={community?.verdicts.cases ?? null} />
+      <IndexBand bulletin={bulletin} />
       <Shelf bulletin={bulletin} />
     </main>
   );

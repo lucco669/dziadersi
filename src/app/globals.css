@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Keep the examination focused; navigating back to the introduction restores the site. */
+.test-active .test-navigation,
+.test-active footer {
+  display: none;
+}
+
 /*
  * Paper, ink and one stamp red. Blue and ochre appear only in the pictograms.
  * Keep in sync with the constants in src/components/pictograms.tsx.

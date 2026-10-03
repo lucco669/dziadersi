@@ -54,11 +54,17 @@ export default function PrivacyPage() {
           Po zakończeniu Testu Dziadersa do Narodowego Spisu trafiają: odpowiedzi, wynik, rozpoznanie, dzień i godzina badania, informacja, czy był to wywiad rodzinny, czy ta sama przeglądarka badała się już wcześniej (wtedy z poprzednim wynikiem), a także województwo, jeśli ktoś je podał. Do spisu nie trafia imię z certyfikatu, adres IP ani żaden identyfikator osoby lub urządzenia.
         </P>
         <P>
-          Tak zebrane dane są anonimowe: nie da się z nich ustalić, kto się badał. Służą do zestawień w Narodowym Spisie i do porównań w teście („tak samo odpowiedziało 38% badanych”). Przechowujemy je bez ograniczenia czasu. W zakresie, w jakim mogłyby być uznane za dane osobowe, podstawą jest prawnie uzasadniony interes Instytutu w prowadzeniu statystyki (art. 6 ust. 1 lit. f RODO).
+          Dane spisu nie zawierają podpisu ani bezpośrednich danych kontaktowych. Służą do zbiorczych zestawień w Narodowym Spisie i do porównań w teście („tak samo odpowiedziało 38% badanych”). Wynik zapisany także w profilu lub rankingu może jednak zostać powiązany z podpisem na podstawie tego zgłoszenia. Dane statystyczne przechowujemy bez ograniczenia czasu. W zakresie, w jakim mogłyby być uznane za dane osobowe, podstawą jest prawnie uzasadniony interes Instytutu w prowadzeniu statystyki (art. 6 ust. 1 lit. f RODO).
         </P>
         <P>
-          Imię wpisane na certyfikat zapisuje się tylko w linku do wyniku. Instytut go nie przechowuje: widzi je każdy, komu przekażesz link.
+          Podpis certyfikatu jest zapisany w linku do wyniku: widzi go każdy, komu przekażesz link. Zapisanie wyniku w Profilu Dziaderskim lub rankingu rodzinnym zapisuje również podpis w tej usłudze.
         </P>
+      </Part>
+
+      <Part id="rankingi" title="Rankingi rodzinne i ochrona przed nadużyciami">
+        <P>Ranking rodzinny przechowuje wyniki, podpisy i daty dołączenia. Każdy, kto zna losowy link zaproszenia, może zobaczyć listę i dołączyć. Ranking nie wymaga konta. Po 90 dniach przestaje być dostępny, a jego dane usuwa codzienne zadanie porządkowe. W sprawie wcześniejszego usunięcia napisz na adres administratora i podaj link rankingu.</P>
+        <P>Każde badanie otrzymuje losowy identyfikator zgłoszenia, aby ponowne wysłanie nie zwiększało spisu. Nie identyfikuje on osoby ani urządzenia. Aby ograniczyć automatyczne nadużycia, serwer wylicza codziennie zmieniany skrót adresu sieciowego. W licznikach ochronnych zapisujemy ten skrót zamiast adresu IP; stare liczniki są usuwane przy kolejnych zapisach i w codziennym zadaniu porządkowym.</P>
+        <P>Do analityki odsłon i zdarzeń nie przekazujemy kodów wyników, podpisów, tokenów zaproszeń ani parametrów zapytania. Zdarzenia ukończenia gabinetu obejmują numer gabinetu, tryb badania i wybrane tempo, bez odpowiedzi ani podpisu.</P>
       </Part>
 
       <Part id="konto" title="Profil Dziaderski">
