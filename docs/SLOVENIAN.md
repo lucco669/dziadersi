@@ -71,6 +71,8 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Mapa obserwacji · Mapa · /obserwacje | Zemljevid opazovanj · Zemljevid · /sl/opazovanja |
 | Tablica Honorowa · Tablica · /tablica-honorowa | Častna tabla · Tabla · /sl/castna-tabla |
 | Rozmówki dziaderskie · Rozmówki · /generator | Dziaderski pogovornik · Pogovornik · /sl/pogovornik |
+| Superinteligencja · SI · /superinteligencja | Superinteligenca · SI · /sl/superinteligenca (the model keeps its name, SZWAGIER 1.9 TDI; a translator's note says szwagier is svak) |
+| 1.9 TDI z namysłem · Elektryk | 1.9 TDI s premislekom · Električni |
 | Dziaders Bingo · Bingo | Dziaders bingo · Bingo |
 | Kartka z kalendarza · Kalendarz · /kalendarz | Trgalni koledar · Koledar · /sl/koledar |
 | Profil Dziaderski · Profil | Dziaderski profil · Profil |

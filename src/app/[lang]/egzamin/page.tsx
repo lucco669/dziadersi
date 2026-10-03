@@ -82,7 +82,9 @@ export default async function ExamPage() {
           breadcrumbList(locale, [{ label: t.title, href: "/egzamin" }]),
           {
             "@context": "https://schema.org",
-            "@type": "Quiz",
+            // Not Quiz: Google reads a Quiz as Education Q&A flashcards and wants every question marked up.
+            "@type": "LearningResource",
+            learningResourceType: "Quiz",
             name: t.title,
             description: t.description(SPECIES.length),
             url: absoluteUrl("/egzamin", locale),

@@ -87,12 +87,11 @@ export default async function BingoPage() {
           breadcrumbList(locale, [{ label: t.title, href: "/bingo" }]),
           {
             "@context": "https://schema.org",
-            "@type": "WebApplication",
+            // Not WebApplication: Google wants app ratings for that, and the Institute collects none.
+            "@type": "Game",
             name: t.title,
             description: t.description,
             url: absoluteUrl("/bingo", locale),
-            applicationCategory: "GameApplication",
-            operatingSystem: "Any",
             inLanguage: LOCALE_INFO[locale].tag,
             isAccessibleForFree: true,
             publisher: institute(locale),

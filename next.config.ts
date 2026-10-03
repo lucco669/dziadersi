@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { SEGMENTS, slovenianRewrites } from "./src/i18n/segments";
+import { rscRewrites, SEGMENTS, slovenianRewrites } from "./src/i18n/segments";
 
 const isDev = process.env.NODE_ENV === "development";
 // The Vercel Toolbar on preview deployments loads from vercel.live.
@@ -48,8 +48,10 @@ const EMBEDDABLE = [
   "/email/:file*",
 ];
 
-/** Private pages: results, rankings and the save-to-profile links are never indexed or leak a referrer. */
-const PRIVATE = ["grupy", "grupa", "wynik"].flatMap((pl) => [`/${pl}/:path*`, `/sl/${sl(pl)}/:path*`]).concat(["/profil/zapisz/:path*", "/sl/profil/shrani/:path*"]);
+/** Private pages: results, rankings, the save-to-profile links and asked questions are never indexed or leak a referrer. */
+const PRIVATE = ["grupy", "grupa", "wynik"]
+  .flatMap((pl) => [`/${pl}/:path*`, `/sl/${sl(pl)}/:path*`])
+  .concat(["/profil/zapisz/:path*", "/sl/profil/shrani/:path*", "/superinteligencja/:kod", `/sl/${sl("superinteligencja")}/:kod`]);
 
 /** Paths the Polish edition must not rewrite: the other edition, the routed form, APIs and Next's own. */
 const NOT_POLISH = ["sl", "pl", "si", "api", "auth", "_next", "_vercel"].map((segment) => `${segment}(?:/|$)`).join("|");
@@ -78,6 +80,7 @@ const nextConfig: NextConfig = {
     "/[lang]/wynik/**": ["./assets/fonts/*.ttf"],
     "/[lang]/grupa/**": ["./assets/fonts/*.ttf"],
     "/[lang]/generator/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/superinteligencja/**": ["./assets/fonts/*.ttf"],
     "/[lang]/bingo/**": ["./assets/fonts/*.ttf"],
     "/[lang]/atlas/**": ["./assets/fonts/*.ttf"],
     "/[lang]/slownik/**": ["./assets/fonts/*.ttf"],
@@ -116,6 +119,8 @@ const nextConfig: NextConfig = {
       afterFiles: [
         ...slovenianRewrites(),
         { source: "/", destination: "/pl" },
+        // The front page's RSC paths are /index.rsc and /index.segments/…, not "/".
+        ...rscRewrites("/index", "/pl"),
         { source: `/:path((?!${NOT_POLISH}).*)`, destination: "/pl/:path" },
       ],
       fallback: [],

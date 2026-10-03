@@ -712,3 +712,36 @@
     opacity: 0;
   }
 }
+
+/* Superinteligencja: the screen in the menu talks; in the console SZWAGIER leans back to read the phone at arm's length. */
+@media (prefers-reduced-motion: no-preference) {
+  .mi:is(:hover, :focus-visible) .mi-mustache {
+    animation: talk 180ms ease-in-out 4 alternate;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .mi:is(:hover, :focus-visible) .mi-cursor {
+    animation: blink 0.5s steps(1, end) 3;
+  }
+  .sz-lean {
+    animation: sz-lean 1.6s ease-in-out infinite alternate;
+    transform-box: fill-box;
+    transform-origin: 30% 100%;
+  }
+  .sz-scroll {
+    animation: sz-scroll 0.9s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes sz-lean {
+  to {
+    transform: rotate(-4deg);
+  }
+}
+
+@keyframes sz-scroll {
+  to {
+    transform: translateY(-0.7px);
+    opacity: 0.35;
+  }
+}

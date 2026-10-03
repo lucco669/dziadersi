@@ -144,6 +144,20 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       </g>
     </g>
   ),
+  "/superinteligencja": (
+    <g>
+      <rect x={6} y={3} width={36} height={27} rx={2.4} fill={PAPER} stroke={INK} strokeWidth={2} />
+      <rect x={10} y={7} width={28} height={19} rx={1.2} fill={INK} />
+      <g className="mi-mustache">
+        <g transform="translate(14 12.6) scale(0.2)">
+          <path d={MUSTACHE_PATH} fill={PAPER} />
+        </g>
+      </g>
+      <rect className="mi-cursor" x={22} y={20.4} width={4} height={1.8} fill={RED} />
+      <path d="M19 30H29L31 36H17Z" fill={INK} />
+      <line x1={12} y1={37} x2={36} y2={37} stroke={INK} strokeWidth={1.8} strokeLinecap="round" />
+    </g>
+  ),
   "/bingo": (
     <g>
       <rect x={9} y={3} width={30} height={34} fill={PAPER} stroke={INK} strokeWidth={2} />

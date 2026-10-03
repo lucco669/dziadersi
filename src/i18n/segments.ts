@@ -20,6 +20,7 @@ export const SEGMENTS: SegmentMap = {
   obserwacje: { sl: "opazovanja" },
   "tablica-honorowa": { sl: "castna-tabla" },
   generator: { sl: "pogovornik" },
+  superinteligencja: { sl: "superinteligenca" },
   bingo: { sl: "bingo", children: { druk: "tisk" } },
   kalendarz: { sl: "koledar" },
   biuletyn: { sl: "bilten", children: { wypisz: "odjava" } },
@@ -37,17 +38,30 @@ export const SEGMENTS: SegmentMap = {
 
 type Rule = { source: string; destination: string };
 
+/**
+ * The same rewrite for a page's RSC paths. On Vercel, client navigations and prefetches reach the
+ * rewrites with the suffix already on the last segment ("/sl/slovar.rsc", "/sl/slovar.segments/_tree.segment.rsc"),
+ * where "/sl/slovar/:rest*" no longer matches and the router gets the 404 page instead.
+ */
+export const rscRewrites = (source: string, destination: string): Rule[] => [
+  { source: `${source}.rsc`, destination: `${destination}.rsc` },
+  { source: `${source}.segments/:rest*`, destination: `${destination}.segments/:rest*` },
+];
+
+/** A rewrite of a path and everything under it, RSC paths included. */
+const rewriteTree = (source: string, destination: string): Rule[] => [
+  { source: `${source}/:rest*`, destination: `${destination}/:rest*` },
+  ...rscRewrites(source, destination),
+];
+
 /** Rewrites from Slovenian URLs to the route folders, most specific first. */
 export function slovenianRewrites(): Rule[] {
   const rules: Rule[] = [];
   for (const [pl, { sl, children }] of Object.entries(SEGMENTS)) {
     for (const [childPl, childSl] of Object.entries(children ?? {})) {
-      rules.push(
-        { source: `/sl/${sl}/${childSl}/:rest*`, destination: `/sl/${pl}/${childPl}/:rest*` },
-        { source: `/sl/${sl}/:a/${childSl}/:rest*`, destination: `/sl/${pl}/:a/${childPl}/:rest*` },
-      );
+      rules.push(...rewriteTree(`/sl/${sl}/${childSl}`, `/sl/${pl}/${childPl}`), ...rewriteTree(`/sl/${sl}/:a/${childSl}`, `/sl/${pl}/:a/${childPl}`));
     }
-    if (sl !== pl) rules.push({ source: `/sl/${sl}/:rest*`, destination: `/sl/${pl}/:rest*` });
+    if (sl !== pl) rules.push(...rewriteTree(`/sl/${sl}`, `/sl/${pl}`));
   }
   return rules;
 }

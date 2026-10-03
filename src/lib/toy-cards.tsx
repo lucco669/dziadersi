@@ -1,13 +1,14 @@
-import { Figure } from "@/components/pictograms";
+import { Figure, Sweater } from "@/components/pictograms";
 import { occasionDrawing } from "@/components/occasions";
 import type { Occasion } from "@/content/bingo";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import type { Line } from "./phrasebook";
-import { C, OgFrame, bold, sans } from "./og";
+import { C, OgFrame, bold, italic, sans } from "./og";
 import { render } from "./og-cards";
 import { svgDataUri } from "./svg-string";
-import { formatNumber, typo } from "./typo";
+import type { Answer } from "./szwagier";
+import { formatNumber, quote, typo } from "./typo";
 
 const IMMUTABLE = { "cache-control": "public, max-age=86400, s-maxage=31536000, immutable" };
 
@@ -19,6 +20,10 @@ const COPY = defineCopy({
     play: "Graj na",
     wins: "Pięć w linii wygrywa.",
     free: "WOLNE POLE",
+    szwagier: "Superinteligencja · SZWAGIER 1.9 TDI",
+    asked: "Pytanie",
+    withheld: "Pytanie zawierało słowa, których Instytut nie drukuje.",
+    ask: "Zapytaj na",
   },
   sl: {
     phrasebook: (chapter: string) => `Dziaderski pogovornik · ${chapter}`,
@@ -28,6 +33,10 @@ const COPY = defineCopy({
     play: "Igraj na",
     wins: "Pet v vrsto zmaga.",
     free: "PROSTO POLJE",
+    szwagier: "Superinteligenca · SZWAGIER 1.9 TDI",
+    asked: "Vprašanje",
+    withheld: "Vprašanje je vsebovalo besede, ki jih Inštitut ne tiska.",
+    ask: "Vprašaj na",
   },
 });
 
@@ -48,6 +57,38 @@ export function lineCard(line: Line, locale: Locale, { cached = false }: { cache
         <div style={{ ...sans, display: "flex", marginTop: 16, fontSize: 21, color: C.soft }}>
           {t.line(line.number, line.total)}
         </div>
+      </div>
+    </OgFrame>,
+    cached ? IMMUTABLE : undefined,
+  );
+}
+
+/**
+ * An answer of SZWAGIER as a share image: the question above, the gist of the answer in the red
+ * bubble (opener, claim and closer; the anecdotes and sources stay on the page).
+ */
+export function answerCard(answer: Answer, locale: Locale, { cached = false }: { cached?: boolean } = {}) {
+  const t = COPY[locale];
+  const { sentences } = answer;
+  const gist = (answer.topic.special ? sentences : [sentences[0], sentences[1], sentences[sentences.length - 1]]).map((sentence) => sentence.text).join(" ");
+  const size = gist.length > 170 ? 36 : gist.length > 130 ? 41 : gist.length > 90 ? 46 : 52;
+  const cut = answer.question.lastIndexOf(" ", 95);
+  const question = answer.question.length > 96 ? `${answer.question.slice(0, cut > 40 ? cut : 95)}…` : answer.question;
+  return render(
+    <OgFrame locale={locale} section={t.szwagier} path="/superinteligencja" cta={t.ask}>
+      <img src={svgDataUri("-4 -1 56 97", <Figure right="point" glasses="eyes" torso={<Sweater />} />)} width={180} height={312} alt="" />
+      <div style={{ display: "flex", flex: 1, flexDirection: "column", marginLeft: 26 }}>
+        <div style={{ ...sans, display: "flex", fontSize: 19, color: C.soft }}>{t.asked}</div>
+        <div style={{ ...(question ? bold : italic), display: "flex", marginTop: 4, fontSize: question ? 30 : 24, lineHeight: 1.15, color: question ? C.ink : C.soft }}>
+          {question ? quote(typo(question), locale) : t.withheld}
+        </div>
+        <div style={{ position: "relative", display: "flex", marginTop: 22, padding: "26px 34px", background: C.red }}>
+          <svg width="24" height="34" viewBox="0 0 24 34" style={{ position: "absolute", left: -23, bottom: 26 }}>
+            <path d="M24 0V34L0 17Z" fill={C.red} />
+          </svg>
+          <div style={{ ...bold, display: "flex", fontSize: size, lineHeight: 1.16, color: C.paper }}>{typo(gist)}</div>
+        </div>
+        <div style={{ ...sans, display: "flex", marginTop: 14, fontSize: 19, color: C.soft }}>{answer.thought}</div>
       </div>
     </OgFrame>,
     cached ? IMMUTABLE : undefined,

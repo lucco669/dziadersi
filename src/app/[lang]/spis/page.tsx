@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Crowd, Tally } from "@/components/crowd";
-import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
+import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { Figure, SpeciesPlate } from "@/components/pictograms";
 import { CensusProfileNote } from "@/components/profile-notes";
 import { getRegions, REGION_GRID } from "@/content/regions";
@@ -11,7 +11,7 @@ import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { getLocale } from "@/i18n/server";
 import { getAnswerCounts, getCensus, MIN_RESULTS, type AnswerCounts, type Census } from "@/lib/census";
-import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
+import { dataset, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { choices, DIAGNOSABLE } from "@/lib/test";
 import { cx, formatDate, formatNumber, plural, pluralSl, typo } from "@/lib/typo";
@@ -422,17 +422,13 @@ export default async function CensusPage() {
       <JsonLd
         data={[
           breadcrumbList(locale, [{ label: t.title, href: "/spis" }]),
-          {
-            "@context": "https://schema.org",
-            "@type": "Dataset",
+          dataset(locale, "/spis", {
             name: t.title,
             description: t.description,
-            url: absoluteUrl("/spis", locale),
-            inLanguage: LOCALE_INFO[locale].tag,
-            creator: institute(locale),
-            isAccessibleForFree: true,
+            datePublished: site.launched,
+            temporalCoverage: `${site.launched}/..`,
             ...(census ? { dateModified: census.updated } : {}),
-          },
+          }),
         ]}
       />
       <PageHeader
@@ -440,9 +436,14 @@ export default async function CensusPage() {
         title={t.title}
         lead={typo(t.lead)}
         meta={
-          census
-            ? t.asOf(formatDate(locale, census.updated, { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }))
-            : t.preparing
+          census ? (
+            <>
+              {t.asOf(formatDate(locale, census.updated, { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }))} ·{" "}
+              <DataLicense />
+            </>
+          ) : (
+            t.preparing
+          )
         }
         aside={
           <svg viewBox="-4 -1 56 97" className="ml-auto hidden h-44 lg:block" aria-hidden="true">

@@ -13,6 +13,7 @@ import {
 import { getQuestionsV1, QUESTIONS_V1, type QuestionV1 } from "@/content/test-v1";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
+import { fromBase64Url, toBase64Url } from "./base64url";
 import { formatDate } from "./typo";
 
 /*
@@ -78,21 +79,6 @@ export function cleanName(raw: string) {
     .slice(0, 24)
     .trim();
   return name && !BLOCKED.test(fold(name)) ? name : "";
-}
-
-function toBase64Url(text: string) {
-  let binary = "";
-  for (const byte of new TextEncoder().encode(text)) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function fromBase64Url(encoded: string) {
-  try {
-    const binary = atob(encoded.replace(/-/g, "+").replace(/_/g, "/"));
-    return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(binary, (char) => char.charCodeAt(0)));
-  } catch {
-    return "";
-  }
 }
 
 /* Reflex values: 0 = honked on red, 1 = on red and amber, 2 + ms/10 = reaction time, NO_HONK = never. */

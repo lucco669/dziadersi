@@ -43,6 +43,36 @@ test("Slovenian segments are unambiguous", () => {
   }
 });
 
+test("rewrites reach the route folders, also from the RSC paths of client navigations", async () => {
+  const { getPathMatch } = await import("next/dist/shared/lib/router/utils/path-match.js");
+  const { prepareDestination } = await import("next/dist/shared/lib/router/utils/prepare-destination.js");
+  const { default: config } = await import("../next.config");
+  const { afterFiles } = (await config.rewrites!()) as { afterFiles: { source: string; destination: string }[] };
+  const rewrite = (path: string) => {
+    for (const rule of afterFiles) {
+      const params = getPathMatch(rule.source, { removeUnnamedParams: true, strict: true })(path);
+      if (params) return prepareDestination({ appendParamsToQuery: false, destination: rule.destination, params, query: {} }).parsedDestination.pathname;
+    }
+    return path;
+  };
+  // On Vercel the suffix is already on the path when the rewrites run.
+  const forms = (path: string) => [path, `${path}.rsc`, `${path}.segments/_tree.segment.rsc`];
+  const check = (from: string, to: string) => forms(from).forEach((path, i) => assert.equal(rewrite(path), forms(to)[i], path));
+
+  check("/atlas", "/pl/atlas");
+  assert.equal(rewrite("/"), "/pl");
+  assert.equal(rewrite("/index.rsc"), "/pl.rsc");
+  assert.equal(rewrite("/index.segments/_tree.segment.rsc"), "/pl.segments/_tree.segment.rsc");
+  for (const [pl, { sl, children = {} }] of Object.entries(SEGMENTS)) {
+    if (sl !== pl) check(`/sl/${sl}`, `/sl/${pl}`);
+    check(`/sl/${sl}/kod`, `/sl/${pl}/kod`);
+    for (const [childPl, childSl] of Object.entries(children)) {
+      check(`/sl/${sl}/${childSl}`, `/sl/${pl}/${childPl}`);
+      check(`/sl/${sl}/kod/${childSl}`, `/sl/${pl}/kod/${childPl}`);
+    }
+  }
+});
+
 test("content slugs map one to one and the switcher finds the twin page", () => {
   for (const [section, map] of Object.entries({ atlas: SPECIES_SLUGS, slownik: DICTIONARY_SLUGS, raporty: REPORT_SLUGS, "czy-to-juz-dziaderstwo": CASE_SLUGS })) {
     const slugs = Object.values(map);
@@ -77,9 +107,11 @@ test("every content module has a complete Slovenian translation", async () => {
     import("../src/content/phrasebook"),
     import("../src/content/calendar"),
     import("../src/content/regions"),
+    import("../src/content/szwagier"),
   ]);
-  assert.equal(modules.length, 12);
-  const [species, dictionary, reports, , test2, , , cases, bingo, phrasebook] = modules;
+  assert.equal(modules.length, 13);
+  const [species, dictionary, reports, , test2, , , cases, bingo, phrasebook, , , szwagier] = modules;
+  assert.equal(szwagier.getSzwagier("sl").topics.length, szwagier.SZWAGIER.topics.length);
   assert.equal(species.getSpecies("sl").length, species.SPECIES.length);
   assert.equal(dictionary.getDictionary("sl").length, dictionary.DICTIONARY.length);
   assert.equal(reports.getReports("sl").length, reports.REPORTS.length);

@@ -40,6 +40,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     })),
     page("/indeks", "daily", 0.6),
     page("/generator", "daily", 0.6),
+    page("/superinteligencja", "monthly", 0.7),
     page("/bingo", "monthly", 0.6),
     page("/spis", "hourly", 0.7),
     page("/statystyki", "hourly", 0.6),

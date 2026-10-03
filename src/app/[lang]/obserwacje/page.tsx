@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ObservationMap, type MapSpecies } from "@/components/observation-map";
-import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
+import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { Sightings } from "@/components/sightings";
 import { REGIONS } from "@/content/regions";
 import { getSpecies } from "@/content/species";
@@ -8,7 +8,7 @@ import { LOCALE_INFO } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { getLocale } from "@/i18n/server";
 import { getCommunity, getSightingsMap } from "@/lib/community";
-import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
+import { dataset, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { formatNumber, plural, pluralSl, typo } from "@/lib/typo";
 
@@ -82,21 +82,21 @@ export default async function ObservationsPage() {
       <JsonLd
         data={[
           breadcrumbList(locale, [{ label: t.title, href: "/obserwacje" }]),
-          {
-            "@context": "https://schema.org",
-            "@type": "Dataset",
+          dataset(locale, "/obserwacje", {
             name: t.dataset,
             description: t.description,
-            url: absoluteUrl("/obserwacje", locale),
-            inLanguage: LOCALE_INFO[locale].tag,
-            creator: institute(locale),
-            publisher: institute(locale),
-            isAccessibleForFree: true,
-            spatialCoverage: t.country,
-          },
+            datePublished: site.launched,
+            temporalCoverage: `${site.launched}/..`,
+            spatialCoverage: { "@type": "Place", name: t.country },
+          }),
         ]}
       />
-      <PageHeader crumbs={[{ label: t.title }]} title={t.title} lead={typo(t.lead)} meta={t.meta(total, all.length)} />
+      <PageHeader crumbs={[{ label: t.title }]} title={t.title} lead={typo(t.lead)} meta={
+          <>
+            {t.meta(total, all.length)} · <DataLicense />
+          </>
+        }
+      />
 
       <Section id="mapa" title={t.map} aside={t.network}>
         <ObservationMap matrix={matrix} species={species} unplaced={unplaced} />

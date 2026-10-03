@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Crowd } from "@/components/crowd";
 import { IndexChart } from "@/components/index-chart";
-import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
+import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { RegionMap } from "@/components/region-map";
 import { getMapRegions } from "@/content/map";
 import { LOCALE_INFO, type Locale } from "@/i18n/config";
@@ -11,7 +11,7 @@ import { getLocale } from "@/i18n/server";
 import { getBulletin } from "@/lib/bulletin";
 import { formatDayMonth } from "@/lib/calendar";
 import { seasons, zones } from "@/lib/indeks";
-import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
+import { dataset, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { cx, pct, plural, pluralSl, roman, typo } from "@/lib/typo";
 
@@ -174,21 +174,15 @@ export default async function IndexPage() {
       <JsonLd
         data={[
           breadcrumbList(locale, [{ label: t.title, href: "/indeks" }]),
-          {
-            "@context": "https://schema.org",
-            "@type": "Dataset",
+          dataset(locale, "/indeks", {
             name: t.title,
             description: t.description,
-            url: absoluteUrl("/indeks", locale),
-            inLanguage: LOCALE_INFO[locale].tag,
-            creator: institute(locale),
-            isAccessibleForFree: true,
             datePublished: site.launched,
             dateModified: bulletin.updated,
             temporalCoverage: String(bulletin.year),
             spatialCoverage: { "@type": "Place", name: t.place },
             variableMeasured: t.variable,
-          },
+          }),
         ]}
       />
 
@@ -200,7 +194,7 @@ export default async function IndexPage() {
           <>
             {t.updated}{" "}
             <time dateTime={bulletin.updated}>{t.at(bulletin.date, bulletin.time)}</time>{" "}
-            · {t.source}
+            · {t.source} · <DataLicense />
           </>
         }
       />

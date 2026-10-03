@@ -87,3 +87,19 @@ export const institute = (locale: Locale) =>
     url: site.url,
     logo: `${site.url}/icon-512.png`,
   }) as const;
+
+/**
+ * schema.org Dataset for one of the Institute's statistics pages, with the fields they all share:
+ * the Institute as creator and publisher, free access and the data license.
+ */
+export const dataset = (locale: Locale, path: string, fields: { name: string; description: string; [field: string]: unknown }) => ({
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  ...fields,
+  url: absoluteUrl(path, locale),
+  inLanguage: LOCALE_INFO[locale].tag,
+  creator: institute(locale),
+  publisher: institute(locale),
+  isAccessibleForFree: true,
+  license: site.dataLicense,
+});

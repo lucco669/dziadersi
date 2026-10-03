@@ -76,6 +76,8 @@ export const TALLY_KINDS = [
   "klakson",
   "certyfikat",
   "udostepnienie",
+  "superinteligencja",
+  "superinteligencja-znowu",
 ] as const;
 
 export type TallyKind = (typeof TALLY_KINDS)[number];

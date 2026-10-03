@@ -64,6 +64,7 @@ const COPY = defineCopy<{
           "Głos w Komisji Orzekającej zapisujemy z nazwą sprawy i rodzajem orzeczenia. Głos osoby niezalogowanej jest anonimowy; o tym, że już głosowała, pamięta tylko jej przeglądarka. Głos osoby zalogowanej jest przypisany do konta, żeby można było głosować raz w sprawie i widzieć swoje orzeczenia w Profilu.",
           "Sprawę zgłoszoną do Komisji czytamy ręcznie. Nic nie jest publikowane automatycznie. Jeśli sprawa trafi na wokandę, publikujemy ją zredagowaną i bez danych zgłaszającego. Prosimy nie wpisywać imion, nazwisk, adresów ani innych danych, po których można rozpoznać konkretną osobę. Zgłoszenia przechowujemy, dopóki istnieje konto.",
           "Liczniki do Małego Rocznika Statystycznego (na przykład ile wypowiedzi wylosowały Rozmówki albo ile razy zatrąbiono w teście) to dzienne sumy bez żadnych identyfikatorów. Podstawą tych zestawień jest prawnie uzasadniony interes Instytutu w prowadzeniu statystyki (art. 6 ust. 1 lit. f RODO), a dla danych przypisanych do konta prowadzenie konta (art. 6 ust. 1 lit. b RODO).",
+          "Pytania do Superinteligencji odczytuje przeglądarka i nie trafiają one na serwer. Liczymy tylko, ile pytań zadano (dzienna suma bez identyfikatorów), a do analityki zdarzeń trafia dziedzina pytania, na przykład motoryzacja, bez jego treści. Jeśli udostępnisz odpowiedź, pytanie jest zapisane w linku: widzi je każdy, komu przekażesz link, a otwarcie linku przechodzi przez serwer jak każda strona. Do analityki odsłon link trafia bez pytania.",
         ],
       },
       {
@@ -145,6 +146,7 @@ const COPY = defineCopy<{
           "Glas v Razsodni komisiji shranimo z imenom primera in vrsto razsodbe. Glas neprijavljene osebe je anoniman; da je že glasovala, si zapomni samo njen brskalnik. Glas prijavljene osebe je povezan z računom, da lahko v vsakem primeru glasuje enkrat in vidi svoje razsodbe v profilu.",
           "Primer, prijavljen Komisiji, preberemo ročno. Nič se ne objavi samodejno. Če primer pride na seznam obravnav, ga objavimo urejenega in brez podatkov prijavitelja. Prosimo, ne vpisuj imen, priimkov, naslovov ali drugih podatkov, po katerih bi bilo mogoče prepoznati konkretno osebo. Prijave hranimo, dokler obstaja račun.",
           "Števci za Mali statistični letopis (na primer koliko izjav je izžrebal Pogovornik ali kolikokrat je kdo pohupal v testu) so dnevne vsote brez kakršnih koli identifikatorjev. Pravna podlaga teh pregledov je zakoniti interes Inštituta za vodenje statistike (točka (f) prvega odstavka 6. člena GDPR), za podatke, povezane z računom, pa vodenje računa (točka (b) prvega odstavka 6. člena GDPR).",
+          "Vprašanja za Superinteligenco prebere brskalnik in ne pridejo na strežnik. Štejemo samo, koliko vprašanj je bilo zastavljenih (dnevna vsota brez identifikatorjev), v analitiko dogodkov pa gre področje vprašanja, na primer avtomobilizem, brez njegove vsebine. Če odgovor deliš, je vprašanje zapisano v povezavi: vidi ga vsak, komur povezavo pošlješ, odpiranje povezave pa gre prek strežnika kot pri vsaki strani. V analitiko ogledov gre povezava brez vprašanja.",
         ],
       },
       {

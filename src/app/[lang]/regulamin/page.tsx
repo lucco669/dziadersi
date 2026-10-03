@@ -58,6 +58,7 @@ const COPY = defineCopy<{
           "Obserwacje terenowe, głosy w Komisji Orzekającej i liczniki pomocy naukowych trafiają do zestawień publikowanych zbiorczo, bez danych osób.",
           "Zabronione jest automatyczne oddawanie głosów, zgłaszanie obserwacji przez skrypty i inne sposoby sztucznego zawyżania liczb. Instytut może takie dane pominąć albo usunąć.",
           "Zestawienia mają charakter rozrywkowy i nie są statystyką publiczną w rozumieniu przepisów.",
+          "Dane Narodowego Indeksu Dziaderstwa, Narodowego Spisu Dziadersów, Małego Rocznika Statystycznego i Mapy obserwacji są udostępniane na licencji Creative Commons Uznanie autorstwa 4.0 Międzynarodowa (CC BY 4.0). Możesz je kopiować, przetwarzać i rozpowszechniać w dowolnym celu, podając jako źródło DZIADER.SI.",
         ],
       },
       {
@@ -126,6 +127,7 @@ const COPY = defineCopy<{
           "Terenska opazovanja, glasovi v Razsodni komisiji in števci učnih pripomočkov se objavljajo v skupnih pregledih, brez osebnih podatkov.",
           "Prepovedano je samodejno glasovanje, prijavljanje opazovanj s skriptami in drugi načini umetnega napihovanja številk. Inštitut lahko take podatke izpusti ali izbriše.",
           "Pregledi so zabavni in niso uradna statistika v smislu predpisov.",
+          "Podatki Nacionalnega indeksa dziaderstva, Nacionalnega popisa dziadersov, Malega statističnega letopisa in Zemljevida opazovanj so na voljo pod licenco Creative Commons Priznanje avtorstva 4.0 Mednarodna (CC BY 4.0). Lahko jih kopiraš, predeluješ in razširjaš za kateri koli namen, če kot vir navedeš DZIADER.SI.",
         ],
       },
       {

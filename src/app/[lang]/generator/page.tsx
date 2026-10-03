@@ -71,12 +71,11 @@ export default async function GeneratorPage() {
           breadcrumbList(locale, [{ label: t.title, href: "/generator" }]),
           {
             "@context": "https://schema.org",
-            "@type": "WebApplication",
+            // Not WebApplication: Google wants app ratings for that, and the Institute collects none.
+            "@type": "WebPage",
             name: t.title,
             description: t.description,
             url: absoluteUrl("/generator", locale),
-            applicationCategory: "EntertainmentApplication",
-            operatingSystem: "Any",
             inLanguage: LOCALE_INFO[locale].tag,
             isAccessibleForFree: true,
             publisher: institute(locale),

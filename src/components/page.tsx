@@ -4,12 +4,13 @@ import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { getLocale } from "@/i18n/server";
 import { absoluteUrl } from "@/lib/seo";
+import { site } from "@/lib/site";
 import { cx } from "@/lib/typo";
 import { Figure, INK, PAPER } from "./pictograms";
 
 const COPY = defineCopy({
-  pl: { home: "Instytut", trail: "Ścieżka", test: "Test Dziadersa", cta: "Wykonaj test" },
-  sl: { home: "Inštitut", trail: "Pot do strani", test: "Test dziadersa", cta: "Opravi test" },
+  pl: { home: "Instytut", trail: "Ścieżka", test: "Test Dziadersa", cta: "Wykonaj test", license: "Licencja CC BY 4.0" },
+  sl: { home: "Inštitut", trail: "Pot do strani", test: "Test dziadersa", cta: "Opravi test", license: "Licenca CC BY 4.0" },
 });
 
 export type Crumb = { label: string; href?: string };
@@ -64,6 +65,16 @@ export async function Breadcrumbs({ crumbs, className }: { crumbs: Crumb[]; clas
         ))}
       </ol>
     </nav>
+  );
+}
+
+/** The data license, for the line of facts on the statistics pages; links the deed in the edition's language. */
+export async function DataLicense() {
+  const locale = await getLocale();
+  return (
+    <a href={`${site.dataLicense}deed.${locale}`} rel="license" className="link">
+      {COPY[locale].license}
+    </a>
   );
 }
 

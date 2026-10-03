@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { IsoKey, IsoRow, isoUnit, type IsoKind } from "@/components/isotype";
-import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
+import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { Figure, SpeciesPlate } from "@/components/pictograms";
 import { OCCASIONS } from "@/content/bingo";
 import { CASES, docket, getCases, getVerdicts, VERDICTS } from "@/content/cases";
@@ -17,7 +17,7 @@ import { getBulletin } from "@/lib/bulletin";
 import { getCensus, MIN_RESULTS } from "@/lib/census";
 import { getCommunity } from "@/lib/community";
 import { TOTAL_LINES } from "@/lib/phrasebook";
-import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
+import { dataset, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { cx, formatDate, formatNumber, pct, plural, pluralSl, typo } from "@/lib/typo";
 
@@ -153,6 +153,9 @@ const COPY = defineCopy({
         "trąbnięcia w próbie klaksonowej",
         "pobrane certyfikaty i wyniki",
         "udostępnienia",
+        "Superinteligencja",
+        "zadane pytania",
+        "odpowiedzi wygenerowane ponownie (bez zmian)",
       ],
       pictures: {
         horn: {
@@ -361,6 +364,9 @@ const COPY = defineCopy({
         "pritiski v preizkusu s hupo",
         "preneseni certifikati in izvidi",
         "deljenja",
+        "Superinteligenca",
+        "zastavljena vprašanja",
+        "znova ustvarjeni odgovori (nespremenjeni)",
       ],
       pictures: {
         horn: {
@@ -682,6 +688,9 @@ export default async function YearbookPage() {
     tally("klakson"),
     tally("certyfikat"),
     tally("udostepnienie"),
+    null,
+    tally("superinteligencja"),
+    tally("superinteligencja-znowu"),
   ];
 
   return (
@@ -689,20 +698,14 @@ export default async function YearbookPage() {
       <JsonLd
         data={[
           breadcrumbList(locale, [{ label: t.title, href: "/statystyki" }]),
-          {
-            "@context": "https://schema.org",
-            "@type": "Dataset",
+          dataset(locale, "/statystyki", {
             name: t.metaTitle,
             description: t.description,
-            url: absoluteUrl("/statystyki", locale),
-            inLanguage: LOCALE_INFO[locale].tag,
-            creator: institute(locale),
-            publisher: institute(locale),
-            isAccessibleForFree: true,
+            datePublished: site.launched,
             temporalCoverage: `${site.launched}/..`,
             dateModified: updated,
             variableMeasured: t.variables,
-          },
+          }),
         ]}
       />
 
@@ -716,7 +719,7 @@ export default async function YearbookPage() {
             <time dateTime={updated}>
               {formatDate(locale, updated, { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
             </time>
-            {t.metaAfter}
+            {t.metaAfter} · <DataLicense />
           </>
         }
         aside={<Cover t={t} />}

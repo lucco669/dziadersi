@@ -8,6 +8,8 @@ export const site = {
   /** The day the site went public. */
   launched: "2026-10-01",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://dziader.si",
+  /** The license of the Institute's data (Indeks, Spis, Rocznik, Mapa obserwacji); the Regulamin says so in point 3.4. */
+  dataLicense: "https://creativecommons.org/licenses/by/4.0/",
   /** The data controller and contact supplied by the site owner. */
   controller: { name: "Łukasz Szramuk", email: "admin@dziader.si" },
 } as const;
@@ -160,6 +162,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       isNew: true,
     },
     {
+      href: "/superinteligencja",
+      label: "Superinteligencja",
+      short: "SI",
+      group: "pomoce",
+      summary: "SZWAGIER 1.9 TDI, model językowy Instytutu. Odpowiada na każde pytanie, podaje źródła i nigdy nie zmienia zdania.",
+      isNew: true,
+    },
+    {
       href: "/generator",
       label: "Rozmówki dziaderskie",
       short: "Rozmówki",
@@ -271,6 +281,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Tabla",
       group: "dane",
       summary: "Udarniki opazovanja, porotniki in trgalci koledarja. Primeri, ki so razdelili narod, in najbolje opazovane vrste.",
+      isNew: true,
+    },
+    {
+      href: "/superinteligencja",
+      label: "Superinteligenca",
+      short: "SI",
+      group: "pomoce",
+      summary: "SZWAGIER 1.9 TDI, jezikovni model Inštituta. Odgovori na vsako vprašanje, navede vire in nikoli ne spremeni mnenja.",
       isNew: true,
     },
     {
