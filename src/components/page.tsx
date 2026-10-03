@@ -1,8 +1,16 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { site } from "@/lib/site";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
+import { getLocale } from "@/i18n/server";
+import { absoluteUrl } from "@/lib/seo";
 import { cx } from "@/lib/typo";
 import { Figure, INK, PAPER } from "./pictograms";
+
+const COPY = defineCopy({
+  pl: { home: "Instytut", trail: "Ścieżka", test: "Test Dziadersa", cta: "Wykonaj test" },
+  sl: { home: "Inštitut", trail: "Pot do strani", test: "Test dziadersa", cta: "Opravi test" },
+});
 
 export type Crumb = { label: string; href?: string };
 
@@ -16,23 +24,25 @@ export function JsonLd({ data }: { data: object | object[] }) {
   );
 }
 
-export function breadcrumbList(crumbs: Crumb[]) {
+/** schema.org breadcrumbs; hrefs are internal paths of the edition. */
+export function breadcrumbList(locale: Locale, crumbs: Crumb[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [{ label: "Instytut", href: "/" }, ...crumbs].map((crumb, i) => ({
+    itemListElement: [{ label: COPY[locale].home, href: "/" }, ...crumbs].map((crumb, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: crumb.label,
-      ...(crumb.href ? { item: `${site.url}${crumb.href === "/" ? "" : crumb.href}` } : {}),
+      ...(crumb.href ? { item: absoluteUrl(crumb.href, locale) } : {}),
     })),
   };
 }
 
-export function Breadcrumbs({ crumbs, className }: { crumbs: Crumb[]; className?: string }) {
-  const all: Crumb[] = [{ label: "Instytut", href: "/" }, ...crumbs];
+export async function Breadcrumbs({ crumbs, className }: { crumbs: Crumb[]; className?: string }) {
+  const t = COPY[await getLocale()];
+  const all: Crumb[] = [{ label: t.home, href: "/" }, ...crumbs];
   return (
-    <nav aria-label="Ścieżka" className={cx("label text-ink-soft", className)}>
+    <nav aria-label={t.trail} className={cx("label text-ink-soft", className)}>
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {all.map((crumb, i) => (
           <li key={crumb.label} className="flex items-center gap-x-2">
@@ -123,9 +133,10 @@ export function Section({
 }
 
 /** Closes every page: one line about the test and the button. */
-export function TestPromo({ title, text }: { title: ReactNode; text: ReactNode }) {
+export async function TestPromo({ title, text }: { title: ReactNode; text: ReactNode }) {
+  const t = COPY[await getLocale()];
   return (
-    <section aria-label="Test Dziadersa" className="bg-ink text-paper">
+    <section aria-label={t.test} className="bg-ink text-paper">
       <div className="wrap flex flex-col gap-10 py-14 md:flex-row md:items-center md:py-16">
         <svg viewBox="-2 -1 56 97" className="hidden h-36 shrink-0 md:block" aria-hidden="true">
           <Figure color={PAPER} cutout={INK} right="point" />
@@ -135,7 +146,7 @@ export function TestPromo({ title, text }: { title: ReactNode; text: ReactNode }
           <p className="mt-3 max-w-xl text-paper/75">{text}</p>
         </div>
         <Link href="/test" className="btn self-start bg-paper text-ink hover:bg-red hover:text-paper md:self-center">
-          Wykonaj test <span aria-hidden="true">→</span>
+          {t.cta} <span aria-hidden="true">→</span>
         </Link>
       </div>
     </section>
@@ -173,5 +184,31 @@ export function Pager({
         </Link>
       )}
     </nav>
+  );
+}
+
+const NOTES = defineCopy({
+  pl: { title: "Przypisy tłumacza" },
+  sl: { title: "Opombe prevajalca" },
+});
+
+/**
+ * Translator's notes (op. prev.) of a content entry: the Slovenian edition explains Polish references
+ * in a few dry lines, like the footnotes of a translated book. Renders nothing without notes.
+ */
+export async function TranslatorNotes({ notes, className }: { notes?: string[]; className?: string }) {
+  if (!notes?.length) return null;
+  const t = NOTES[await getLocale()];
+  return (
+    <aside aria-label={t.title} className={cx("border-t border-ink pt-4", className)}>
+      <p className="label flex items-baseline gap-2 text-ink-soft">
+        {t.title} <span className="font-serif text-[0.95rem] normal-case italic tracking-normal text-ink-faint">(op. prev.)</span>
+      </p>
+      <ol className="mt-3 space-y-2 font-sans text-[0.95rem] leading-relaxed text-ink-soft">
+        {notes.map((note) => (
+          <li key={note}>{note}</li>
+        ))}
+      </ol>
+    </aside>
   );
 }

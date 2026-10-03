@@ -1,9 +1,11 @@
-import { SITUATIONS, type Situation } from "@/content/phrasebook";
+import { getSituations, SITUATIONS, type Situation } from "@/content/phrasebook";
+import type { Locale } from "@/i18n/config";
 import { random } from "./random";
 
 /*
  * A line code is the situation slug and three base36 digits, one per part:
  * "samochod-3b7" is opener 3, claim 11 and closer 7 of "W samochodzie".
+ * Codes are the same in both editions: the Slovenian lists keep the Polish order.
  */
 
 export type Picks = [opener: number, claim: number, closer: number];
@@ -45,18 +47,18 @@ export function line(situation: Situation, picks: Picks): Line {
   };
 }
 
-export function decodeLine(code: string): Line | null {
+export function decodeLine(code: string, locale: Locale): Line | null {
   const match = CODE.exec(code);
   if (!match) return null;
-  const situation = SITUATIONS.find((item) => item.slug === match[1]);
+  const situation = getSituations(locale).find((item) => item.slug === match[1]);
   if (!situation) return null;
   const picks = [match[2], match[3], match[4]].map((digit) => parseInt(digit, 36)) as Picks;
   const lists = listsOf(situation);
   return picks.every((pick, i) => pick < lists[i].length) ? line(situation, picks) : null;
 }
 
-/** A seeded line: the line of the day, and one sample per situation. */
-export function seededLine(seed: number, situation = SITUATIONS[seed % SITUATIONS.length]): Line {
+/** A seeded line: the line of the day, and one sample per situation. The same picks in both editions. */
+export function seededLine(seed: number, locale: Locale, situation = getSituations(locale)[seed % SITUATIONS.length]): Line {
   const next = random(seed * 7919 + 17);
   const picks = listsOf(situation).map((list) => Math.floor(next() * list.length)) as Picks;
   return line(situation, picks);

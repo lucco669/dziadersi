@@ -1,3 +1,7 @@
+import type { Locale } from "@/i18n/config";
+import { overlay, overlayList } from "@/i18n/overlay";
+import * as sl from "./sl/calendar";
+
 /*
  * Kartka z kalendarza (/kalendarz): what the Institute's tear-off calendar prints. Content is
  * picked by the date (src/lib/tear-off.ts), so the lists repeat in different combinations.
@@ -298,3 +302,20 @@ export const OBSERVANCES: { date: string; name: string; note: string }[] = [
   { date: "12-15", name: "Dzień Karpia w Wannie", note: "Kąpiel w łazience przenosi się na po świętach. Karp ma pierwszeństwo." },
   { date: "12-30", name: "Dzień Planowania Sylwestra w Domu", note: "Plan jest prosty: telewizor, szampan o północy, sen o pół do pierwszej." },
 ];
+
+/* Editions: the Polish calendar above with each edition's text laid over it. */
+
+type Calendar = { PROVERBS: string[][]; TIPS: string[]; ORDERS: string[]; OBSERVANCES: typeof OBSERVANCES };
+
+const EDITIONS = {
+  pl: { PROVERBS, TIPS, ORDERS, OBSERVANCES },
+  sl: {
+    PROVERBS: overlay(PROVERBS, sl.PROVERBS, "calendar.PROVERBS"),
+    TIPS: overlay(TIPS, sl.TIPS, "calendar.TIPS"),
+    ORDERS: overlay(ORDERS, sl.ORDERS, "calendar.ORDERS"),
+    OBSERVANCES: overlayList("calendar.OBSERVANCES", OBSERVANCES, (item) => item.date, sl.OBSERVANCES),
+  },
+} satisfies Record<Locale, Calendar>;
+
+/** The calendar in the edition's language: same months, lists (by index) and observance dates. */
+export const getCalendar = (locale: Locale): Calendar => EDITIONS[locale];

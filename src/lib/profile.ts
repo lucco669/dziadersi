@@ -1,19 +1,85 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import type { Verdict } from "@/content/cases";
 import { SPECIES, type SpeciesKey } from "@/content/species";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { decodeExam, evaluateExam, type ExamResult } from "./exam";
 import { decodeResult, DIAGNOSABLE, evaluate, type Result } from "./test";
 
 /*
  * The Profil Dziaderski is computed from what the account saved: results, observations,
  * bookmarks and verdicts. Badges and the species collection are never stored, so they can't
- * drift from the records themselves.
+ * drift from the records themselves, and they read the same in both editions.
  */
 
 export type BookmarkKind = "rozmowki" | "bingo" | "egzamin";
 export const BOOKMARK_KINDS: BookmarkKind[] = ["rozmowki", "bingo", "egzamin"];
 
-export type Badge = { key: string; name: string; hint: string; earned: boolean };
+export type Badge = { key: BadgeKey; name: string; hint: string; earned: boolean };
+
+type BadgeKey =
+  | "pierwsze"
+  | "staly"
+  | "kliniczny"
+  | "sladowy"
+  | "krzyzowka"
+  | "wywiad"
+  | "falstart"
+  | "kolekcjoner"
+  | "komplet"
+  | "obserwator"
+  | "terenowy"
+  | "regionalista"
+  | "egzamin"
+  | "lawnik"
+  | "sygnalista"
+  | "bingo"
+  | "zdzierak"
+  | "kalendarz";
+
+/** The badges' names and how to earn them. The rules, and the order on the profile, are in buildProfile. */
+const BADGES = defineCopy<Record<BadgeKey, { name: string; hint: string }>>({
+  pl: {
+    pierwsze: { name: "Pierwsze badanie", hint: "Zapisz pierwszy wynik." },
+    staly: { name: "Stały pacjent", hint: "Trzy zapisane badania." },
+    kliniczny: { name: "Przypadek kliniczny", hint: "Wynik 75% albo więcej." },
+    sladowy: { name: "Ślad dziaderstwa", hint: "Wynik poniżej 25%." },
+    krzyzowka: { name: "Krzyżówka", hint: "Rozpoznanie dwóch gatunków naraz." },
+    wywiad: { name: "Wywiad rodzinny", hint: "Zbadaj kogoś bliskiego." },
+    falstart: { name: "Falstart", hint: "Zatrąb przed zielonym." },
+    kolekcjoner: { name: "Kolekcjoner", hint: "Pięć gatunków w kolekcji." },
+    komplet: { name: "Komplet", hint: `Wszystkie ${DIAGNOSABLE.length} gatunków.` },
+    obserwator: { name: "Obserwator", hint: "Zgłoś pierwszą obserwację w Atlasie." },
+    terenowy: { name: "Sieć terenowa", hint: "Dziesięć gatunków w dzienniku obserwacji." },
+    regionalista: { name: "Regionalista", hint: "Trzy gatunki regionalne w dzienniku." },
+    egzamin: { name: "Egzamin zdany", hint: "Egzamin terenowy na ocenę dobrą lub wyższą." },
+    lawnik: { name: "Ławnik", hint: "Dziesięć orzeczeń w Komisji." },
+    sygnalista: { name: "Sygnalista", hint: "Zgłoś sprawę do Komisji." },
+    bingo: { name: "Bingo", hint: "Wygrana karta bingo w Profilu." },
+    zdzierak: { name: "Zdzierak", hint: "Siedem kartek z kalendarza z rzędu." },
+    kalendarz: { name: "Kalendarz ścienny", hint: "Trzydzieści zerwanych kartek." },
+  },
+  sl: {
+    pierwsze: { name: "Prvi pregled", hint: "Shrani prvi izvid." },
+    staly: { name: "Stalni pacient", hint: "Trije shranjeni pregledi." },
+    kliniczny: { name: "Klinični primer", hint: "Rezultat 75 % ali več." },
+    sladowy: { name: "Sled dziaderstva", hint: "Rezultat pod 25 %." },
+    krzyzowka: { name: "Križanec", hint: "Diagnoza dveh vrst hkrati." },
+    wywiad: { name: "Heteroanamneza", hint: "Preglej koga od svojcev." },
+    falstart: { name: "Prehiter start", hint: "Zatrobi pred zeleno." },
+    kolekcjoner: { name: "Zbiratelj", hint: "Pet vrst v zbirki." },
+    komplet: { name: "Komplet", hint: `Vseh ${DIAGNOSABLE.length} vrst.` },
+    obserwator: { name: "Opazovalec", hint: "Prijavi prvo opazovanje v Atlasu." },
+    terenowy: { name: "Terenska mreža", hint: "Deset vrst v dnevniku opazovanj." },
+    regionalista: { name: "Regionalist", hint: "Tri regionalne vrste v dnevniku." },
+    egzamin: { name: "Izpit opravljen", hint: "Terenski izpit z oceno 4 ali višjo." },
+    lawnik: { name: "Porotnik", hint: "Deset razsodb v Komisiji." },
+    sygnalista: { name: "Žvižgač", hint: "Prijavi primer Komisiji." },
+    bingo: { name: "Bingo", hint: "Zmagovalni bingo listek v profilu." },
+    zdzierak: { name: "Trgalec", hint: "Sedem listov s koledarja zapored." },
+    kalendarz: { name: "Stenski koledar", hint: "Trideset odtrganih listov." },
+  },
+});
 
 export type Sighting = { species: SpeciesKey; region: string | null; observedOn: string };
 
@@ -105,10 +171,11 @@ export type Profile = {
   badges: Badge[];
 };
 
-export function buildProfile(records: Records, today = warsawToday()): Profile {
+/** The profile in the words of an edition: diagnoses, exam grades and badges follow `locale`, the figures don't. */
+export function buildProfile(records: Records, locale: Locale, today = warsawToday()): Profile {
   const results = records.results.flatMap((row) => {
     const draft = decodeResult(row.code);
-    return draft ? [{ ...evaluate(draft), savedAt: row.saved_at }] : [];
+    return draft ? [{ ...evaluate(draft, locale), savedAt: row.saved_at }] : [];
   });
   const collected = new Set(results.flatMap((result) => result.diagnosis.species.map((species) => species.key)));
   const average = results.length ? Math.round(results.reduce((sum, result) => sum + result.score, 0) / results.length) : null;
@@ -133,46 +200,31 @@ export function buildProfile(records: Records, today = warsawToday()): Profile {
   }
   const exams = bookmarks.egzamin.flatMap((item) => {
     const draft = decodeExam(item.code);
-    return draft ? [{ ...evaluateExam(draft), savedAt: item.savedAt }] : [];
+    return draft ? [{ ...evaluateExam(draft, locale), savedAt: item.savedAt }] : [];
   });
   const verdicts = Object.fromEntries(records.verdicts.map((row) => [row.case_slug, row.verdict as Verdict]));
   const verdictCount = records.verdicts.length;
   const calendar = calendarOf(records.calendar, today);
 
-  const rules: (Omit<Badge, "earned"> & { test: boolean })[] = [
-    { key: "pierwsze", name: "Pierwsze badanie", hint: "Zapisz pierwszy wynik.", test: results.length >= 1 },
-    { key: "staly", name: "Stały pacjent", hint: "Trzy zapisane badania.", test: results.length >= 3 },
-    { key: "kliniczny", name: "Przypadek kliniczny", hint: "Wynik 75% albo więcej.", test: own.some((result) => result.score >= 75) },
-    { key: "sladowy", name: "Ślad dziaderstwa", hint: "Wynik poniżej 25%.", test: own.some((result) => result.score < 25) },
-    {
-      key: "krzyzowka",
-      name: "Krzyżówka",
-      hint: "Rozpoznanie dwóch gatunków naraz.",
-      test: results.some((result) => result.diagnosis.species.length === 2),
-    },
-    { key: "wywiad", name: "Wywiad rodzinny", hint: "Zbadaj kogoś bliskiego.", test: results.some((result) => result.proxy) },
-    {
-      key: "falstart",
-      name: "Falstart",
-      hint: "Zatrąb przed zielonym.",
-      test: results.some((result) => result.reflex?.outcome === "red" || result.reflex?.outcome === "amber"),
-    },
-    { key: "kolekcjoner", name: "Kolekcjoner", hint: "Pięć gatunków w kolekcji.", test: collected.size >= 5 },
-    { key: "komplet", name: "Komplet", hint: `Wszystkie ${DIAGNOSABLE.length} gatunków.`, test: collected.size >= DIAGNOSABLE.length },
-    { key: "obserwator", name: "Obserwator", hint: "Zgłoś pierwszą obserwację w Atlasie.", test: sightings.length >= 1 },
-    { key: "terenowy", name: "Sieć terenowa", hint: "Dziesięć gatunków w dzienniku obserwacji.", test: observed.size >= 10 },
-    { key: "regionalista", name: "Regionalista", hint: "Trzy gatunki regionalne w dzienniku.", test: observedRegional >= 3 },
-    {
-      key: "egzamin",
-      name: "Egzamin zdany",
-      hint: "Egzamin terenowy na ocenę dobrą lub wyższą.",
-      test: exams.some((exam) => exam.grade.value >= 4),
-    },
-    { key: "lawnik", name: "Ławnik", hint: "Dziesięć orzeczeń w Komisji.", test: verdictCount >= 10 },
-    { key: "sygnalista", name: "Sygnalista", hint: "Zgłoś sprawę do Komisji.", test: records.submissions.length >= 1 },
-    { key: "bingo", name: "Bingo", hint: "Wygrana karta bingo w Profilu.", test: bookmarks.bingo.length >= 1 },
-    { key: "zdzierak", name: "Zdzierak", hint: "Siedem kartek z kalendarza z rzędu.", test: calendar.best >= 7 },
-    { key: "kalendarz", name: "Kalendarz ścienny", hint: "Trzydzieści zerwanych kartek.", test: calendar.total >= 30 },
+  const rules: { key: BadgeKey; test: boolean }[] = [
+    { key: "pierwsze", test: results.length >= 1 },
+    { key: "staly", test: results.length >= 3 },
+    { key: "kliniczny", test: own.some((result) => result.score >= 75) },
+    { key: "sladowy", test: own.some((result) => result.score < 25) },
+    { key: "krzyzowka", test: results.some((result) => result.diagnosis.species.length === 2) },
+    { key: "wywiad", test: results.some((result) => result.proxy) },
+    { key: "falstart", test: results.some((result) => result.reflex?.outcome === "red" || result.reflex?.outcome === "amber") },
+    { key: "kolekcjoner", test: collected.size >= 5 },
+    { key: "komplet", test: collected.size >= DIAGNOSABLE.length },
+    { key: "obserwator", test: sightings.length >= 1 },
+    { key: "terenowy", test: observed.size >= 10 },
+    { key: "regionalista", test: observedRegional >= 3 },
+    { key: "egzamin", test: exams.some((exam) => exam.grade.value >= 4) },
+    { key: "lawnik", test: verdictCount >= 10 },
+    { key: "sygnalista", test: records.submissions.length >= 1 },
+    { key: "bingo", test: bookmarks.bingo.length >= 1 },
+    { key: "zdzierak", test: calendar.best >= 7 },
+    { key: "kalendarz", test: calendar.total >= 30 },
   ];
 
   return {
@@ -189,7 +241,7 @@ export function buildProfile(records: Records, today = warsawToday()): Profile {
     exams,
     verdicts,
     submissions: records.submissions,
-    badges: rules.map(({ test, ...badge }) => ({ ...badge, earned: test })),
+    badges: rules.map(({ key, test }) => ({ key, ...BADGES[locale][key], earned: test })),
   };
 }
 

@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/config";
+import { siteCopy } from "@/lib/site";
 import { renderHtml, renderText, type Letter } from "./layout";
 
 /*
@@ -17,9 +19,17 @@ function contact(value: string) {
   return match ? { name: match[1].replace(/^"|"$/g, ""), email: match[2] } : { email: value.trim() };
 }
 
+/** The sender; when it signs with the Institute's Polish name, letters of other editions carry their own. */
+function sender(locale: Locale) {
+  const from = contact(EMAIL_FROM);
+  return "name" in from && from.name === siteCopy("pl").institute ? { ...from, name: siteCopy(locale).institute } : from;
+}
+
+/** Sends a letter written in the edition `locale`, on that edition's letterhead. */
 export async function sendLetter(
   to: string,
   letter: Letter,
+  locale: Locale,
   origin?: string,
   options: { tags?: string[]; headers?: Record<string, string> } = {},
 ) {
@@ -28,11 +38,11 @@ export async function sendLetter(
     method: "POST",
     headers: { "api-key": BREVO_API_KEY, "content-type": "application/json", accept: "application/json" },
     body: JSON.stringify({
-      sender: contact(EMAIL_FROM),
+      sender: sender(locale),
       to: [{ email: to }],
       subject: letter.subject,
-      htmlContent: renderHtml(letter, origin),
-      textContent: renderText(letter),
+      htmlContent: renderHtml(letter, locale, origin),
+      textContent: renderText(letter, locale),
       tags: options.tags ?? ["auth"],
       ...(options.headers ? { headers: options.headers } : {}),
       ...(EMAIL_REPLY_TO ? { replyTo: contact(EMAIL_REPLY_TO) } : {}),

@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Two editions
+
+Every page renders in Polish (the original, at the root) and Slovenian (a translation, under `/sl`). Before adding a page, interface text or content, read `docs/SLOVENIAN.md`: routes live in `src/app/[lang]`, interface text goes in `defineCopy({ pl, sl })`, content entries need their Slovenian overlay in `src/content/sl/` (and a slug in `src/content/sl/slugs/`), links use `@/i18n/link`. `pnpm test` fails on missing translations.

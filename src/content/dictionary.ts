@@ -1,3 +1,7 @@
+import type { Locale } from "@/i18n/config";
+import { overlayList } from "@/i18n/overlay";
+import { DICTIONARY_SL } from "./sl/dictionary";
+import { DICTIONARY_SLUGS } from "./sl/slugs/dictionary";
 import type { SpeciesKey } from "./species";
 
 export type Entry = {
@@ -9,10 +13,14 @@ export type Entry = {
   senses: { text: string; figurative?: boolean }[];
   example: string;
   exampleNote?: string;
-  /** Other headwords, spelled exactly as in this file. */
+  /** Other headwords, spelled exactly as in this file. In the Slovenian edition: the Slovenian headwords of those entries. */
   seeAlso: string[];
   /** The Atlas species this phrase is typical of. */
   species?: SpeciesKey;
+  /** The Polish headword, shown in the Slovenian edition. */
+  original?: string;
+  /** Translator's notes (op. prev.), Slovenian edition only. */
+  notes?: string[];
 };
 
 export const DICTIONARY: Entry[] = [
@@ -687,9 +695,41 @@ export const DICTIONARY: Entry[] = [
   },
 ];
 
-export const entryBySlug = (slug: string) => DICTIONARY.find((entry) => entry.slug === slug);
-
-export const entryByHeadword = (headword: string) => DICTIONARY.find((entry) => entry.headword === headword);
-
 /** Alphabetical, Polish collation. */
 export const DICTIONARY_SORTED = [...DICTIONARY].sort((a, b) => a.headword.localeCompare(b.headword, "pl"));
+
+/* Editions ------------------------------------------------------------------------------------------ */
+
+/**
+ * The Slovenian edition: Slovenian headwords and slugs, the Polish headword kept as `original`, and
+ * cross-references re-pointed to the Slovenian headwords of the same entries.
+ */
+const DICTIONARY_SLOVENIAN: Entry[] = (() => {
+  const translated = overlayList("dictionary", DICTIONARY, (entry) => entry.slug, DICTIONARY_SL);
+  const headwords = new Map(DICTIONARY.map((entry, i) => [entry.headword, translated[i].headword]));
+  return translated.map((entry, i) => ({
+    ...entry,
+    slug: DICTIONARY_SLUGS[DICTIONARY[i].slug] ?? entry.slug,
+    original: DICTIONARY[i].headword,
+    seeAlso: entry.seeAlso.map((headword) => headwords.get(headword) ?? headword),
+  }));
+})();
+
+const EDITIONS: Record<Locale, Entry[]> = { pl: DICTIONARY, sl: DICTIONARY_SLOVENIAN };
+
+const SORTED: Record<Locale, Entry[]> = {
+  pl: DICTIONARY_SORTED,
+  sl: [...DICTIONARY_SLOVENIAN].sort((a, b) => a.headword.localeCompare(b.headword, "sl")),
+};
+
+/** The entries in the Polish order, with the edition's text and slugs. */
+export const getDictionary = (locale: Locale): Entry[] => EDITIONS[locale];
+
+/** Alphabetical, in the edition's collation. */
+export const getDictionarySorted = (locale: Locale): Entry[] => SORTED[locale];
+
+export const entryBySlug = (slug: string, locale: Locale) => EDITIONS[locale].find((entry) => entry.slug === slug);
+
+/** Looks up a headword as written in the edition's `seeAlso`. */
+export const entryByHeadword = (headword: string, locale: Locale) =>
+  EDITIONS[locale].find((entry) => entry.headword === headword);

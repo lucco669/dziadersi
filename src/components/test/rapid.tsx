@@ -2,12 +2,47 @@
 
 import { useEffect, useEffectEvent, useState } from "react";
 import type { RapidTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { packBits } from "@/lib/test";
-import { cx, typo } from "@/lib/typo";
+import { cx, pluralSl, typo } from "@/lib/typo";
 import { Countdown, useKeys, useLater, useReducedMotion, type TaskProps } from "./shared";
+
+const COPY = defineCopy({
+  pl: {
+    untimed: (total: number) => `${total} stwierdzeń. Odpowiadaj TAK albo NIE, we własnym tempie. Czas nie jest ograniczony.`,
+    timed: (total: number, seconds: number) =>
+      `${total} stwierdzeń, ${seconds} sekund na każde. Odpowiadaj TAK albo NIE, bez zastanowienia. Milczenie oznacza zgodę.`,
+    start: "Start serii",
+    keys: "Klawisze: T albo ← to TAK, N albo → to NIE.",
+    over: "Seria zakończona",
+    of: "na",
+    yes: "TAK",
+    no: "NIE",
+    yesKey: "t",
+    noKey: "n",
+    silence: "Milczenie oznacza zgodę.",
+  },
+  sl: {
+    untimed: (total: number) =>
+      `${total} ${pluralSl(total, "trditev", "trditvi", "trditve", "trditev")}. Odgovarjaj DA ali NE, v svojem tempu. Čas ni omejen.`,
+    timed: (total: number, seconds: number) =>
+      `${total} ${pluralSl(total, "trditev", "trditvi", "trditve", "trditev")}, ${seconds} ${pluralSl(seconds, "sekunda", "sekundi", "sekunde", "sekund")} za vsako. Odgovarjaj DA ali NE, brez razmišljanja. Molk pomeni privolitev.`,
+    start: "Začni serijo",
+    keys: "Tipke: D ali ← je DA, N ali → je NE.",
+    over: "Serija končana",
+    of: "od",
+    yes: "DA",
+    no: "NE",
+    yesKey: "d",
+    noKey: "n",
+    silence: "Molk pomeni privolitev.",
+  },
+});
 
 /** Ten statements against the clock. Silence counts as consent. */
 export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
+  const t = COPY[useLocale()];
   const [phase, setPhase] = useState<"ready" | "running" | "done">("ready");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -47,10 +82,10 @@ export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
       setPhase("running");
     }
     if (phase !== "running") return;
-    if (key === "t" || key === "1" || key === "arrowleft") {
+    if (key === t.yesKey || key === "1" || key === "arrowleft") {
       event.preventDefault();
       answer(true);
-    } else if (key === "n" || key === "2" || key === "arrowright") {
+    } else if (key === t.noKey || key === "2" || key === "arrowright") {
       event.preventDefault();
       answer(false);
     }
@@ -60,16 +95,12 @@ export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
     return (
       <div className="max-w-2xl">
         <p className="text-[clamp(1.3rem,2.2vw,1.6rem)] leading-snug">
-          {typo(
-            reduced
-              ? `${total} stwierdzeń. Odpowiadaj TAK albo NIE, we własnym tempie. Czas nie jest ograniczony.`
-              : `${total} stwierdzeń, ${task.seconds} sekund na każde. Odpowiadaj TAK albo NIE, bez zastanowienia. Milczenie oznacza zgodę.`,
-          )}
+          {typo(reduced ? t.untimed(total) : t.timed(total, task.seconds))}
         </p>
         <button type="button" onClick={() => setPhase("running")} autoFocus className="btn mt-8 bg-ink text-paper hover:bg-red">
-          Start serii <span aria-hidden="true">→</span>
+          {t.start} <span aria-hidden="true">→</span>
         </button>
-        <p className="label mt-4 text-ink-faint">Klawisze: T albo ← to TAK, N albo → to NIE.</p>
+        <p className="label mt-4 text-ink-faint">{t.keys}</p>
       </div>
     );
   }
@@ -78,9 +109,9 @@ export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
     const yes = answers.filter(Boolean).length;
     return (
       <div className="max-w-2xl animate-question-in" role="status">
-        <p className="label text-ink-soft">Seria zakończona</p>
+        <p className="label text-ink-soft">{t.over}</p>
         <p className="mt-3 text-[clamp(2.4rem,6vw,4rem)] font-bold leading-none tabular-nums">
-          {yes} × TAK <span className="text-ink-faint">na {total}</span>
+          {yes} × {t.yes} <span className="text-ink-faint">{t.of} {total}</span>
         </p>
       </div>
     );
@@ -94,7 +125,7 @@ export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
           {index + 1} / {total}
         </span>
         <span className={cx("text-red transition-opacity", flash === "cisza" ? "opacity-100" : "opacity-0")} aria-live="polite">
-          {flash === "cisza" ? "Milczenie oznacza zgodę." : ""}
+          {flash === "cisza" ? t.silence : ""}
         </span>
       </p>
       <div key={index} className="animate-question-in">
@@ -112,7 +143,7 @@ export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
             flash === "tak" || flash === "cisza" ? "bg-red text-paper" : "bg-ink text-paper hover:bg-red",
           )}
         >
-          TAK
+          {t.yes}
         </button>
         <button
           type="button"
@@ -122,7 +153,7 @@ export function RapidView({ task, onAnswer, untimed }: TaskProps<RapidTask>) {
             flash === "nie" ? "bg-ink text-paper" : "hover:bg-paper-deep",
           )}
         >
-          NIE
+          {t.no}
         </button>
       </div>
       <ol className="mt-6 flex gap-1.5" aria-hidden="true">

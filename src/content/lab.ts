@@ -1,3 +1,6 @@
+import type { Locale } from "@/i18n/config";
+import { overlay } from "@/i18n/overlay";
+import * as sl from "./sl/lab";
 import type { SpeciesKey } from "./species";
 
 /**
@@ -34,3 +37,15 @@ export const LAB: LabParameter[] = [
 
 /** The horn test, Formularz IBD-T2 only: reaction time from green to the first honk. */
 export const HORN = { code: "CRK", name: "Czas reakcji klaksonowej", unit: "s", low: 0.8, high: 3 };
+
+/* Editions: the Polish parameters above with each edition's names and units laid over them. */
+
+const EDITIONS = {
+  pl: { lab: LAB, horn: HORN },
+  sl: { lab: overlay(LAB, sl.LAB, "lab.LAB"), horn: overlay(HORN, sl.HORN, "lab.HORN") },
+} satisfies Record<Locale, unknown>;
+
+/** The lab parameters in the edition's language: same order, ranges and sources as LAB. */
+export const getLab = (locale: Locale): LabParameter[] => EDITIONS[locale].lab;
+
+export const getHorn = (locale: Locale): typeof HORN => EDITIONS[locale].horn;

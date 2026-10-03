@@ -1,9 +1,11 @@
-import { OCCASIONS, type Occasion } from "@/content/bingo";
+import { getOccasions, OCCASIONS, type Occasion } from "@/content/bingo";
+import type { Locale } from "@/i18n/config";
 import { shuffled } from "./random";
 
 /*
  * A card code is the occasion slug and a five-character base36 seed: "wesele-3k9fz".
- * The seed picks 24 squares from the pool; the centre is free.
+ * The seed picks 24 squares from the pool; the centre is free. Codes are the same in both
+ * editions: the Slovenian pools keep the Polish order, so a code gives the same squares.
  */
 
 export const CARD_SIZE = 25;
@@ -40,10 +42,10 @@ export function card(occasion: Occasion, seed: number): Card {
   return { code: `${occasion.slug}-${code}`, occasion, seed: parseInt(code, 36), number: code.toUpperCase(), squares };
 }
 
-export function decodeCard(code: string): Card | null {
+export function decodeCard(code: string, locale: Locale): Card | null {
   const match = CODE.exec(code);
   if (!match) return null;
-  const occasion = OCCASIONS.find((item) => item.slug === match[1]);
+  const occasion = getOccasions(locale).find((item) => item.slug === match[1]);
   return occasion ? card(occasion, parseInt(match[2], 36)) : null;
 }
 
@@ -53,5 +55,6 @@ export const randomSeed = () => Math.floor(Math.random() * SEEDS);
 export const series = (first: Card, count: number) =>
   Array.from({ length: count }, (_, i) => card(first.occasion, (first.seed + i * 7_919) % SEEDS));
 
-/** The sample card of each occasion: prerendered, shown on the index page. */
-export const sampleCard = (occasion: Occasion) => card(occasion, 1_000_003 + OCCASIONS.indexOf(occasion) * 104_729);
+/** The sample card of each occasion: prerendered, shown on the index page. Seeded by the Polish position. */
+export const sampleCard = (occasion: Occasion) =>
+  card(occasion, 1_000_003 + OCCASIONS.findIndex((item) => item.slug === occasion.slug) * 104_729);

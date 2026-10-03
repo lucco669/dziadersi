@@ -1,3 +1,6 @@
+import type { Locale } from "@/i18n/config";
+import { overlayList } from "@/i18n/overlay";
+import * as sl from "./sl/regions";
 import type { SpeciesKey } from "./species";
 
 export type Region = {
@@ -134,3 +137,21 @@ export const REGIONS: Record<string, Region> = {
 
 /** Class breaks for the map legend, in percent. */
 export const REGION_BINS = [62, 65, 68, 71];
+
+/* Editions: the Polish voivodeships above with each edition's names and notes laid over them. */
+
+const EDITIONS = {
+  pl: REGIONS,
+  sl: Object.fromEntries(
+    overlayList("regions.REGIONS", Object.values(REGIONS), (region) => region.code, sl.REGIONS).map((region) => [region.code, region]),
+  ),
+} satisfies Record<Locale, Record<string, Region>>;
+
+/** The voivodeships in the edition's language, by code: same codes, values and species as REGIONS. */
+export const getRegions = (locale: Locale): Record<string, Region> => EDITIONS[locale];
+
+/** A voivodeship's full name for running text: "województwo mazowieckie", "Mazovijsko vojvodstvo". */
+export const regionFullName = (code: string, locale: Locale) => {
+  const { name } = EDITIONS[locale][code];
+  return locale === "pl" ? `województwo ${name.toLowerCase()}` : `${name} vojvodstvo`;
+};

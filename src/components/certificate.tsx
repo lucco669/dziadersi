@@ -1,9 +1,43 @@
 import type { SpeciesKey } from "@/content/species";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import { localizePath } from "@/i18n/routes";
+import { siteCopy } from "@/lib/site";
 import { cx, typo } from "@/lib/typo";
 import { Seal, Stamp } from "./brand";
 import { Figure, SpeciesPlate } from "./pictograms";
 
+const COPY = defineCopy({
+  pl: {
+    number: "Nr",
+    title: "Certyfikat Dziaderstwa",
+    certifies: "Niniejszym zaświadcza się, że osoba badana",
+    proxy: "uzyskała na podstawie wywiadu rodzinnego wynik",
+    own: "uzyskała w Teście Dziadersa wynik",
+    sample: "Wzór",
+    diagnosis: "Rozpoznanie",
+    position: "Kierownik Pracowni Diagnostycznej",
+    date: "Data badania",
+    caption: (score: number, diagnosis: string, name?: string, proxy?: boolean) =>
+      `Certyfikat Dziaderstwa${name ? ` dla: ${name}` : ""}${proxy ? " (wywiad rodzinny)" : ""}. Wynik ${score}%, rozpoznanie: ${diagnosis}.`,
+  },
+  sl: {
+    number: "Št.",
+    title: "Certifikat dziaderstva",
+    certifies: "S tem se potrjuje, da je preiskovana oseba",
+    proxy: "na podlagi heteroanamneze dosegla rezultat",
+    own: "na testu dziadersa dosegla rezultat",
+    sample: "Vzorec",
+    diagnosis: "Diagnoza",
+    position: "Vodja diagnostičnega laboratorija",
+    date: "Datum pregleda",
+    caption: (score: number, diagnosis: string, name?: string, proxy?: boolean) =>
+      `Certifikat dziaderstva${name ? ` za: ${name}` : ""}${proxy ? " (heteroanamneza)" : ""}. Rezultat ${score} %, diagnoza: ${diagnosis}.`,
+  },
+});
+
 export type CertificateProps = {
+  locale: Locale;
   score: number;
   diagnosis: string;
   latin: string;
@@ -20,26 +54,31 @@ export type CertificateProps = {
 };
 
 /** The certificate, with the red stripe of a Polish school certificate awarded with distinction. */
-export function Certificate({ score, diagnosis, latin, number, species, name, date, sample, proxy, className }: CertificateProps) {
+export function Certificate({ locale, score, diagnosis, latin, number, species, name, date, sample, proxy, className }: CertificateProps) {
+  const t = COPY[locale];
+  const home = localizePath("/", locale);
   return (
     <figure className={cx("relative mx-auto w-full max-w-[34rem] overflow-hidden bg-[#fbf8f1] p-2 text-ink", className)}>
       <div aria-hidden="true" className="absolute -left-20 top-4 h-6 w-56 -rotate-45 bg-red md:-left-16 md:top-12 md:h-7" />
       <div className="relative border border-ink px-6 pb-6 pt-6 text-center md:px-10 md:pb-8">
         <p className="label text-[0.75rem] text-ink-soft">
-          Instytut Badań nad Dziaderstwem <span className="block sm:inline">· Nr {number}</span>
+          {siteCopy(locale).institute}{" "}
+          <span className="block sm:inline">
+            · {t.number} {number}
+          </span>
         </p>
 
-        <p className="mt-7 text-[clamp(1.85rem,4vw,2.5rem)] font-bold leading-none tracking-[-0.01em]">Certyfikat Dziaderstwa</p>
+        <p className="mt-7 text-[clamp(1.85rem,4vw,2.5rem)] font-bold leading-none tracking-[-0.01em]">{t.title}</p>
         <p className="mx-auto mt-4 max-w-sm text-[1rem] italic leading-relaxed text-ink-soft">
-          {typo("Niniejszym zaświadcza się, że osoba badana")}
+          {typo(t.certifies)}
           {name ? <span className="my-1 block text-[1.75rem] not-italic font-bold leading-tight text-ink">{name}</span> : " "}
-          {typo(proxy ? "uzyskała na podstawie wywiadu rodzinnego wynik" : "uzyskała w Teście Dziadersa wynik")}
+          {typo(proxy ? t.proxy : t.own)}
         </p>
 
         <div className="relative">
           <p className="mt-1 text-[clamp(4.5rem,11vw,6.75rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">{score}%</p>
           {sample && (
-            <Stamp className="absolute right-0 top-1/2 -translate-y-1/2 rotate-[-12deg] bg-[#fbf8f1]/70">Wzór</Stamp>
+            <Stamp className="absolute right-0 top-1/2 -translate-y-1/2 rotate-[-12deg] bg-[#fbf8f1]/70">{t.sample}</Stamp>
           )}
         </div>
 
@@ -55,33 +94,33 @@ export function Certificate({ score, diagnosis, latin, number, species, name, da
           )}
         </div>
 
-        <p className="label mt-4 text-ink-soft">Rozpoznanie</p>
+        <p className="label mt-4 text-ink-soft">{t.diagnosis}</p>
         <p className="mt-1 text-balance text-[1.5rem] font-bold leading-tight">{diagnosis}</p>
         <p className="mt-0.5 italic text-ink-soft">{latin}</p>
 
         <div className="mt-8 flex items-end justify-between gap-6 text-left">
-          <Seal className="size-24 shrink-0 rotate-[-10deg] text-red md:size-28" />
+          <Seal locale={locale} className="size-24 shrink-0 rotate-[-10deg] text-red md:size-28" />
           <div className="w-full max-w-[13rem]">
             <p className="text-[1.6rem] italic leading-none">Z. Wąsik</p>
             <p className="label mt-2 border-t border-ink pt-2 text-[0.72rem] leading-snug text-ink-soft">
               dr hab. Zenon Wąsik
               <br />
-              Kierownik Pracowni Diagnostycznej
+              {t.position}
             </p>
           </div>
         </div>
 
         {date && (
           <p className="label mt-6 flex justify-between gap-4 border-t border-rule pt-3 text-left text-[0.75rem] text-ink-soft">
-            <span>Data badania: {date}</span>
-            <span>dziader.si</span>
+            <span>
+              {t.date}: {date}
+            </span>
+            <span>dziader.si{home === "/" ? "" : home}</span>
           </p>
         )}
       </div>
 
-      <figcaption className="sr-only">
-        {`Certyfikat Dziaderstwa${name ? ` dla: ${name}` : ""}${proxy ? " (wywiad rodzinny)" : ""}. Wynik ${score}%, rozpoznanie: ${diagnosis}.`}
-      </figcaption>
+      <figcaption className="sr-only">{t.caption(score, diagnosis, name, proxy)}</figcaption>
     </figure>
   );
 }

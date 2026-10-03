@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { site } from "./site";
+import { DEFAULT_LOCALE, LOCALE_INFO, LOCALES, type Locale } from "@/i18n/config";
+import { alternatePath, localizePath } from "@/i18n/routes";
+import { site, siteCopy } from "./site";
 
 /** Search results cut titles and descriptions longer than these. */
 const MAX_TITLE = 70;
@@ -13,10 +15,28 @@ export function describe(text: string, ...endings: string[]) {
   return `${text.slice(0, text.lastIndexOf(" ", MAX_DESCRIPTION - 1))}…`;
 }
 
+/** The absolute public URL of an internal path in an edition. */
+export const absoluteUrl = (path: string, locale: Locale) => {
+  const localized = localizePath(path, locale);
+  return `${site.url}${localized === "/" ? "" : localized}`;
+};
+
+/**
+ * hreflang alternates for an internal path: both editions and x-default (the Polish original).
+ * `path` is the internal path in `locale`; content slugs are swapped for the twin page.
+ */
+export function languageAlternates(path: string, locale: Locale) {
+  const languages = Object.fromEntries(
+    LOCALES.map((target) => [LOCALE_INFO[target].tag, localizePath(alternatePath(path, locale, target), target)]),
+  );
+  return { ...languages, "x-default": languages[LOCALE_INFO[DEFAULT_LOCALE].tag] };
+}
+
 type PageMeta = {
   /** Browser title; the layout appends " · DZIADER.SI" when the whole stays within 70 characters. */
   title: string;
   description: string;
+  /** Internal path in the page's edition ("/slownik/x"); localised for canonical and hreflang. */
   path: string;
   /** Title for link previews, when it should differ from the browser title. */
   shareTitle?: string;
@@ -26,29 +46,28 @@ type PageMeta = {
   noindex?: boolean;
 };
 
-/** The same canonical, Open Graph and Twitter fields for every page. Share images come from opengraph-image files. */
-export function pageMetadata({
-  title,
-  description,
-  path,
-  shareTitle,
-  shareDescription,
-  type = "website",
-  publishedTime,
-  noindex,
-}: PageMeta): Metadata {
+/**
+ * The same canonical, hreflang, Open Graph and Twitter fields for every page.
+ * Share images come from opengraph-image files.
+ */
+export function pageMetadata(
+  locale: Locale,
+  { title, description, path, shareTitle, shareDescription, type = "website", publishedTime, noindex }: PageMeta,
+): Metadata {
   const ogTitle = shareTitle ?? `${title} · ${site.name}`;
   const ogDescription = shareDescription ?? description;
   const branded = `${title} · ${site.name}`;
+  const url = localizePath(path, locale);
   return {
     title: branded.length <= MAX_TITLE ? title : { absolute: title },
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: url, languages: languageAlternates(path, locale) },
     openGraph: {
       type,
-      locale: "pl_PL",
+      locale: LOCALE_INFO[locale].og,
+      alternateLocale: LOCALES.filter((other) => other !== locale).map((other) => LOCALE_INFO[other].og),
       siteName: site.name,
-      url: path,
+      url,
       title: ogTitle,
       description: ogDescription,
       ...(publishedTime ? { publishedTime } : {}),
@@ -59,10 +78,12 @@ export function pageMetadata({
 }
 
 /** schema.org reference to the Institute, for author, publisher and creator fields. */
-export const institute = {
-  "@type": "Organization",
-  "@id": `${site.url}/#instytut`,
-  name: site.institute,
-  url: site.url,
-  logo: `${site.url}/icon-512.png`,
-} as const;
+export const institute = (locale: Locale) =>
+  ({
+    "@type": "Organization",
+    "@id": `${site.url}/#instytut`,
+    name: siteCopy(locale).institute,
+    alternateName: locale === "pl" ? undefined : siteCopy("pl").institute,
+    url: site.url,
+    logo: `${site.url}/icon-512.png`,
+  }) as const;

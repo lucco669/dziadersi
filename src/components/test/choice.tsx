@@ -2,11 +2,34 @@
 
 import { useMemo, useState } from "react";
 import type { BlotTask, ChoiceTask, Option, SmsTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { cx, typo } from "@/lib/typo";
 import { Mark } from "../brand";
 import { AnswerRow, keyIndex, LETTERS, shuffled, useKeys, useLater, type TaskProps } from "./shared";
 
 const ADVANCE_MS = 420;
+
+const COPY = defineCopy({
+  pl: {
+    plate: "Plansza",
+    series: "IBD-R · seria 2026",
+    blot: "Symetryczna plama atramentu",
+    active: "aktywność: teraz",
+    today: "Dziś 21:47",
+    seen: "Wyświetlono 21:47",
+    replies: "Podpowiedzi odpowiedzi",
+  },
+  sl: {
+    plate: "Tabla",
+    series: "IBD-R · serija 2026",
+    blot: "Simetričen madež črnila",
+    active: "aktiven zdaj",
+    today: "Danes 21:47",
+    seen: "Videno 21:47",
+    replies: "Predlagani odgovori",
+  },
+});
 
 /** Pick one: answers in the respondent's own order, crossed out in ink, then the next task. */
 function useChoice(options: Option[], seed: number, onAnswer: (value: number) => void, delay = ADVANCE_MS) {
@@ -79,18 +102,19 @@ export function BlotView({ task, proxy, value, seed, onAnswer }: TaskProps<BlotT
 }
 
 export function Plate({ task, className }: { task: Pick<BlotTask, "plate" | "image" | "width" | "height">; className?: string }) {
+  const t = COPY[useLocale()];
   return (
     <figure className={cx("border border-ink bg-card px-5 pb-6 pt-4", className)}>
       <figcaption className="label flex justify-between text-ink-soft">
-        <span>Plansza {task.plate}</span>
-        <span>IBD-R · seria 2026</span>
+        <span>{t.plate} {task.plate}</span>
+        <span>{t.series}</span>
       </figcaption>
       {/* eslint-disable-next-line @next/next/no-img-element -- already sized and compressed; no need for the optimiser */}
       <img
         src={task.image}
         width={task.width}
         height={task.height}
-        alt="Symetryczna plama atramentu"
+        alt={t.blot}
         decoding="async"
         className="mx-auto mt-5 h-auto max-h-[44vh] w-auto max-w-full animate-unfold"
       />
@@ -100,6 +124,7 @@ export function Plate({ task, className }: { task: Pick<BlotTask, "plate" | "ima
 
 /** A text message: the answers are suggested replies, and the chosen one is sent. */
 export function SmsView({ task, value, seed, onAnswer }: TaskProps<SmsTask>) {
+  const t = COPY[useLocale()];
   const { order, picked, choose } = useChoice(task.options, seed, onAnswer, 1500);
   const sent = picked ?? null;
 
@@ -114,11 +139,11 @@ export function SmsView({ task, value, seed, onAnswer }: TaskProps<SmsTask>) {
             <Mark className="size-8 text-ink" />
             <div className="leading-tight">
               <p className="font-sans text-[0.95rem] font-semibold">{task.contact}</p>
-              <p className="label text-[0.75rem] text-ink-faint">aktywność: teraz</p>
+              <p className="label text-[0.75rem] text-ink-faint">{t.active}</p>
             </div>
           </div>
           <div className="flex flex-1 flex-col justify-end gap-2 px-4 py-5 font-sans text-[0.98rem]">
-            <p className="label self-center text-[0.72rem] text-ink-faint">Dziś 21:47</p>
+            <p className="label self-center text-[0.72rem] text-ink-faint">{t.today}</p>
             <p className="max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-paper-deep px-3.5 py-2">{task.message}</p>
             {sent !== null && (
               <>
@@ -126,7 +151,7 @@ export function SmsView({ task, value, seed, onAnswer }: TaskProps<SmsTask>) {
                   {task.options[sent].text}
                 </p>
                 <p className="label animate-question-in self-end text-[0.72rem] text-ink-faint [animation-delay:700ms]">
-                  Wyświetlono 21:47
+                  {t.seen}
                 </p>
               </>
             )}
@@ -135,7 +160,7 @@ export function SmsView({ task, value, seed, onAnswer }: TaskProps<SmsTask>) {
       </div>
 
       <div>
-        <p className="label border-b border-ink pb-3 text-ink-soft">Podpowiedzi odpowiedzi</p>
+        <p className="label border-b border-ink pb-3 text-ink-soft">{t.replies}</p>
         <div role="group" aria-labelledby="zadanie" className="mt-4 flex flex-col items-end gap-3">
           {order.map((index, position) => {
             const checked = picked === index || (picked === null && value === index);

@@ -1,4 +1,6 @@
 import { useId, type ReactNode } from "react";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { cx } from "@/lib/typo";
 import { MUSTACHE_PATH, PAPER } from "./pictograms";
 
@@ -20,21 +22,20 @@ export function Wordmark({ className, dotClassName = "text-red" }: { className?:
   );
 }
 
+const SEAL = defineCopy({
+  pl: { ring: "INSTYTUT BADAŃ NAD DZIADERSTWEM · DZIADER.SI · ", label: "Pieczęć Instytutu Badań nad Dziaderstwem" },
+  sl: { ring: "INŠTITUT ZA RAZISKAVE DZIADERSTVA · DZIADER.SI · ", label: "Pečat Inštituta za raziskave dziaderstva" },
+});
+
 /** Round rubber seal: ring text around the head. */
-export function Seal({
-  className,
-  ring = "INSTYTUT BADAŃ NAD DZIADERSTWEM · DZIADER.SI · ",
-}: {
-  className?: string;
-  ring?: string;
-}) {
+export function Seal({ locale, className, ring = SEAL[locale].ring }: { locale: Locale; className?: string; ring?: string }) {
   const id = `seal-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   return (
     <svg
       viewBox="0 0 200 200"
       className={cx("ink-worn", className)}
       role="img"
-      aria-label="Pieczęć Instytutu Badań nad Dziaderstwem"
+      aria-label={SEAL[locale].label}
     >
       <defs>
         <path id={id} d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1 -148 0" />

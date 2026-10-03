@@ -1,3 +1,7 @@
+import type { Locale } from "@/i18n/config";
+import { overlayList } from "@/i18n/overlay";
+import * as sl from "./sl/phrasebook";
+
 /*
  * Rozmówki dziaderskie: a line is an opener (zagajenie), a claim (teza) and a punchline (puenta).
  * Every part is a whole sentence, so any three of them read as one line.
@@ -212,3 +216,13 @@ export const SITUATIONS: Situation[] = [
     closers: [...CLOSERS, "Paragon schowaj, na wszelki wypadek.", "Wziąłem sześć, bo była promocja."],
   },
 ];
+
+/* Editions: the Polish chapters above with each edition's text laid over them. */
+
+const EDITIONS = {
+  pl: SITUATIONS,
+  sl: overlayList("phrasebook.SITUATIONS", SITUATIONS, (situation) => situation.slug, sl.SITUATIONS),
+} satisfies Record<Locale, Situation[]>;
+
+/** The phrasebook in the edition's language: same chapters, slugs and lists (by index) as SITUATIONS. */
+export const getSituations = (locale: Locale): Situation[] => EDITIONS[locale];

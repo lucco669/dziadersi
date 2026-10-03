@@ -1,9 +1,47 @@
 import { ImageResponse } from "next/og";
 import { Figure } from "@/components/pictograms";
-import { C, OG_FONTS, OgFrame, OgLogo, OgSeal, OgStamp, bold, italic, sans, serif } from "./og";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import { C, OG_FONTS, OgFrame, OgLogo, OgSeal, OgStamp, bold, italic, printedUrl, sans, serif } from "./og";
 import { OgPlate } from "./og-cards";
+import { siteCopy } from "./site";
 import { svgDataUri } from "./svg-string";
 import type { Result } from "./test";
+
+const COPY = defineCopy({
+  pl: {
+    cta: "Zbadaj się na",
+    section: (number: string) => `Certyfikat nr ${number}`,
+    respondent: (name: string, proxy: boolean) => `Osoba badana: ${name}${proxy ? " (wywiad)" : ""}`,
+    proxy: "Wywiad rodzinny",
+    result: "Wynik Testu Dziadersa",
+    diagnosis: "Rozpoznanie",
+    number: "Nr",
+    title: "Certyfikat Dziaderstwa",
+    certifies: "Niniejszym zaświadcza się, że osoba badana",
+    proxyScore: "uzyskała na podstawie wywiadu rodzinnego wynik",
+    ownScore: "uzyskała w Teście Dziadersa wynik",
+    position: "Kierownik Pracowni Diagnostycznej",
+    date: "Data badania",
+    ask: "A ty? Zbadaj się na",
+  },
+  sl: {
+    cta: "Preglej se na",
+    section: (number: string) => `Certifikat št. ${number}`,
+    respondent: (name: string, proxy: boolean) => `Preiskovana oseba: ${name}${proxy ? " (heteroanamneza)" : ""}`,
+    proxy: "Heteroanamneza",
+    result: "Izvid testa dziadersa",
+    diagnosis: "Diagnoza",
+    number: "Št.",
+    title: "Certifikat dziaderstva",
+    certifies: "S tem se potrjuje, da je preiskovana oseba",
+    proxyScore: "na podlagi heteroanamneze dosegla rezultat",
+    ownScore: "na testu dziadersa dosegla rezultat",
+    position: "Vodja diagnostičnega laboratorija",
+    date: "Datum pregleda",
+    ask: "Pa ti? Preglej se na",
+  },
+});
 
 export const CERTIFICATE_FORMATS = {
   og: { width: 1200, height: 630 },
@@ -13,9 +51,10 @@ export const CERTIFICATE_FORMATS = {
 
 export type CertificateFormat = keyof typeof CERTIFICATE_FORMATS;
 
-export function certificateImage(result: Result, format: CertificateFormat, headers?: Record<string, string>) {
+/** `result` must be evaluated in `locale`, so the diagnosis and the date are in the edition's language. */
+export function certificateImage(result: Result, format: CertificateFormat, locale: Locale, headers?: Record<string, string>) {
   return new ImageResponse(
-    format === "og" ? <Landscape result={result} /> : <Portrait result={result} story={format === "story"} />,
+    format === "og" ? <Landscape result={result} locale={locale} /> : <Portrait result={result} locale={locale} story={format === "story"} />,
     { ...CERTIFICATE_FORMATS[format], fonts: OG_FONTS, headers },
   );
 }
@@ -36,13 +75,14 @@ function Drawing({ result, width }: { result: Result; width: number }) {
 }
 
 /** Link preview: the score, the verdict stamp and the diagnosed species. */
-function Landscape({ result }: { result: Result }) {
+function Landscape({ result, locale }: { result: Result; locale: Locale }) {
+  const t = COPY[locale];
   const long = result.diagnosis.name.length > 26;
   return (
-    <OgFrame section={`Certyfikat nr ${result.certificate}`} url="Zbadaj się na dziader.si">
+    <OgFrame locale={locale} section={t.section(result.certificate)} path="/" cta={t.cta}>
       <div style={{ display: "flex", flexDirection: "column", width: 420 }}>
         <div style={{ ...sans, display: "flex", fontSize: 22, color: C.soft }}>
-          {result.name ? `Osoba badana: ${result.name}${result.proxy ? " (wywiad)" : ""}` : result.proxy ? "Wywiad rodzinny" : "Wynik Testu Dziadersa"}
+          {result.name ? t.respondent(result.name, result.proxy) : result.proxy ? t.proxy : t.result}
         </div>
         <div style={{ ...bold, display: "flex", marginTop: 4, fontSize: 216, lineHeight: 0.9, letterSpacing: -8 }}>
           {result.score}
@@ -53,7 +93,7 @@ function Landscape({ result }: { result: Result }) {
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingLeft: 40, borderLeft: `2px solid ${C.ink}` }}>
-        <div style={{ ...sans, display: "flex", fontSize: 22, color: C.soft }}>Rozpoznanie</div>
+        <div style={{ ...sans, display: "flex", fontSize: 22, color: C.soft }}>{t.diagnosis}</div>
         <div style={{ ...bold, display: "flex", marginTop: 8, fontSize: long ? 50 : 60, lineHeight: 1.02, letterSpacing: -1 }}>
           {result.diagnosis.name}
         </div>
@@ -68,7 +108,8 @@ function Landscape({ result }: { result: Result }) {
 }
 
 /** Instagram post (4:5) and story (9:16): the paper certificate, with its red stripe, on ink. */
-function Portrait({ result, story }: { result: Result; story: boolean }) {
+function Portrait({ result, locale, story }: { result: Result; locale: Locale; story: boolean }) {
+  const t = COPY[locale];
   const long = result.diagnosis.name.length > 26;
   return (
     <div
@@ -122,21 +163,21 @@ function Portrait({ result, story }: { result: Result; story: boolean }) {
           }}
         >
           <div style={{ ...sans, display: "flex", width: "100%", justifyContent: "space-between", fontSize: 21, color: C.soft }}>
-            <span style={{ marginLeft: 70 }}>Instytut Badań nad Dziaderstwem</span>
-            <span>Nr {result.certificate}</span>
+            <span style={{ marginLeft: 70 }}>{siteCopy(locale).institute}</span>
+            <span>{`${t.number} ${result.certificate}`}</span>
           </div>
 
           <div style={{ ...bold, display: "flex", marginTop: story ? 50 : 34, fontSize: 70, lineHeight: 1, letterSpacing: -1 }}>
-            Certyfikat Dziaderstwa
+            {t.title}
           </div>
           <div style={{ ...italic, display: "flex", marginTop: 20, fontSize: 31, color: C.soft }}>
-            Niniejszym zaświadcza się, że osoba badana
+            {t.certifies}
           </div>
           {result.name && (
             <div style={{ ...bold, display: "flex", marginTop: 6, fontSize: 56, lineHeight: 1.1 }}>{result.name}</div>
           )}
           <div style={{ ...italic, display: "flex", marginTop: 6, fontSize: 31, color: C.soft }}>
-            {result.proxy ? "uzyskała na podstawie wywiadu rodzinnego wynik" : "uzyskała w Teście Dziadersa wynik"}
+            {result.proxy ? t.proxyScore : t.ownScore}
           </div>
 
           <div style={{ ...bold, display: "flex", marginTop: 4, fontSize: story ? 260 : 220, lineHeight: 1, letterSpacing: -9 }}>
@@ -150,7 +191,7 @@ function Portrait({ result, story }: { result: Result; story: boolean }) {
           <div style={{ display: "flex", marginTop: story ? 40 : 24 }}>
             <Drawing result={result} width={story ? 330 : 270} />
           </div>
-          <div style={{ ...sans, display: "flex", marginTop: 10, fontSize: 22, color: C.soft }}>Rozpoznanie</div>
+          <div style={{ ...sans, display: "flex", marginTop: 10, fontSize: 22, color: C.soft }}>{t.diagnosis}</div>
           <div style={{ ...bold, display: "flex", marginTop: 6, fontSize: long ? 50 : 58, lineHeight: 1.05, letterSpacing: -1 }}>
             {result.diagnosis.name}
           </div>
@@ -182,7 +223,7 @@ function Portrait({ result, story }: { result: Result; story: boolean }) {
                 }}
               >
                 <span>dr hab. Zenon Wąsik</span>
-                <span>Kierownik Pracowni Diagnostycznej</span>
+                <span>{t.position}</span>
               </div>
             </div>
           </div>
@@ -200,14 +241,14 @@ function Portrait({ result, story }: { result: Result; story: boolean }) {
               color: C.soft,
             }}
           >
-            <span>Data badania: {result.date}</span>
-            <span>dziader.si</span>
+            <span>{`${t.date}: ${result.date}`}</span>
+            <span>{printedUrl("/", locale)}</span>
           </div>
         </div>
       </div>
 
       {story && (
-        <div style={{ ...italic, display: "flex", marginTop: 52, fontSize: 46, color: C.paper }}>A ty? Zbadaj się na dziader.si</div>
+        <div style={{ ...italic, display: "flex", marginTop: 52, fontSize: 46, color: C.paper }}>{`${t.ask} ${printedUrl("/", locale)}`}</div>
       )}
     </div>
   );

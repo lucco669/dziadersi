@@ -4,30 +4,79 @@ import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { speciesByKey } from "@/content/species";
-import { CLUE_LABELS, encodeExam, EXAM_LENGTH, questions, randomExamSeed, type Question } from "@/lib/exam";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
+import { localizePath } from "@/i18n/routes";
+import { clueLabel, encodeExam, EXAM_LENGTH, questions, randomExamSeed, type Question } from "@/lib/exam";
 import { tally } from "@/lib/tally";
 import { dayNumber } from "@/lib/test";
-import { cx, typo } from "@/lib/typo";
+import { cx, quote, typo } from "@/lib/typo";
 import { useAccount } from "./account";
 import { Stamp } from "./brand";
 import { useKeys } from "./hooks";
 import { Binoculars, Figure, SpeciesPlate } from "./pictograms";
 
+const COPY = defineCopy({
+  pl: {
+    note: "Notatka terenowa",
+    lead: "Dwanaście pytań. Cztery odpowiedzi. Bez klucza do oznaczania.",
+    points: [
+      "Wokalizacje, ryciny, siedliska, objawy, naturalni wrogowie i łacina.",
+      "Pytania z całego Atlasu: gatunki ogólnopolskie, regionalne i okazjonalne.",
+      "Ocena w skali szkolnej, od niedostatecznej do celującej. Poprawka bez ograniczeń.",
+    ],
+    start: "Rozpocznij egzamin",
+    keys: "Klawisze 1–4 odpowiadają, Enter przechodzi dalej.",
+    question: "Pytanie",
+    of: "z",
+    score: "Punkty",
+    right: "poprawna odpowiedź",
+    passed: "Zaliczone",
+    wrong: "Błąd w oznaczeniu",
+    next: "Dalej",
+    counting: "Komisja liczy…",
+    results: "Wyniki egzaminu",
+  },
+  sl: {
+    note: "Terenski zapisek",
+    lead: "Dvanajst vprašanj. Štirje odgovori. Brez določevalnega ključa.",
+    points: [
+      "Oglašanje, risbe, habitati, simptomi, naravni sovražniki in latinščina.",
+      "Vprašanja iz vsega Atlasa: vsepoljske, regionalne in priložnostne vrste.",
+      "Ocena po poljski šolski lestvici, od nezadostne do odlične. Popravni izpit brez omejitev.",
+    ],
+    start: "Začni izpit",
+    keys: "Tipke 1–4 za odgovor, Enter za naprej.",
+    question: "Vprašanje",
+    of: "od",
+    score: "Točke",
+    right: "pravilen odgovor",
+    passed: "Opravljeno",
+    wrong: "Napaka pri določanju",
+    next: "Naprej",
+    counting: "Komisija šteje …",
+    results: "Rezultati izpita",
+  },
+});
+
 const pad = (value: number) => String(value).padStart(2, "0");
 
 /** The clue, drawn the way a field observer would see it. */
 export function Clue({ question }: { question: Question }) {
+  const locale = useLocale();
   switch (question.kind) {
     case "plate":
       return <SpeciesPlate species={question.answer} animated className="w-full max-w-sm" />;
     case "call":
-      return <p className="border-l-2 border-red pl-5 text-[clamp(1.8rem,3.6vw,2.6rem)] italic leading-snug">„{typo(question.clue)}”</p>;
+      return <p className="border-l-2 border-red pl-5 text-[clamp(1.8rem,3.6vw,2.6rem)] italic leading-snug">{quote(typo(question.clue), locale)}</p>;
     case "latin":
       return <p className="text-[clamp(2.2rem,4.6vw,3.4rem)] italic leading-tight">{question.clue}</p>;
     default:
       return (
         <div className="max-w-xl border border-ink bg-card px-6 py-5">
-          <p className="label text-ink-soft">Notatka terenowa · {CLUE_LABELS[question.kind]}</p>
+          <p className="label text-ink-soft">
+            {COPY[locale].note} · {clueLabel(question.kind, locale)}
+          </p>
           <p className="mt-2 text-[1.35rem] leading-snug">{typo(question.clue)}</p>
         </div>
       );
@@ -38,12 +87,14 @@ export function Clue({ question }: { question: Question }) {
 export function ExamRunner() {
   const router = useRouter();
   const account = useAccount();
+  const locale = useLocale();
+  const t = COPY[locale];
   const [seed, setSeed] = useState<number | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [finishing, setFinishing] = useState(false);
 
-  const list = seed === null ? [] : questions(seed);
+  const list = seed === null ? [] : questions(seed, locale);
   const current = answers.length - (revealed ? 1 : 0);
   const question = list[current];
   const chosen = revealed ? answers[current] : null;
@@ -80,7 +131,7 @@ export function ExamRunner() {
         body: JSON.stringify({ kind: "egzamin", code }),
       }).catch(() => {});
     }
-    router.push(`/egzamin/${code}`);
+    router.push(localizePath(`/egzamin/${code}`, locale));
   }
 
   useKeys(
@@ -96,16 +147,16 @@ export function ExamRunner() {
     return (
       <div className="grid items-center gap-12 border-t border-ink pt-8 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-7">
-          <p className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-bold leading-tight">{typo("Dwanaście pytań. Cztery odpowiedzi. Bez klucza do oznaczania.")}</p>
+          <p className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-bold leading-tight">{typo(t.lead)}</p>
           <ul className="mt-6 space-y-2 text-lg leading-snug text-ink-soft">
-            <li>{typo("Wokalizacje, ryciny, siedliska, objawy, naturalni wrogowie i łacina.")}</li>
-            <li>{typo("Pytania z całego Atlasu: gatunki ogólnopolskie, regionalne i okazjonalne.")}</li>
-            <li>{typo("Ocena w skali szkolnej, od niedostatecznej do celującej. Poprawka bez ograniczeń.")}</li>
+            {t.points.map((point) => (
+              <li key={point}>{typo(point)}</li>
+            ))}
           </ul>
           <button type="button" onClick={start} className="btn mt-9 bg-ink text-paper hover:bg-red">
-            Rozpocznij egzamin <span aria-hidden="true">→</span>
+            {t.start} <span aria-hidden="true">→</span>
           </button>
-          <p className="label mt-4 text-ink-soft">Klawisze 1–4 odpowiadają, Enter przechodzi dalej.</p>
+          <p className="label mt-4 text-ink-soft">{t.keys}</p>
         </div>
         <div className="hidden justify-end lg:col-span-5 lg:flex">
           <svg viewBox="-4 -1 48 97" className="h-64" aria-hidden="true">
@@ -120,10 +171,10 @@ export function ExamRunner() {
     <div className="border-t border-ink pt-6">
       <div className="label flex flex-wrap justify-between gap-x-6 gap-y-1 text-ink-soft">
         <span>
-          Pytanie {pad(current + 1)} z {EXAM_LENGTH} · {CLUE_LABELS[question.kind]}
+          {t.question} {pad(current + 1)} {t.of} {EXAM_LENGTH} · {clueLabel(question.kind, locale)}
         </span>
         <span>
-          Punkty: {points} z {answers.length}
+          {t.score}: {points} {t.of} {answers.length}
         </span>
       </div>
       <div className="mt-3 grid h-1.5 grid-cols-12 gap-1" aria-hidden="true">
@@ -148,7 +199,7 @@ export function ExamRunner() {
         <div className="lg:col-span-5">
           <ol className="grid gap-3">
             {question.options.map((key, i) => {
-              const species = speciesByKey(key);
+              const species = speciesByKey(key, locale);
               const right = revealed && i === question.correct;
               const wrong = revealed && i === chosen && i !== question.correct;
               return (
@@ -167,7 +218,7 @@ export function ExamRunner() {
                   >
                     <span className="font-sans text-[0.85rem] font-semibold opacity-70">{i + 1}</span>
                     <span className="text-[1.2rem] font-bold leading-tight">{species.name}</span>
-                    {right && <span aria-label="poprawna odpowiedź">✓</span>}
+                    {right && <span aria-label={t.right}>✓</span>}
                   </button>
                 </li>
               );
@@ -177,10 +228,10 @@ export function ExamRunner() {
           {revealed && (
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4" role="status">
               <Stamp tone={chosen === question.correct ? "ink" : "red"} className="animate-stamp [--stamp-rotate:-4deg]">
-                {chosen === question.correct ? "Zaliczone" : "Błąd w oznaczeniu"}
+                {chosen === question.correct ? t.passed : t.wrong}
               </Stamp>
               <button type="button" onClick={() => void next()} disabled={finishing} className="btn bg-ink text-paper hover:bg-red disabled:opacity-60">
-                {answers.length < EXAM_LENGTH ? "Dalej" : finishing ? "Komisja liczy…" : "Wyniki egzaminu"} <span aria-hidden="true">→</span>
+                {answers.length < EXAM_LENGTH ? t.next : finishing ? t.counting : t.results} <span aria-hidden="true">→</span>
               </button>
             </div>
           )}

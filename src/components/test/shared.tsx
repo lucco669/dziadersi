@@ -2,6 +2,8 @@
 
 import type { ReactNode } from "react";
 import type { Task } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { cx, typo } from "@/lib/typo";
 
 export type TaskProps<T extends Task> = {
@@ -103,11 +105,14 @@ export function Countdown({ seconds, late }: { seconds: number; late: boolean })
   );
 }
 
+const NEXT = defineCopy({ pl: "Dalej", sl: "Naprej" });
+
 /** "Dalej" after a task that shows its outcome first. */
-export function NextButton({ onClick, label = "Dalej" }: { onClick: () => void; label?: string }) {
+export function NextButton({ onClick, label }: { onClick: () => void; label?: string }) {
+  const fallback = NEXT[useLocale()];
   return (
     <button type="button" onClick={onClick} autoFocus className="btn bg-ink text-paper hover:bg-red">
-      {label} <span aria-hidden="true">→</span>
+      {label ?? fallback} <span aria-hidden="true">→</span>
     </button>
   );
 }

@@ -1,13 +1,40 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
-import { setNewsletter } from "@/app/profil/actions";
+import { setNewsletter } from "@/app/[lang]/profil/actions";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
 import { typo } from "@/lib/typo";
 import { patchAccount, signInHref, useAccount } from "./account";
 
+const COPY = defineCopy({
+  pl: {
+    guest: "Biuletyn przychodzi w poniedziałek rano do osób z Profilem Dziaderskim, które go zamówiły. Wypisać się można jednym kliknięciem.",
+    signIn: "Zaloguj się i zamów",
+    on: (email: string) => `Biuletyn przychodzi na adres ${email} w poniedziałki rano.`,
+    off: (email: string) => `Biuletyn może przychodzić na adres ${email}, w poniedziałki rano. Raz w tygodniu, bez reklam.`,
+    saving: "Zapisuję…",
+    unsubscribe: "Wypisz mnie",
+    subscribe: "Zamów biuletyn",
+    failed: "Sekretariat nie przyjął zmiany. Spróbuj za chwilę.",
+  },
+  sl: {
+    guest: "Bilten prihaja v ponedeljek zjutraj osebam z Dziaderskim profilom, ki so ga naročile. Odjaviš se z enim klikom.",
+    signIn: "Prijavi se in naroči",
+    on: (email: string) => `Bilten prihaja na naslov ${email} ob ponedeljkih zjutraj.`,
+    off: (email: string) => `Bilten lahko prihaja na naslov ${email}, ob ponedeljkih zjutraj. Enkrat na teden, brez oglasov.`,
+    saving: "Shranjujem …",
+    unsubscribe: "Odjavi me",
+    subscribe: "Naroči bilten",
+    failed: "Tajništvo spremembe ni sprejelo. Poskusi znova čez trenutek.",
+  },
+});
+
 /** Subscribing to the weekly bulletin: one click for members, sign-in first for guests. */
 export function NewsletterBox() {
+  const locale = useLocale();
+  const t = COPY[locale];
   const account = useAccount();
   const [pending, start] = useTransition();
   const [failed, setFailed] = useState(false);
@@ -17,11 +44,9 @@ export function NewsletterBox() {
   if (account.status === "guest") {
     return (
       <div>
-        <p className="max-w-md text-lg leading-snug">
-          {typo("Biuletyn przychodzi w poniedziałek rano do osób z Profilem Dziaderskim, które go zamówiły. Wypisać się można jednym kliknięciem.")}
-        </p>
+        <p className="max-w-md text-lg leading-snug">{typo(t.guest)}</p>
         <Link href={signInHref("/biuletyn#zapisy")} className="btn mt-6 bg-ink text-paper hover:bg-red">
-          Zaloguj się i zamów <span aria-hidden="true">→</span>
+          {t.signIn} <span aria-hidden="true">→</span>
         </Link>
       </div>
     );
@@ -31,7 +56,7 @@ export function NewsletterBox() {
   const toggle = () =>
     start(async () => {
       setFailed(false);
-      const result = await setNewsletter(!on);
+      const result = await setNewsletter(!on, locale);
       if (result === null) setFailed(true);
       else patchAccount((current) => ({ ...current, newsletter: result }));
     });
@@ -42,10 +67,10 @@ export function NewsletterBox() {
         {on ? (
           <>
             <span aria-hidden="true" className="mr-2 inline-block size-2 translate-y-[-2px] rounded-full bg-red" />
-            {typo(`Biuletyn przychodzi na adres ${account.account.email} w poniedziałki rano.`)}
+            {typo(t.on(account.account.email))}
           </>
         ) : (
-          typo(`Biuletyn może przychodzić na adres ${account.account.email}, w poniedziałki rano. Raz w tygodniu, bez reklam.`)
+          typo(t.off(account.account.email))
         )}
       </p>
       <button
@@ -54,11 +79,11 @@ export function NewsletterBox() {
         disabled={pending}
         className={on ? "btn mt-6 border border-ink hover:bg-ink hover:text-paper disabled:opacity-60" : "btn mt-6 bg-ink text-paper hover:bg-red disabled:opacity-60"}
       >
-        {pending ? "Zapisuję…" : on ? "Wypisz mnie" : "Zamów biuletyn"}
+        {pending ? t.saving : on ? t.unsubscribe : t.subscribe}
       </button>
       {failed && (
         <p className="mt-3 font-sans text-sm text-red" role="alert">
-          Sekretariat nie przyjął zmiany. Spróbuj za chwilę.
+          {t.failed}
         </p>
       )}
     </div>

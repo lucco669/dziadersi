@@ -111,5 +111,8 @@ export function AccountSync() {
   return null;
 }
 
-/** "Zaloguj się, a …": where a sign-in link should return to. */
+/**
+ * "Zaloguj się, a …": a sign-in link that returns to `next`. Both are internal paths: Link localises
+ * the account page, and the account page localises `dalej` into the edition it is shown in.
+ */
 export const signInHref = (next: string) => `/konto?dalej=${encodeURIComponent(next)}`;

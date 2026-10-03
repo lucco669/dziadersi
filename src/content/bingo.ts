@@ -1,3 +1,7 @@
+import type { Locale } from "@/i18n/config";
+import { overlayList } from "@/i18n/overlay";
+import * as sl from "./sl/bingo";
+
 /*
  * Dziaders Bingo. A card is 24 squares drawn from the occasion's pool by a seed, around a free
  * centre. Changing a pool reshuffles every card of that occasion, so add squares in batches and
@@ -13,6 +17,8 @@ export type Occasion = {
   title: string;
   /** Where and when to play, one line. */
   intro: string;
+  /** Translator's notes (op. prev.), Slovenian edition only. */
+  notes?: string[];
   squares: string[];
 };
 
@@ -269,3 +275,16 @@ export const OCCASIONS: Occasion[] = [
 
 /** The free centre square, the same on every card. */
 export const FREE_SQUARE = "„Za moich czasów…”";
+
+/* Editions: the Polish occasions above with each edition's text laid over them. */
+
+const EDITIONS = {
+  pl: { occasions: OCCASIONS, free: FREE_SQUARE },
+  sl: { occasions: overlayList("bingo.OCCASIONS", OCCASIONS, (occasion) => occasion.slug, sl.OCCASIONS), free: sl.FREE_SQUARE },
+} satisfies Record<Locale, { occasions: Occasion[]; free: string }>;
+
+/** The occasions in the edition's language: same order, slugs and pools (by index) as OCCASIONS. */
+export const getOccasions = (locale: Locale): Occasion[] => EDITIONS[locale].occasions;
+
+/** The free centre square in the edition's language. */
+export const freeSquare = (locale: Locale): string => EDITIONS[locale].free;

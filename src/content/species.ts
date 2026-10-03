@@ -1,6 +1,13 @@
+import type { Locale } from "@/i18n/config";
+import { overlayList, overlayProblems } from "@/i18n/overlay";
+import { SPECIES_SLUGS } from "@/content/sl/slugs/species";
+import { SPECIES_TEXT, STATUSES_TEXT } from "@/content/sl/species";
+
 export type Status = "EX" | "EW" | "CR" | "EN" | "VU" | "NT" | "LC";
 
-export const STATUSES: { code: Status; label: string }[] = [
+export type StatusInfo = { code: Status; label: string };
+
+export const STATUSES: StatusInfo[] = [
   { code: "EX", label: "wymarły" },
   { code: "EW", label: "wymarły na wolności" },
   { code: "CR", label: "krytycznie zagrożony" },
@@ -78,6 +85,8 @@ export type Species = {
    */
   occasion?: string;
   isNew?: boolean;
+  /** Translator's notes (op. prev.), Slovenian edition only. */
+  notes?: string[];
 };
 
 export const SPECIES: Species[] = [
@@ -1351,8 +1360,31 @@ export const SPECIES: Species[] = [
 
 export const ESTIMATED_SPECIES = 312;
 
-export const speciesByKey = (key: SpeciesKey) => SPECIES.find((species) => species.key === key)!;
+/* Editions: the Slovenian text laid over the Polish data, with the Slovenian slugs. */
 
-export const speciesBySlug = (slug: string) => SPECIES.find((species) => species.slug === slug);
+const SPECIES_SL: Species[] = overlayList("species", SPECIES, (species) => species.key, SPECIES_TEXT).map((species) => {
+  const slug = SPECIES_SLUGS[species.slug];
+  if (!slug) overlayProblems.push(`species[${species.key}]: no Slovenian slug`);
+  return { ...species, slug: slug ?? species.slug };
+});
 
-export const statusLabel = (status: Status) => STATUSES.find((item) => item.code === status)?.label ?? status;
+const SPECIES_EDITIONS: Record<Locale, Species[]> = { pl: SPECIES, sl: SPECIES_SL };
+
+const STATUS_EDITIONS: Record<Locale, StatusInfo[]> = {
+  pl: STATUSES,
+  sl: overlayList("statuses", STATUSES, (item) => item.code, STATUSES_TEXT),
+};
+
+/** The Atlas in an edition: the same species in the same order, with the edition's text and slugs. */
+export const getSpecies = (locale: Locale) => SPECIES_EDITIONS[locale];
+
+/** The threat statuses in an edition, from EX to LC. */
+export const getStatuses = (locale: Locale) => STATUS_EDITIONS[locale];
+
+export const speciesByKey = (key: SpeciesKey, locale: Locale) => getSpecies(locale).find((species) => species.key === key)!;
+
+/** Looks up a species by the edition's own slug. */
+export const speciesBySlug = (slug: string, locale: Locale) => getSpecies(locale).find((species) => species.slug === slug);
+
+export const statusLabel = (status: Status, locale: Locale) =>
+  getStatuses(locale).find((item) => item.code === status)?.label ?? status;

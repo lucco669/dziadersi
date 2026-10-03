@@ -1,8 +1,16 @@
 "use client";
 
 import { track } from "@vercel/analytics";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 
-export function PrintButton({ label = "Drukuj" }: { label?: string }) {
+const COPY = defineCopy({
+  pl: { print: "Drukuj" },
+  sl: { print: "Natisni" },
+});
+
+export function PrintButton({ label }: { label?: string }) {
+  const locale = useLocale();
   return (
     <button
       type="button"
@@ -12,7 +20,7 @@ export function PrintButton({ label = "Drukuj" }: { label?: string }) {
       }}
       className="btn bg-ink text-paper hover:bg-red"
     >
-      {label}
+      {label ?? COPY[locale].print}
     </button>
   );
 }

@@ -1,13 +1,39 @@
-import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
 import type { Bulletin } from "@/lib/bulletin";
-import { MONTHS_SHORT, dayOfYear } from "@/lib/calendar";
+import { dayOfYear, monthsShort } from "@/lib/calendar";
 import { cx, pct } from "@/lib/typo";
+
+const COPY = defineCopy({
+  pl: {
+    caption: (year: number) => `Wykres 1. NID w ${year} r., wartości dzienne (%)`,
+    measured: "Pomiar",
+    forecast: "Prognoza IBD",
+    label: (year: number, today: string) =>
+      `Wykres Narodowego Indeksu Dziaderstwa w ${year} roku. Dziś ${today}%. Najwyższa prognozowana wartość przypada na Wigilię.`,
+    today: "Dziś",
+    source: "Źródło: IBD, obserwacje terenowe.",
+    method: "Metodologia",
+  },
+  sl: {
+    caption: (year: number) => `Graf 1. NID v letu ${year}, dnevne vrednosti (%)`,
+    measured: "Meritev",
+    forecast: "Napoved IBD",
+    label: (year: number, today: string) =>
+      `Graf Nacionalnega indeksa dziaderstva v letu ${year}. Danes ${today} %. Najvišja napovedana vrednost pade na sveti večer.`,
+    today: "Danes",
+    source: "Vir: IBD, terenska opazovanja.",
+    method: "Metodologija",
+  },
+});
 
 const Y_MIN = 58;
 const Y_MAX = 82;
 const GRID = [60, 70, 80];
 
-export function IndexChart({ bulletin, className }: { bulletin: Bulletin; className?: string }) {
+export function IndexChart({ bulletin, locale, className }: { bulletin: Bulletin; locale: Locale; className?: string }) {
+  const t = COPY[locale];
   const { year, today, total, chart } = bulletin;
   const x = (day: number) => (day / (total - 1)) * 100;
   const y = (value: number) => (1 - (value - Y_MIN) / (Y_MAX - Y_MIN)) * 100;
@@ -23,15 +49,15 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
   return (
     <figure className={className}>
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-ink pb-3">
-        <span className="label">Wykres 1. NID w {year} r., wartości dzienne (%)</span>
+        <span className="label">{t.caption(year)}</span>
         <span className="label flex gap-5 text-ink-soft">
           <span className="flex items-center gap-2">
             <span className="h-0.5 w-5 bg-ink" aria-hidden="true" />
-            Pomiar
+            {t.measured}
           </span>
           <span className="flex items-center gap-2">
             <span className="w-5 border-t-2 border-dashed border-ink/50" aria-hidden="true" />
-            Prognoza IBD
+            {t.forecast}
           </span>
         </span>
       </figcaption>
@@ -42,7 +68,7 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
           preserveAspectRatio="none"
           className="absolute inset-0 size-full overflow-visible"
           role="img"
-          aria-label={`Wykres Narodowego Indeksu Dziaderstwa w ${year} roku. Dziś ${pct(todayValue)}%. Najwyższa prognozowana wartość przypada na Wigilię.`}
+          aria-label={t.label(year, pct(todayValue))}
         >
           {GRID.map((value) => (
             <line
@@ -138,12 +164,12 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
           className={cx("label absolute bottom-2 whitespace-nowrap font-semibold text-red", todayX > 20 ? "-translate-x-full pr-2" : "pl-2")}
           style={{ left: `${todayX}%` }}
         >
-          Dziś · {pct(todayValue)}
+          {t.today} · {pct(todayValue)}
         </span>
       </div>
 
       <div className="relative mt-2 h-5" aria-hidden="true">
-        {MONTHS_SHORT.map((month, i) => (
+        {monthsShort(locale).map((month, i) => (
           <span
             key={month}
             className={cx("absolute font-sans text-[0.75rem] font-medium text-ink-soft", i % 2 === 1 && "hidden sm:block")}
@@ -155,9 +181,9 @@ export function IndexChart({ bulletin, className }: { bulletin: Bulletin; classN
       </div>
 
       <p className="label mt-8 text-ink-soft">
-        Źródło: IBD, obserwacje terenowe.{" "}
+        {t.source}{" "}
         <Link href="/indeks#metodologia" className="link text-ink">
-          Metodologia
+          {t.method}
         </Link>
       </p>
     </figure>

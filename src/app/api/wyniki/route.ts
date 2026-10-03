@@ -22,7 +22,8 @@ export async function POST(request: Request) {
     return new Response(null, { status: 400 });
   }
 
-  const result = evaluate(draft);
+  // The census stores numbers and keys only, the same in both editions.
+  const result = evaluate(draft, "pl");
   const region = typeof body.region === "string" && body.region in REGIONS ? body.region : null;
   const previous =
     typeof body.previous === "number" && Number.isInteger(body.previous) && body.previous >= 0 && body.previous <= 100

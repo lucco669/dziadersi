@@ -2,7 +2,7 @@
 
 A satirical "research institute" documenting dziaderstwo. The design is dead serious (a Polish public institute: Antykwa Półtawskiego and Isotype-style picture statistics); the content is not.
 
-Production: https://dziader.si · Roadmap and design rules: [docs/PLAN.md](docs/PLAN.md)
+Production: https://dziader.si (Polish original) and https://dziader.si/sl (Slovenian edition) · Roadmap and design rules: [docs/PLAN.md](docs/PLAN.md) · Slovenian edition: [docs/SLOVENIAN.md](docs/SLOVENIAN.md)
 
 ## Stack
 
@@ -33,7 +33,11 @@ Browser QA on 3 October 2026 covered a complete 16-task examination at the mobil
 
 | Path | What |
 | --- | --- |
-| `src/app/` | Routes, metadata, share images, favicon set and manifest, robots, sitemap, llms.txt, 404 |
+| `src/app/[lang]/` | Every page and share image, in both editions (`pl` without a URL prefix, `sl` under `/sl`); the root layout, 404 and catch-all |
+| `src/app/` | Root-level routes shared by the editions: API, auth callback, favicon set and manifest, robots, sitemap (both editions with hreflang), llms.txt |
+| `src/i18n/` | Editions: locale config, Slovenian URL segments (`segments.ts`, also used by `next.config.ts`), path helpers (`routes.ts`), `getLocale()` / `useLocale()`, the localising `Link`, `defineCopy()` for interface text and `overlay()` for content translations |
+| `src/content/sl/` | Slovenian content overlays (text only, keyed to the Polish entries) and Slovenian slugs (`slugs/`) |
+| `src/components/language.tsx` | Language switcher in the header and footer, and the slip that offers the other edition to readers whose browser prefers it |
 | `src/components/` | Page template (`page.tsx`: header, sections, test band, pager), brand (`brand.tsx`: head mark, wordmark, seal, stamp), pictograms (`pictograms.tsx`, `specimen.tsx`, `crowd.tsx`) |
 | `src/content/` | All copy: 22 species, 26 dictionary entries, 5 reports, regions, the 16 test tasks in five rooms (`test.ts`), the retired 24 questions kept for old links (`test-v1.ts`) and the lab parameters (`lab.ts`) |
 | `src/lib/test.ts` | Test scoring, species diagnosis, and stateless result codes (answers, date and name in the URL), both editions |

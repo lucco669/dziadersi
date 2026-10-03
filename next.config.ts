@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { SEGMENTS, slovenianRewrites } from "./src/i18n/segments";
 
 const isDev = process.env.NODE_ENV === "development";
 // The Vercel Toolbar on preview deployments loads from vercel.live.
@@ -34,8 +35,24 @@ const securityHeaders = [
   { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
 ];
 
+const sl = (pl: string) => SEGMENTS[pl].sl;
+
 /** Images other sites may embed: share cards, certificates, lab results, and the letterhead in emails. */
-const EMBEDDABLE = ["/opengraph-image", "/:path*/opengraph-image", "/wynik/:kod/certyfikat", "/wynik/:kod/badania", "/email/:file*"];
+const EMBEDDABLE = [
+  "/opengraph-image",
+  "/:path*/opengraph-image",
+  "/wynik/:kod/certyfikat",
+  "/wynik/:kod/badania",
+  `/sl/${sl("wynik")}/:kod/certifikat`,
+  `/sl/${sl("wynik")}/:kod/preiskave`,
+  "/email/:file*",
+];
+
+/** Private pages: results, rankings and the save-to-profile links are never indexed or leak a referrer. */
+const PRIVATE = ["grupy", "grupa", "wynik"].flatMap((pl) => [`/${pl}/:path*`, `/sl/${sl(pl)}/:path*`]).concat(["/profil/zapisz/:path*", "/sl/profil/shrani/:path*"]);
+
+/** Paths the Polish edition must not rewrite: the other edition, the routed form, APIs and Next's own. */
+const NOT_POLISH = ["sl", "pl", "si", "api", "auth", "_next", "_vercel"].map((segment) => `${segment}(?:/|$)`).join("|");
 
 /** Files outside /_next/static that rarely change: icons, the manifest, the Rorschach plates. */
 const LONG_LIVED = [
@@ -58,23 +75,57 @@ const nextConfig: NextConfig = {
   },
   // Certificates are rendered at request time and read these from disk.
   outputFileTracingIncludes: {
-    "/wynik/**": ["./assets/fonts/*.ttf"],
-    "/grupa/**": ["./assets/fonts/*.ttf"],
-    "/generator/**": ["./assets/fonts/*.ttf"],
-    "/bingo/**": ["./assets/fonts/*.ttf"],
-    "/atlas/**": ["./assets/fonts/*.ttf"],
-    "/slownik/**": ["./assets/fonts/*.ttf"],
-    "/raporty/**": ["./assets/fonts/*.ttf"],
-    "/profil/**": ["./assets/fonts/*.ttf"],
-    "/egzamin/**": ["./assets/fonts/*.ttf"],
-    "/czy-to-juz-dziaderstwo/**": ["./assets/fonts/*.ttf"],
-    "/kalendarz/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/wynik/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/grupa/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/generator/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/bingo/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/atlas/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/slownik/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/raporty/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/profil/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/egzamin/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/czy-to-juz-dziaderstwo/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/kalendarz/**": ["./assets/fonts/*.ttf"],
+    "/[lang]/opengraph-image": ["./assets/fonts/*.ttf"],
+  },
+  async redirects() {
+    return [
+      // The routed form of the Polish edition is never a public address (share images excepted:
+      // Next.js links them by the routed path).
+      { source: "/pl", destination: "/", permanent: true },
+      { source: "/pl/:path((?!.*opengraph-image).*)", destination: "/:path", permanent: true },
+      // dziader.si/si reads well, but the language code is sl.
+      { source: "/si", destination: "/sl", permanent: true },
+      { source: "/si/:path*", destination: "/sl/:path*", permanent: true },
+      // The front door follows a reader's choice of edition, or a browser that asks for Slovenian first.
+      // Deeper pages never redirect: shared links and search engines get the page they asked for.
+      { source: "/", has: [{ type: "cookie", key: "jezyk", value: "sl" }], destination: "/sl", permanent: false },
+      {
+        source: "/",
+        has: [{ type: "header", key: "accept-language", value: "sl(?:-[A-Za-z]+)?(?:[,;].*)?" }],
+        missing: [{ type: "cookie", key: "jezyk" }],
+        destination: "/sl",
+        permanent: false,
+      },
+    ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [],
+      // After public files and static routes (robots.txt, /api, /auth), before the dynamic [lang] tree.
+      afterFiles: [
+        ...slovenianRewrites(),
+        { source: "/", destination: "/pl" },
+        { source: `/:path((?!${NOT_POLISH}).*)`, destination: "/pl/:path" },
+      ],
+      fallback: [],
+    };
   },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
-      ...["/grupy/:path*", "/grupa/:path*", "/wynik/:path*", "/profil/zapisz/:path*"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }] })),
-      { source: "/test", headers: [{ key: "Referrer-Policy", value: "no-referrer" }] },
+      ...PRIVATE.map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }] })),
+      ...["/test", "/sl/test"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }] })),
       ...EMBEDDABLE.map((source) => ({
         source,
         headers: [{ key: "Cross-Origin-Resource-Policy", value: "cross-origin" }],

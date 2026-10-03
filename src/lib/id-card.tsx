@@ -1,26 +1,65 @@
 import { ImageResponse } from "next/og";
 import { Binoculars, BLUE, Figure, GREY, RED } from "@/components/pictograms";
 import { SPECIES } from "@/content/species";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { C, OG_FONTS, OgMark, OgSeal, bold, italic, sans } from "./og";
 import type { Profile } from "./profile";
+import { siteCopy } from "./site";
 import { svgDataUri } from "./svg-string";
 import { DIAGNOSABLE } from "./test";
 
 /*
- * Legitymacja Obserwatora Terenowego: the member card of the Profil Dziaderski, as a PNG.
+ * Legitymacja Obserwatora Terenowego (Izkaznica terenskega opazovalca): the member card of the
+ * Profil Dziaderski, as a PNG, in the edition it is downloaded from.
  * Shaped like a Polish ID card (85.6 × 54 mm), with guilloche lines, a passport-style
  * pictogram, the seal and up to six earned badges as stamps.
  */
 
 export const ID_CARD = { width: 1240, height: 800 };
 
-/** The rank printed on the card, from the observation log. */
-export function rankFor(observed: number) {
-  if (observed >= 20) return "Obserwator honorowy";
-  if (observed >= 10) return "Starszy obserwator terenowy";
-  if (observed >= 5) return "Obserwator terenowy";
-  if (observed >= 1) return "Obserwator-stażysta";
-  return "Kandydat na obserwatora";
+const COPY = defineCopy({
+  pl: {
+    /** From the most observations down: 20, 10, 5, 1, none. */
+    ranks: ["Obserwator honorowy", "Starszy obserwator terenowy", "Obserwator terenowy", "Obserwator-stażysta", "Kandydat na obserwatora"],
+    title: "Legitymacja Obserwatora Terenowego",
+    photo: "Zdjęcie zgodne z rzeczywistością",
+    anonymous: "Obserwator bez pseudonimu",
+    nickname: "Pseudonim",
+    rank: "Stopień",
+    log: "Dziennik obserwacji",
+    collection: "Kolekcja z testu",
+    badges: "Odznaki",
+    of: (count: number, total: number) => `${count} z ${total}`,
+    noBadges: "Odznaki w drodze. Instytut wierzy w okaziciela.",
+    issued: (date: string) => `Wydano: ${date}`,
+    terms: "Ważna do odwołania. Okaziciel ma prawo obserwować, nie ma prawa komentować cudzego grilla.",
+  },
+  sl: {
+    ranks: ["Častni opazovalec", "Višji terenski opazovalec", "Terenski opazovalec", "Opazovalec pripravnik", "Kandidat za opazovalca"],
+    title: "Izkaznica terenskega opazovalca",
+    photo: "Slika ustreza dejanskemu stanju",
+    anonymous: "Opazovalec brez psevdonima",
+    nickname: "Psevdonim",
+    rank: "Naziv",
+    log: "Dnevnik opazovanj",
+    collection: "Zbirka iz testa",
+    badges: "Značke",
+    of: (count: number, total: number) => `${count} od ${total}`,
+    noBadges: "Značke so na poti. Inštitut verjame v imetnika.",
+    issued: (date: string) => `Izdano: ${date}`,
+    terms: "Velja do preklica. Imetnik sme opazovati, ne sme pa komentirati tujega žara.",
+  },
+});
+
+/** The rank printed on the card, from the observation log: stażysta → honorowy. */
+export function rankFor(observed: number, locale: Locale) {
+  const [honorary, senior, field, trainee, candidate] = COPY[locale].ranks;
+  if (observed >= 20) return honorary;
+  if (observed >= 10) return senior;
+  if (observed >= 5) return field;
+  if (observed >= 1) return trainee;
+  return candidate;
 }
 
 /** A stable card number from the account id, without revealing it. */
@@ -55,9 +94,11 @@ function Field({ label, value, large }: { label: string; value: string; large?: 
   );
 }
 
-export function idCardImage(profile: Profile, id: string, issued: string, headers?: Record<string, string>) {
+/** The card in an edition; `profile` is built in the same locale, so the badges are in its words. */
+export function idCardImage(profile: Profile, id: string, issued: string, headers: Record<string, string> | undefined, locale: Locale) {
+  const t = COPY[locale];
   const earned = profile.badges.filter((badge) => badge.earned);
-  const name = profile.nickname || "Obserwator bez pseudonimu";
+  const name = profile.nickname || t.anonymous;
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: C.paper }}>
@@ -79,8 +120,8 @@ export function idCardImage(profile: Profile, id: string, issued: string, header
             <div style={{ display: "flex", alignItems: "center" }}>
               <OgMark size={46} color={C.paper} cutout={C.ink} />
               <div style={{ display: "flex", flexDirection: "column", marginLeft: 18 }}>
-                <div style={{ ...bold, display: "flex", fontSize: 30, lineHeight: 1 }}>Legitymacja Obserwatora Terenowego</div>
-                <div style={{ ...sans, display: "flex", marginTop: 6, fontSize: 17, color: "#cec6b6" }}>Instytut Badań nad Dziaderstwem · dziader.si</div>
+                <div style={{ ...bold, display: "flex", fontSize: 30, lineHeight: 1 }}>{t.title}</div>
+                <div style={{ ...sans, display: "flex", marginTop: 6, fontSize: 17, color: "#cec6b6" }}>{`${siteCopy(locale).institute} · dziader.si`}</div>
               </div>
             </div>
             <div style={{ ...sans, display: "flex", fontSize: 22 }}>{cardNumber(id)}</div>
@@ -92,20 +133,20 @@ export function idCardImage(profile: Profile, id: string, issued: string, header
               <div style={{ display: "flex", border: `2px solid ${C.ink}` }}>
                 <img src={portrait} width={286} height={352} alt="" />
               </div>
-              <div style={{ ...sans, display: "flex", marginTop: 10, fontSize: 15, color: C.soft }}>Zdjęcie zgodne z rzeczywistością</div>
+              <div style={{ ...sans, display: "flex", marginTop: 10, fontSize: 15, color: C.soft }}>{t.photo}</div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", flex: 1, marginLeft: 44 }}>
-              <Field label="Pseudonim" value={name} large />
-              <Field label="Stopień" value={rankFor(profile.observed.size)} />
+              <Field label={t.nickname} value={name} large />
+              <Field label={t.rank} value={rankFor(profile.observed.size, locale)} />
               <div style={{ display: "flex" }}>
                 <div style={{ display: "flex", width: 250 }}>
-                  <Field label="Dziennik obserwacji" value={`${profile.observed.size} z ${SPECIES.length}`} />
+                  <Field label={t.log} value={t.of(profile.observed.size, SPECIES.length)} />
                 </div>
                 <div style={{ display: "flex", width: 220 }}>
-                  <Field label="Kolekcja z testu" value={`${profile.collected.size} z ${DIAGNOSABLE.length}`} />
+                  <Field label={t.collection} value={t.of(profile.collected.size, DIAGNOSABLE.length)} />
                 </div>
-                <Field label="Odznaki" value={`${earned.length} z ${profile.badges.length}`} />
+                <Field label={t.badges} value={t.of(earned.length, profile.badges.length)} />
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", marginTop: 22, maxWidth: 760 }}>
                 {earned.slice(0, 6).map((badge, i) => (
@@ -125,7 +166,7 @@ export function idCardImage(profile: Profile, id: string, issued: string, header
                   </div>
                 ))}
                 {earned.length === 0 && (
-                  <div style={{ ...italic, display: "flex", fontSize: 22, color: C.soft }}>Odznaki w drodze. Instytut wierzy w okaziciela.</div>
+                  <div style={{ ...italic, display: "flex", fontSize: 22, color: C.soft }}>{t.noBadges}</div>
                 )}
               </div>
             </div>
@@ -133,8 +174,8 @@ export function idCardImage(profile: Profile, id: string, issued: string, header
 
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", padding: "0 40px 28px 40px" }}>
             <div style={{ ...sans, display: "flex", flexDirection: "column", fontSize: 17, color: C.soft }}>
-              <span>Wydano: {issued}</span>
-              <span>Ważna do odwołania. Okaziciel ma prawo obserwować, nie ma prawa komentować cudzego grilla.</span>
+              <span>{t.issued(issued)}</span>
+              <span>{t.terms}</span>
             </div>
           </div>
           <div style={{ display: "flex", position: "absolute", right: 46, bottom: 66 }}>

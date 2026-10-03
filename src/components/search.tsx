@@ -1,46 +1,84 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import type { SpeciesKey } from "@/content/species";
-import { search, SEARCH_KINDS, SUGGESTIONS, type SearchEntry, type SearchKind } from "@/lib/search";
+import { useLocale } from "@/i18n/client";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
+import { localizePath } from "@/i18n/routes";
+import { search, searchKinds, searchSuggestions, type SearchEntry, type SearchKind } from "@/lib/search";
 import { tally } from "@/lib/tally";
 import { cx, typo } from "@/lib/typo";
 import { MenuIcon } from "./menu-icons";
 import { SpeciesPlate } from "./pictograms";
 
+const COPY = defineCopy({
+  pl: {
+    notFound: (query: string) => `Instytut nie znalazł „${query}”. Może jest w szufladzie ze wszystkim, pod instrukcją od tostera.`,
+    prompt: "Czego szukamy? Na przykład:",
+    search: "Szukaj",
+    searchKey: "Szukaj ( / )",
+    dialog: "Wyszukiwarka Instytutu",
+    placeholder: "Szukaj gatunku, hasła, sprawy…",
+    results: "Wyniki",
+    loading: "Instytut przegląda kartoteki…",
+    all: (query: string) => `Wszystkie wyniki dla „${query}” →`,
+    query: "Zapytanie",
+    pagePlaceholder: "np. parawan, „za moich czasów”, kolejka",
+    found: (count: number) => `Znaleziono: ${count}`,
+    empty: "Wpisz słowo albo wybierz jedno z poniższych.",
+  },
+  sl: {
+    notFound: (query: string) => `Inštitut ni našel »${query}«. Morda je v predalu z vsem mogočim, pod navodili za toaster.`,
+    prompt: "Kaj iščemo? Na primer:",
+    search: "Išči",
+    searchKey: "Išči ( / )",
+    dialog: "Iskalnik Inštituta",
+    placeholder: "Išči vrsto, geslo, primer …",
+    results: "Zadetki",
+    loading: "Inštitut prebira kartoteke …",
+    all: (query: string) => `Vsi zadetki za »${query}« →`,
+    query: "Poizvedba",
+    pagePlaceholder: "npr. vetrobran, »v mojih časih«, vrsta",
+    found: (count: number) => `Najdeno: ${count}`,
+    empty: "Vpiši besedo ali izberi eno od spodnjih.",
+  },
+});
+
 /*
- * The index is fetched once, on the first open, and kept for the rest of the visit.
+ * The edition's index is fetched once, on the first open, and kept for the rest of the visit.
  */
 
-let index: SearchEntry[] | null = null;
-let loading: Promise<void> | null = null;
+const indexes: Partial<Record<Locale, SearchEntry[]>> = {};
+const loading: Partial<Record<Locale, Promise<void>>> = {};
 const listeners = new Set<() => void>();
 
-function loadIndex() {
-  loading ??= fetch("/szukaj/indeks.json")
+function loadIndex(locale: Locale) {
+  loading[locale] ??= fetch(localizePath("/szukaj/indeks.json", locale))
     .then((response) => response.json() as Promise<SearchEntry[]>)
     .then((entries) => {
-      index = entries;
+      indexes[locale] = entries;
       listeners.forEach((listener) => listener());
     })
     .catch(() => {
-      loading = null;
+      delete loading[locale];
     });
-  return loading;
+  return loading[locale];
 }
 
 function useIndex() {
+  const locale = useLocale();
   return useSyncExternalStore(
     (listener) => {
       listeners.add(listener);
-      void loadIndex();
+      void loadIndex(locale);
       return () => {
         listeners.delete(listener);
       };
     },
-    () => index,
+    () => indexes[locale] ?? null,
     () => null,
   );
 }
@@ -61,6 +99,7 @@ function ResultIcon({ entry }: { entry: SearchEntry }) {
 }
 
 function Result({ entry, active, id, onPick }: { entry: SearchEntry; active?: boolean; id?: string; onPick?: () => void }) {
+  const locale = useLocale();
   return (
     <Link
       id={id}
@@ -79,7 +118,7 @@ function Result({ entry, active, id, onPick }: { entry: SearchEntry; active?: bo
       <span className="min-w-0">
         <span className="flex items-baseline justify-between gap-4">
           <span className={cx("truncate font-bold leading-tight", active ? "text-red" : "group-hover:text-red")}>{entry.t}</span>
-          <span className="label hidden shrink-0 text-[0.75rem] text-ink-faint sm:inline">{SEARCH_KINDS[entry.k]}</span>
+          <span className="label hidden shrink-0 text-[0.75rem] text-ink-faint sm:inline">{searchKinds(locale)[entry.k]}</span>
         </span>
         <span className="mt-0.5 block truncate font-sans text-[0.85rem] text-ink-soft">{entry.s}</span>
       </span>
@@ -88,15 +127,13 @@ function Result({ entry, active, id, onPick }: { entry: SearchEntry; active?: bo
 }
 
 function NoResults({ query, onSuggest }: { query: string; onSuggest: (value: string) => void }) {
+  const locale = useLocale();
+  const t = COPY[locale];
   return (
     <div className="px-4 py-6">
-      <p className="leading-snug">
-        {query
-          ? typo(`Instytut nie znalazł „${query}”. Może jest w szufladzie ze wszystkim, pod instrukcją od tostera.`)
-          : "Czego szukamy? Na przykład:"}
-      </p>
+      <p className="leading-snug">{query ? typo(t.notFound(query)) : t.prompt}</p>
       <p className="mt-3 flex flex-wrap gap-2">
-        {SUGGESTIONS.map((suggestion) => (
+        {searchSuggestions(locale).map((suggestion) => (
           <button
             key={suggestion}
             type="button"
@@ -124,16 +161,19 @@ function SearchGlyph({ className }: { className?: string }) {
 
 /** The magnifier in the header and in the phone menu row. */
 export function SearchButton({ className, label }: { className?: string; label?: boolean }) {
+  const t = COPY[useLocale()];
   return (
-    <button type="button" onClick={openSearch} className={className} aria-label="Szukaj" title="Szukaj ( / )">
+    <button type="button" onClick={openSearch} className={className} aria-label={t.search} title={t.searchKey}>
       <SearchGlyph className="w-5" />
-      {label && <span>Szukaj</span>}
+      {label && <span>{t.search}</span>}
     </button>
   );
 }
 
 /** The search dialog, opened with the magnifier, "/" or Ctrl+K. Mounted once, in the header. */
 export function SearchDialog() {
+  const locale = useLocale();
+  const t = COPY[locale];
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -142,7 +182,7 @@ export function SearchDialog() {
   const input = useRef<HTMLInputElement>(null);
   const listId = useId();
   const entries = useIndex();
-  const results = entries && open ? search(entries, query, 8) : [];
+  const results = entries && open ? search(entries, query, locale, 8) : [];
 
   const [lastPath, setLastPath] = useState(pathname);
   if (pathname !== lastPath) {
@@ -152,7 +192,7 @@ export function SearchDialog() {
 
   useEffect(() => {
     const show = () => {
-      void loadIndex();
+      void loadIndex(locale);
       setOpen(true);
       setActive(0);
     };
@@ -169,7 +209,7 @@ export function SearchDialog() {
       window.removeEventListener("ibd:szukaj", show);
       window.removeEventListener("keydown", onKey);
     };
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (!open) return;
@@ -197,13 +237,13 @@ export function SearchDialog() {
       event.preventDefault();
       const chosen = results[active];
       tally("szukaj");
-      router.push(chosen ? chosen.h : `/szukaj?q=${encodeURIComponent(query)}`);
+      router.push(localizePath(chosen ? chosen.h : `/szukaj?q=${encodeURIComponent(query)}`, locale));
       setOpen(false);
     }
   }
 
   return (
-    <div className="fixed inset-0 z-[60] print:hidden" role="dialog" aria-modal="true" aria-label="Wyszukiwarka Instytutu">
+    <div className="fixed inset-0 z-[60] print:hidden" role="dialog" aria-modal="true" aria-label={t.dialog}>
       <div className="absolute inset-0 bg-ink/20" aria-hidden="true" onClick={() => setOpen(false)} />
       <div className="relative mx-4 mt-[8vh] max-w-2xl border border-ink bg-paper sm:mx-auto">
         <div className="flex items-center gap-3 border-b border-ink px-4">
@@ -221,16 +261,16 @@ export function SearchDialog() {
             aria-controls={listId}
             aria-activedescendant={results[active] ? `${listId}-${active}` : undefined}
             aria-autocomplete="list"
-            placeholder="Szukaj gatunku, hasła, sprawy…"
+            placeholder={t.placeholder}
             className="min-w-0 flex-1 bg-transparent py-4 font-serif text-xl placeholder:text-ink/30 focus-visible:outline-none"
           />
           <button type="button" onClick={() => setOpen(false)} className="label shrink-0 py-2 text-ink-soft hover:text-red">
             Esc
           </button>
         </div>
-        <div id={listId} role="listbox" aria-label="Wyniki" className="max-h-[60vh] overflow-y-auto">
+        <div id={listId} role="listbox" aria-label={t.results} className="max-h-[60vh] overflow-y-auto">
           {!entries ? (
-            <p className="label px-4 py-6 text-ink-soft">Instytut przegląda kartoteki…</p>
+            <p className="label px-4 py-6 text-ink-soft">{t.loading}</p>
           ) : results.length ? (
             results.map((entry, i) => (
               <Result key={entry.h} id={`${listId}-${i}`} entry={entry} active={i === active} onPick={() => setOpen(false)} />
@@ -245,7 +285,7 @@ export function SearchDialog() {
             onClick={() => setOpen(false)}
             className="label block border-t border-rule px-4 py-3 text-ink-soft hover:text-red"
           >
-            Wszystkie wyniki dla „{query.trim()}” →
+            {t.all(query.trim())}
           </Link>
         )}
       </div>
@@ -255,24 +295,27 @@ export function SearchDialog() {
 
 /** /szukaj: the same search, full page, with the query in the address. */
 export function SearchPage() {
+  const locale = useLocale();
+  const t = COPY[locale];
+  const kinds = searchKinds(locale);
   const router = useRouter();
   const params = useSearchParams();
   const [query, setQuery] = useState(() => params.get("q") ?? "");
   const entries = useIndex();
-  const results = entries ? search(entries, query, 60) : [];
-  const groups = Object.keys(SEARCH_KINDS)
+  const results = entries ? search(entries, query, locale, 60) : [];
+  const groups = Object.keys(kinds)
     .map((kind) => ({ kind: kind as SearchKind, items: results.filter((entry) => entry.k === kind) }))
     .filter((group) => group.items.length);
 
   function update(value: string) {
     setQuery(value);
-    router.replace(value.trim() ? `/szukaj?q=${encodeURIComponent(value.trim())}` : "/szukaj", { scroll: false });
+    router.replace(localizePath(value.trim() ? `/szukaj?q=${encodeURIComponent(value.trim())}` : "/szukaj", locale), { scroll: false });
   }
 
   return (
     <div>
       <label htmlFor="zapytanie" className="label text-ink-soft">
-        Zapytanie
+        {t.query}
       </label>
       <div className="mt-2 flex items-center gap-3 border-b-2 border-ink">
         <SearchGlyph className="w-6 shrink-0 text-ink-soft" />
@@ -282,12 +325,12 @@ export function SearchPage() {
           autoFocus
           value={query}
           onChange={(event) => update(event.target.value)}
-          placeholder="np. parawan, „za moich czasów”, kolejka"
+          placeholder={t.pagePlaceholder}
           className="min-w-0 flex-1 bg-transparent py-3 font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-bold placeholder:font-normal placeholder:text-ink/25 focus-visible:outline-none"
         />
       </div>
       <p className="label mt-3 text-ink-soft" aria-live="polite">
-        {!entries ? "Instytut przegląda kartoteki…" : query.trim() ? `Znaleziono: ${results.length}` : "Wpisz słowo albo wybierz jedno z poniższych."}
+        {!entries ? t.loading : query.trim() ? t.found(results.length) : t.empty}
       </p>
 
       {entries && results.length === 0 ? (
@@ -297,9 +340,9 @@ export function SearchPage() {
       ) : (
         <div className="mt-10 space-y-12">
           {groups.map((group) => (
-            <section key={group.kind} aria-label={SEARCH_KINDS[group.kind]}>
+            <section key={group.kind} aria-label={kinds[group.kind]}>
               <h2 className="label flex justify-between border-b border-ink pb-2 text-ink-soft">
-                <span>{SEARCH_KINDS[group.kind]}</span>
+                <span>{kinds[group.kind]}</span>
                 <span>{group.items.length}</span>
               </h2>
               <ul>

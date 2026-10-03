@@ -1,26 +1,40 @@
 import type { MetadataRoute } from "next";
-import { CASES } from "@/content/cases";
-import { DICTIONARY } from "@/content/dictionary";
-import { REPORTS } from "@/content/reports";
-import { SPECIES } from "@/content/species";
+import { getCases } from "@/content/cases";
+import { getDictionary } from "@/content/dictionary";
+import { getReports } from "@/content/reports";
+import { getSpecies } from "@/content/species";
+import { LOCALES, type Locale } from "@/i18n/config";
+import { absoluteUrl, languageAlternates } from "@/lib/seo";
 import { site } from "@/lib/site";
 
+type Entry = MetadataRoute.Sitemap[number];
+
+/** Both editions of every public page, each listing its twin (hreflang) so search engines pair them. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const page = (path: string, changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"], priority: number) => ({
-    url: `${site.url}${path}`,
+  return LOCALES.flatMap((locale) => pages(locale));
+}
+
+function pages(locale: Locale): MetadataRoute.Sitemap {
+  const page = (path: string, changeFrequency: Entry["changeFrequency"], priority: number): Entry => ({
+    url: absoluteUrl(path, locale),
     changeFrequency,
     priority,
+    alternates: {
+      languages: Object.fromEntries(
+        Object.entries(languageAlternates(path, locale)).map(([language, href]) => [language, `${site.url}${href === "/" ? "" : href}`]),
+      ),
+    },
   });
 
   return [
-    page("", "daily", 1),
+    page("/", "daily", 1),
     page("/test", "monthly", 0.9),
     page("/atlas", "weekly", 0.8),
-    ...SPECIES.map((species) => page(`/atlas/${species.slug}`, "monthly", 0.7)),
+    ...getSpecies(locale).map((species) => page(`/atlas/${species.slug}`, "monthly", 0.7)),
     page("/slownik", "weekly", 0.7),
-    ...DICTIONARY.map((entry) => page(`/slownik/${entry.slug}`, "monthly", 0.6)),
+    ...getDictionary(locale).map((entry) => page(`/slownik/${entry.slug}`, "monthly", 0.6)),
     page("/raporty", "monthly", 0.7),
-    ...REPORTS.map((report) => ({
+    ...getReports(locale).map((report) => ({
       ...page(`/raporty/${report.slug}`, "yearly", 0.6),
       lastModified: report.date,
     })),
@@ -31,7 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/statystyki", "hourly", 0.6),
     page("/egzamin", "monthly", 0.7),
     page("/czy-to-juz-dziaderstwo", "weekly", 0.8),
-    ...CASES.map((item) => page(`/czy-to-juz-dziaderstwo/${item.slug}`, "monthly", 0.6)),
+    ...getCases(locale).map((item) => page(`/czy-to-juz-dziaderstwo/${item.slug}`, "monthly", 0.6)),
     page("/obserwacje", "hourly", 0.6),
     page("/tablica-honorowa", "daily", 0.6),
     page("/kalendarz", "daily", 0.7),

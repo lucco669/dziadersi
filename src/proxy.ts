@@ -34,6 +34,8 @@ export const config = {
   matcher: [
     "/profil/:path*",
     "/konto",
+    "/sl/profil/:path*",
+    "/sl/racun",
     "/auth/:path*",
     "/api/wyniki",
     "/api/konto",

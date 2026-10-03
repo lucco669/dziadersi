@@ -1,55 +1,100 @@
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import type { ExamResult } from "@/lib/exam";
+import { siteCopy } from "@/lib/site";
 import { cx, typo } from "@/lib/typo";
 import { Seal, Stamp } from "./brand";
 import { Figure } from "./pictograms";
+
+const COPY = defineCopy({
+  pl: {
+    protocol: "Protokół",
+    title: "Zaświadczenie",
+    body: "o zdaniu egzaminu terenowego z oznaczania gatunków dziadersów występujących w Polsce, ze stopniem",
+    correct: (points: number) => `${points} z 12 oznaczeń poprawnych`,
+    sample: "Wzór",
+    rights: "Uprawnienia",
+    signature: "podpis nieczytelny",
+    chair: ["Przewodniczący Komisji", "Egzaminacyjnej IBD"],
+    date: "Data egzaminu",
+    caption: (grade: string, points: number) => `Zaświadczenie o zdaniu egzaminu terenowego: stopień ${grade}, ${points} z 12.`,
+  },
+  sl: {
+    protocol: "Zapisnik",
+    title: "Potrdilo",
+    body: "o opravljenem terenskem izpitu iz določanja vrst dziadersov, ki živijo na Poljskem, z oceno",
+    correct: (points: number) => `${points} od 12 pravilnih določitev`,
+    sample: "Vzorec",
+    rights: "Naziv",
+    signature: "nečitljiv podpis",
+    chair: ["Predsednik Izpitne", "komisije IBD"],
+    date: "Datum izpita",
+    caption: (grade: string, points: number) => `Potrdilo o opravljenem terenskem izpitu: ocena ${grade}, ${points} od 12.`,
+  },
+});
 
 /**
  * Zaświadczenie o zdaniu egzaminu terenowego. Grades five and six get the red stripe,
  * as a Polish school certificate does for a distinction.
  */
-export function ExamCertificate({ result, sample, className }: { result: ExamResult; sample?: boolean; className?: string }) {
+export function ExamCertificate({
+  result,
+  locale,
+  sample,
+  className,
+}: {
+  /** Evaluated in the same edition. */
+  result: ExamResult;
+  locale: Locale;
+  sample?: boolean;
+  className?: string;
+}) {
+  const t = COPY[locale];
   const distinction = result.grade.value >= 5;
   return (
     <figure className={cx("relative mx-auto w-full max-w-[34rem] overflow-hidden bg-card p-2 text-ink", className)}>
       {distinction && <div aria-hidden="true" className="absolute -left-20 top-4 h-6 w-56 -rotate-45 bg-red md:-left-16 md:top-12 md:h-7" />}
       <div className="relative border border-ink px-6 pb-6 pt-6 text-center md:px-10 md:pb-8">
         <p className="label text-[0.75rem] text-ink-soft">
-          Instytut Badań nad Dziaderstwem <span className="block sm:inline">· Protokół {result.number}</span>
+          {siteCopy(locale).institute}{" "}
+          <span className="block sm:inline">
+            · {t.protocol} {result.number}
+          </span>
         </p>
-        <p className="mt-7 text-[clamp(1.7rem,3.6vw,2.3rem)] font-bold leading-none tracking-[-0.01em]">Zaświadczenie</p>
-        <p className="mx-auto mt-4 max-w-sm italic leading-relaxed text-ink-soft">
-          {typo("o zdaniu egzaminu terenowego z oznaczania gatunków dziadersów występujących w Polsce, ze stopniem")}
-        </p>
+        <p className="mt-7 text-[clamp(1.7rem,3.6vw,2.3rem)] font-bold leading-none tracking-[-0.01em]">{t.title}</p>
+        <p className="mx-auto mt-4 max-w-sm italic leading-relaxed text-ink-soft">{typo(t.body)}</p>
         <div className="relative mt-3 flex items-center justify-center gap-5">
           <span className="text-[clamp(5rem,12vw,7rem)] font-bold leading-none tabular-nums">{result.grade.value}</span>
           <span className="text-left">
             <span className="block text-[1.6rem] font-bold leading-tight">{result.grade.name}</span>
-            <span className="label block text-ink-soft">{result.points} z 12 oznaczeń poprawnych</span>
+            <span className="label block text-ink-soft">{t.correct(result.points)}</span>
           </span>
-          {sample && <Stamp className="absolute right-0 top-1/2 -translate-y-1/2 rotate-[-12deg] bg-card/70">Wzór</Stamp>}
+          {sample && <Stamp className="absolute right-0 top-1/2 -translate-y-1/2 rotate-[-12deg] bg-card/70">{t.sample}</Stamp>}
         </div>
-        <p className="label mt-6 text-ink-soft">Uprawnienia</p>
+        <p className="label mt-6 text-ink-soft">{t.rights}</p>
         <p className="mt-1 text-balance text-[1.45rem] font-bold leading-tight">{result.grade.title}</p>
         <div className="mt-8 flex items-end justify-between gap-6 text-left">
-          <Seal className="size-24 shrink-0 rotate-[-10deg] text-red md:size-28" />
+          <Seal locale={locale} className="size-24 shrink-0 rotate-[-10deg] text-red md:size-28" />
           <svg viewBox="-4 -1 48 97" className="h-24 shrink-0" aria-hidden="true">
             <Figure right="point" glasses="eyes" hat="bucket" />
           </svg>
           <div className="w-full max-w-[11rem]">
-            <p className="text-[1.4rem] italic leading-none">podpis nieczytelny</p>
+            <p className="text-[1.4rem] italic leading-none">{t.signature}</p>
             <p className="label mt-2 border-t border-ink pt-2 text-[0.72rem] leading-snug text-ink-soft">
-              Przewodniczący Komisji
+              {t.chair[0]}
               <br />
-              Egzaminacyjnej IBD
+              {t.chair[1]}
             </p>
           </div>
         </div>
         <p className="label mt-6 flex justify-between gap-4 border-t border-rule pt-3 text-left text-[0.75rem] text-ink-soft">
-          <span>Data egzaminu: {result.date}</span>
+          <span>
+            {t.date}: {result.date}
+          </span>
           <span>dziader.si</span>
         </p>
       </div>
-      <figcaption className="sr-only">{`Zaświadczenie o zdaniu egzaminu terenowego: stopień ${result.grade.name}, ${result.points} z 12.`}</figcaption>
+      <figcaption className="sr-only">{t.caption(result.grade.name, result.points)}</figcaption>
     </figure>
   );
 }

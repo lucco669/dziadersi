@@ -2,14 +2,30 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { WordsTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { packWords } from "@/lib/test";
 import { cx } from "@/lib/typo";
 import { Countdown, keyIndex, LETTERS, shuffled, useKeys, useLater, useReducedMotion, type TaskProps } from "./shared";
 
 const SECONDS = 5;
 
+const COPY = defineCopy({
+  pl: {
+    count: (word: number, total: number) => `Słowo ${word} z ${total}`,
+    late: "Instytut odnotował wahanie.",
+    group: (word: string) => `Skojarzenie ze słowem ${word}`,
+  },
+  sl: {
+    count: (word: number, total: number) => `Beseda ${word} od ${total}`,
+    late: "Inštitut je zabeležil oklevanje.",
+    group: (word: string) => `Asociacija na besedo ${word}`,
+  },
+});
+
 /** Word association: one word at a time, a few seconds each. Hesitation is noted, not punished. */
 export function WordsView({ task, seed, onAnswer, untimed }: TaskProps<WordsTask>) {
+  const t = COPY[useLocale()];
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number[]>([]);
   const [chosen, setChosen] = useState<number | null>(null);
@@ -54,17 +70,15 @@ export function WordsView({ task, seed, onAnswer, untimed }: TaskProps<WordsTask
   return (
     <div className="mx-auto max-w-2xl">
       <p className="label flex justify-between text-ink-soft" aria-live="polite">
-        <span>
-          Słowo {index + 1} z {task.words.length}
-        </span>
-        <span className={cx("transition-opacity", late ? "text-red opacity-100" : "opacity-0")}>{late ? "Instytut odnotował wahanie." : ""}</span>
+        <span>{t.count(index + 1, task.words.length)}</span>
+        <span className={cx("transition-opacity", late ? "text-red opacity-100" : "opacity-0")}>{late ? t.late : ""}</span>
       </p>
       <div key={index} className="animate-question-in">
         <p className="mt-6 text-center text-[clamp(3.5rem,13vw,7.5rem)] font-bold uppercase leading-none tracking-[0.04em]">
           {word.word}
         </p>
         <div className="mt-8">{!reduced && <Countdown key={index} seconds={SECONDS} late={late} />}</div>
-        <div role="group" aria-label={`Skojarzenie ze słowem ${word.word}`} className="mt-8 grid gap-3 sm:grid-cols-2">
+        <div role="group" aria-label={t.group(word.word)} className="mt-8 grid gap-3 sm:grid-cols-2">
           {order.map((option, position) => (
             <button
               key={option}

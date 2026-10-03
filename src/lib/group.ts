@@ -1,10 +1,29 @@
-import { SPECIES } from "@/content/species";
+import type { Species } from "@/content/species";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { compatibility, decodeGroup, encodeResult, evaluate, SAMPLE_DRAFT, type Result, type Symptom } from "./test";
 
 export type Member = { result: Result; label: string; order: number };
 
-/** A ranking from its URL segment; `normalized` drops duplicates and rejected names. */
-export function loadGroup(segment: string) {
+const COPY = defineCopy({
+  pl: {
+    unnamed: (number: number) => `Osoba badana nr ${number}`,
+    ideal: "Para idealna. Mogą razem jeździć na działkę i nie rozmawiać przez cały dzień.",
+    high: "Zgodność wysoka. Spory dotyczą tylko tego, kiedy przewrócić karkówkę.",
+    moderate: "Zgodność umiarkowana. Na Wigilii posadzić na przeciwnych końcach stołu.",
+    low: "Zgodność niska. Nie wysyłać razem do marketu budowlanego.",
+  },
+  sl: {
+    unnamed: (number: number) => `Preiskovana oseba št. ${number}`,
+    ideal: "Idealen par. Lahko skupaj hodita na vrtiček in ves dan ne spregovorita besede.",
+    high: "Visoka združljivost. Sporita se le o tem, kdaj obrniti vratovino.",
+    moderate: "Zmerna združljivost. Na sveti večer ju posaditi na nasprotna konca mize.",
+    low: "Nizka združljivost. Ne pošiljati ju skupaj v železnino.",
+  },
+});
+
+/** A ranking from its URL segment, in the edition's language; `normalized` drops duplicates and rejected names. */
+export function loadGroup(segment: string, locale: Locale) {
   let requested = segment;
   try {
     requested = decodeURIComponent(segment);
@@ -14,8 +33,8 @@ export function loadGroup(segment: string) {
   const drafts = decodeGroup(requested);
   if (!drafts) return null;
   const members: Member[] = drafts.map((draft, i) => {
-    const result = evaluate(draft);
-    return { result, label: result.name || `Osoba badana nr ${i + 1}`, order: i };
+    const result = evaluate(draft, locale);
+    return { result, label: result.name || COPY[locale].unnamed(i + 1), order: i };
   });
   return { requested, normalized: members.map((member) => member.result.code).join("."), members };
 }
@@ -40,22 +59,25 @@ export function sharedFindings(a: Result, b: Result): Symptom[] {
   );
 }
 
-/** The species diagnosed most often in a group, first species of hybrids included. */
+/** The species diagnosed most often in a group, first species of hybrids included, as the members' results name it. */
 export function dominantSpecies(members: Member[]) {
   const counts = new Map<string, number>();
   for (const member of members) {
     for (const species of member.result.diagnosis.species) counts.set(species.key, (counts.get(species.key) ?? 0) + 1);
   }
   const [key, count] = [...counts].sort((a, b) => b[1] - a[1])[0] ?? [];
-  const species = SPECIES.find((item) => item.key === key);
+  const species: Species | undefined = members
+    .flatMap((member) => member.result.diagnosis.species)
+    .find((item) => item.key === key);
   return species && count ? { species, count } : null;
 }
 
-export function compatibilityNote(value: number) {
-  if (value >= 85) return "Para idealna. Mogą razem jeździć na działkę i nie rozmawiać przez cały dzień.";
-  if (value >= 65) return "Zgodność wysoka. Spory dotyczą tylko tego, kiedy przewrócić karkówkę.";
-  if (value >= 45) return "Zgodność umiarkowana. Na Wigilii posadzić na przeciwnych końcach stołu.";
-  return "Zgodność niska. Nie wysyłać razem do marketu budowlanego.";
+export function compatibilityNote(value: number, locale: Locale) {
+  const t = COPY[locale];
+  if (value >= 85) return t.ideal;
+  if (value >= 65) return t.high;
+  if (value >= 45) return t.moderate;
+  return t.low;
 }
 
 /** The prerendered sample: two respondents. */

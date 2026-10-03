@@ -1,20 +1,32 @@
-import { OCCASIONS } from "@/content/bingo";
-import { CASE_CATEGORIES, CASES, docket } from "@/content/cases";
-import { DICTIONARY } from "@/content/dictionary";
-import { SITUATIONS } from "@/content/phrasebook";
-import { REPORTS } from "@/content/reports";
-import { SPECIES } from "@/content/species";
+import { getOccasions } from "@/content/bingo";
+import { caseCategories, docket, getCases } from "@/content/cases";
+import { getDictionary } from "@/content/dictionary";
+import { getSituations } from "@/content/phrasebook";
+import { getReports } from "@/content/reports";
+import { getSpecies } from "@/content/species";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { sampleCard } from "./bingo";
 import { seededLine } from "./phrasebook";
 import { fold, type SearchEntry } from "./search";
-import { EXTRA_PAGES, SECTIONS } from "./site";
+import { extraPages, sections } from "./site";
+import { quote } from "./typo";
 
 const join = (...parts: (string | string[] | undefined)[]) => fold(parts.flat().filter(Boolean).join(" "));
 
-/** The whole site as a search index. Built at build time; the content files are the source. */
-export function buildSearchIndex(): SearchEntry[] {
+const COPY = defineCopy({
+  pl: { phrasebook: (name: string) => `Rozmówki: ${name.toLowerCase()}` },
+  sl: { phrasebook: (name: string) => `Pogovornik: ${name.toLowerCase()}` },
+});
+
+/**
+ * The whole edition as a search index. Built at build time; the content files are the source.
+ * Links are internal paths with the edition's slugs; the search UI localises them.
+ */
+export function buildSearchIndex(locale: Locale): SearchEntry[] {
+  const categories = caseCategories(locale);
   return [
-    ...[...SECTIONS, ...EXTRA_PAGES].map((section) => ({
+    ...[...sections(locale), ...extraPages(locale)].map((section) => ({
       k: "dzial" as const,
       t: section.label,
       s: section.summary,
@@ -22,7 +34,7 @@ export function buildSearchIndex(): SearchEntry[] {
       x: join(section.label, section.summary),
       i: section.href,
     })),
-    ...SPECIES.map((species) => ({
+    ...getSpecies(locale).map((species) => ({
       k: "gatunek" as const,
       t: species.name,
       s: `${species.latin} · ${species.teaser}`,
@@ -30,39 +42,39 @@ export function buildSearchIndex(): SearchEntry[] {
       x: join(species.name, species.latin, species.code, species.teaser, species.summary, species.description, species.calls, species.symptoms, species.handling, species.habitat, species.activity, species.fieldMarks, species.enemies, species.occasion),
       i: species.key,
     })),
-    ...DICTIONARY.map((entry) => ({
+    ...getDictionary(locale).map((entry) => ({
       k: "haslo" as const,
-      t: `„${entry.headword}”`,
+      t: quote(entry.headword, locale),
       s: entry.senses[0].text,
       h: `/slownik/${entry.slug}`,
-      x: join(entry.headword, entry.senses.map((sense) => sense.text), entry.example, entry.grammar),
+      x: join(entry.headword, entry.original, entry.senses.map((sense) => sense.text), entry.example, entry.grammar),
     })),
-    ...CASES.map((item) => ({
+    ...getCases(locale).map((item) => ({
       k: "sprawa" as const,
       t: item.title,
-      s: `${docket(item)} · ${CASE_CATEGORIES[item.category]}`,
+      s: `${docket(item)} · ${categories[item.category]}`,
       h: `/czy-to-juz-dziaderstwo/${item.slug}`,
-      x: join(item.title, item.facts, item.defence, CASE_CATEGORIES[item.category]),
+      x: join(item.title, item.facts, item.defence, categories[item.category]),
     })),
-    ...REPORTS.map((report) => ({
+    ...getReports(locale).map((report) => ({
       k: "raport" as const,
       t: report.title,
       s: `${report.number} · ${report.lede}`,
       h: `/raporty/${report.slug}`,
       x: join(report.title, report.category, report.lede, report.abstract, report.findings.map((finding) => finding.label)),
     })),
-    ...OCCASIONS.map((occasion) => ({
+    ...getOccasions(locale).map((occasion) => ({
       k: "bingo" as const,
       t: occasion.title,
       s: occasion.intro,
       h: `/bingo/${sampleCard(occasion).code}`,
       x: join(occasion.title, occasion.name, occasion.intro, occasion.squares),
     })),
-    ...SITUATIONS.map((situation, i) => ({
+    ...getSituations(locale).map((situation, i) => ({
       k: "rozmowki" as const,
-      t: `Rozmówki: ${situation.name.toLowerCase()}`,
-      s: `„${situation.claims[0]}”`,
-      h: `/generator/${seededLine(31 + i, situation).code}`,
+      t: COPY[locale].phrasebook(situation.name),
+      s: quote(situation.claims[0], locale),
+      h: `/generator/${seededLine(31 + i, locale, situation).code}`,
       x: join(situation.name, situation.short, situation.claims),
     })),
   ];

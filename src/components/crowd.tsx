@@ -1,5 +1,12 @@
 import { Fragment, useId, type CSSProperties } from "react";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { Figure, GREY, INK } from "./pictograms";
+
+const COPY = defineCopy({
+  pl: { tally: (count: number) => `${count} na 10 osób` },
+  sl: { tally: (count: number) => `${count} od 10 oseb` },
+});
 
 /** A fixed, random-looking order, so the same people turn every time. */
 function shuffled(total: number) {
@@ -64,7 +71,7 @@ export function Crowd({
 }
 
 /** A percentage as ten figures. */
-export function Tally({ percent, className }: { percent: number; className?: string }) {
+export function Tally({ percent, locale, className }: { percent: number; locale: Locale; className?: string }) {
   const count = Math.round(percent / 10);
   return (
     <Crowd
@@ -73,7 +80,7 @@ export function Tally({ percent, className }: { percent: number; className?: str
       columns={10}
       ordered
       className={className}
-      label={`${count} na 10 osób`}
+      label={COPY[locale].tally(count)}
     />
   );
 }

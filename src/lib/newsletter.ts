@@ -1,4 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { localizePath } from "@/i18n/routes";
 import { site } from "./site";
 
 /*
@@ -20,10 +22,18 @@ export function verifyUnsubscribe(id: unknown, token: unknown): id is string {
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
-/** The page with the confirm button, and the one-click endpoint for List-Unsubscribe. */
-export function unsubscribeLinks(id: string, origin = site.url) {
+/**
+ * The page with the confirm button, and the one-click endpoint for List-Unsubscribe, in the reader's
+ * edition: the page at its public path ("/sl/bilten/odjava"), the endpoint with the edition for mail
+ * clients that open it instead of posting to it. Polish links carry no edition.
+ */
+export function unsubscribeLinks(id: string, locale: Locale, origin = site.url) {
   const query = `u=${id}&t=${sign(id)}`;
-  return { page: `${origin}/biuletyn/wypisz?${query}`, oneClick: `${origin}/api/biuletyn/wypisz?${query}` };
+  const edition = locale === DEFAULT_LOCALE ? "" : `&jezyk=${locale}`;
+  return {
+    page: `${origin}${localizePath("/biuletyn/wypisz", locale)}?${query}`,
+    oneClick: `${origin}/api/biuletyn/wypisz?${query}${edition}`,
+  };
 }
 
 /** The Monday of the week a date falls in, as Postgres writes dates: the issue's key. */

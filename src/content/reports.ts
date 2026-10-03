@@ -1,3 +1,7 @@
+import { LOCALE_INFO, LOCALES, type Locale } from "@/i18n/config";
+import { overlayList } from "@/i18n/overlay";
+import { REPORTS as REPORTS_TEXT_SL } from "./sl/reports";
+import { REPORT_SLUGS } from "./sl/slugs/reports";
 import type { SpeciesKey } from "./species";
 
 export type Report = {
@@ -20,6 +24,8 @@ export type Report = {
   conclusions: string[];
   methodology: string;
   species: SpeciesKey[];
+  /** Translator's notes (op. prev.), Slovenian edition only. */
+  notes?: string[];
 };
 
 export const REPORTS: Report[] = [
@@ -525,8 +531,28 @@ export const REPORTS: Report[] = [
   },
 ];
 
-export const reportBySlug = (slug: string) => REPORTS.find((report) => report.slug === slug);
+/* Editions */
 
-const dateFormat = new Intl.DateTimeFormat("pl-PL", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+/** The Slovenian reports: Polish data, Slovenian text and Slovenian slugs. Number, date and species stay. */
+const REPORTS_SL: Report[] = overlayList("reports", REPORTS, (report) => report.slug, REPORTS_TEXT_SL).map((report) => ({
+  ...report,
+  slug: REPORT_SLUGS[report.slug] ?? report.slug,
+}));
 
-export const formatReportDate = (iso: string) => dateFormat.format(new Date(`${iso}T00:00:00Z`));
+const EDITIONS: Record<Locale, Report[]> = { pl: REPORTS, sl: REPORTS_SL };
+
+/** All reports in the edition, newest first, with the edition's own slugs. */
+export const getReports = (locale: Locale) => EDITIONS[locale];
+
+/** A report by its slug in the edition: Polish slug in Polish, Slovenian slug in Slovenian. */
+export const reportBySlug = (slug: string, locale: Locale) => getReports(locale).find((report) => report.slug === slug);
+
+const DATE_FORMATS = Object.fromEntries(
+  LOCALES.map((locale) => [
+    locale,
+    new Intl.DateTimeFormat(LOCALE_INFO[locale].intl, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }),
+  ]),
+) as Record<Locale, Intl.DateTimeFormat>;
+
+/** "1 października 2026" in Polish, "1. oktober 2026" in Slovenian. */
+export const formatReportDate = (iso: string, locale: Locale) => DATE_FORMATS[locale].format(new Date(`${iso}T00:00:00Z`));

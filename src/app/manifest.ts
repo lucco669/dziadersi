@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/lib/site";
+import { site, siteCopy } from "@/lib/site";
 
+/** One manifest for the domain: the installed app opens the Polish original, which links to the translation. */
 export default function manifest(): MetadataRoute.Manifest {
+  const copy = siteCopy("pl");
   return {
-    name: `${site.name} · ${site.institute}`,
+    name: `${site.name} · ${copy.institute}`,
     short_name: site.name,
-    description: site.description,
+    description: copy.description,
     lang: "pl",
     start_url: "/",
     scope: "/",

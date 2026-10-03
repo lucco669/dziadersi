@@ -1,20 +1,36 @@
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+
 /*
- * Wyszukiwarka Instytutu: one small index of everything worth finding, built from the content
- * files and served as static JSON, searched in the browser. Polish letters are folded, so
- * "lozko" finds "łóżko" and "zolw" finds "żółw".
+ * Wyszukiwarka Instytutu: one small index of everything worth finding per edition, built from the
+ * content files and served as static JSON, searched in the browser. Diacritics are folded, so
+ * "lozko" finds "łóżko" and "zaba" finds "žaba".
  */
 
 export type SearchKind = "dzial" | "gatunek" | "haslo" | "sprawa" | "raport" | "bingo" | "rozmowki";
 
-export const SEARCH_KINDS: Record<SearchKind, string> = {
-  dzial: "Działy",
-  gatunek: "Atlas Dziadersów",
-  haslo: "Słownik Dziaderski",
-  sprawa: "Komisja Orzekająca",
-  raport: "Raporty",
-  bingo: "Dziaders Bingo",
-  rozmowki: "Rozmówki",
-};
+const KINDS = defineCopy<Record<SearchKind, string>>({
+  pl: {
+    dzial: "Działy",
+    gatunek: "Atlas Dziadersów",
+    haslo: "Słownik Dziaderski",
+    sprawa: "Komisja Orzekająca",
+    raport: "Raporty",
+    bingo: "Dziaders Bingo",
+    rozmowki: "Rozmówki",
+  },
+  sl: {
+    dzial: "Oddelki",
+    gatunek: "Atlas dziadersov",
+    haslo: "Dziaderski slovar",
+    sprawa: "Razsodna komisija",
+    raport: "Poročila",
+    bingo: "Dziaders bingo",
+    rozmowki: "Pogovornik",
+  },
+});
+
+export const searchKinds = (locale: Locale) => KINDS[locale];
 
 /** Compact on purpose: the whole index travels to the browser. */
 export type SearchEntry = {
@@ -45,7 +61,7 @@ export const fold = (text: string) =>
 const KIND_WEIGHT: Record<SearchKind, number> = { dzial: 6, gatunek: 4, haslo: 3, sprawa: 2, raport: 2, bingo: 1, rozmowki: 1 };
 
 /** Every token must appear somewhere; titles and word starts count most. */
-export function search(index: SearchEntry[], query: string, limit = 24): SearchEntry[] {
+export function search(index: SearchEntry[], query: string, locale: Locale, limit = 24): SearchEntry[] {
   const tokens = fold(query).split(" ").filter(Boolean);
   if (tokens.length === 0) return [];
   const scored: { entry: SearchEntry; score: number }[] = [];
@@ -67,10 +83,15 @@ export function search(index: SearchEntry[], query: string, limit = 24): SearchE
     if (all) scored.push({ entry, score: score + KIND_WEIGHT[entry.k] });
   }
   return scored
-    .sort((a, b) => b.score - a.score || a.entry.t.localeCompare(b.entry.t, "pl"))
+    .sort((a, b) => b.score - a.score || a.entry.t.localeCompare(b.entry.t, locale))
     .slice(0, limit)
     .map(({ entry }) => entry);
 }
 
 /** What to offer before anything is typed. */
-export const SUGGESTIONS = ["szczypce", "parawan", "pilot", "kolejka", "Passat", "rosół", "wesele", "parapet"];
+const SUGGESTION_COPY = defineCopy({
+  pl: ["szczypce", "parawan", "pilot", "kolejka", "Passat", "rosół", "wesele", "parapet"],
+  sl: ["klešče", "vetrobran", "daljinec", "vrsta", "Passat", "juha", "svatba", "okno"],
+});
+
+export const searchSuggestions = (locale: Locale) => SUGGESTION_COPY[locale];

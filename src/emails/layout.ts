@@ -1,4 +1,7 @@
-import { site } from "@/lib/site";
+import { LOCALE_INFO, type Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import { localizePath } from "@/i18n/routes";
+import { site, siteCopy } from "@/lib/site";
 import { typo } from "@/lib/typo";
 
 /*
@@ -28,6 +31,28 @@ export type Letter = {
   unsubscribe?: string;
 };
 
+const COPY = defineCopy({
+  pl: {
+    /** The letterhead image in public/email: the mark, the wordmark and the Institute's name under it. */
+    header: "naglowek.png",
+    regards: "Z poważaniem",
+    registry: "Rejestracja Instytutu",
+    satire: "serwis satyryczny",
+    privacy: "prywatność",
+    unsubscribe: "wypisz się",
+    unsubscribeText: "Wypisz się",
+  },
+  sl: {
+    header: "naglowek-sl.png",
+    regards: "S spoštovanjem",
+    registry: "Prijavna služba Inštituta",
+    satire: "satirična stran",
+    privacy: "zasebnost",
+    unsubscribe: "odjava",
+    unsubscribeText: "Odjava",
+  },
+});
+
 const C = {
   paper: "#f4f0e7",
   card: "#fbf8f1",
@@ -44,13 +69,23 @@ const SANS = "'Schibsted Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-seri
 const escape = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-/** Escaped, with Polish non-breaking spaces after one-letter words. */
+/** Escaped, with non-breaking spaces after one-letter words. */
 const prose = (text: string) => escape(typo(text)).replace(/ /g, "&nbsp;");
 
 /** "123456" → "123 456", "12345678" → "1234 5678": easier to copy by eye. */
 const spaced = (code: string) => (code.length % 2 === 0 ? `${code.slice(0, code.length / 2)} ${code.slice(code.length / 2)}` : code);
 
-export function renderHtml(letter: Letter, origin = site.url) {
+/** The absolute address of an internal path in an edition; the Polish front page is the bare origin. */
+const pageUrl = (origin: string, path: string, locale: Locale) => {
+  const localized = localizePath(path, locale);
+  return localized === "/" ? origin : `${origin}${localized}`;
+};
+
+/** The letter on the letterhead of the edition `locale`: its name, links and small print. */
+export function renderHtml(letter: Letter, locale: Locale, origin = site.url) {
+  const t = COPY[locale];
+  const institute = siteCopy(locale).institute;
+  const home = pageUrl(origin, "/", locale);
   const button = letter.button
     ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 8px 0;"><tr>
         <td style="background:${C.ink};">
@@ -84,7 +119,7 @@ export function renderHtml(letter: Letter, origin = site.url) {
     : "";
 
   return `<!doctype html>
-<html lang="pl">
+<html lang="${LOCALE_INFO[locale].tag}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -99,13 +134,13 @@ export function renderHtml(letter: Letter, origin = site.url) {
   <tr><td align="center" style="padding:32px 16px 40px 16px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
       <tr><td style="padding:0 0 20px 0;">
-        <a href="${origin}" style="text-decoration:none;"><img src="${origin}/email/naglowek.png" width="316" height="64" alt="DZIADER.SI · Instytut Badań nad Dziaderstwem" style="display:block;border:0;width:316px;max-width:100%;height:auto;"></a>
+        <a href="${home}" style="text-decoration:none;"><img src="${origin}/email/${t.header}" width="316" height="64" alt="DZIADER.SI · ${escape(institute)}" style="display:block;border:0;width:316px;max-width:100%;height:auto;"></a>
       </td></tr>
       <tr><td style="background:${C.card};border:1px solid ${C.ink};">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
           <tr><td style="background:${C.red};height:8px;line-height:8px;font-size:0;">&nbsp;</td></tr>
           <tr><td style="padding:26px 32px 32px 32px;">
-            <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.4;color:${C.soft};">Instytut Badań nad Dziaderstwem &middot; ${escape(letter.department)}</p>
+            <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.4;color:${C.soft};">${escape(institute)} &middot; ${escape(letter.department)}</p>
             <h1 style="margin:14px 0 0 0;font-family:${SERIF};font-size:30px;font-weight:700;line-height:1.08;letter-spacing:-0.3px;color:${C.ink};">${prose(letter.title)}</h1>
             ${letter.paragraphs
               .map(
@@ -116,13 +151,13 @@ export function renderHtml(letter: Letter, origin = site.url) {
             ${figures}
             ${button}
             ${code}
-            <p style="margin:30px 0 0 0;padding-top:16px;border-top:1px solid ${C.rule};font-family:${SERIF};font-size:16px;font-style:italic;line-height:1.4;color:${C.ink};">Z poważaniem<br>${escape(letter.signature ?? "Rejestracja Instytutu")}</p>
+            <p style="margin:30px 0 0 0;padding-top:16px;border-top:1px solid ${C.rule};font-family:${SERIF};font-size:16px;font-style:italic;line-height:1.4;color:${C.ink};">${escape(t.regards)}<br>${escape(letter.signature ?? t.registry)}</p>
           </td></tr>
         </table>
       </td></tr>
       <tr><td style="padding:18px 2px 0 2px;font-family:${SANS};font-size:12px;line-height:1.55;color:${C.faint};">
         ${prose(letter.note)}<br>
-        <a href="${origin}" style="color:${C.faint};">dziader.si</a> &middot; serwis satyryczny &middot; <a href="${origin}/prywatnosc" style="color:${C.faint};">prywatność</a>${letter.unsubscribe ? ` &middot; <a href="${escape(letter.unsubscribe)}" style="color:${C.faint};">wypisz się</a>` : ""}
+        <a href="${home}" style="color:${C.faint};">dziader.si</a> &middot; ${escape(t.satire)} &middot; <a href="${pageUrl(origin, "/prywatnosc", locale)}" style="color:${C.faint};">${escape(t.privacy)}</a>${letter.unsubscribe ? ` &middot; <a href="${escape(letter.unsubscribe)}" style="color:${C.faint};">${escape(t.unsubscribe)}</a>` : ""}
       </td></tr>
     </table>
   </td></tr>
@@ -131,9 +166,11 @@ export function renderHtml(letter: Letter, origin = site.url) {
 </html>`;
 }
 
-export function renderText(letter: Letter) {
+/** The plain-text part of the letter, in the edition `locale`. */
+export function renderText(letter: Letter, locale: Locale) {
+  const t = COPY[locale];
   return [
-    `Instytut Badań nad Dziaderstwem · ${letter.department}`,
+    `${siteCopy(locale).institute} · ${letter.department}`,
     "",
     letter.title.toUpperCase(),
     "",
@@ -141,12 +178,12 @@ export function renderText(letter: Letter) {
     ...(letter.figures?.length ? [...letter.figures.map((item) => `${item.value}: ${item.label}`), ""] : []),
     ...(letter.button ? [`${letter.button.label}: ${letter.button.href}`, ""] : []),
     ...(letter.code ? [`${letter.code.label} ${spaced(letter.code.value)}`, ""] : []),
-    "Z poważaniem",
-    letter.signature ?? "Rejestracja Instytutu",
+    t.regards,
+    letter.signature ?? t.registry,
     "",
     "--",
     letter.note,
-    "dziader.si · serwis satyryczny",
-    ...(letter.unsubscribe ? [`Wypisz się: ${letter.unsubscribe}`] : []),
+    `dziader.si · ${t.satire}`,
+    ...(letter.unsubscribe ? [`${t.unsubscribeText}: ${letter.unsubscribe}`] : []),
   ].join("\n");
 }

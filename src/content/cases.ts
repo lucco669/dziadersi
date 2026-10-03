@@ -1,3 +1,7 @@
+import type { Locale } from "@/i18n/config";
+import { overlay, overlayList } from "@/i18n/overlay";
+import * as sl from "./sl/cases";
+import { CASE_SLUGS } from "./sl/slugs/cases";
 import type { SpeciesKey } from "./species";
 
 /*
@@ -441,6 +445,38 @@ export const CASES: Case[] = [
   },
 ];
 
-export const caseBySlug = (slug: string) => CASES.find((item) => item.slug === slug);
-
 export const docket = (item: Case) => `IBD-K ${item.number}/26`;
+
+/* Editions: the Polish cases above with each edition's text and slugs laid over them. */
+
+const EDITIONS = {
+  pl: { cases: CASES, verdicts: VERDICTS, categories: CASE_CATEGORIES },
+  sl: {
+    cases: overlayList("cases.CASES", CASES, (item) => item.number, sl.CASES).map((item) => ({
+      ...item,
+      slug: CASE_SLUGS[item.slug] ?? item.slug,
+    })),
+    verdicts: overlay(VERDICTS, sl.VERDICTS, "cases.VERDICTS"),
+    categories: overlay(CASE_CATEGORIES, sl.CASE_CATEGORIES, "cases.CASE_CATEGORIES"),
+  },
+} satisfies Record<Locale, { cases: Case[]; verdicts: typeof VERDICTS; categories: typeof CASE_CATEGORIES }>;
+
+/** The cases in the edition's language, with the edition's slugs: same order, numbers and verdicts as CASES. */
+export const getCases = (locale: Locale): Case[] => EDITIONS[locale].cases;
+
+/** The three verdicts in the edition's language: same order and keys as VERDICTS. */
+export const getVerdicts = (locale: Locale): typeof VERDICTS => EDITIONS[locale].verdicts;
+
+/** Category names in the edition's language. */
+export const caseCategories = (locale: Locale): typeof CASE_CATEGORIES => EDITIONS[locale].categories;
+
+/** A case by the edition's own slug ("klucze-w-zamku" in Polish, "kljuci-v-kljucavnici" in Slovenian). */
+export const caseBySlug = (slug: string, locale: Locale) => getCases(locale).find((item) => item.slug === slug);
+
+const KEYS = new Map(CASES.map((item) => [item.number, item.slug]));
+
+/**
+ * The key of a case in shared data (votes, tallies, the profile, this browser's verdicts): its Polish
+ * slug, whatever the edition. Both editions vote on the same case and see the same split.
+ */
+export const caseKey = (item: Pick<Case, "number">) => KEYS.get(item.number)!;

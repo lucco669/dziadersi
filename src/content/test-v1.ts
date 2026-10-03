@@ -1,3 +1,6 @@
+import type { Locale } from "@/i18n/config";
+import { overlay } from "@/i18n/overlay";
+import * as sl from "./sl/test-v1";
 import type { SpeciesKey } from "./species";
 
 export type AnswerV1 = {
@@ -258,3 +261,13 @@ export const QUESTIONS_V1: QuestionV1[] = [
     ],
   },
 ];
+
+/* Editions: the Polish questions above with each edition's text laid over them. */
+
+const EDITIONS = {
+  pl: QUESTIONS_V1,
+  sl: overlay(QUESTIONS_V1, sl.QUESTIONS_V1, "test-v1.QUESTIONS_V1"),
+} satisfies Record<Locale, QuestionV1[]>;
+
+/** Formularz IBD-T1 in the edition's language: same order, points and weights as QUESTIONS_V1. */
+export const getQuestionsV1 = (locale: Locale): QuestionV1[] => EDITIONS[locale];

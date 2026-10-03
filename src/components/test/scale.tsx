@@ -2,8 +2,15 @@
 
 import { useId, useState } from "react";
 import type { ScaleTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { INK, PAPER, RED } from "../pictograms";
 import { AnswerRow, keyIndex, useKeys, type TaskProps } from "./shared";
+
+const COPY = defineCopy({
+  pl: { picture: "Termometr i noga w sandale", confirm: "Zatwierdzam" },
+  sl: { picture: "Termometer in noga v sandalu", confirm: "Potrjujem" },
+});
 
 /** Mercury and sock heights for each step, from "never" to "always". */
 const MERCURY = [188, 150, 112, 74, 36];
@@ -16,11 +23,11 @@ const sock = (top: number) =>
     ? `M142 ${top}H165.6L164 204H198Q212 204 212 220V230H140Z`
     : `M143.2 ${top}H165Q168.6 95 166 130L164 204H198Q212 204 212 220V230H140L142 130Q139.4 95 143.2 ${top}Z`;
 
-function Thermometer({ step, ticks }: { step: number | null; ticks: string[] }) {
+function Thermometer({ step, ticks, label }: { step: number | null; ticks: string[]; label: string }) {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const level = step ?? -1;
   return (
-    <svg viewBox="0 0 230 250" className="block w-full" role="img" aria-label="Termometr i noga w sandale">
+    <svg viewBox="0 0 230 250" className="block w-full" role="img" aria-label={label}>
       <defs>
         <clipPath id={`${id}-tube`}>
           <rect x={31} y={14} width={14} height={204} rx={7} />
@@ -85,6 +92,7 @@ function Thermometer({ step, ticks }: { step: number | null; ticks: string[] }) 
 
 /** A thermometer with a sock: pick a step, see the sock grow, then confirm. */
 export function ScaleView({ task, proxy, value, onAnswer }: TaskProps<ScaleTask>) {
+  const t = COPY[useLocale()];
   const [step, setStep] = useState<number | null>(value ?? null);
 
   useKeys((key, event) => {
@@ -104,7 +112,7 @@ export function ScaleView({ task, proxy, value, onAnswer }: TaskProps<ScaleTask>
   return (
     <div className="grid items-start gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-12">
       <figure className="mx-auto w-full max-w-xs">
-        <Thermometer step={step} ticks={task.ticks} />
+        <Thermometer step={step} ticks={task.ticks} label={t.picture} />
       </figure>
       <div>
         <div role="radiogroup" aria-labelledby="zadanie" className="border-t border-ink">
@@ -120,7 +128,7 @@ export function ScaleView({ task, proxy, value, onAnswer }: TaskProps<ScaleTask>
           onClick={() => step !== null && onAnswer(step)}
           className="btn mt-8 bg-ink text-paper hover:bg-red disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-ink"
         >
-          Zatwierdzam <span aria-hidden="true">→</span>
+          {t.confirm} <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>

@@ -57,7 +57,9 @@ Authentication → **Hooks** → **Send Email hook** → Add:
 - URL: `https://dziader.si/api/auth/email`
 - Generate the secret, copy it into `SEND_EMAIL_HOOK_SECRET` (Vercel and `.env.local`), redeploy, then enable the hook.
 
-From then on Supabase no longer sends its own emails: every login link, signup confirmation and address change goes through the Institute's templates (`src/emails/`). In development, `http://localhost:3000/api/auth/email?podglad=magiclink` shows a letter in the browser (also `signup`, `email_change`, `reauthentication`, `email_changed_notification`).
+From then on Supabase no longer sends its own emails: every login link, signup confirmation and address change goes through the Institute's templates (`src/emails/`). In development, `http://localhost:3000/api/auth/email?podglad=magiclink` shows a letter in the browser (also `signup`, `email_change`, `reauthentication`, `email_changed_notification`); add `&jezyk=sl` for the Slovenian letter.
+
+Letters go out in the reader's edition. The hook reads it from the redirect address (`/sl/…` is Slovenian) and otherwise from the account's user metadata, `jezyk`, which sign-in and subscribing to the bulletin keep up to date. Nothing stored means Polish. The redirect allow list below already covers the Slovenian addresses.
 
 For local testing of the hook itself, Supabase must reach your machine (a tunnel such as `cloudflared` or `ngrok`); otherwise test the flow on a Vercel preview with the hook pointing there.
 
@@ -88,6 +90,6 @@ For local testing of the hook itself, Supabase must reach your machine (a tunnel
 
 ## The weekly bulletin
 
-Vercel Cron calls `/api/cron/biuletyn` on Mondays at 06:00 UTC (`vercel.json`) with `Authorization: Bearer $CRON_SECRET`. The handler claims the week in `bulletin_issues` (a retry finds it taken and stops), reads `newsletter_recipients()`, and sends through Brevo in batches of five, with `List-Unsubscribe` and one-click unsubscribe. To send an issue again, delete that week's row. In development, `http://localhost:3000/api/cron/biuletyn?podglad` shows the letter.
+Vercel Cron calls `/api/cron/biuletyn` on Mondays at 06:00 UTC (`vercel.json`) with `Authorization: Bearer $CRON_SECRET`. The handler claims the week in `bulletin_issues` (a retry finds it taken and stops), reads `newsletter_recipients()`, and sends through Brevo in batches of five, with `List-Unsubscribe` and one-click unsubscribe. To send an issue again, delete that week's row. In development, `http://localhost:3000/api/cron/biuletyn?podglad` shows the letter (`&jezyk=sl` for the Slovenian one). Each subscriber gets the issue in their edition, read from the account's `jezyk` user metadata through the Auth admin API (one call per letter; nothing stored means Polish). `GET /api/biuletyn/wypisz` only redirects to the confirmation page, so mail clients that open the unsubscribe link instead of posting to it land on the button.
 
 Deleting an account (button in the profile) removes the auth user, which cascades to the profile, saved results, sightings, bookmarks and case submissions. Anonymous census rows and tallies stay, and verdicts stay without their owner.

@@ -1,20 +1,54 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import { cx } from "@/lib/typo";
 import { INK } from "./pictograms";
 
-type Part = { name: string; note: string; side: "l" | "r"; at: [number, number]; y: number };
+type Part = { side: "l" | "r"; at: [number, number]; y: number };
 
 /** Field marks of the common dziaders, as labelled on Rys. 1. Anchors are in figure units. */
 const PARTS: Part[] = [
-  { name: "Okulary", note: "na czole, szukane po całym domu", side: "l", at: [60, 4], y: 8 },
-  { name: "Wąs", note: "noszony bez przerwy od 1987 r.", side: "r", at: [62, 14], y: 12 },
-  { name: "Długopis", note: "w kieszonce koszuli, nie pisze", side: "r", at: [67, 28], y: 31 },
-  { name: "Saszetka", note: "dokumenty, klucze, paragony z 2014 r.", side: "l", at: [49, 48], y: 54 },
-  { name: "Telefon", note: "w kaburze przy pasku", side: "r", at: [72, 47], y: 56 },
-  { name: "Skarpety", note: "białe, frotte, do połowy łydki", side: "l", at: [54, 84], y: 84 },
-  { name: "Sandały", note: "skórzane, na rzepy", side: "r", at: [73, 97], y: 94 },
+  { side: "l", at: [60, 4], y: 8 },
+  { side: "r", at: [62, 14], y: 12 },
+  { side: "r", at: [67, 28], y: 31 },
+  { side: "l", at: [49, 48], y: 54 },
+  { side: "r", at: [72, 47], y: 56 },
+  { side: "l", at: [54, 84], y: 84 },
+  { side: "r", at: [73, 97], y: 94 },
 ];
+
+/** The labels of PARTS, in the same order. */
+const COPY = defineCopy({
+  pl: {
+    parts: [
+      { name: "Okulary", note: "na czole, szukane po całym domu" },
+      { name: "Wąs", note: "noszony bez przerwy od 1987 r." },
+      { name: "Długopis", note: "w kieszonce koszuli, nie pisze" },
+      { name: "Saszetka", note: "dokumenty, klucze, paragony z 2014 r." },
+      { name: "Telefon", note: "w kaburze przy pasku" },
+      { name: "Skarpety", note: "białe, frotte, do połowy łydki" },
+      { name: "Sandały", note: "skórzane, na rzepy" },
+    ],
+    alt: "Dziaders pospolity: okulary na czole, wąs, długopis, saszetka, telefon przy pasku, skarpety i sandały.",
+    figure: "Rys. 1. Dziaders pospolity",
+    caption: "osobnik dorosły w szacie letniej.",
+  },
+  sl: {
+    parts: [
+      { name: "Očala", note: "na čelu, iskana po vsej hiši" },
+      { name: "Brki", note: "nošeni brez prekinitve od leta 1987" },
+      { name: "Kemični svinčnik", note: "v žepku srajce, ne piše" },
+      { name: "Torbica", note: "dokumenti, ključi, računi iz leta 2014" },
+      { name: "Telefon", note: "v etuiju na pasu" },
+      { name: "Nogavice", note: "bele, frotirne, do pol meč" },
+      { name: "Sandali", note: "usnjeni, na ježka" },
+    ],
+    alt: "Navadni dziaders: očala na čelu, brki, kemični svinčnik, torbica, telefon na pasu, nogavice in sandali.",
+    figure: "Sl. 1. Navadni dziaders",
+    caption: "odrasel osebek v poletnem perju.",
+  },
+});
 
 // The drawing is 120 × 104; the figure stands at (40, 4), labels end at x = 32 and start at x = 88.
 const W = 120;
@@ -25,13 +59,15 @@ const RIGHT = 88;
 const vars = (i: number) => ({ "--i": i }) as CSSProperties;
 
 /** Rys. 1: the dziaders in summer plumage, with its field marks labelled like a schoolbook diagram. */
-export function Specimen({ className }: { className?: string }) {
+export function Specimen({ locale, className }: { locale: Locale; className?: string }) {
+  const t = COPY[locale];
+  const parts = PARTS.map((part, i) => ({ ...part, ...t.parts[i] }));
   return (
     <figure className={className}>
       <div className="relative" style={{ aspectRatio: `${W} / ${H}` }}>
-        <Image src="/illustrations/specimen.webp" alt="Dziaders pospolity: okulary na czole, wąs, długopis, saszetka, telefon przy pasku, skarpety i sandały." width={960} height={1440} preload sizes="(max-width: 1023px) 60vw, 380px" className="absolute left-[20%] top-0 h-full w-[60%] object-contain" />
+        <Image src="/illustrations/specimen.webp" alt={t.alt} width={960} height={1440} preload sizes="(max-width: 1023px) 60vw, 380px" className="absolute left-[20%] top-0 h-full w-[60%] object-contain" />
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
-          {PARTS.map((part, i) => {
+          {parts.map((part, i) => {
             const [x, y] = part.at;
             const end = part.side === "l" ? LEFT : RIGHT;
             return (
@@ -67,7 +103,7 @@ export function Specimen({ className }: { className?: string }) {
           })}
         </svg>
 
-        {PARTS.map((part, i) => (
+        {parts.map((part, i) => (
           <p
             key={part.name}
             className={cx(
@@ -87,7 +123,7 @@ export function Specimen({ className }: { className?: string }) {
       </div>
 
       <ol className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 font-sans text-[0.875rem] leading-snug sm:hidden">
-        {PARTS.map((part, i) => (
+        {parts.map((part, i) => (
           <li key={part.name} className="flex gap-2">
             <span className="font-semibold">{i + 1}.</span>
             <span>
@@ -98,7 +134,7 @@ export function Specimen({ className }: { className?: string }) {
       </ol>
 
       <figcaption className="label mt-5 text-ink-soft">
-        Rys. 1. Dziaders pospolity (<i className="font-serif text-[1.05em]">Dziadersus vulgaris</i>), osobnik dorosły w szacie letniej.
+        {t.figure} (<i className="font-serif text-[1.05em]">Dziadersus vulgaris</i>), {t.caption}
       </figcaption>
     </figure>
   );

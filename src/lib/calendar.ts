@@ -1,3 +1,6 @@
+import { LOCALE_INFO, LOCALES, type Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+
 export const TIME_ZONE = "Europe/Warsaw";
 
 const DAY_MS = 86_400_000;
@@ -12,12 +15,12 @@ const partsFormat = new Intl.DateTimeFormat("en-CA", {
   hourCycle: "h23",
 });
 
-const dateFormat = new Intl.DateTimeFormat("pl-PL", {
-  timeZone: TIME_ZONE,
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+const dayMonthFormats = Object.fromEntries(
+  LOCALES.map((locale) => [
+    locale,
+    new Intl.DateTimeFormat(LOCALE_INFO[locale].intl, { timeZone: "UTC", day: "numeric", month: "long" }),
+  ]),
+) as Record<Locale, Intl.DateTimeFormat>;
 
 export type LocalTime = {
   year: number;
@@ -74,19 +77,14 @@ export function easterDay(year: number) {
   return dayOfYear(year, month, day);
 }
 
-export const formatDate = (date: Date) => dateFormat.format(date);
+/** A day of any year: "20 marca" in Polish, "20. marec" in Slovenian. */
+export const formatDayMonth = (month: number, day: number, locale: Locale) =>
+  dayMonthFormats[locale].format(new Date(Date.UTC(2000, month - 1, day, 12)));
 
-export const MONTHS_SHORT = [
-  "sty",
-  "lut",
-  "mar",
-  "kwi",
-  "maj",
-  "cze",
-  "lip",
-  "sie",
-  "wrz",
-  "paź",
-  "lis",
-  "gru",
-];
+const MONTHS = defineCopy({
+  pl: ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"],
+  sl: ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "avg", "sep", "okt", "nov", "dec"],
+});
+
+/** Short month names for chart axes and calendars, January first. */
+export const monthsShort = (locale: Locale) => MONTHS[locale];

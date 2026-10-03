@@ -2,6 +2,8 @@
 
 import { useState, type KeyboardEvent, type ReactNode } from "react";
 import type { MapTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { cx, typo } from "@/lib/typo";
 import { BLUE, GREY, INK, OCHRE, PAPER, RED } from "../pictograms";
 import { keyIndex, NextButton, useKeys, type TaskProps } from "./shared";
@@ -11,8 +13,42 @@ const LINE = PAPER;
 const SAND = "#ead7ad";
 const WET = "#dcc188";
 
+const COPY = defineCopy({
+  pl: {
+    scenes: {
+      parking: "Parking pod marketem widziany z góry",
+      beach: "Plaża o świcie widziana z góry: morze, piasek, wydmy i zejście z budką z goframi",
+    },
+    market: "MARKET",
+    hours: "czynne 6–22",
+    waffles: "GOFRY",
+    taken: "Miejsce zajęte.",
+    pointer: (place: string) => `Miejsce: ${place}`,
+    tap: "Stuknij miejsce na obrazku.",
+    keys: (count: number) => `Klawisze 1–${count}`,
+    noted: "Instytut odnotowuje",
+  },
+  sl: {
+    scenes: {
+      parking: "Parkirišče pred marketom, pogled od zgoraj",
+      beach: "Plaža ob zori, pogled od zgoraj: morje, pesek, sipine in dostop s stojnico z vaflji",
+    },
+    market: "MARKET",
+    hours: "odprto 6–22",
+    waffles: "VAFLJI",
+    taken: "Mesto zasedeno.",
+    pointer: (place: string) => `Mesto: ${place}`,
+    tap: "Tapni mesto na sliki.",
+    keys: (count: number) => `Tipke 1–${count}`,
+    noted: "Inštitut beleži",
+  },
+});
+
+type Copy = (typeof COPY)["pl"];
+
 type Hit = { x: number; y: number; w: number; h: number };
-type Scene = { label: string; background: ReactNode; hits: Record<string, Hit>; placed: Record<string, ReactNode> };
+/** A scene from above; the signs on it are in the edition's words. */
+type Scene = { background: (t: Copy) => ReactNode; hits: Record<string, Hit>; placed: Record<string, ReactNode> };
 
 /* Cars from above, 22 × 40, nose up. */
 
@@ -69,15 +105,14 @@ function Towel({ x, y, color, rotate = 0 }: { x: number; y: number; color: strin
 
 const SCENES: Record<MapTask["scene"], Scene> = {
   parking: {
-    label: "Parking pod marketem widziany z góry",
-    background: (
+    background: (t) => (
       <>
         <rect x={0} y={0} width={420} height={46} fill={INK} />
         <text x={84} y={30} textAnchor="middle" fontSize={17} fontWeight={700} letterSpacing={3} fill={PAPER} style={{ fontFamily: "var(--font-schibsted)" }}>
-          MARKET
+          {t.market}
         </text>
         <text x={336} y={29} textAnchor="middle" fontSize={9.5} fill={PAPER} opacity={0.7} style={{ fontFamily: "var(--font-schibsted)" }}>
-          czynne 6–22
+          {t.hours}
         </text>
         <rect x={188} y={26} width={44} height={20} fill={PAPER} />
         <line x1={210} y1={26} x2={210} y2={46} stroke={INK} strokeWidth={1.2} />
@@ -137,8 +172,7 @@ const SCENES: Record<MapTask["scene"], Scene> = {
   },
 
   beach: {
-    label: "Plaża o świcie widziana z góry: morze, piasek, wydmy i zejście z budką z goframi",
-    background: (
+    background: (t) => (
       <>
         <rect x={0} y={0} width={420} height={74} fill={BLUE} />
         <g fill="none" stroke={PAPER} strokeWidth={1.4} opacity={0.5}>
@@ -170,7 +204,7 @@ const SCENES: Record<MapTask["scene"], Scene> = {
         ))}
         <rect x={346} y={200} width={62} height={9} fill="none" stroke={INK} strokeWidth={1.2} />
         <text x={377} y={230} textAnchor="middle" fontSize={10} fontWeight={700} fill={INK} style={{ fontFamily: "var(--font-schibsted)" }}>
-          GOFRY
+          {t.waffles}
         </text>
         <Parawan points="30,98 30,124 108,124 108,98" />
         <Parawan points="124,98 124,120 186,120 186,98" />
@@ -214,6 +248,7 @@ const SCENES: Record<MapTask["scene"], Scene> = {
 
 /** Tap a spot on the picture. What the spot means is revealed only after the choice. */
 export function MapView({ task, proxy, value, onAnswer }: TaskProps<MapTask>) {
+  const t = COPY[useLocale()];
   const scene = SCENES[task.scene];
   const [picked, setPicked] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);
@@ -248,8 +283,8 @@ export function MapView({ task, proxy, value, onAnswer }: TaskProps<MapTask>) {
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-12">
       <figure className="border border-ink">
-        <svg viewBox="0 0 420 310" className="block w-full touch-manipulation select-none" role="group" aria-label={scene.label}>
-          {scene.background}
+        <svg viewBox="0 0 420 310" className="block w-full touch-manipulation select-none" role="group" aria-label={t.scenes[task.scene]}>
+          {scene.background(t)}
           {task.zones.map((item, index) => {
             const hit = scene.hits[item.zone];
             const active = !done && (hover === index);
@@ -283,15 +318,15 @@ export function MapView({ task, proxy, value, onAnswer }: TaskProps<MapTask>) {
           {zone && <g pointerEvents="none">{scene.placed[zone.zone]}</g>}
         </svg>
         <figcaption className="label flex min-h-11 items-center justify-between gap-4 border-t border-ink bg-card px-4 py-2.5 text-ink-soft">
-          <span>{done ? "Miejsce zajęte." : pointer ? `Miejsce: ${pointer}` : "Stuknij miejsce na obrazku."}</span>
-          <span className="hidden text-ink-faint sm:inline">Klawisze 1–{task.zones.length}</span>
+          <span>{done ? t.taken : pointer ? t.pointer(pointer) : t.tap}</span>
+          <span className="hidden text-ink-faint sm:inline">{t.keys(task.zones.length)}</span>
         </figcaption>
       </figure>
 
       <div>
         {verdict ? (
           <div className="animate-question-in">
-            <p className="label text-ink-soft">Instytut odnotowuje</p>
+            <p className="label text-ink-soft">{t.noted}</p>
             <p className="mt-3 text-[clamp(1.6rem,3.2vw,2.3rem)] font-bold leading-tight">
               {typo((proxy && verdict.proxy) || verdict.text)}
             </p>

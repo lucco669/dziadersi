@@ -2,10 +2,31 @@
 
 import { useState, type ReactNode } from "react";
 import type { InventoryTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { packBits, unpackBits } from "@/lib/test";
 import { cx } from "@/lib/typo";
 import { BLUE, GREY, INK, OCHRE, PAPER, RED } from "../pictograms";
 import { AnswerRow, keyIndex, useKeys, type TaskProps } from "./shared";
+
+const COPY = defineCopy({
+  pl: {
+    drawer: "Otwarta szuflada",
+    boot: "Otwarty bagażnik z góry",
+    emptyDrawer: "Szuflada pusta. Na razie.",
+    emptyBoot: "Bagażnik pusty. Na razie.",
+    count: (count: number, total: number) => `Zaznaczono: ${count} z ${total}.`,
+    closeEmpty: "Można zamknąć pustą. Instytut to odnotuje.",
+  },
+  sl: {
+    drawer: "Odprt predal",
+    boot: "Odprt prtljažnik od zgoraj",
+    emptyDrawer: "Predal je prazen. Zaenkrat.",
+    emptyBoot: "Prtljažnik je prazen. Zaenkrat.",
+    count: (count: number, total: number) => `Označeno: ${count} od ${total}.`,
+    closeEmpty: "Zapreš ga lahko praznega. Inštitut bo to zabeležil.",
+  },
+});
 
 /* Things, drawn about 52 × 36 around their centre. */
 
@@ -211,9 +232,9 @@ const SLOTS: [number, number, number][] = [
   [232, 166, -7],
 ];
 
-function Drawer({ ticked, things }: { ticked: boolean[]; things: string[] }) {
+function Drawer({ ticked, things, label }: { ticked: boolean[]; things: string[]; label: string }) {
   return (
-    <svg viewBox="0 0 300 240" className="block w-full" role="img" aria-label="Otwarta szuflada">
+    <svg viewBox="0 0 300 240" className="block w-full" role="img" aria-label={label}>
       <path d="M22 26H278L292 204H8Z" fill="#ebe5d7" stroke={INK} strokeWidth={2.4} strokeLinejoin="round" />
       <path d="M22 26L8 204M278 26L292 204" stroke={INK} strokeWidth={1} opacity={0.3} />
       {things.map((icon, i) =>
@@ -229,9 +250,9 @@ function Drawer({ ticked, things }: { ticked: boolean[]; things: string[] }) {
   );
 }
 
-function Boot({ ticked, things }: { ticked: boolean[]; things: string[] }) {
+function Boot({ ticked, things, label }: { ticked: boolean[]; things: string[]; label: string }) {
   return (
-    <svg viewBox="0 0 300 240" className="block w-full" role="img" aria-label="Otwarty bagażnik z góry">
+    <svg viewBox="0 0 300 240" className="block w-full" role="img" aria-label={label}>
       <path d="M6 0H294V196Q294 214 276 214H24Q6 214 6 196Z" fill={BLUE} />
       <rect x={22} y={10} width={256} height={184} rx={6} fill={GREY} />
       <g stroke={INK} strokeWidth={0.6} opacity={0.18}>
@@ -258,6 +279,7 @@ function Boot({ ticked, things }: { ticked: boolean[]; things: string[] }) {
 
 /** Tick what's inside; the drawing fills up as you go. */
 export function InventoryView({ task, proxy, value, onAnswer }: TaskProps<InventoryTask>) {
+  const t = COPY[useLocale()];
   const [ticked, setTicked] = useState<boolean[]>(() =>
     value === undefined ? task.things.map(() => false) : unpackBits(value, task.things.length),
   );
@@ -281,13 +303,13 @@ export function InventoryView({ task, proxy, value, onAnswer }: TaskProps<Invent
   return (
     <div className="grid items-start gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:gap-12">
       <figure className="md:sticky md:top-6">
-        {task.container === "drawer" ? <Drawer ticked={ticked} things={icons} /> : <Boot ticked={ticked} things={icons} />}
+        {task.container === "drawer" ? <Drawer ticked={ticked} things={icons} label={t.drawer} /> : <Boot ticked={ticked} things={icons} label={t.boot} />}
         <figcaption className="label mt-3 text-ink-soft" aria-live="polite">
           {count === 0
             ? task.container === "drawer"
-              ? "Szuflada pusta. Na razie."
-              : "Bagażnik pusty. Na razie."
-            : `Zaznaczono: ${count} z ${task.things.length}.`}
+              ? t.emptyDrawer
+              : t.emptyBoot
+            : t.count(count, task.things.length)}
         </figcaption>
       </figure>
 
@@ -304,7 +326,7 @@ export function InventoryView({ task, proxy, value, onAnswer }: TaskProps<Invent
             {task.done} <span aria-hidden="true">→</span>
           </button>
           <span className={cx("label text-ink-faint", count > 0 && "hidden")}>
-            {count === 0 ? "Można zamknąć pustą. Instytut to odnotuje." : ""}
+            {count === 0 ? t.closeEmpty : ""}
           </span>
         </div>
       </div>

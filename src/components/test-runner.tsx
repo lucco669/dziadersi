@@ -4,11 +4,14 @@ import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import type { SpeciesKey } from "@/content/species";
-import { STATIONS, TASKS, type Task } from "@/content/test";
+import { getStations, getTasks, TASKS, type Task } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
+import { localizePath } from "@/i18n/routes";
 import { sameAnswer } from "@/lib/answer-stats";
 import type { AnswerCounts } from "@/lib/census";
 import { DIAGNOSABLE, dayNumber, decodeGroup, encodeResult, evaluate, GROUP_LIMIT, groupPath, suspect } from "@/lib/test";
-import { cx, typo } from "@/lib/typo";
+import { cx, pluralSl, typo } from "@/lib/typo";
 import { readProgress, type Progress } from "@/lib/test-progress";
 import { isFamilyId } from "@/lib/write-policy";
 import { refreshAccount } from "./account";
@@ -32,6 +35,125 @@ const PROGRESS_KEY = "ibd-t2";
 const LAST_SCORE_KEY = "ibd-ostatni-wynik";
 
 const pad = (value: number) => String(value).padStart(2, "0");
+
+const COPY = defineCopy({
+  pl: {
+    steps: {
+      count: "Zliczanie odpowiedzi",
+      countDetail: (total: number) => `${total} z ${total}`,
+      plates: "Interpretacja plansz Rorschacha",
+      platesDetail: "3 plansze",
+      atlas: "Porównanie z Atlasem Dziadersów",
+      atlasDetail: (species: number) => `${species} gatunków`,
+      lab: "Wyniki laboratoryjne",
+      labDetail: "13 parametrów",
+      ranking: "Dopisywanie do rankingu",
+      stamp: "Przybijanie pieczątki",
+      ready: "gotowe",
+    },
+    errors: {
+      full: "Ranking ma już komplet 12 osób. Twój wynik jest gotowy.",
+      expired: "Zaproszenie wygasło. Twój wynik jest gotowy.",
+      failed: "Nie udało się dopisać do rankingu. Spróbuj ponownie lub odbierz wynik bez dołączania.",
+      offline: "Brak połączenia z rankingiem. Spróbuj ponownie lub odbierz wynik bez dołączania.",
+    },
+    details: {
+      label: "Wszystkie gabinety zaliczone",
+      title: "Na kogo wystawić certyfikat?",
+      name: "Imię lub pseudonim (nieobowiązkowe)",
+      placeholderProxy: "np. Tata",
+      placeholder: "np. Zenek",
+      shared: "Wynik i podpis będą widoczne dla każdego, kto ma link do rankingu. Możesz pozostawić podpis pusty.",
+      private: "Podpis trafi do linku i na certyfikat. Możesz pozostawić to pole puste.",
+      wait: "Chwileczkę…",
+      collectAndJoin: "Odbierz wynik i dołącz do rankingu",
+      collect: "Odbierz wynik",
+      withoutJoining: "Pokaż wynik bez dołączania",
+    },
+    processing: {
+      label: "Formularz IBD-T2 · Opracowanie wyników",
+      title: "Instytut analizuje wyniki.",
+      proxy: "Proszę nie mówić nic osobie badanej.",
+      self: "Proszę nie zamykać okna i nie wzywać rodziny.",
+    },
+    pause: {
+      done: (numeral: string) => `Gabinet ${numeral} zaliczony.`,
+      next: (room: string, numeral: string) => `Następny: pok. ${room} · Gabinet ${numeral}`,
+      enter: "Wchodzę",
+      suspicion: "Wstępne podejrzenie",
+      suspicionLabel: "Wstępne podejrzenie lekarza",
+      confirm: "Do potwierdzenia w kolejnych gabinetach.",
+      none: "Na razie bez podejrzeń. Instytut zachowuje czujność.",
+      census: "Na tle Narodowego Spisu",
+    },
+    task: {
+      room: "pok.",
+      number: "Zadanie",
+      proxy: " · wywiad rodzinny",
+      intro: "Pouczenie",
+      previous: "Poprzednie zadanie",
+      keys: "Klawisze cyfr wybierają odpowiedź",
+    },
+  },
+  sl: {
+    steps: {
+      count: "Štetje odgovorov",
+      countDetail: (total: number) => `${total} od ${total}`,
+      plates: "Razlaga Rorschachovih tabel",
+      platesDetail: "3 table",
+      atlas: "Primerjava z Atlasom dziadersov",
+      atlasDetail: (species: number) => `${species} ${pluralSl(species, "vrsta", "vrsti", "vrste", "vrst")}`,
+      lab: "Laboratorijski izvidi",
+      labDetail: "13 parametrov",
+      ranking: "Vpis na lestvico",
+      stamp: "Žigosanje",
+      ready: "opravljeno",
+    },
+    errors: {
+      full: "Lestvica je že polna, na njej je 12 oseb. Tvoj izvid je pripravljen.",
+      expired: "Vabilo je poteklo. Tvoj izvid je pripravljen.",
+      failed: "Vpis na lestvico ni uspel. Poskusi znova ali prevzemi izvid brez pridružitve.",
+      offline: "Z lestvico ni povezave. Poskusi znova ali prevzemi izvid brez pridružitve.",
+    },
+    details: {
+      label: "Vse ordinacije opravljene",
+      title: "Na čigavo ime izdamo certifikat?",
+      name: "Ime ali vzdevek (neobvezno)",
+      placeholderProxy: "npr. Oči",
+      placeholder: "npr. Tone",
+      shared: "Izvid in podpis bosta vidna vsakomur, ki ima povezavo do lestvice. Podpis lahko pustiš prazen.",
+      private: "Podpis bo v povezavi in na certifikatu. To polje lahko pustiš prazno.",
+      wait: "Trenutek …",
+      collectAndJoin: "Prevzemi izvid in se pridruži lestvici",
+      collect: "Prevzemi izvid",
+      withoutJoining: "Pokaži izvid brez pridružitve",
+    },
+    processing: {
+      label: "Obrazec IBD-T2 · Obdelava izvidov",
+      title: "Inštitut analizira izvide.",
+      proxy: "Prosimo, preiskovani osebi ne povej ničesar.",
+      self: "Prosimo, ne zapiraj okna in ne kliči sorodnikov.",
+    },
+    pause: {
+      done: (numeral: string) => `Ordinacija ${numeral} opravljena.`,
+      next: (room: string, numeral: string) => `Naslednja: soba ${room} · Ordinacija ${numeral}`,
+      enter: "Vstopam",
+      suspicion: "Začetni sum",
+      suspicionLabel: "Zdravnikov začetni sum",
+      confirm: "Potrditev sledi v naslednjih ordinacijah.",
+      none: "Zaenkrat brez suma. Inštitut ostaja na preži.",
+      census: "V primerjavi z Nacionalnim popisom",
+    },
+    task: {
+      room: "soba",
+      number: "Naloga",
+      proxy: " · heteroanamneza",
+      intro: "Navodila",
+      previous: "Prejšnja naloga",
+      keys: "Odgovor izbereš s številskimi tipkami",
+    },
+  },
+});
 
 /** The species a choice task probes most, drawn next to it. */
 function illustration(task: Task): SpeciesKey | null {
@@ -96,6 +218,10 @@ function TaskBody({
 
 export function TestRunner() {
   const router = useRouter();
+  const locale = useLocale();
+  const t = COPY[locale];
+  const tasks = getTasks(locale);
+  const stations = getStations(locale);
   const [phase, setPhase] = useState<"intro" | "task" | "break" | "details" | "processing">("intro");
   const [answers, setAnswers] = useState<(number | null)[]>(() => TASKS.map(() => null));
   const [current, setCurrent] = useState(0);
@@ -121,7 +247,7 @@ export function TestRunner() {
   const params = useMemo(() => new URLSearchParams(search), [search]);
   const groupParam = params.get("grupa") ?? "";
   const familyParam = params.get("rodzina") ?? "";
-  const invite = useMemo(() => decodeGroup(groupParam)?.map(evaluate) ?? null, [groupParam]);
+  const invite = useMemo(() => decodeGroup(groupParam), [groupParam]);
   const proxy = (mode ?? (params.get("tryb") === "wywiad" ? "proxy" : "self")) === "proxy";
 
   const savedRaw = useSyncExternalStore(
@@ -156,12 +282,12 @@ export function TestRunner() {
   }, [phase, current, reducedMotion]);
 
   const steps = [
-    { label: "Zliczanie odpowiedzi", detail: `${TOTAL} z ${TOTAL}` },
-    { label: "Interpretacja plansz Rorschacha", detail: "3 plansze" },
-    { label: "Porównanie z Atlasem Dziadersów", detail: `${DIAGNOSABLE.length} gatunków` },
-    { label: "Wyniki laboratoryjne", detail: "13 parametrów" },
-    ...(group ? [{ label: "Dopisywanie do rankingu", detail: "gotowe" }] : []),
-    { label: "Przybijanie pieczątki", detail: "gotowe" },
+    { label: t.steps.count, detail: t.steps.countDetail(TOTAL) },
+    { label: t.steps.plates, detail: t.steps.platesDetail },
+    { label: t.steps.atlas, detail: t.steps.atlasDetail(DIAGNOSABLE.length) },
+    { label: t.steps.lab, detail: t.steps.labDetail },
+    ...(group ? [{ label: t.steps.ranking, detail: t.steps.ready }] : []),
+    { label: t.steps.stamp, detail: t.steps.ready },
   ];
 
   /** How others answered, for the notes between rooms. Optional: without it the notes stay quiet. */
@@ -218,26 +344,28 @@ export function TestRunner() {
       try {
         const response = await fetch(`/api/grupy/${family}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ code, attempt }) });
         if (!response.ok) {
-          setFinishError(response.status === 409 ? "Ranking ma już komplet 12 osób. Twój wynik jest gotowy." : response.status === 404 ? "Zaproszenie wygasło. Twój wynik jest gotowy." : "Nie udało się dopisać do rankingu. Spróbuj ponownie lub odbierz wynik bez dołączania.");
+          setFinishError(response.status === 409 ? t.errors.full : response.status === 404 ? t.errors.expired : t.errors.failed);
           setFinishing(false);
           return;
         }
         href = `/grupy/${family}`;
       } catch {
-        setFinishError("Brak połączenia z rankingiem. Spróbuj ponownie lub odbierz wynik bez dołączania.");
+        setFinishError(t.errors.offline);
         setFinishing(false);
         return;
       }
     }
-    const result = evaluate(draft);
+    // Analytics count in Polish labels, so both editions add up to the same statistics.
+    const result = evaluate(draft, "pl");
     track("Test ukończony", { strefa: result.verdict.label, gatunek: result.diagnosis.name, tryb: proxy ? "wywiad" : "osobiście" });
     record(code, result.score);
     writeProgress(null);
     setPhase("processing");
     window.scrollTo({ top: 0 });
-    router.prefetch(href);
+    const target = localizePath(href, locale);
+    router.prefetch(target);
     steps.forEach((_, i) => later(400 + i * 480, () => setStep(i + 1)));
-    later(reducedMotion ? 0 : 400 + steps.length * 480 + 650, () => router.push(href));
+    later(reducedMotion ? 0 : 400 + steps.length * 480 + 650, () => router.push(target));
   }
 
   /** Into the anonymous census (and the profile, when signed in). Fire and forget: the result page doesn't wait. */
@@ -324,14 +452,14 @@ export function TestRunner() {
     return (
       <section ref={top} className="wrap py-10 md:py-16">
         <form className="mx-auto max-w-xl" onSubmit={(event) => { event.preventDefault(); void finish(answers as number[]); }}>
-          <p className="label text-red">Wszystkie gabinety zaliczone</p>
-          <h1 ref={heading} tabIndex={-1} className="mt-4 text-4xl font-bold leading-tight focus:outline-none">Na kogo wystawić certyfikat?</h1>
-          <label htmlFor="podpis" className="label mt-7 block">Imię lub pseudonim (nieobowiązkowe)</label>
-          <input id="podpis" value={name} onChange={(event) => setName(event.target.value)} maxLength={24} autoComplete="off" placeholder={proxy ? "np. Tata" : "np. Zenek"} className="mt-2 w-full border-b-2 border-ink bg-transparent py-3 text-3xl focus:border-red focus-visible:outline-none" />
-          <p className="label mt-4 text-ink-soft">{family || group ? "Wynik i podpis będą widoczne dla każdego, kto ma link do rankingu. Możesz pozostawić podpis pusty." : "Podpis trafi do linku i na certyfikat. Możesz pozostawić to pole puste."}</p>
+          <p className="label text-red">{t.details.label}</p>
+          <h1 ref={heading} tabIndex={-1} className="mt-4 text-4xl font-bold leading-tight focus:outline-none">{t.details.title}</h1>
+          <label htmlFor="podpis" className="label mt-7 block">{t.details.name}</label>
+          <input id="podpis" value={name} onChange={(event) => setName(event.target.value)} maxLength={24} autoComplete="off" placeholder={proxy ? t.details.placeholderProxy : t.details.placeholder} className="mt-2 w-full border-b-2 border-ink bg-transparent py-3 text-3xl focus:border-red focus-visible:outline-none" />
+          <p className="label mt-4 text-ink-soft">{family || group ? t.details.shared : t.details.private}</p>
           {finishError && <p role="alert" className="mt-5 border-l-2 border-red pl-4">{finishError}</p>}
-          <button disabled={finishing} className="btn mt-7 bg-ink text-paper hover:bg-red disabled:opacity-50">{finishing ? "Chwileczkę…" : family ? "Odbierz wynik i dołącz do rankingu" : "Odbierz wynik"}</button>
-          {finishError && <button type="button" disabled={finishing} onClick={() => void finish(answers as number[], true)} className="link mt-5 block font-sans">Pokaż wynik bez dołączania</button>}
+          <button disabled={finishing} className="btn mt-7 bg-ink text-paper hover:bg-red disabled:opacity-50">{finishing ? t.details.wait : family ? t.details.collectAndJoin : t.details.collect}</button>
+          {finishError && <button type="button" disabled={finishing} onClick={() => void finish(answers as number[], true)} className="link mt-5 block font-sans">{t.details.withoutJoining}</button>}
         </form>
       </section>
     );
@@ -341,12 +469,12 @@ export function TestRunner() {
     return (
       <section className="wrap py-14 md:py-24">
         <div className="mx-auto max-w-2xl" role="status" aria-live="polite">
-          <p className="label text-ink-soft">Formularz IBD-T2 · Opracowanie wyników</p>
+          <p className="label text-ink-soft">{t.processing.label}</p>
           <h1 className="mt-6 text-[clamp(2.5rem,6vw,4.5rem)] font-bold leading-[0.95] tracking-[-0.02em]">
-            Instytut analizuje wyniki.
+            {t.processing.title}
           </h1>
           <p className="mt-4 text-2xl italic text-ink-soft">
-            {proxy ? "Proszę nie mówić nic osobie badanej." : "Proszę nie zamykać okna i nie wzywać rodziny."}
+            {proxy ? t.processing.proxy : t.processing.self}
           </p>
           <ol className="mt-12 border-t border-ink">
             {steps.map((item, i) => (
@@ -364,7 +492,7 @@ export function TestRunner() {
             ))}
           </ol>
           {step >= steps.length && (
-            <Seal className="mx-auto mt-12 block size-36 animate-stamp text-red [--stamp-rotate:-12deg]" />
+            <Seal locale={locale} className="mx-auto mt-12 block size-36 animate-stamp text-red [--stamp-rotate:-12deg]" />
           )}
         </div>
       </section>
@@ -372,19 +500,19 @@ export function TestRunner() {
   }
 
   if (phase === "break") {
-    const finished = TASKS[current - 1].station;
-    const station = STATIONS[TASKS[current].station];
-    const suspected = suspect(answers.map((value) => value ?? undefined));
-    const comparisons = TASKS.flatMap((task, index) => {
+    const finished = tasks[current - 1].station;
+    const station = stations[tasks[current].station];
+    const suspected = suspect(answers.map((value) => value ?? undefined), locale);
+    const comparisons = tasks.flatMap((task, index) => {
       const value = answers[index];
       if (task.station !== finished || value === null) return [];
-      const same = sameAnswer(task, index, value, counts);
+      const same = sameAnswer(task, index, value, counts, locale);
       return same ? [{ section: task.section, text: same.text }] : [];
     });
     return (
       <section ref={top} className="wrap scroll-mt-6 pb-16 pt-8 md:pb-24 md:pt-12">
         <div className="mx-auto max-w-4xl">
-          <RoutingSlip current={-1} done={finished + 1} fresh={finished} />
+          <RoutingSlip locale={locale} current={-1} done={finished + 1} fresh={finished} />
           <div className="mt-12 grid gap-12 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:gap-14">
             <div>
               <h1
@@ -392,13 +520,13 @@ export function TestRunner() {
                 tabIndex={-1}
                 className="text-[clamp(2.4rem,5.4vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em] focus:outline-none"
               >
-                Gabinet {STATIONS[finished].numeral} zaliczony.
+                {t.pause.done(stations[finished].numeral)}
               </h1>
-              <p className="mt-4 text-xl italic text-ink-soft">{typo(STATIONS[finished].next)}</p>
+              <p className="mt-4 text-xl italic text-ink-soft">{typo(stations[finished].next)}</p>
 
               <div className="mt-10 border-t border-ink pt-5">
                 <p className="label text-ink-soft">
-                  Następny: pok. {station.room} · Gabinet {station.numeral}
+                  {t.pause.next(station.room, station.numeral)}
                 </p>
                 <p className="mt-1 text-2xl font-bold">{station.name}</p>
                 <p className="mt-2 max-w-md text-ink-soft">{typo(station.note)}</p>
@@ -408,25 +536,25 @@ export function TestRunner() {
                   autoFocus
                   className="btn mt-7 bg-ink text-paper hover:bg-red"
                 >
-                  Wchodzę <span aria-hidden="true">→</span>
+                  {t.pause.enter} <span aria-hidden="true">→</span>
                 </button>
               </div>
             </div>
 
-            <aside className="border-t border-ink pt-5" aria-label="Wstępne podejrzenie">
-              <p className="label text-ink-soft">Wstępne podejrzenie lekarza</p>
+            <aside className="border-t border-ink pt-5" aria-label={t.pause.suspicion}>
+              <p className="label text-ink-soft">{t.pause.suspicionLabel}</p>
               {suspected ? (
                 <>
                   <SpeciesPlate species={suspected.key} animated className="mt-4 w-full max-w-64" />
                   <p className="mt-3 text-2xl font-bold leading-tight">{suspected.name}</p>
-                  <p className="mt-1 font-sans text-[0.9rem] text-ink-soft">{typo("Do potwierdzenia w kolejnych gabinetach.")}</p>
+                  <p className="mt-1 font-sans text-[0.9rem] text-ink-soft">{typo(t.pause.confirm)}</p>
                 </>
               ) : (
-                <p className="mt-4 text-xl leading-snug">{typo("Na razie bez podejrzeń. Instytut zachowuje czujność.")}</p>
+                <p className="mt-4 text-xl leading-snug">{typo(t.pause.none)}</p>
               )}
               {comparisons.length > 0 && (
                 <div className="mt-10 border-t border-ink pt-5">
-                  <p className="label text-ink-soft">Na tle Narodowego Spisu</p>
+                  <p className="label text-ink-soft">{t.pause.census}</p>
                   <ul className="mt-2">
                     {comparisons.map((item) => (
                       <li key={item.section} className="border-b border-rule py-2.5 leading-snug">
@@ -440,29 +568,29 @@ export function TestRunner() {
             </aside>
           </div>
           <button type="button" onClick={back} className="label mt-12 py-2 text-ink-soft transition-colors hover:text-ink">
-            ← Poprzednie zadanie
+            ← {t.task.previous}
           </button>
         </div>
       </section>
     );
   }
 
-  const task = TASKS[current];
-  const station = STATIONS[task.station];
+  const task = tasks[current];
+  const station = stations[task.station];
   const plate = illustration(task);
-  const stationTasks = TASKS.filter((item) => item.station === task.station);
+  const stationTasks = tasks.filter((item) => item.station === task.station);
 
   return (
     <section ref={top} className="wrap scroll-mt-6 pb-16 pt-8 md:pb-24 md:pt-10">
       <div className="mx-auto max-w-5xl">
-        <RoutingSlip current={task.station} done={task.station} step={stationTasks.indexOf(task)} />
+        <RoutingSlip locale={locale} current={task.station} done={task.station} step={stationTasks.indexOf(task)} />
         <p className="label mt-6 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-ink-soft">
           <span>
-            pok. {station.room} · {station.name} · {task.section}
+            {t.task.room} {station.room} · {station.name} · {task.section}
           </span>
           <span>
-            Zadanie <span className="text-ink">{pad(current + 1)}</span> / {TOTAL}
-            {proxy && <span className="text-red"> · wywiad rodzinny</span>}
+            {t.task.number} <span className="text-ink">{pad(current + 1)}</span> / {TOTAL}
+            {proxy && <span className="text-red">{t.task.proxy}</span>}
           </span>
         </p>
 
@@ -485,9 +613,9 @@ export function TestRunner() {
 
         <div className="mt-10 flex items-center justify-between gap-4">
           <button type="button" onClick={back} className="label py-2 text-ink-soft transition-colors hover:text-ink">
-            ← {current === 0 ? "Pouczenie" : "Poprzednie zadanie"}
+            ← {current === 0 ? t.task.intro : t.task.previous}
           </button>
-          <span className="label hidden text-ink-faint md:inline">Klawisze cyfr wybierają odpowiedź</span>
+          <span className="label hidden text-ink-faint md:inline">{t.task.keys}</span>
         </div>
       </div>
     </section>

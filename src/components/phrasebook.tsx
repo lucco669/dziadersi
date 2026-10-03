@@ -2,32 +2,95 @@
 
 import { track } from "@vercel/analytics";
 import { useRef, useState, useSyncExternalStore } from "react";
-import { SITUATIONS } from "@/content/phrasebook";
+import { getSituations, SITUATIONS } from "@/content/phrasebook";
+import { useLocale } from "@/i18n/client";
+import { DEFAULT_LOCALE, LOCALE_INFO, type Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import { localizePath } from "@/i18n/routes";
 import { line as compose, listsOf, type Line, type Picks } from "@/lib/phrasebook";
 import { site } from "@/lib/site";
 import { tally } from "@/lib/tally";
-import { cx, typo } from "@/lib/typo";
+import { cx, formatNumber, quote, typo } from "@/lib/typo";
 import { BookmarkButton } from "./bookmark";
 import { useKeys, useLater, useReducedMotion } from "./hooks";
 import { SituationIcon } from "./occasions";
 import { Figure } from "./pictograms";
 
-const PARTS = [
-  { label: "Zagajenie", note: "linia przerywana", underline: "decoration-dashed" },
-  { label: "Teza", note: "dwie linie, jak orzeczenie", underline: "decoration-double" },
-  { label: "Puenta", note: "falka", underline: "decoration-wavy" },
-] as const;
+const COPY = defineCopy({
+  pl: {
+    // The "rozbiór": the parts underlined the way Polish lessons mark parts of a sentence.
+    parts: [
+      { label: "Zagajenie", note: "linia przerywana" },
+      { label: "Teza", note: "dwie linie, jak orzeczenie" },
+      { label: "Puenta", note: "falka" },
+    ],
+    chapters: "Rozdziały rozmówek",
+    position: (chapter: string, number: number, total: number) =>
+      `${chapter} · wypowiedź nr ${formatNumber("pl", number)} z ${formatNumber("pl", total)}`,
+    original: "Polski oryginał",
+    roll: "Losuj wypowiedź",
+    quiet: "Cisza",
+    read: "Przeczytaj na głos",
+    share: "Udostępnij",
+    copyLink: "Kopiuj link",
+    linkCopied: "Link do wypowiedzi skopiowany.",
+    linkPrompt: "Skopiuj link do wypowiedzi:",
+    keep: "Zachowaj",
+    copyText: "Kopiuj tekst",
+    clipping: (text: string, url: string) => `„${text}” Rozmówki dziaderskie, ${url}`,
+    textCopied: "Wypowiedź skopiowana. Można wkleić na grupę rodzinną.",
+    textPrompt: "Skopiuj wypowiedź:",
+    keys: "Spacja losuje · 1–3 zostawiają część",
+    analysis: "Rozbiór wypowiedzi",
+    analysisAside: "Oznaczenia jak na lekcji polskiego",
+    held: "Zostaje",
+    hold: "Zostaw",
+    holdNote: "Zostawiona część nie zmienia się przy losowaniu. Instytut zaleca zostawić puentę: dobra puenta pasuje do wszystkiego.",
+  },
+  sl: {
+    // The parts underlined the way Slovenian lessons mark the parts of a sentence.
+    parts: [
+      { label: "Uvod", note: "črtkana črta" },
+      { label: "Teza", note: "dvojna črta, kot povedek" },
+      { label: "Poanta", note: "valovita črta" },
+    ],
+    chapters: "Poglavja pogovornika",
+    position: (chapter: string, number: number, total: number) =>
+      `${chapter} · izjava št. ${formatNumber("sl", number)} od ${formatNumber("sl", total)}`,
+    original: "Poljski izvirnik",
+    roll: "Izžrebaj izjavo",
+    quiet: "Tišina",
+    read: "Preberi na glas",
+    share: "Deli",
+    copyLink: "Kopiraj povezavo",
+    linkCopied: "Povezava do izjave je kopirana.",
+    linkPrompt: "Kopiraj povezavo do izjave:",
+    keep: "Ohrani",
+    copyText: "Kopiraj besedilo",
+    clipping: (text: string, url: string) => `»${text}« Dziaderski pogovornik, ${url}`,
+    textCopied: "Izjava je kopirana. Lahko jo prilepiš v družinsko skupino.",
+    textPrompt: "Kopiraj izjavo:",
+    keys: "Preslednica žreba · 1–3 zadržijo del",
+    analysis: "Razčlemba izjave",
+    analysisAside: "Oznake kot pri pouku slovenščine",
+    held: "Ostane",
+    hold: "Zadrži",
+    holdNote: "Zadržani del se pri žrebanju ne spremeni. Inštitut priporoča, da zadržiš poanto: dobra poanta se poda k vsemu.",
+  },
+});
+
+const UNDERLINES = ["decoration-dashed", "decoration-double", "decoration-wavy"] as const;
 
 const REEL_MS = [420, 700, 980];
 const TICK_MS = 70;
 
 const noSubscription = () => () => {};
-const count = new Intl.NumberFormat("pl-PL");
 
-function speak(text: string, onEnd: () => void) {
+/** Reads a line aloud in the edition's language, with a voice of that language when the system has one. */
+function speak(text: string, locale: Locale, onEnd: () => void) {
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "pl-PL";
-  const voice = speechSynthesis.getVoices().find((item) => item.lang.toLowerCase().startsWith("pl"));
+  utterance.lang = LOCALE_INFO[locale].intl;
+  const voice = speechSynthesis.getVoices().find((item) => item.lang.toLowerCase().startsWith(LOCALE_INFO[locale].tag));
   if (voice) utterance.voice = voice;
   utterance.rate = 0.92;
   utterance.pitch = 0.7;
@@ -37,8 +100,14 @@ function speak(text: string, onEnd: () => void) {
   speechSynthesis.speak(utterance);
 }
 
-/** The phrasebook machine: pick a chapter, pull the lever, hold the parts worth keeping. */
-export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks } }) {
+/**
+ * The phrasebook machine: pick a chapter, pull the lever, hold the parts worth keeping.
+ * With `original`, a translation also shows the Polish line under its own, as phrasebooks do.
+ */
+export function Phrasebook({ initial, original = false }: { initial: { slug: string; picks: Picks }; original?: boolean }) {
+  const locale = useLocale();
+  const t = COPY[locale];
+  const situations = getSituations(locale);
   const [slug, setSlug] = useState(initial.slug);
   const [picks, setPicks] = useState<Picks>(initial.picks);
   const [shown, setShown] = useState<Picks>(initial.picks);
@@ -53,9 +122,11 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
   const canShare = useSyncExternalStore(noSubscription, () => typeof navigator.share === "function", () => false);
   const origin = useSyncExternalStore(noSubscription, () => window.location.origin, () => site.url);
 
-  const situation = SITUATIONS.find((item) => item.slug === slug) ?? SITUATIONS[0];
+  const situation = situations.find((item) => item.slug === slug) ?? situations[0];
   const lists = listsOf(situation);
   const current: Line = compose(situation, picks);
+  // The same code in the Polish lists: the line as it was first said.
+  const source = original && locale !== DEFAULT_LOCALE ? compose(SITUATIONS[situations.indexOf(situation)], picks) : null;
   const display = shown.map((pick, i) => lists[i][Math.min(pick, lists[i].length - 1)]);
   const busy = rolling.some(Boolean);
 
@@ -103,7 +174,7 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
 
   function choose(nextSlug: string) {
     if (busy || nextSlug === slug) return;
-    const next = SITUATIONS.find((item) => item.slug === nextSlug);
+    const next = situations.find((item) => item.slug === nextSlug);
     if (!next) return;
     stopReels();
     setSlug(nextSlug);
@@ -122,18 +193,18 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
       return;
     }
     setSpeaking(true);
-    speak(current.text, () => setSpeaking(false));
+    speak(current.text, locale, () => setSpeaking(false));
     track("Rozmówki", { akcja: "czytaj" });
     tally("rozmowki-glos");
   }
 
   async function share() {
-    const url = `${origin}/generator/${current.code}`;
+    const url = `${origin}${localizePath(`/generator/${current.code}`, locale)}`;
     track("Udostępnienie", { kanal: canShare ? "natywne" : "link", typ: "rozmowki" });
     tally("udostepnienie");
     if (canShare) {
       try {
-        await navigator.share({ text: `„${current.text}”`, url });
+        await navigator.share({ text: quote(current.text, locale), url });
       } catch {
         // Closing the share sheet is fine.
       }
@@ -141,18 +212,18 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
     }
     try {
       await navigator.clipboard.writeText(url);
-      setNotice("Link do wypowiedzi skopiowany.");
+      setNotice(t.linkCopied);
     } catch {
-      window.prompt("Skopiuj link do wypowiedzi:", url);
+      window.prompt(t.linkPrompt, url);
     }
   }
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(`„${current.text}” Rozmówki dziaderskie, ${origin}/generator/${current.code}`);
-      setNotice("Wypowiedź skopiowana. Można wkleić na grupę rodzinną.");
+      await navigator.clipboard.writeText(t.clipping(current.text, `${origin}${localizePath(`/generator/${current.code}`, locale)}`));
+      setNotice(t.textCopied);
     } catch {
-      window.prompt("Skopiuj wypowiedź:", current.text);
+      window.prompt(t.textPrompt, current.text);
     }
     track("Udostępnienie", { kanal: "tekst", typ: "rozmowki" });
   }
@@ -170,8 +241,8 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
 
   return (
     <div>
-      <div role="group" aria-label="Rozdziały rozmówek" className="grid grid-cols-3 border-l border-t border-ink md:grid-cols-6">
-        {SITUATIONS.map((item) => {
+      <div role="group" aria-label={t.chapters} className="grid grid-cols-3 border-l border-t border-ink md:grid-cols-6">
+        {situations.map((item) => {
           const active = item.slug === slug;
           return (
             <button
@@ -197,7 +268,7 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
         <svg viewBox="-4 -1 56 97" className="hidden h-72 shrink-0 md:block" aria-hidden="true">
           <Figure right="point" glasses="eyes" mustacheClassName={cx(speaking && "animate-talk")} />
         </svg>
-        <div className="md:mb-32">
+        <div className={cx("md:mb-32", source && "relative")}>
           <blockquote className="relative bg-red px-6 py-6 text-paper md:px-8 md:py-7" aria-live="polite" aria-busy={busy}>
             <span
               aria-hidden="true"
@@ -213,48 +284,60 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
             </p>
           </blockquote>
           <p className="label mt-4 flex flex-wrap justify-between gap-x-6 gap-y-1 text-ink-soft">
-            <span>
-              {situation.name} · wypowiedź nr {count.format(current.number)} z {count.format(current.total)}
-            </span>
+            <span>{t.position(situation.name, current.number, current.total)}</span>
             <span aria-live="polite" className="text-red">
               {notice}
             </span>
           </p>
+          {source && (
+            // In the space under the bubble, so the figure still points at the line.
+            <p
+              className={cx(
+                "mt-5 max-w-2xl border-l-2 border-rule pl-4 transition-opacity md:absolute md:inset-x-0 md:top-full",
+                busy && "opacity-0",
+              )}
+            >
+              <span className="label block text-ink-faint">{t.original}</span>
+              <span lang="pl" className="mt-1 block text-[0.98rem] italic leading-snug text-ink-soft">
+                {typo(source.text)}
+              </span>
+            </p>
+          )}
         </div>
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-3">
         <button type="button" onClick={() => roll()} disabled={busy} className="btn bg-ink text-paper hover:bg-red disabled:opacity-60">
-          Losuj wypowiedź <span aria-hidden="true">↻</span>
+          {t.roll} <span aria-hidden="true">↻</span>
         </button>
         {canSpeak && (
           <button type="button" onClick={read} className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
-            {speaking ? "Cisza" : "Przeczytaj na głos"}
+            {speaking ? t.quiet : t.read}
           </button>
         )}
         <button type="button" onClick={share} className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
-          {canShare ? "Udostępnij" : "Kopiuj link"}
+          {canShare ? t.share : t.copyLink}
         </button>
         <BookmarkButton
           key={current.code}
           kind="rozmowki"
           code={current.code}
-          label="Zachowaj"
+          label={t.keep}
           className="btn border border-ink text-ink hover:bg-ink hover:text-paper"
         />
         <button type="button" onClick={copy} className="link ml-1 font-sans font-medium">
-          Kopiuj tekst
+          {t.copyText}
         </button>
-        <span className="label ml-auto hidden text-ink-faint md:inline">Spacja losuje · 1–3 zostawiają część</span>
+        <span className="label ml-auto hidden text-ink-faint md:inline">{t.keys}</span>
       </div>
 
       <section aria-labelledby="rozbior" className="mt-16 max-w-4xl">
         <h2 id="rozbior" className="flex flex-wrap items-baseline justify-between gap-x-6 border-b border-ink pb-3">
-          <span className="text-2xl font-bold">Rozbiór wypowiedzi</span>
-          <span className="label text-ink-soft">Oznaczenia jak na lekcji polskiego</span>
+          <span className="text-2xl font-bold">{t.analysis}</span>
+          <span className="label text-ink-soft">{t.analysisAside}</span>
         </h2>
         <ol>
-          {PARTS.map((part, i) => (
+          {t.parts.map((part, i) => (
             <li key={part.label} className="grid grid-cols-[1fr_auto] items-start gap-x-6 gap-y-1 border-b border-rule py-4 md:grid-cols-[10rem_1fr_auto]">
               <span className="label col-start-1 row-start-1 pt-1 text-ink-soft">
                 <span className="text-ink">{part.label}</span>
@@ -263,7 +346,7 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
               <span
                 className={cx(
                   "col-span-2 col-start-1 row-start-2 text-xl leading-relaxed underline decoration-red decoration-[1.5px] underline-offset-[6px] md:col-span-1 md:col-start-2 md:row-start-1",
-                  part.underline,
+                  UNDERLINES[i],
                 )}
               >
                 {typo(display[i])}
@@ -277,13 +360,13 @@ export function Phrasebook({ initial }: { initial: { slug: string; picks: Picks 
                   held[i] ? "border-red bg-red text-paper" : "border-ink hover:bg-paper-deep",
                 )}
               >
-                {held[i] ? "Zostaje" : "Zostaw"}
+                {held[i] ? t.held : t.hold}
               </button>
             </li>
           ))}
         </ol>
         <p className="label mt-4 max-w-xl text-ink-soft">
-          {typo("Zostawiona część nie zmienia się przy losowaniu. Instytut zaleca zostawić puentę: dobra puenta pasuje do wszystkiego.")}
+          {typo(t.holdNote)}
         </p>
       </section>
     </div>

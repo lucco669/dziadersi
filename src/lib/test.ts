@@ -1,15 +1,19 @@
-import { SPECIES, type Species, type SpeciesKey } from "@/content/species";
+import { SPECIES, speciesByKey, type Species, type SpeciesKey } from "@/content/species";
 import {
+  getTasks,
+  getUnspecified,
+  getVerdicts,
   TASKS,
-  UNSPECIFIED,
-  VERDICTS,
   type Option,
   type ReflexOutcome,
   type Task,
   type Verdict,
   type Weights,
 } from "@/content/test";
-import { QUESTIONS_V1 } from "@/content/test-v1";
+import { getQuestionsV1, QUESTIONS_V1, type QuestionV1 } from "@/content/test-v1";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
+import { formatDate } from "./typo";
 
 /*
  * Result codes are stateless. Same code, same result, always.
@@ -20,7 +24,23 @@ import { QUESTIONS_V1 } from "@/content/test-v1";
  *
  * Version 1 (Formularz IBD-T1, retired): "1" + 24 base-4 answers in 10 base36 chars + the date.
  * Still decoded and scored exactly as before, so old links keep their results.
+ *
+ * Codes and scores are the same in both editions: scoring reads the Polish data, and only the words
+ * of a result (diagnosis, verdict, symptoms, date) follow the locale it is evaluated in.
  */
+
+const COPY = defineCopy({
+  pl: {
+    emptyInventory: "Nic. Instytut odnotowuje to z niedowierzaniem.",
+    rapid: (yes: number, total: number) => `${yes} × TAK na ${total}`,
+    hybrid: (prefix: string, suffix: string) => `Dziaders ${prefix}-${suffix}`,
+  },
+  sl: {
+    emptyInventory: "Nič. Inštitut to beleži z nejevero.",
+    rapid: (yes: number, total: number) => `${yes} × DA od ${total}`,
+    hybrid: (prefix: string, suffix: string) => `${prefix}-${suffix} dziaders`,
+  },
+});
 
 const EPOCH = Date.UTC(2026, 0, 1);
 const DAY_MS = 86_400_000;
@@ -36,9 +56,9 @@ export type Draft = {
   proxy?: boolean;
 };
 
-// Kept off certificates served from our domain.
+// Kept off certificates served from our domain: Polish, Slovenian and English.
 const BLOCKED =
-  /kurw|chuj|huj|pierd|jeb|pizd|cipa|cipe|cipk|kutas|dziwk|szmat|pedal|cwel|fiut|zjeb|hitler|nazi|fuck|shit|cunt|nigg|fagg/;
+  /kurw|chuj|huj|pierd|jeb|pizd|cipa|cipe|cipk|kutas|dziwk|szmat|pedal|cwel|fiut|zjeb|kurac|kurba|picka|fukat|hitler|nazi|fuck|shit|cunt|nigg|fagg/;
 
 const fold = (text: string) =>
   text
@@ -170,7 +190,9 @@ const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1
 
 const said = (option: Option, proxy: boolean) => (proxy && option.proxy) || option.text;
 
-export function read(task: Task, value: number, proxy = false): Reading {
+/** Points, species weights and the answer in words; `task` comes from the edition's form. */
+export function read(task: Task, value: number, proxy: boolean, locale: Locale): Reading {
+  const t = COPY[locale];
   switch (task.kind) {
     case "words": {
       const picked = wordAnswers(task, value).map((index, i) => task.words[i].options[index]);
@@ -185,7 +207,7 @@ export function read(task: Task, value: number, proxy = false): Reading {
       return {
         points: inventoryPoints(ticked.length),
         species: ticked.reduce((weights, thing) => addWeights(weights, thing.species), {} as Weights),
-        answer: ticked.length ? ticked.map((thing) => thing.text).join(" · ") : "Nic. Instytut odnotowuje to z niedowierzaniem.",
+        answer: ticked.length ? ticked.map((thing) => thing.text).join(" · ") : t.emptyInventory,
       };
     }
     case "rapid": {
@@ -193,7 +215,7 @@ export function read(task: Task, value: number, proxy = false): Reading {
       return {
         points: rapidPoints(yes.length),
         species: yes.reduce((weights, statement) => addWeights(weights, statement.species), {} as Weights),
-        answer: `${yes.length} × TAK na ${task.statements.length}${yes.length ? `: ${yes.map((statement) => lowerFirst(statement.text.replace(/\.$/, ""))).join(", ")}.` : "."}`,
+        answer: `${t.rapid(yes.length, task.statements.length)}${yes.length ? `: ${yes.map((statement) => lowerFirst(statement.text.replace(/\.$/, ""))).join(", ")}.` : "."}`,
       };
     }
     case "reflex": {
@@ -255,16 +277,23 @@ function profile(task: Task) {
 }
 
 /** The first edition, as tasks: 24 four-way choices. */
-const TASKS_V1: Task[] = QUESTIONS_V1.map((question) => ({
-  kind: "choice",
-  station: 0,
-  section: question.section,
-  prompt: question.text,
-  proxyPrompt: question.text,
-  options: question.answers,
-}));
+const asTasks = (questions: QuestionV1[]): Task[] =>
+  questions.map((question) => ({
+    kind: "choice",
+    station: 0,
+    section: question.section,
+    prompt: question.text,
+    proxyPrompt: question.text,
+    options: question.answers,
+  }));
 
-const FORMS = { 1: TASKS_V1, 2: TASKS } as const;
+const TASKS_V1 = asTasks(QUESTIONS_V1);
+
+/** Both forms in the words of each edition, with the same points and weights. */
+const FORMS: Record<Locale, Record<1 | 2, Task[]>> = {
+  pl: { 1: TASKS_V1, 2: TASKS },
+  sl: { 1: asTasks(getQuestionsV1("sl")), 2: getTasks("sl") },
+};
 
 /* Scoring per form: maximum points and, per species, the best and the chance score. */
 
@@ -293,6 +322,9 @@ type Diagnosable = Species & { prefix: string; suffix: string };
 export const DIAGNOSABLE = SPECIES.filter(
   (species): species is Diagnosable => RANGE[2][species.key].max > 0 && !!species.prefix && !!species.suffix,
 );
+
+/** A diagnosable species in the edition's words, hybrid halves included. */
+const inEdition = (species: Diagnosable, locale: Locale) => speciesByKey(species.key, locale) as Diagnosable;
 
 /* Codes. */
 
@@ -361,12 +393,7 @@ export function dayNumber(date: Date) {
   return Math.max(0, Math.round((day - EPOCH) / DAY_MS));
 }
 
-const dateFormat = new Intl.DateTimeFormat("pl-PL", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-});
+const dateOptions: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" };
 
 export type Diagnosis = {
   name: string;
@@ -422,20 +449,21 @@ function affinities(version: 1 | 2, earned: Weights) {
   }).sort((a, b) => b.affinity - a.affinity || b.earned - a.earned);
 }
 
-function diagnose(ranked: ReturnType<typeof affinities>, score: number): Diagnosis {
+function diagnose(ranked: ReturnType<typeof affinities>, score: number, locale: Locale): Diagnosis {
   const [first, second] = ranked;
   if (first.affinity < 0.2) {
-    const unspecified = score < 25 ? UNSPECIFIED.latent : UNSPECIFIED.common;
-    return { ...unspecified, species: [] };
+    const unspecified = getUnspecified(locale);
+    return { ...(score < 25 ? unspecified.latent : unspecified.common), species: [] };
   }
+  const [a, b] = [inEdition(first.species, locale), inEdition(second.species, locale)];
   if (second.affinity >= 0.3 && second.affinity >= first.affinity * 0.85) {
     return {
-      name: `Dziaders ${first.species.prefix}-${second.species.suffix}`,
+      name: COPY[locale].hybrid(a.prefix, b.suffix),
       latin: `Dziadersus ${epithet(first.species)} × ${epithet(second.species)}`,
-      species: [first.species, second.species],
+      species: [a, b],
     };
   }
-  return { name: first.species.name, latin: first.species.latin, species: [first.species] };
+  return { name: a.name, latin: a.latin, species: [a] };
 }
 
 /** Standard normal CDF (Abramowitz & Stegun 7.1.26). */
@@ -457,10 +485,15 @@ export function hash(text: string) {
   return value >>> 0;
 }
 
-export function evaluate(draft: Draft): Result {
-  const tasks = FORMS[draft.version];
+/**
+ * A result in the words of an edition. Score, species keys and code are the same in every locale;
+ * statistics and analytics take their labels from `evaluate(draft, "pl")`.
+ */
+export function evaluate(draft: Draft, locale: Locale): Result {
+  const tasks = FORMS[locale][draft.version];
+  const verdicts = getVerdicts(locale);
   const proxy = draft.version === 2 && !!draft.proxy;
-  const readings = draft.answers.map((value, i) => read(tasks[i], value, proxy));
+  const readings = draft.answers.map((value, i) => read(tasks[i], value, proxy, locale));
   const points = readings.reduce((sum, reading) => sum + reading.points, 0);
   const max = MAX_POINTS[draft.version];
   const score = Math.round((points / max) * 100);
@@ -485,12 +518,12 @@ export function evaluate(draft: Draft): Result {
     answers: draft.answers,
     name: cleanName(draft.name ?? ""),
     proxy,
-    date: dateFormat.format(new Date(EPOCH + draft.day * DAY_MS)),
+    date: formatDate(locale, new Date(EPOCH + draft.day * DAY_MS), dateOptions),
     points,
     max,
     score,
-    verdict: VERDICTS.findLast((verdict) => score >= verdict.from) ?? VERDICTS[0],
-    diagnosis: diagnose(ranked, score),
+    verdict: verdicts.findLast((verdict) => score >= verdict.from) ?? verdicts[0],
+    diagnosis: diagnose(ranked, score, locale),
     findings,
     symptoms: [...findings].sort((a, b) => b.points - a.points || a.number - b.number).slice(0, 5),
     affinity: Object.fromEntries(ranked.map((item) => [item.species.key, Math.min(1, Math.max(0, item.affinity / 0.8))])) as Record<
@@ -507,12 +540,12 @@ export function evaluate(draft: Draft): Result {
 }
 
 /** The species the answers so far point to, for the notes between rooms; null while nothing stands out. */
-export function suspect(answers: (number | undefined)[]): Species | null {
+export function suspect(answers: (number | undefined)[], locale: Locale): Species | null {
   const earned: Weights = {};
   const best: Weights = {};
   answers.forEach((value, i) => {
     if (value === undefined) return;
-    addWeights(earned, read(TASKS[i], value).species);
+    addWeights(earned, read(TASKS[i], value, false, "pl").species);
     addWeights(best, PROFILES[2][i].best);
   });
   const ranked = DIAGNOSABLE.map((species) => ({
@@ -522,7 +555,7 @@ export function suspect(answers: (number | undefined)[]): Species | null {
   }))
     .filter((item) => item.earned >= 2 && item.share >= 0.5)
     .sort((a, b) => b.share - a.share || b.earned - a.earned);
-  return ranked[0]?.species ?? null;
+  return ranked[0] ? inEdition(ranked[0].species, locale) : null;
 }
 
 /** How alike two respondents are, 0–100: half the score gap, half the species profile. */
@@ -548,7 +581,7 @@ export function decodeGroup(list: string): Draft[] | null {
 
 export const groupPath = (codes: string[]) => `/grupa/${[...new Set(codes)].join(".")}`;
 
-/** The front page preview and the prerendered sample: 83%, Dziaders Grillowo-Motoryzacyjny. */
+/** The front page preview and the prerendered sample: 83%, Dziaders Grillowo-Motoryzacyjny (Žarno-avtomobilski dziaders). */
 export const SAMPLE_DRAFT: Draft = {
   version: 2,
   answers: [3, 2, 2, 2, 40, 2, 27, 2, 1, 41, 39, 3, 3, 2, 1, 201],

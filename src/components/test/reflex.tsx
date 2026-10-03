@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReflexTask } from "@/content/test";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
 import { formatSeconds, read, reflexOutcome, reflexValue } from "@/lib/test";
 import { cx, typo } from "@/lib/typo";
 import { Stamp } from "../brand";
@@ -16,13 +18,42 @@ const GREEN = "#4e8b5f";
 const UNLIT = "#3a3733";
 const PATIENCE_MS = 5000;
 
-const STATUS: Record<Phase, string> = {
-  ready: "Światła wyłączone. Próba zaczyna się po naciśnięciu przycisku.",
-  red: "Czerwone. Czekaj na zielone.",
-  amber: "Czerwone i żółte.",
-  green: "Zielone. Samochód przed tobą stoi.",
-  done: "",
-};
+const COPY = defineCopy({
+  pl: {
+    status: {
+      ready: "Światła wyłączone. Próba zaczyna się po naciśnięciu przycisku.",
+      red: "Czerwone. Czekaj na zielone.",
+      amber: "Czerwone i żółte.",
+      green: "Zielone. Samochód przed tobą stoi.",
+      done: "",
+    } satisfies Record<Phase, string>,
+    scene: "Skrzyżowanie: samochód przed tobą i sygnalizator",
+    falstart: "Falstart",
+    time: (seconds: string) => `Czas reakcji: ${seconds}`,
+    over: "Próba zakończona",
+    howTo: "Trąbić klawiszem spacji albo przyciskiem. Instytut nie przewiduje drugiej próby.",
+    start: "Rozpocznij próbę",
+    honk: "Trąb",
+    wait: "Czekam spokojnie, nie trąbię",
+  },
+  sl: {
+    status: {
+      ready: "Semafor je ugasnjen. Preizkus se začne, ko pritisneš gumb.",
+      red: "Rdeča. Počakaj na zeleno.",
+      amber: "Rdeča in rumena.",
+      green: "Zelena. Avto pred tabo stoji.",
+      done: "",
+    },
+    scene: "Križišče: avto pred tabo in semafor",
+    falstart: "Prehiter start",
+    time: (seconds: string) => `Reakcijski čas: ${seconds}`,
+    over: "Preizkus končan",
+    howTo: "Hupa se s preslednico ali z gumbom. Drugega poskusa Inštitut ne predvideva.",
+    start: "Začni preizkus",
+    honk: "Hupaj",
+    wait: "Mirno čakam, ne hupam",
+  },
+});
 
 /** A short two-tone car horn, only ever played in response to a press. */
 function honk() {
@@ -55,6 +86,8 @@ function honk() {
 
 /** The horn test: wait for green, then honk at the car that doesn't move. */
 export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
+  const locale = useLocale();
+  const t = COPY[locale];
   const [phase, setPhase] = useState<Phase>("ready");
   const [value, setValue] = useState<number | null>(null);
   const [honked, setHonked] = useState(false);
@@ -107,7 +140,7 @@ export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
   });
 
   const outcome = value === null ? null : reflexOutcome(value);
-  const verdict = value === null ? null : read(task, value);
+  const verdict = value === null ? null : read(task, value, false, locale);
   const falstart = outcome?.outcome === "red" || outcome?.outcome === "amber";
 
   function next() {
@@ -117,7 +150,7 @@ export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
   return (
     <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
       <figure className="relative border border-ink bg-card">
-        <svg viewBox="0 0 400 240" className="block w-full" role="img" aria-label="Skrzyżowanie: samochód przed tobą i sygnalizator">
+        <svg viewBox="0 0 400 240" className="block w-full" role="img" aria-label={t.scene}>
           <rect x={0} y={168} width={400} height={72} fill={GREY} />
           <g stroke={PAPER} strokeWidth={4} strokeDasharray="18 16">
             <line x1={60} y1={232} x2={84} y2={176} />
@@ -158,22 +191,22 @@ export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
           )}
         </svg>
         {falstart && (
-          <Stamp className="absolute left-4 top-4 animate-stamp bg-card/80 text-[0.95rem] [--stamp-rotate:-8deg]">Falstart</Stamp>
+          <Stamp className="absolute left-4 top-4 animate-stamp bg-card/80 text-[0.95rem] [--stamp-rotate:-8deg]">{t.falstart}</Stamp>
         )}
       </figure>
 
       <div>
         <p className="label text-ink-soft" aria-live="polite">
-          {phase === "done" && outcome ? (outcome.seconds !== undefined && !falstart && outcome.outcome !== "none" ? `Czas reakcji: ${formatSeconds(outcome.seconds)}` : "Próba zakończona") : STATUS[phase]}
+          {phase === "done" && outcome ? (outcome.seconds !== undefined && !falstart && outcome.outcome !== "none" ? t.time(formatSeconds(outcome.seconds)) : t.over) : t.status[phase]}
         </p>
 
         {phase === "ready" && (
           <>
             <p className="mt-4 max-w-md text-lg leading-snug">
-              {typo("Trąbić klawiszem spacji albo przyciskiem. Instytut nie przewiduje drugiej próby.")}
+              {typo(t.howTo)}
             </p>
             <button type="button" onClick={start} autoFocus className="btn mt-8 bg-ink text-paper hover:bg-red">
-              Rozpocznij próbę <span aria-hidden="true">→</span>
+              {t.start} <span aria-hidden="true">→</span>
             </button>
           </>
         )}
@@ -191,7 +224,7 @@ export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
             className="mt-6 flex w-full max-w-sm select-none items-center justify-center gap-4 bg-red px-6 py-8 font-sans text-3xl font-bold uppercase tracking-[0.12em] text-paper transition-transform active:scale-[0.98]"
           >
             <HornIcon />
-            Trąb
+            {t.honk}
           </button>
         )}
 
@@ -205,7 +238,7 @@ export function ReflexView({ task, onAnswer, untimed }: TaskProps<ReflexTask>) {
         )}
         {untimed && phase === "green" && (
           <button type="button" onClick={() => finish(reflexValue("none"), false)} className="btn mt-4 border border-ink">
-            Czekam spokojnie, nie trąbię
+            {t.wait}
           </button>
         )}
       </div>

@@ -5,11 +5,33 @@ import { Binoculars, Figure, GREY, INK, plateDrawing } from "@/components/pictog
 import type { Entry } from "@/content/dictionary";
 import { formatReportDate, type Report } from "@/content/reports";
 import { statusLabel, type Species, type SpeciesKey } from "@/content/species";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import type { ExamResult } from "./exam";
 import { C, OG_FONTS, OgFrame, OgStamp, bold, italic, sans, serif } from "./og";
 import { svgDataUri } from "./svg-string";
+import { quote } from "./typo";
 
 export const OG_SIZE = { width: 1200, height: 630 };
+
+const COPY = defineCopy({
+  pl: {
+    atlas: "Atlas Dziadersów",
+    dictionary: "Słownik Dziaderski",
+    original: "",
+    report: (number: string, date: string) => `Raport ${number} · ${date}`,
+    exam: (date: string) => `Egzamin terenowy · ${date}`,
+    points: (points: number) => `${points} z 12 oznaczeń poprawnych`,
+  },
+  sl: {
+    atlas: "Atlas dziadersov",
+    dictionary: "Dziaderski slovar",
+    original: "polj.",
+    report: (number: string, date: string) => `Poročilo ${number} · ${date}`,
+    exam: (date: string) => `Terenski izpit · ${date}`,
+    points: (points: number) => `${points} od 12 pravilnih določitev`,
+  },
+});
 
 const fit = (text: string, sizes: [number, number][], fallback: number) =>
   sizes.find(([max]) => text.length <= max)?.[1] ?? fallback;
@@ -36,12 +58,12 @@ export function OgFigure({ height }: { height: number }) {
   return <img src={svgDataUri("-8 0 56 96", <Figure right="point" color={INK} />)} width={(height * 56) / 96} height={height} alt="" />;
 }
 
-export function speciesCard(species: Species) {
+export function speciesCard(species: Species, locale: Locale) {
   return render(
-    <OgFrame section="Atlas Dziadersów" url={`dziader.si/atlas/${species.slug}`}>
+    <OgFrame locale={locale} section={COPY[locale].atlas} path={`/atlas/${species.slug}`}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingRight: 24 }}>
         <div style={{ ...sans, display: "flex", fontSize: 22, color: C.soft }}>
-          {species.code} · {statusLabel(species.status)}
+          {species.code} · {statusLabel(species.status, locale)}
         </div>
         <div
           style={{
@@ -57,7 +79,7 @@ export function speciesCard(species: Species) {
         </div>
         <div style={{ ...italic, display: "flex", marginTop: 14, fontSize: 32, color: C.soft }}>{species.latin}</div>
         <div style={{ ...italic, display: "flex", marginTop: 26, maxWidth: 560, fontSize: 34, lineHeight: 1.2 }}>
-          „{species.calls[0]}”
+          {quote(species.calls[0], locale)}
         </div>
       </div>
       <OgPlate species={species.key} width={470} />
@@ -65,10 +87,12 @@ export function speciesCard(species: Species) {
   );
 }
 
-export function entryCard(entry: Entry) {
+/** A dictionary entry: the edition's headword; the Slovenian card also names the Polish original. */
+export function entryCard(entry: Entry, locale: Locale) {
+  const t = COPY[locale];
   const sense = entry.senses[0].text;
   return render(
-    <OgFrame section="Słownik Dziaderski" url={`dziader.si/slownik/${entry.slug}`}>
+    <OgFrame locale={locale} section={t.dictionary} path={`/slownik/${entry.slug}`}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingRight: 30 }}>
         <div
           style={{
@@ -81,7 +105,12 @@ export function entryCard(entry: Entry) {
         >
           {entry.headword}
         </div>
-        <div style={{ ...italic, display: "flex", marginTop: 16, fontSize: 30, color: C.soft }}>{entry.grammar}</div>
+        <div style={{ ...italic, display: "flex", alignItems: "baseline", marginTop: 16, fontSize: 30, color: C.soft }}>
+          {entry.grammar}
+          {t.original && entry.original ? (
+            <span style={{ ...sans, fontStyle: "normal", marginLeft: 22, fontSize: 22 }}>{`${t.original} ${entry.original}`}</span>
+          ) : null}
+        </div>
         <div style={{ ...serif, display: "flex", marginTop: 24, maxWidth: 680, fontSize: 31, lineHeight: 1.3 }}>
           {sense.length > 140 ? `${sense.slice(0, 137)}…` : sense}
         </div>
@@ -91,11 +120,13 @@ export function entryCard(entry: Entry) {
   );
 }
 
-export function reportCard(report: Report) {
+export function reportCard(report: Report, locale: Locale) {
   const finding = report.findings[0];
-  const percent = /^(\d+)%$/.exec(finding.value);
+  // "61%" in Polish, "61 %" in Slovenian.
+  const percent = /^(\d+)\s?%$/.exec(finding.value);
+  const section = COPY[locale].report(report.number, formatReportDate(report.date, locale));
   return render(
-    <OgFrame section={`Raport ${report.number} · ${formatReportDate(report.date)}`} url={`dziader.si/raporty/${report.slug}`}>
+    <OgFrame locale={locale} section={section} path={`/raporty/${report.slug}`}>
       <div style={{ display: "flex", flexDirection: "column", width: 470, marginRight: 50 }}>
         <div style={{ ...bold, display: "flex", fontSize: finding.value.length > 5 ? 118 : 172, lineHeight: 0.9, letterSpacing: -4, color: C.red }}>
           {finding.value}
@@ -125,15 +156,13 @@ export function reportCard(report: Report) {
   );
 }
 
-export function sectionCard({ section, title, subtitle, url, art }: {
-  section: string;
-  title: string;
-  subtitle: string;
-  url: string;
-  art: ReactNode;
-}) {
+/** A department's card. `path` is the internal path of the page it shares. */
+export function sectionCard(
+  { section, title, subtitle, path, art }: { section: string; title: string; subtitle: string; path: string; art: ReactNode },
+  locale: Locale,
+) {
   return render(
-    <OgFrame section={section} url={url}>
+    <OgFrame locale={locale} section={section} path={path}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingRight: 30 }}>
         <div style={{ ...bold, display: "flex", fontSize: title.length > 20 ? 88 : 112, lineHeight: 0.92, letterSpacing: -2.5 }}>
           {title}
@@ -172,18 +201,19 @@ export function OgBinoculars({ height }: { height: number }) {
 }
 
 /** An exam result: the grade, its name and title, twelve squares for the answers. */
-export function examCard(result: ExamResult, headers?: Record<string, string>) {
+export function examCard(result: ExamResult, locale: Locale, headers?: Record<string, string>) {
+  const t = COPY[locale];
   const squares = result.questions.map((question, i) => (
     <rect key={i} x={i * 36} y={0} width={32} height={32} fill={result.answers[i] === question.correct ? C.ink : C.red} />
   ));
   return render(
-    <OgFrame section={`Egzamin terenowy · ${result.date}`} url="dziader.si/egzamin">
+    <OgFrame locale={locale} section={t.exam(result.date)} path="/egzamin">
       <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
           <div style={{ ...bold, display: "flex", fontSize: 230, lineHeight: 0.8, letterSpacing: -6 }}>{result.grade.value}</div>
           <div style={{ display: "flex", flexDirection: "column", marginLeft: 34, paddingBottom: 8 }}>
             <div style={{ ...bold, display: "flex", fontSize: 64, lineHeight: 1 }}>{result.grade.name}</div>
-            <div style={{ ...sans, display: "flex", marginTop: 12, fontSize: 26, color: C.soft }}>{`${result.points} z 12 oznaczeń poprawnych`}</div>
+            <div style={{ ...sans, display: "flex", marginTop: 12, fontSize: 26, color: C.soft }}>{t.points(result.points)}</div>
           </div>
         </div>
         <div style={{ display: "flex", marginTop: 34 }}>

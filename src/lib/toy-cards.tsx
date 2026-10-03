@@ -1,19 +1,42 @@
 import { Figure } from "@/components/pictograms";
 import { occasionDrawing } from "@/components/occasions";
 import type { Occasion } from "@/content/bingo";
+import type { Locale } from "@/i18n/config";
+import { defineCopy } from "@/i18n/copy";
 import type { Line } from "./phrasebook";
 import { C, OgFrame, bold, sans } from "./og";
 import { render } from "./og-cards";
 import { svgDataUri } from "./svg-string";
-import { typo } from "./typo";
+import { formatNumber, typo } from "./typo";
 
 const IMMUTABLE = { "cache-control": "public, max-age=86400, s-maxage=31536000, immutable" };
 
+const COPY = defineCopy({
+  pl: {
+    phrasebook: (chapter: string) => `Rozmówki dziaderskie · ${chapter}`,
+    line: (number: number, total: number) => `Wypowiedź nr ${number} z ${total} · losuj swoją na dziader.si`,
+    bingo: (number: string) => `Dziaders Bingo · karta nr ${number}`,
+    play: "Graj na",
+    wins: "Pięć w linii wygrywa.",
+    free: "WOLNE POLE",
+  },
+  sl: {
+    phrasebook: (chapter: string) => `Dziaderski pogovornik · ${chapter}`,
+    line: (number: number, total: number) =>
+      `Izjava št. ${formatNumber("sl", number)} od ${formatNumber("sl", total)} · izžrebaj svojo na dziader.si`,
+    bingo: (number: string) => `Dziaders bingo · listek št. ${number}`,
+    play: "Igraj na",
+    wins: "Pet v vrsto zmaga.",
+    free: "PROSTO POLJE",
+  },
+});
+
 /** A line from the Rozmówki in the red speech bubble, said by the pointing figure. */
-export function lineCard(line: Line, { cached = false }: { cached?: boolean } = {}) {
+export function lineCard(line: Line, locale: Locale, { cached = false }: { cached?: boolean } = {}) {
+  const t = COPY[locale];
   const size = line.text.length > 150 ? 40 : line.text.length > 110 ? 46 : 52;
   return render(
-    <OgFrame section={`Rozmówki dziaderskie · ${line.situation.name}`} url={`dziader.si/generator`}>
+    <OgFrame locale={locale} section={t.phrasebook(line.situation.name)} path="/generator">
       <img src={svgDataUri("-4 -1 56 97", <Figure right="point" glasses="eyes" />)} width={196} height={340} alt="" />
       <div style={{ display: "flex", flex: 1, flexDirection: "column", marginLeft: 26, marginBottom: 70 }}>
         <div style={{ position: "relative", display: "flex", padding: "30px 38px", background: C.red }}>
@@ -23,7 +46,7 @@ export function lineCard(line: Line, { cached = false }: { cached?: boolean } = 
           <div style={{ ...bold, display: "flex", fontSize: size, lineHeight: 1.16, color: C.paper }}>{typo(line.text)}</div>
         </div>
         <div style={{ ...sans, display: "flex", marginTop: 16, fontSize: 21, color: C.soft }}>
-          Wypowiedź nr {line.number} z {line.total} · losuj swoją na dziader.si
+          {t.line(line.number, line.total)}
         </div>
       </div>
     </OgFrame>,
@@ -32,13 +55,14 @@ export function lineCard(line: Line, { cached = false }: { cached?: boolean } = 
 }
 
 /** A bingo card as a share image: the occasion, the card number and its 5 × 5 grid. */
-export function bingoCard(occasion: Occasion, number: string, squares: string[]) {
+export function bingoCard(occasion: Occasion, number: string, squares: string[], locale: Locale) {
+  const t = COPY[locale];
   return render(
-    <OgFrame section={`Dziaders Bingo · karta nr ${number}`} url="Graj na dziader.si/bingo">
+    <OgFrame locale={locale} section={t.bingo(number)} path="/bingo" cta={t.play}>
       <div style={{ display: "flex", flexDirection: "column", width: 400 }}>
         <img src={svgDataUri("0 0 120 100", occasionDrawing(occasion.slug))} width={240} height={200} alt="" />
         <div style={{ ...bold, display: "flex", marginTop: 10, fontSize: 66, lineHeight: 0.95, letterSpacing: -1.5 }}>{occasion.title}</div>
-        <div style={{ ...sans, display: "flex", marginTop: 14, fontSize: 22, color: C.soft }}>Pięć w linii wygrywa.</div>
+        <div style={{ ...sans, display: "flex", marginTop: 14, fontSize: 22, color: C.soft }}>{t.wins}</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", marginLeft: 40, padding: 8, background: C.card, border: `2px solid ${C.ink}` }}>
         <div style={{ display: "flex" }}>
@@ -74,7 +98,7 @@ export function bingoCard(occasion: Occasion, number: string, squares: string[])
                     textAlign: "center",
                   }}
                 >
-                  {free ? "WOLNE POLE" : typo(squares[i])}
+                  {free ? t.free : typo(squares[i])}
                 </div>
               );
             })}

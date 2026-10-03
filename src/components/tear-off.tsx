@@ -1,14 +1,75 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
 import type { Moon, Sheet } from "@/lib/almanac";
 import { warsawTime } from "@/lib/calendar";
 import type { Calendar } from "@/lib/profile";
-import { cx, plural, typo } from "@/lib/typo";
+import { cx, plural, pluralSl, typo } from "@/lib/typo";
 import { patchAccount, signInHref, useAccount } from "./account";
 
 export type Page = Sheet & { proverb: string; observance?: { name: string; note: string } };
+
+const COPY = defineCopy({
+  pl: {
+    dayOff: "dzień wolny od pracy",
+    /** Whether the page names the holiday too: Polish readers know their own. */
+    namesHoliday: false,
+    sunrise: "Wschód",
+    sunset: "Zachód",
+    daylight: "Dzień",
+    moon: (name: string, day: number, left: number) => `Księżyc: ${name} · dzień ${day}, zostało ${left}`,
+    week: (week: number) => `Kalendarz IBD · tydzień ${week}`,
+    toChristmasEve: (days: number) => (days ? `do Wigilii ${days} ${plural(days, "dzień", "dni", "dni")}` : "Wigilia"),
+    tearYesterday: (date: string) => `Zerwij wczorajszą kartkę: ${date}`,
+    yesterday: "Wczorajsza kartka. Zerwij",
+    hanging: "Na ścianie wisi jeszcze wczorajsza kartka.",
+    hangingText: "W każdym porządnym domu zrywa się ją rano, przy herbacie, z dźwiękiem, który słychać w całej kuchni.",
+    tear: "Zerwij kartkę",
+    today: (date: string) => `Dziś, ${date}`,
+    torn: "Kartka zerwana.",
+    alreadyTorn: "Dzisiejsza kartka już wisi.",
+    collection: ({ total, streak, best }: Calendar) =>
+      `Kartka nr ${total} w kolekcji. Seria: ${streak} ${plural(streak, "dzień", "dni", "dni")} z rzędu${best > streak ? `, rekord: ${best}` : ""}.`,
+    badge: (days: number) => `Do odznaki Zdzieraka brakuje ${days} ${plural(days, "dnia", "dni", "dni")}.`,
+    guest: "Kolekcję zerwanych kartek, serię dni i odznakę Zdzieraka prowadzi Profil Dziaderski.",
+    join: "Załóż profil",
+    next: "Następna kartka za",
+    tornToday: "Dziś zerwało",
+    people: (n: number) => `${n} ${plural(n, "osoba", "osoby", "osób")}`,
+  },
+  sl: {
+    // Red numbers are Poland's days off: the page names the holiday and says where it is one.
+    dayOff: "dela prost dan na Poljskem",
+    namesHoliday: true,
+    sunrise: "Vzhod",
+    sunset: "Zahod",
+    daylight: "Dolžina dneva",
+    moon: (name: string, day: number, left: number) => `Luna: ${name} · ${day}. dan, do konca leta ${left}`,
+    week: (week: number) => `Koledar IBD · ${week}. teden`,
+    toChristmasEve: (days: number) =>
+      days ? `do svetega večera ${days} ${pluralSl(days, "dan", "dneva", "dnevi", "dni")}` : "sveti večer",
+    tearYesterday: (date: string) => `Odtrgaj včerajšnji list: ${date}`,
+    yesterday: "Včerajšnji list. Odtrgaj",
+    hanging: "Na steni še visi včerajšnji list.",
+    hangingText: "V vsaki spodobni hiši ga odtrgajo zjutraj, ob čaju, z zvokom, ki se sliši po vsej kuhinji.",
+    tear: "Odtrgaj list",
+    today: (date: string) => `Danes, ${date}`,
+    torn: "List je odtrgan.",
+    alreadyTorn: "Današnji list že visi.",
+    collection: ({ total, streak, best }: Calendar) =>
+      `List št. ${total} v zbirki. Niz: ${streak} ${pluralSl(streak, "dan", "dneva", "dnevi", "dni")} zapored${best > streak ? `, rekord: ${best}` : ""}.`,
+    badge: (days: number) =>
+      `Do značke Trgalec ${pluralSl(days, `manjka še ${days} dan`, `manjkata še ${days} dneva`, `manjkajo še ${days} dnevi`, `manjka še ${days} dni`)}.`,
+    guest: "Zbirko odtrganih listov, niz dni in značko Trgalec vodi Dziaderski profil.",
+    join: "Ustvari profil",
+    next: "Naslednji list čez",
+    tornToday: "Danes odtrgalo",
+    people: (n: number) => `${n} ${pluralSl(n, "oseba", "osebi", "osebe", "oseb")}`,
+  },
+});
 
 const TORN_KEY = "ibd-kartka";
 const noSubscription = () => () => {};
@@ -37,6 +98,7 @@ export function MoonGlyph({ moon, className }: { moon: Moon; className?: string 
 }
 
 function SheetFace({ page, className }: { page: Page; className?: string }) {
+  const t = COPY[useLocale()];
   const [first, second] = page.proverb.split(" / ");
   return (
     <div className={cx("flex h-full flex-col border border-ink bg-card px-6 pb-5 pt-5 text-center", className)}>
@@ -48,25 +110,25 @@ function SheetFace({ page, className }: { page: Page; className?: string }) {
         {page.day}
       </p>
       <p className={cx("mt-1 text-2xl font-bold", page.red && "text-red")}>{page.weekday}</p>
-      {page.dayOff && <p className="label text-red">dzień wolny od pracy</p>}
+      {page.dayOff && <p className="label text-red">{t.namesHoliday && page.holiday ? `${page.holiday} · ${t.dayOff}` : t.dayOff}</p>}
 
       <dl className="mt-5 grid grid-cols-3 border-y border-ink py-2.5 font-sans text-[0.8rem] leading-tight">
         <div>
-          <dt className="text-ink-soft">Wschód</dt>
+          <dt className="text-ink-soft">{t.sunrise}</dt>
           <dd className="font-semibold">{page.sunrise}</dd>
         </div>
         <div>
-          <dt className="text-ink-soft">Zachód</dt>
+          <dt className="text-ink-soft">{t.sunset}</dt>
           <dd className="font-semibold">{page.sunset}</dd>
         </div>
         <div>
-          <dt className="text-ink-soft">Dzień</dt>
+          <dt className="text-ink-soft">{t.daylight}</dt>
           <dd className="font-semibold">{page.daylight}</dd>
         </div>
       </dl>
       <p className="label mt-2 flex items-center justify-center gap-2 text-ink-soft">
         <MoonGlyph moon={page.moon} className="size-4 text-ink" />
-        Księżyc: {page.moon.name} · dzień {page.dayOfYear}, zostało {page.daysLeft}
+        {t.moon(page.moon.name, page.dayOfYear, page.daysLeft)}
       </p>
 
       {page.observance && (
@@ -86,8 +148,8 @@ function SheetFace({ page, className }: { page: Page; className?: string }) {
         )}
       </p>
       <p className="label mt-4 flex justify-between border-t border-rule pt-2 text-[0.72rem] text-ink-faint">
-        <span>Kalendarz IBD · tydzień {page.week}</span>
-        <span>{page.toChristmasEve ? `do Wigilii ${page.toChristmasEve} ${plural(page.toChristmasEve, "dzień", "dni", "dni")}` : "Wigilia"}</span>
+        <span>{t.week(page.week)}</span>
+        <span>{t.toChristmasEve(page.toChristmasEve)}</span>
       </p>
     </div>
   );
@@ -104,6 +166,7 @@ function untilMidnight() {
  * A signed-in visitor's torn pages go to the profile and make a streak.
  */
 export function TearOffCalendar({ today, yesterday, tornToday }: { today: Page; yesterday: Page; tornToday: number | null }) {
+  const t = COPY[useLocale()];
   const account = useAccount();
   const stored = useSyncExternalStore(noSubscription, storedDay, () => "");
   const [state, setState] = useState<"wall" | "tearing" | "done">("wall");
@@ -164,7 +227,7 @@ export function TearOffCalendar({ today, yesterday, tornToday }: { today: Page; 
               <button
                 type="button"
                 onClick={tear}
-                aria-label={`Zerwij wczorajszą kartkę: ${yesterday.date}`}
+                aria-label={t.tearYesterday(yesterday.date)}
                 className={cx(
                   "absolute inset-0 z-10 block w-full origin-top-right cursor-grab text-left",
                   state === "tearing" && "pointer-events-none animate-[tear-off_900ms_cubic-bezier(0.5,0,0.75,0.4)_forwards]",
@@ -172,7 +235,7 @@ export function TearOffCalendar({ today, yesterday, tornToday }: { today: Page; 
               >
                 <SheetFace page={yesterday} className="min-h-[34rem]" />
                 <span className="label absolute left-1/2 top-full mt-7 -translate-x-1/2 whitespace-nowrap bg-ink px-3 py-1.5 text-paper">
-                  Wczorajsza kartka. Zerwij
+                  {t.yesterday}
                 </span>
               </button>
             )}
@@ -183,33 +246,31 @@ export function TearOffCalendar({ today, yesterday, tornToday }: { today: Page; 
       <div className="lg:col-span-6">
         {hanging ? (
           <div className="border-t border-ink pt-5">
-            <p className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-bold leading-tight">{typo("Na ścianie wisi jeszcze wczorajsza kartka.")}</p>
+            <p className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-bold leading-tight">{typo(t.hanging)}</p>
             <p className="mt-3 max-w-md text-lg leading-snug text-ink-soft">
-              {typo("W każdym porządnym domu zrywa się ją rano, przy herbacie, z dźwiękiem, który słychać w całej kuchni.")}
+              {typo(t.hangingText)}
             </p>
             <button type="button" onClick={tear} disabled={state !== "wall"} className="btn mt-7 bg-ink text-paper hover:bg-red disabled:opacity-60">
-              Zerwij kartkę <span aria-hidden="true">↓</span>
+              {t.tear} <span aria-hidden="true">↓</span>
             </button>
           </div>
         ) : (
           <div className="border-t border-ink pt-5" role="status">
-            <p className="label text-ink-soft">Dziś, {today.date}</p>
+            <p className="label text-ink-soft">{t.today(today.date)}</p>
             <p className="mt-2 text-[clamp(1.8rem,3.4vw,2.6rem)] font-bold leading-tight">
-              {state === "done" ? "Kartka zerwana." : "Dzisiejsza kartka już wisi."}
+              {state === "done" ? t.torn : t.alreadyTorn}
             </p>
             {shown ? (
               <p className="mt-3 max-w-md text-lg leading-snug">
                 <span aria-hidden="true" className="mr-2 inline-block size-2 translate-y-[-2px] rounded-full bg-red" />
-                {typo(
-                  `Kartka nr ${shown.total} w kolekcji. Seria: ${shown.streak} ${plural(shown.streak, "dzień", "dni", "dni")} z rzędu${shown.best > shown.streak ? `, rekord: ${shown.best}` : ""}.`,
-                )}{" "}
-                {shown.best < 7 && typo(`Do odznaki Zdzieraka brakuje ${7 - shown.best} ${plural(7 - shown.best, "dnia", "dni", "dni")}.`)}
+                {typo(t.collection(shown))}{" "}
+                {shown.best < 7 && typo(t.badge(7 - shown.best))}
               </p>
             ) : (
               <p className="mt-3 max-w-md text-lg leading-snug text-ink-soft">
-                {typo("Kolekcję zerwanych kartek, serię dni i odznakę Zdzieraka prowadzi Profil Dziaderski.")}{" "}
+                {typo(t.guest)}{" "}
                 <Link href={signInHref("/kalendarz")} className="link font-sans text-[0.95rem] text-ink">
-                  Załóż profil
+                  {t.join}
                 </Link>
               </p>
             )}
@@ -217,18 +278,13 @@ export function TearOffCalendar({ today, yesterday, tornToday }: { today: Page; 
         )}
         <dl className="mt-8 grid grid-cols-2 border-t border-rule">
           <div className="pt-3">
-            <dt className="label text-ink-soft">Następna kartka za</dt>
+            <dt className="label text-ink-soft">{t.next}</dt>
             <dd className="mt-1 text-2xl font-bold tabular-nums">{left || "…"}</dd>
           </div>
           <div className="pt-3">
-            <dt className="label text-ink-soft">Dziś zerwało</dt>
+            <dt className="label text-ink-soft">{t.tornToday}</dt>
             <dd className="mt-1 text-2xl font-bold tabular-nums">
-              {tornToday === null
-                ? "·"
-                : (() => {
-                    const n = tornToday + (state === "done" ? 1 : 0);
-                    return `${n} ${plural(n, "osoba", "osoby", "osób")}`;
-                  })()}
+              {tornToday === null ? "·" : t.people(tornToday + (state === "done" ? 1 : 0))}
             </dd>
           </div>
         </dl>

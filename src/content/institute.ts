@@ -1,4 +1,7 @@
+import { LOCALE_INFO, type Locale } from "@/i18n/config";
+import { overlayList } from "@/i18n/overlay";
 import { SITUATIONS } from "./phrasebook";
+import * as SL from "./sl/institute";
 
 /*
  * O Instytucie (/o-instytucie): the statute, the history, the organisation chart and the FAQ.
@@ -17,6 +20,8 @@ export type Milestone = {
   date: string;
   /** Two or three short sentences, in the historic present. */
   text: string;
+  /** Translator's notes (op. prev.), Slovenian edition only. */
+  notes?: string[];
 };
 
 /** Mock history, oldest first. The 2026 entries match the real launch dates of the site. */
@@ -129,8 +134,11 @@ export const UNITS: Unit[] = [
   },
 ];
 
+/** Headline figure. `label` continues `value` as one phrase: "0 zł" + "grantów i dotacji…". */
+export type Figure = { value: string; label: string };
+
 /** Headline figures. `label` continues `value` as one phrase: "0 zł" + "grantów i dotacji…". */
-export const FIGURES: { value: string; label: string }[] = [
+export const FIGURES: Figure[] = [
   { value: "0 zł", label: "grantów i dotacji otrzymanych od dnia założenia" },
   { value: "5", label: "gabinetów diagnostycznych czynnych całą dobę" },
   {
@@ -192,3 +200,39 @@ export const FAQ: Question[] = [
 /** The contact paragraph. No address here: the controller's email lives in `site.controller`. */
 export const CONTACT =
   "Instytut przyjmuje korespondencję w sprawach naukowych, organizacyjnych i dotyczących danych osobowych. Adres do korespondencji podaje polityka prywatności. Pisma rozpatruje się w kolejności wpływu. Wiadomości napisane wielkimi literami nie są rozpatrywane szybciej, a kartki zostawione za wycieraczką nie są rozpatrywane wcale.";
+
+/* Editions */
+
+export type Institute = {
+  MISSION: string;
+  HISTORY: Milestone[];
+  UNITS: Unit[];
+  FIGURES: Figure[];
+  FAQ: Question[];
+  CONTACT: string;
+};
+
+/** Figures print their numbers the Polish way ("3 812"); an edition reprints every grouped number its own way ("3812", "12.345"). */
+function reprintNumbers(value: string, locale: Locale) {
+  const format = new Intl.NumberFormat(LOCALE_INFO[locale].intl);
+  return value.replace(/\d{1,3}(?:\s\d{3})+/g, (digits) => format.format(Number(digits.replace(/\s/g, ""))));
+}
+
+const EDITIONS: Record<Locale, Institute> = {
+  pl: { MISSION, HISTORY, UNITS, FIGURES, FAQ, CONTACT },
+  sl: {
+    MISSION: SL.MISSION,
+    HISTORY: overlayList("institute.HISTORY", HISTORY, (milestone) => milestone.date, SL.HISTORY),
+    UNITS: overlayList("institute.UNITS", UNITS, (unit) => unit.href ?? unit.name, SL.UNITS),
+    FIGURES: overlayList("institute.FIGURES", FIGURES, (figure) => figure.label, SL.FIGURES).map((figure) => ({
+      ...figure,
+      value: reprintNumbers(figure.value, "sl"),
+    })),
+    // The Slovenian edition answers one more question: why it exists.
+    FAQ: [...overlayList("institute.FAQ", FAQ, (item) => item.question, SL.FAQ), SL.EDITION_QUESTION],
+    CONTACT: SL.CONTACT,
+  },
+};
+
+/** The statute, history, organisation chart, figures, FAQ and contact paragraph of the edition. */
+export const getInstitute = (locale: Locale): Institute => EDITIONS[locale];

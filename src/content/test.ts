@@ -1,3 +1,6 @@
+import type { Locale } from "@/i18n/config";
+import { overlay } from "@/i18n/overlay";
+import * as sl from "./sl/test";
 import type { SpeciesKey } from "./species";
 
 export type Weights = Partial<Record<SpeciesKey, number>>;
@@ -502,3 +505,25 @@ export const UNSPECIFIED = {
       "Postać klasyczna, bez specjalizacji. Objawy rozłożone równomiernie na wszystkie dziedziny życia: od pogody po politykę.",
   },
 };
+
+/* Editions: the Polish data above with each edition's text laid over it. */
+
+const EDITIONS = {
+  pl: { stations: STATIONS, tasks: TASKS, verdicts: VERDICTS, unspecified: UNSPECIFIED },
+  sl: {
+    stations: overlay(STATIONS, sl.STATIONS, "test.STATIONS"),
+    tasks: overlay(TASKS, sl.TASKS, "test.TASKS"),
+    verdicts: overlay(VERDICTS, sl.VERDICTS, "test.VERDICTS"),
+    unspecified: overlay(UNSPECIFIED, sl.UNSPECIFIED, "test.UNSPECIFIED"),
+  },
+} satisfies Record<Locale, unknown>;
+
+/** The routing slip in the edition's language. */
+export const getStations = (locale: Locale): Station[] => EDITIONS[locale].stations;
+
+/** Formularz IBD-T2 in the edition's language: same order, points and weights as TASKS. */
+export const getTasks = (locale: Locale): Task[] => EDITIONS[locale].tasks;
+
+export const getVerdicts = (locale: Locale): Verdict[] => EDITIONS[locale].verdicts;
+
+export const getUnspecified = (locale: Locale): typeof UNSPECIFIED => EDITIONS[locale].unspecified;

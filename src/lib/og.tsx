@@ -2,6 +2,9 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { ReactNode } from "react";
 import { MUSTACHE_PATH } from "@/components/pictograms";
+import type { Locale } from "@/i18n/config";
+import { localizePath } from "@/i18n/routes";
+import { siteCopy } from "./site";
 
 /* Shared by every generated image: static TTFs (Satori reads neither woff2 nor variable fonts). */
 
@@ -118,8 +121,30 @@ export function OgStamp({ label, fontSize, rotate = -3 }: { label: string; fontS
   );
 }
 
-/** 1200 × 630 share card: logo and section on top, content, a rule and the address at the bottom. */
-export function OgFrame({ section, url, children }: { section: string; url: string; children: ReactNode }) {
+/** The address printed on images: "dziader.si/atlas/x", "dziader.si/sl/atlas/y". `path` is internal. */
+export const printedUrl = (path: string, locale: Locale) => {
+  const localized = localizePath(path, locale);
+  return `dziader.si${localized === "/" ? "" : localized}`;
+};
+
+/**
+ * 1200 × 630 share card: logo and section on top, content, a rule and the address at the bottom.
+ * `path` is the internal path of the page the card shares.
+ */
+export function OgFrame({
+  locale,
+  section,
+  path,
+  cta,
+  children,
+}: {
+  locale: Locale;
+  section: string;
+  path: string;
+  /** Words before the address, such as "Zbadaj się na". */
+  cta?: string;
+  children: ReactNode;
+}) {
   return (
     <div
       style={{
@@ -147,8 +172,8 @@ export function OgFrame({ section, url, children }: { section: string; url: stri
           fontSize: 21,
         }}
       >
-        <span style={{ color: C.soft }}>Instytut Badań nad Dziaderstwem</span>
-        <span style={{ color: C.red }}>{url}</span>
+        <span style={{ color: C.soft }}>{siteCopy(locale).institute}</span>
+        <span style={{ color: C.red }}>{cta ? `${cta} ${printedUrl(path, locale)}` : printedUrl(path, locale)}</span>
       </div>
     </div>
   );

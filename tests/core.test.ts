@@ -11,7 +11,7 @@ test("published T2 sample retains its diagnosis and certificate", () => {
   const draft = decodeResult("2doy25yboiqpc907l");
   assert.ok(draft);
   assert.deepEqual(draft.answers, [3, 2, 2, 2, 40, 2, 27, 2, 1, 41, 39, 3, 3, 2, 1, 201]);
-  const result = evaluate(draft);
+  const result = evaluate(draft, "pl");
   assert.equal(result.score, 83);
   assert.equal(result.certificate, "983095");
   assert.equal(result.diagnosis.name, "Dziaders Grillowo-Motoryzacyjny");
@@ -23,8 +23,8 @@ test("retired T1 links still decode and score", () => {
   assert.ok(draft);
   assert.equal(draft.version, 1);
   assert.equal(draft.answers.length, 24);
-  assert.equal(evaluate(draft).score, 1);
-  assert.equal(evaluate(draft).diagnosis.name, "Dziaders Utajony");
+  assert.equal(evaluate(draft, "pl").score, 1);
+  assert.equal(evaluate(draft, "pl").diagnosis.name, "Dziaders Utajony");
   assert.equal(encodeResult(draft), "1000000000007l");
 });
 
@@ -34,10 +34,10 @@ test("all task formats round-trip at their boundaries without changing scores", 
     const draft = { version: 2 as const, answers, day: 273, name: "Żaneta", proxy: sample % 2 === 0 };
     const decoded = decodeResult(encodeResult(draft));
     assert.deepEqual(decoded, draft);
-    const result = evaluate(decoded!);
+    const result = evaluate(decoded!, "pl");
     assert.ok(result.score >= 0 && result.score <= 100);
     assert.ok(Number.isInteger(result.score));
-    assert.equal(evaluate({ ...draft, name: "" }).score, result.score);
+    assert.equal(evaluate({ ...draft, name: "" }, "pl").score, result.score);
   }
 });
 
@@ -87,10 +87,23 @@ test("completed and untimed examinations survive reload; corrupt progress cannot
 test("family rankings use the original scorer and keep distinct identical results", () => {
   const code = encodeResult(SAMPLE_DRAFT);
   const group = { id: "a".repeat(32), expires: "2027-01-01", codes: [code, code] };
-  const members = familyMembers(group);
+  const members = familyMembers(group, "pl");
   assert.equal(members.length, 2);
   assert.equal(members[0].result.score, 83);
   assert.notEqual(members[0].label, members[1].label);
   assert.equal(validFamilyCode(code), code);
   assert.equal(validFamilyCode("bad"), null);
+});
+
+test("both editions diagnose the same result with their own names", () => {
+  const draft = decodeResult("2doy25yboiqpc907l")!;
+  const polish = evaluate(draft, "pl");
+  const slovenian = evaluate(draft, "sl");
+  assert.equal(slovenian.score, polish.score);
+  assert.equal(slovenian.certificate, polish.certificate);
+  assert.deepEqual(
+    slovenian.diagnosis.species.map((species) => species.key),
+    polish.diagnosis.species.map((species) => species.key),
+  );
+  assert.equal(slovenian.diagnosis.name, "Žarno-avtomobilski dziaders");
 });

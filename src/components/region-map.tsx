@@ -1,11 +1,26 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { REGION_BINS, REGION_GRID, type Region } from "@/content/regions";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
 import { cx, pct, typo } from "@/lib/typo";
 
 export type MapRegion = Region & { speciesName: string; speciesSlug: string };
+
+const COPY = defineCopy({
+  pl: {
+    regions: "Województwa",
+    percent: (value: number) => `${pct(value)}%`,
+    caption: "Mapa 1. Dominujący gatunek i natężenie dziaderstwa według województw (%). Układ kafelkowy, kształty uproszczono.",
+  },
+  sl: {
+    regions: "Vojvodstva",
+    percent: (value: number) => `${pct(value)} %`,
+    caption: "Zemljevid 1. Prevladujoča vrsta in jakost dziaderstva po vojvodstvih (v %). Razporeditev v ploščicah, oblike so poenostavljene.",
+  },
+});
 
 const SHADES = [
   "bg-[#e9e3d6] text-ink",
@@ -20,6 +35,7 @@ const LEGEND = [`<${REGION_BINS[0]}`, ...REGION_BINS.slice(1).map((bin, i) => `$
 const shadeFor = (value: number) => SHADES[REGION_BINS.filter((bin) => value >= bin).length];
 
 export function RegionMap({ regions, className }: { regions: Record<string, MapRegion>; className?: string }) {
+  const t = COPY[useLocale()];
   const [active, setActive] = useState(
     () => Object.values(regions).reduce((top, region) => (region.value > top.value ? region : top)).code,
   );
@@ -27,7 +43,7 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
 
   return (
     <figure className={className}>
-      <div role="group" aria-label="Województwa" className="grid grid-cols-4 gap-1.5">
+      <div role="group" aria-label={t.regions} className="grid grid-cols-4 gap-1.5">
         {REGION_GRID.flat().map((code) => {
           const item = regions[code];
           const selected = code === active;
@@ -36,7 +52,7 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
               key={code}
               type="button"
               aria-pressed={selected}
-              aria-label={`${item.name}: ${pct(item.value)}%`}
+              aria-label={`${item.name}: ${t.percent(item.value)}`}
               onClick={() => setActive(code)}
               onMouseEnter={() => setActive(code)}
               onFocus={() => setActive(code)}
@@ -64,7 +80,7 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
 
       <div aria-live="polite" className="mt-6 border-t border-rule pt-5">
         <p className="label text-ink-soft">
-          {region.name} · {pct(region.value)}%
+          {region.name} · {t.percent(region.value)}
         </p>
         <p className="mt-1 text-2xl font-bold leading-tight">
           <Link href={`/atlas/${region.speciesSlug}`} className="transition-colors hover:text-red">
@@ -74,9 +90,7 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
         <p className="mt-2 leading-snug text-ink-soft">{typo(region.note)}</p>
       </div>
 
-      <figcaption className="label mt-6 text-ink-soft">
-        Mapa 1. Dominujący gatunek i natężenie dziaderstwa według województw (%). Układ kafelkowy, kształty uproszczono.
-      </figcaption>
+      <figcaption className="label mt-6 text-ink-soft">{t.caption}</figcaption>
     </figure>
   );
 }

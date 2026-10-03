@@ -1,16 +1,50 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { REGION_GRID, REGIONS } from "@/content/regions";
+import { getRegions, REGION_GRID, REGIONS, regionFullName } from "@/content/regions";
 import type { SpeciesKey } from "@/content/species";
-import { cx, plural, typo } from "@/lib/typo";
+import { useLocale } from "@/i18n/client";
+import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
+import { cx, formatNumber, plural, pluralSl, typo } from "@/lib/typo";
 import { SpeciesPlate } from "./pictograms";
 
 export type MapSpecies = { key: SpeciesKey; name: string; slug: string; total: number };
 
 const SHADES = ["bg-paper-deep text-ink-faint", "bg-[#d3cbbb] text-ink", "bg-[#a69d8c] text-ink", "bg-[#5d574e] text-paper", "bg-ink text-paper"];
-const count = new Intl.NumberFormat("pl-PL");
+
+const COPY = defineCopy({
+  pl: {
+    species: "Gatunek",
+    all: "Wszystkie gatunki",
+    regions: "Województwa",
+    reports: (n: number) => plural(n, "zgłoszenie", "zgłoszenia", "zgłoszeń"),
+    caption: (species: string, unplaced: string) =>
+      `Mapa 2. Zgłoszenia obserwatorów terenowych według województw${species}. Układ kafelkowy, kształty uproszczono. Bez województwa: ${unplaced}. Źródło: IBD.`,
+    share: (percent: number) => `${percent}% kraju`,
+    top: "Najczęściej obserwowane w województwie",
+    none: (code: string) => `${getRegions("pl")[code].name}: brak zgłoszeń. Dziaders tam jest, tylko nikt go jeszcze nie zgłosił.`,
+    busiest: (code: string, n: string) => `: najwięcej zgłoszeń z województwa: ${getRegions("pl")[code].name} (${n}).`,
+    noRegion: ": jeszcze bez zgłoszeń z podanym województwem.",
+    legend: ["0", "do 20%", "do 40%", "do 70%", "ponad 70%"],
+    legendNote: "Odcień względem województwa z największą liczbą zgłoszeń.",
+  },
+  sl: {
+    species: "Vrsta",
+    all: "Vse vrste",
+    regions: "Vojvodstva",
+    reports: (n: number) => pluralSl(n, "prijava", "prijavi", "prijave", "prijav"),
+    caption: (species: string, unplaced: string) =>
+      `Zemljevid 2. Prijave terenskih opazovalcev po vojvodstvih${species}. Razporeditev v ploščicah, oblike so poenostavljene. Brez vojvodstva: ${unplaced}. Vir: IBD.`,
+    share: (percent: number) => `${percent} % države`,
+    top: "Najpogosteje opažene v vojvodstvu",
+    none: (code: string) => `${regionFullName(code, "sl")}: ni prijav. Dziaders je tam, le prijavil ga še ni nihče.`,
+    busiest: (code: string, n: string) => `: največ prijav: ${regionFullName(code, "sl")} (${n}).`,
+    noRegion: ": še brez prijav z navedenim vojvodstvom.",
+    legend: ["0", "do 20 %", "do 40 %", "do 70 %", "nad 70 %"],
+    legendNote: "Odtenek glede na vojvodstvo z največ prijavami.",
+  },
+});
 
 /** Five classes relative to the busiest voivodeship; empty ones stay paper. */
 function shadeFor(value: number, max: number) {
@@ -33,6 +67,10 @@ export function ObservationMap({
   /** Sightings reported without a voivodeship. */
   unplaced: number;
 }) {
+  const locale = useLocale();
+  const t = COPY[locale];
+  const regions = getRegions(locale);
+  const count = (n: number) => formatNumber(locale, n);
   const [filter, setFilter] = useState<SpeciesKey | "">("");
   const valueOf = (code: string) =>
     filter ? (matrix[code]?.[filter] ?? 0) : Object.values(matrix[code] ?? {}).reduce((sum, n) => sum + n, 0);
@@ -41,7 +79,7 @@ export function ObservationMap({
   const total = Object.values(values).reduce((sum, n) => sum + n, 0);
   const busiest = Object.entries(values).sort((a, b) => b[1] - a[1])[0];
   const [active, setActive] = useState<string>(busiest?.[0] ?? "MZ");
-  const region = REGIONS[active];
+  const region = regions[active];
   const here = values[active] ?? 0;
   const top = Object.entries(matrix[active] ?? {})
     .map(([key, n]) => ({ item: species.find((entry) => entry.key === key), n }))
@@ -54,22 +92,22 @@ export function ObservationMap({
     <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
       <figure className="lg:col-span-6">
         <label className="block max-w-sm">
-          <span className="label text-ink-soft">Gatunek</span>
+          <span className="label text-ink-soft">{t.species}</span>
           <select
             value={filter}
             onChange={(event) => setFilter(event.target.value as SpeciesKey | "")}
             className="mt-1 w-full border-0 border-b-2 border-ink bg-transparent py-2 font-serif text-xl font-bold focus:border-red focus-visible:outline-none"
           >
-            <option value="">Wszystkie gatunki</option>
+            <option value="">{t.all}</option>
             {species.map((entry) => (
               <option key={entry.key} value={entry.key}>
-                {entry.name} ({count.format(entry.total)})
+                {entry.name} ({count(entry.total)})
               </option>
             ))}
           </select>
         </label>
 
-        <div role="group" aria-label="Województwa" className="mt-8 grid grid-cols-4 gap-1.5">
+        <div role="group" aria-label={t.regions} className="mt-8 grid grid-cols-4 gap-1.5">
           {REGION_GRID.flat().map((code) => {
             const value = values[code] ?? 0;
             return (
@@ -77,7 +115,7 @@ export function ObservationMap({
                 key={code}
                 type="button"
                 aria-pressed={code === active}
-                aria-label={`${REGIONS[code].name}: ${value} ${plural(value, "zgłoszenie", "zgłoszenia", "zgłoszeń")}`}
+                aria-label={`${regions[code].name}: ${value} ${t.reports(value)}`}
                 onClick={() => setActive(code)}
                 onMouseEnter={() => setActive(code)}
                 onFocus={() => setActive(code)}
@@ -88,29 +126,26 @@ export function ObservationMap({
                 )}
               >
                 <span className="font-sans text-[0.75rem] font-semibold">{code}</span>
-                <span className="text-[1.2rem] font-bold leading-none tabular-nums md:text-2xl">{value ? count.format(value) : "–"}</span>
+                <span className="text-[1.2rem] font-bold leading-none tabular-nums md:text-2xl">{value ? count(value) : "–"}</span>
               </button>
             );
           })}
         </div>
-        <figcaption className="label mt-5 text-ink-soft">
-          Mapa 2. Zgłoszenia obserwatorów terenowych według województw{chosen ? `: ${chosen.name}` : ""}. Układ kafelkowy, kształty
-          uproszczono. Bez województwa: {count.format(unplaced)}. Źródło: IBD.
-        </figcaption>
+        <figcaption className="label mt-5 text-ink-soft">{t.caption(chosen ? `: ${chosen.name}` : "", count(unplaced))}</figcaption>
       </figure>
 
       <div aria-live="polite" className="lg:col-span-6">
         <div className="border-t border-ink pt-5">
           <p className="label text-ink-soft">{region.name}</p>
-          <p className="mt-1 text-[clamp(3.5rem,7vw,5rem)] font-bold leading-none tabular-nums">{count.format(here)}</p>
+          <p className="mt-1 text-[clamp(3.5rem,7vw,5rem)] font-bold leading-none tabular-nums">{count(here)}</p>
           <p className="label mt-2 text-ink-soft">
-            {plural(here, "zgłoszenie", "zgłoszenia", "zgłoszeń")}
-            {chosen ? `: ${chosen.name}` : ""} · {total ? Math.round((here / total) * 100) : 0}% kraju
+            {t.reports(here)}
+            {chosen ? `: ${chosen.name}` : ""} · {t.share(total ? Math.round((here / total) * 100) : 0)}
           </p>
         </div>
         {!filter && (
           <div className="mt-8">
-            <h3 className="label border-b border-ink pb-2 text-ink-soft">Najczęściej obserwowane w województwie</h3>
+            <h3 className="label border-b border-ink pb-2 text-ink-soft">{t.top}</h3>
             {top.length ? (
               <ol>
                 {top.map(({ item, n }) => (
@@ -118,13 +153,13 @@ export function ObservationMap({
                     <Link href={`/atlas/${item.slug}`} className="group grid grid-cols-[4rem_1fr_auto] items-center gap-4 border-b border-rule py-2.5">
                       <SpeciesPlate species={item.key} className="w-full" />
                       <span className="font-bold leading-tight group-hover:text-red">{item.name}</span>
-                      <span className="font-sans text-[0.95rem] font-semibold tabular-nums">{count.format(n)}</span>
+                      <span className="font-sans text-[0.95rem] font-semibold tabular-nums">{count(n)}</span>
                     </Link>
                   </li>
                 ))}
               </ol>
             ) : (
-              <p className="mt-3 leading-snug text-ink-soft">{typo(`${region.name}: brak zgłoszeń. Dziaders tam jest, tylko nikt go jeszcze nie zgłosił.`)}</p>
+              <p className="mt-3 leading-snug text-ink-soft">{typo(t.none(active))}</p>
             )}
           </div>
         )}
@@ -133,22 +168,18 @@ export function ObservationMap({
             <Link href={`/atlas/${chosen.slug}`} className="link">
               {chosen.name}
             </Link>
-            {typo(
-              busiest && busiest[1]
-                ? `: najwięcej zgłoszeń z województwa: ${REGIONS[busiest[0]].name} (${count.format(busiest[1])}).`
-                : ": jeszcze bez zgłoszeń z podanym województwem.",
-            )}
+            {typo(busiest && busiest[1] ? t.busiest(busiest[0], count(busiest[1])) : t.noRegion)}
           </p>
         )}
         <div className="mt-6 grid grid-cols-5 gap-0.5" aria-hidden="true">
           {SHADES.map((shade, i) => (
             <div key={shade}>
               <div className={cx("h-2", shade)} />
-              <p className="label mt-1.5 text-[0.72rem] text-ink-soft">{["0", "do 20%", "do 40%", "do 70%", "ponad 70%"][i]}</p>
+              <p className="label mt-1.5 text-[0.72rem] text-ink-soft">{t.legend[i]}</p>
             </div>
           ))}
         </div>
-        <p className="label mt-2 text-ink-faint">Odcień względem województwa z największą liczbą zgłoszeń.</p>
+        <p className="label mt-2 text-ink-faint">{t.legendNote}</p>
       </div>
     </div>
   );
