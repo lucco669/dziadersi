@@ -15,7 +15,7 @@ const COPY = defineCopy({
     title: "Superinteligencja",
     browserTitle: "Superinteligencja: SZWAGIER 1.9 TDI odpowiada na każde pytanie",
     description:
-      "SZWAGIER 1.9 TDI, model językowy Instytutu Badań nad Dziaderstwem. Odpowiada na każde pytanie, podaje źródła, myśli w garażu i nigdy nie zmienia zdania. Działa w przeglądarce.",
+      "SZWAGIER 1.9 TDI, model językowy Instytutu. Odpowiada na każde pytanie, podaje źródła i nigdy nie zmienia zdania. Wypróbuj w przeglądarce.",
     shareDescription: "Model językowy Instytutu. Odpowiada na każde pytanie, podaje źródła i nigdy nie zmienia zdania.",
     lead: "W każdej rodzinie jest ktoś, kto wie wszystko. Instytut go zdigitalizował i udostępnia bezpłatnie: SZWAGIER 1.9 TDI odpowiada na każde pytanie, podaje źródła i nigdy nie zmienia zdania.",
     meta: (founded: number) => `Wydanie I, ${founded} · 1,9 mld parametrów · pytania nie opuszczają przeglądarki`,
@@ -73,7 +73,7 @@ const COPY = defineCopy({
     title: "Superinteligenca",
     browserTitle: "Superinteligenca: SZWAGIER 1.9 TDI odgovori na vsako vprašanje",
     description:
-      "SZWAGIER 1.9 TDI, jezikovni model Inštituta za raziskave dziaderstva. Odgovori na vsako vprašanje, navede vire, razmišlja v garaži in nikoli ne spremeni mnenja. Deluje v brskalniku.",
+      "SZWAGIER 1.9 TDI, jezikovni model Inštituta. Odgovori na vsako vprašanje, navede vire in nikoli ne spremeni mnenja. Preizkusi ga v brskalniku.",
     shareDescription: "Jezikovni model Inštituta. Odgovori na vsako vprašanje, navede vire in nikoli ne spremeni mnenja.",
     lead: "V vsaki družini je nekdo, ki ve vse. Inštitut ga je digitaliziral in ga daje na voljo brezplačno: SZWAGIER 1.9 TDI odgovori na vsako vprašanje, navede vire in nikoli ne spremeni mnenja.",
     meta: (founded: number) => `1. izdaja, ${founded} · 1,9 milijarde parametrov · vprašanja ne zapustijo brskalnika`,

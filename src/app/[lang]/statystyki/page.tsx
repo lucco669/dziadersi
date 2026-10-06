@@ -46,7 +46,7 @@ const COPY = defineCopy({
     title: "Mały Rocznik Statystyczny",
     metaTitle: "Mały Rocznik Statystyczny Dziaderstwa",
     description:
-      "Wszystko, co policzył Instytut Badań nad Dziaderstwem: badania, obserwacje terenowe, orzeczenia Komisji, skreślenia w bingo, wypowiedzi z Rozmówek i trąbienia klaksonem. Na żywo, z przeliczeniem na rosoły.",
+      "Mały Rocznik Statystyczny Dziaderstwa: badania, obserwacje, orzeczenia, bingo, Rozmówki i trąbienia klaksonem. Na żywo, z przeliczeniem na rosoły.",
     shareDescription: "Badania, obserwacje, orzeczenia i trąbienia klaksonem. Z przeliczeniem na rosoły.",
     variables: ["Badania", "Obserwacje terenowe", "Orzeczenia", "Wypowiedzi z Rozmówek", "Skreślenia w bingo", "Trąbienia klaksonem"],
     cover: { label: "Rys. Stos roczników statystycznych i dziaders, który je czytał", spine: "MAŁY ROCZNIK" },
@@ -257,7 +257,7 @@ const COPY = defineCopy({
     title: "Mali statistični letopis",
     metaTitle: "Mali statistični letopis dziaderstva",
     description:
-      "Vse, kar je preštel Inštitut za raziskave dziaderstva: pregledi, terenska opazovanja, razsodbe Komisije, prečrtana polja v bingu, izjave iz Pogovornika in pritiski na hupo. V živo, s preračunom v nedeljske juhe.",
+      "Mali statistični letopis dziaderstva: pregledi, opazovanja, razsodbe, bingo, Pogovornik in pritiski na hupo. V živo, s preračunom v nedeljske juhe.",
     shareDescription: "Pregledi, opazovanja, razsodbe in pritiski na hupo. S preračunom v nedeljske juhe.",
     variables: ["Pregledi", "Terenska opazovanja", "Razsodbe", "Izjave iz Pogovornika", "Prečrtana polja v bingu", "Pritiski na hupo"],
     cover: { label: "Slika. Kup statističnih letopisov in dziaders, ki jih je bral", spine: "MALI LETOPIS" },

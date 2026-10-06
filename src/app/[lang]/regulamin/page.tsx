@@ -165,7 +165,7 @@ const COPY = defineCopy<{
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = COPY[locale];
-  return pageMetadata(locale, { title: t.title, description: t.description, path: "/regulamin" });
+  return pageMetadata(locale, { title: t.title, description: t.description, path: "/regulamin", defaultImage: true });
 }
 
 export default async function TermsPage() {

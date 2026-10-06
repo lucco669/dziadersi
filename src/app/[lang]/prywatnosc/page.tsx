@@ -20,7 +20,7 @@ const COPY = defineCopy<{
 }>({
   pl: {
     title: "Polityka prywatności",
-    description: "Jakie dane zbiera Instytut Badań nad Dziaderstwem, po co, jak długo je trzyma i jak je usunąć.",
+    description: "Polityka prywatności DZIADER.SI: jakie dane zbiera Instytut, po co i jak długo je przechowuje. Konta, cookies, statystyki i usuwanie danych.",
     lead: "Instytut bada dziaderstwo, nie ludzi. Zbiera tyle danych, ile trzeba do spisu i do konta, i ani jednej skarpety więcej.",
     since: (date) => `Obowiązuje od ${date}`,
     controller: {
@@ -102,7 +102,7 @@ const COPY = defineCopy<{
   },
   sl: {
     title: "Politika zasebnosti",
-    description: "Katere podatke zbira Inštitut za raziskave dziaderstva, zakaj, kako dolgo jih hrani in kako jih izbrišeš.",
+    description: "Politika zasebnosti DZIADER.SI: katere podatke zbira Inštitut, zakaj in kako dolgo jih hrani. Računi, piškotki, statistika in izbris podatkov.",
     lead: "Inštitut raziskuje dziaderstvo, ne ljudi. Zbere toliko podatkov, kot jih potrebujeta popis in račun, in niti ene nogavice več.",
     since: (date) => `Velja od ${date}`,
     controller: {
@@ -187,7 +187,7 @@ const COPY = defineCopy<{
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = COPY[locale];
-  return pageMetadata(locale, { title: t.title, description: t.description, path: "/prywatnosc" });
+  return pageMetadata(locale, { title: t.title, description: t.description, path: "/prywatnosc", defaultImage: true });
 }
 
 const P = ({ children }: { children: string }) => <p className="mt-4 max-w-3xl leading-relaxed first:mt-0">{typo(children)}</p>;

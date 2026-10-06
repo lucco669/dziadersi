@@ -52,6 +52,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/kalendarz", "daily", 0.7),
     page("/biuletyn", "weekly", 0.6),
     page("/o-instytucie", "yearly", 0.4),
+    page("/kontakt", "yearly", 0.3),
     page("/regulamin", "yearly", 0.2),
     page("/prywatnosc", "yearly", 0.2),
   ];

@@ -51,7 +51,7 @@ const EMBEDDABLE = [
 /** Private pages: results, rankings, the save-to-profile links and asked questions are never indexed or leak a referrer. */
 const PRIVATE = ["grupy", "grupa", "wynik"]
   .flatMap((pl) => [`/${pl}/:path*`, `/sl/${sl(pl)}/:path*`])
-  .concat(["/profil/zapisz/:path*", "/sl/profil/shrani/:path*", "/superinteligencja/:kod", `/sl/${sl("superinteligencja")}/:kod`]);
+  .concat(["/profil/zapisz/:path*", "/sl/profil/shrani/:path*", "/profil/zachowaj", "/sl/profil/ohrani", "/superinteligencja/:kod", `/sl/${sl("superinteligencja")}/:kod`]);
 
 /** Paths the Polish edition must not rewrite: the other edition, the routed form, APIs and Next's own. */
 const NOT_POLISH = ["sl", "pl", "si", "api", "auth", "_next", "_vercel"].map((segment) => `${segment}(?:/|$)`).join("|");
@@ -93,6 +93,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      { source: "/security.txt", destination: "/.well-known/security.txt", permanent: true },
       // The routed form of the Polish edition is never a public address (share images excepted:
       // Next.js links them by the routed path).
       { source: "/pl", destination: "/", permanent: true },

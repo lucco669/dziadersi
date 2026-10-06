@@ -58,6 +58,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/superintel
     shareTitle: answer.question ? `${quote(answer.question, locale)} · SZWAGIER 1.9 TDI` : t.browserTitle,
     shareDescription: answer.text,
     noindex: true,
+    nofollow: true,
   });
 }
 

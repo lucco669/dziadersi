@@ -19,7 +19,7 @@ const COPY = defineCopy({
     title: "O Instytucie",
     metaTitle: "O Instytucie Badań nad Dziaderstwem",
     description:
-      "Instytut Badań nad Dziaderstwem: statut, historia od sporu o szczypce w 2025 roku, struktura organizacyjna i odpowiedzi na najczęstsze pytania. Serwis satyryczny.",
+      "Instytut Badań nad Dziaderstwem: statut, historia sporu o szczypce, struktura, najczęstsze pytania i kontakt. Poznaj autorów serwisu satyrycznego.",
     lead: "Statut, historia, struktura organizacyjna i odpowiedzi na pytania, które Instytut słyszy najczęściej. Zwykle przy grillu.",
     meta: (founded: number) => `Założony w ${founded} r. · siedziba: nieustalona · godziny otwarcia: całodobowo`,
     privacyPhrase: "polityka prywatności",
@@ -41,7 +41,7 @@ const COPY = defineCopy({
     title: "O Inštitutu",
     metaTitle: "O Inštitutu za raziskave dziaderstva",
     description:
-      "Inštitut za raziskave dziaderstva: statut, zgodovina od spora o kleščah za žar leta 2025, organizacijska struktura, pogosta vprašanja in predgovor k slovenski izdaji. Satirična stran.",
+      "Inštitut za raziskave dziaderstva: statut, zgodovina, struktura, pogosta vprašanja, kontakt in predgovor k slovenski izdaji. Spoznaj satirično stran.",
     lead: "Statut, zgodovina, organizacijska struktura in odgovori na vprašanja, ki jih Inštitut sliši najpogosteje. Običajno ob žaru.",
     meta: (founded: number) => `Ustanovljen leta ${founded} · sedež: nedoločen · uradne ure: ves dan`,
     privacyPhrase: "politika zasebnosti",

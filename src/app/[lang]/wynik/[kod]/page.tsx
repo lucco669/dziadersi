@@ -172,6 +172,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/wynik/[kod
     path: `/wynik/${result.code}`,
     shareTitle: title,
     noindex: true,
+    nofollow: true,
   });
 }
 

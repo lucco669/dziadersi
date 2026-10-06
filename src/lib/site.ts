@@ -27,7 +27,7 @@ const SITE_COPY = defineCopy({
     institute: "Inštitut za raziskave dziaderstva",
     tagline: "Preglej se, preden bo prepozno.",
     description:
-      "Inštitut za raziskave dziaderstva: test dziadersa s certifikatom, Atlas dziadersov, Dziaderski slovar in Nacionalni indeks dziaderstva. Slovenska izdaja satirične strani.",
+      "Inštitut za raziskave dziaderstva: test s certifikatom, Atlas dziadersov, slovar in Nacionalni indeks dziaderstva. Slovenska izdaja satirične strani.",
     disclaimer: "Satirična stran. Vsi podatki so izmišljeni, pa vendar držijo. Inštitut se norčuje iz navad, ne iz ljudi.",
     privacyDate: "3. oktober 2026",
   },

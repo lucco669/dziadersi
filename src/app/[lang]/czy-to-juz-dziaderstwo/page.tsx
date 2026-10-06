@@ -17,7 +17,7 @@ const COPY = defineCopy({
     title: "Czy to już dziaderstwo?",
     section: "Komisja Orzekająca",
     description: (cases: number) =>
-      `Komisja Orzekająca Instytutu Badań nad Dziaderstwem: ${cases} spraw z życia wziętych. Głosuj jako ławnik: to jeszcze nie dziaderstwo, to już dziaderstwo czy dziaderstwo kliniczne. Potem uzasadnienie Komisji.`,
+      `Czy to już dziaderstwo? Komisja Orzekająca rozpatruje ${cases} spraw z życia wziętych. Głosuj jako ławnik i przeczytaj uzasadnienie Komisji.`,
     shareDescription: "Sprawy z życia wzięte. Orzekasz jako ławnik, Komisja uzasadnia.",
     rules: [
       "Ławnik orzeka raz w każdej sprawie. Zmiana zdania po głosowaniu jest możliwa wyłącznie przy rodzinnym stole.",
@@ -46,7 +46,7 @@ const COPY = defineCopy({
     title: "Je to že dziaderstvo?",
     section: "Razsodna komisija",
     description: (cases: number) =>
-      `Razsodna komisija Inštituta za raziskave dziaderstva: ${cases} primerov iz življenja. Glasuj kot porotnik: to še ni dziaderstvo, to že je dziaderstvo ali klinično dziaderstvo. Nato obrazložitev Komisije.`,
+      `Je to že dziaderstvo? Razsodna komisija obravnava ${cases} primerov iz življenja. Glasuj kot porotnik in preberi obrazložitev Komisije.`,
     shareDescription: "Primeri iz življenja. Razsojaš kot porotnik, Komisija obrazloži.",
     rules: [
       "Porotnik o vsakem primeru odloči enkrat. Mnenje lahko po glasovanju spremeni samo še za družinsko mizo.",

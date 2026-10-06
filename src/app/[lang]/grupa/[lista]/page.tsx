@@ -137,6 +137,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/grupa/[lis
     description: COPY[locale].description(top(group.members, locale)),
     path: `/grupa/${group.normalized}`,
     noindex: true,
+    nofollow: true,
   });
 }
 

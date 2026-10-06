@@ -32,6 +32,7 @@ export const SEGMENTS: SegmentMap = {
   konto: { sl: "racun" },
   szukaj: { sl: "iskanje" },
   "o-instytucie": { sl: "o-institutu" },
+  kontakt: { sl: "kontakt" },
   regulamin: { sl: "pogoji-uporabe" },
   prywatnosc: { sl: "zasebnost" },
 };

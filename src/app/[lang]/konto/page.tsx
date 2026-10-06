@@ -35,7 +35,7 @@ const COPY = defineCopy({
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = COPY[locale];
-  return pageMetadata(locale, { title: t.metaTitle, description: t.metaDescription, path: "/konto", noindex: true });
+  return pageMetadata(locale, { title: t.metaTitle, description: t.metaDescription, path: "/konto", noindex: true, defaultImage: true });
 }
 
 /**

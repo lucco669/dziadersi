@@ -17,7 +17,7 @@ const COPY = defineCopy({
     title: "Egzamin terenowy",
     metaTitle: "Egzamin terenowy z oznaczania dziadersów",
     description: (species: number) =>
-      `Egzamin z oznaczania gatunków dziadersów: dwanaście pytań z ${species} gatunków Atlasu. Wokalizacje, ryciny, siedliska, objawy i łacina. Ocena od niedostatecznej do celującej i zaświadczenie.`,
+      `Egzamin terenowy: 12 pytań z ${species} gatunków Atlasu Dziadersów. Rozpoznaj wokalizacje, ryciny, siedliska i objawy. Zdobądź ocenę i zaświadczenie.`,
     shareDescription: "Dwanaście pytań z Atlasu Dziadersów. Rozpoznasz Parkingowego po wokalizacji?",
     level: "Obserwator terenowy",
     lead: "Egzamin na obserwatora terenowego Instytutu. Dwanaście pytań z oznaczania gatunków: po wokalizacji, rycinie, siedlisku, objawach, naturalnych wrogach i nazwie łacińskiej.",
@@ -37,7 +37,7 @@ const COPY = defineCopy({
     title: "Terenski izpit",
     metaTitle: "Terenski izpit iz določanja dziadersov",
     description: (species: number) =>
-      `Izpit iz določanja vrst dziadersov: dvanajst vprašanj iz ${species} vrst Atlasa. Oglašanje, risbe, habitati, simptomi in latinščina. Ocena od nezadostne do odlične in potrdilo.`,
+      `Terenski izpit: 12 vprašanj iz ${species} vrst Atlasa dziadersov. Prepoznaj oglašanje, risbe, habitate in simptome. Pridobi oceno in potrdilo.`,
     shareDescription: "Dvanajst vprašanj iz Atlasa dziadersov. Prepoznaš Parkirnega po oglašanju?",
     level: "Terenski opazovalec",
     lead: "Izpit za terenskega opazovalca Inštituta. Dvanajst vprašanj iz določanja vrst: po oglašanju, risbi, habitatu, simptomih, naravnih sovražnikih in latinskem imenu.",

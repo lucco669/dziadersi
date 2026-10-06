@@ -15,7 +15,7 @@ const COPY = defineCopy({
     title: "Raporty Instytutu",
     metaTitle: "Raporty Instytutu: badania nad dziaderstwem",
     description:
-      "Wyniki badań Instytutu: sezon grzewczy, kartki za wycieraczką, „ja tylko zapytać”, pilot od telewizora i szuflada z kablami. Dane są zmyślone, a mimo to się zgadzają.",
+      "Raporty Instytutu: sezon grzewczy, kartki za wycieraczką, „ja tylko zapytać”, pilot i szuflada z kablami. Dane są zmyślone, a mimo to się zgadzają.",
     lead: "Wyniki badań terenowych, przeglądów systematycznych i eksperymentów prowadzonych przez Instytut. Wszystkie dane są zmyślone, a mimo to się zgadzają.",
     meta: (count: number) => `${count} ${plural(count, "raport", "raporty", "raportów")} · seria wydawnicza IBD, ${site.founded}`,
     all: "Wszystkie raporty",

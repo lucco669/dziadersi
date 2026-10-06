@@ -22,7 +22,7 @@ const COPY = defineCopy({
     title: "Tablica Honorowa",
     metaTitle: "Tablica Honorowa Instytutu",
     description:
-      "Przodownicy obserwacji, ławnicy i zdzieracze kalendarza Instytutu Badań nad Dziaderstwem. Sprawy, które podzieliły naród, gatunki najlepiej obserwowane i najczęstsze rozpoznania.",
+      "Tablica Honorowa Instytutu: przodownicy obserwacji, ławnicy i zdzieracze kalendarza. Sprawy, które podzieliły naród, gatunki i najczęstsze rozpoznania.",
     lead: "Przodownicy obserwacji, ławnicy i zdzieracze kalendarza. Do tego sprawy, które podzieliły naród, i gatunki, których nie dało się przeoczyć. Aktualizowana co kilka minut.",
     visible: (n: string, count: number) => `${n} ${plural(count, "osoba", "osoby", "osób")} na Tablicy · tylko pseudonimy, tylko za zgodą`,
     /** The three orders of each board, first to third place. */
@@ -84,7 +84,7 @@ const COPY = defineCopy({
     title: "Častna tabla",
     metaTitle: "Častna tabla Inštituta",
     description:
-      "Udarniki opazovanja, porotniki in trgalci koledarja Inštituta za raziskave dziaderstva. Primeri, ki so razdelili narod, najbolje opazovane vrste in najpogostejše diagnoze.",
+      "Častna tabla Inštituta: udarniki opazovanja, porotniki in trgalci koledarja. Primeri, ki so razdelili narod, opazovane vrste in najpogostejše diagnoze.",
     lead: "Udarniki opazovanja, porotniki in trgalci koledarja. Poleg tega primeri, ki so razdelili narod, in vrste, ki jih ni bilo mogoče spregledati. Posodablja se vsakih nekaj minut.",
     visible: (n: string, count: number) =>
       `${n} ${pluralSl(count, "oseba", "osebi", "osebe", "oseb")} na Tabli · samo psevdonimi, samo s soglasjem`,

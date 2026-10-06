@@ -3,7 +3,7 @@ import { DEFAULT_LOCALE, LOCALE_INFO, LOCALES, type Locale } from "@/i18n/config
 import { alternatePath, localizePath } from "@/i18n/routes";
 import { site, siteCopy } from "./site";
 
-/** Search results cut titles and descriptions longer than these. */
+/** Editorial budgets for concise snippets; search engines truncate by display width. */
 const MAX_TITLE = 70;
 const MAX_DESCRIPTION = 160;
 
@@ -12,7 +12,8 @@ export function describe(text: string, ...endings: string[]) {
   for (const ending of [...endings, ""]) {
     if (text.length + ending.length <= MAX_DESCRIPTION) return text + ending;
   }
-  return `${text.slice(0, text.lastIndexOf(" ", MAX_DESCRIPTION - 1))}…`;
+  const boundary = text.lastIndexOf(" ", MAX_DESCRIPTION - 1);
+  return `${text.slice(0, boundary > 0 ? boundary : MAX_DESCRIPTION - 1).trimEnd()}…`;
 }
 
 /** The absolute public URL of an internal path in an edition. */
@@ -44,6 +45,10 @@ type PageMeta = {
   type?: "website" | "article";
   publishedTime?: string;
   noindex?: boolean;
+  /** Private result pages also send nofollow in their HTTP headers. */
+  nofollow?: boolean;
+  /** Pages without their own image route reuse the edition's front-page card. */
+  defaultImage?: boolean;
 };
 
 /**
@@ -52,15 +57,16 @@ type PageMeta = {
  */
 export function pageMetadata(
   locale: Locale,
-  { title, description, path, shareTitle, shareDescription, type = "website", publishedTime, noindex }: PageMeta,
+  { title, description, path, shareTitle, shareDescription, type = "website", publishedTime, noindex, nofollow, defaultImage }: PageMeta,
 ): Metadata {
   const ogTitle = shareTitle ?? `${title} · ${site.name}`;
   const ogDescription = shareDescription ?? description;
   const branded = `${title} · ${site.name}`;
   const url = localizePath(path, locale);
+  const snippet = describe(description);
   return {
     title: branded.length <= MAX_TITLE ? title : { absolute: title },
-    description,
+    description: snippet,
     alternates: { canonical: url, languages: languageAlternates(path, locale) },
     openGraph: {
       type,
@@ -70,10 +76,13 @@ export function pageMetadata(
       url,
       title: ogTitle,
       description: ogDescription,
+      // Explicit images override file-based metadata in Next.js. Only opt in on pages
+      // without a dedicated card; Twitter inherits the resolved Open Graph image.
+      ...(defaultImage ? { images: [{ url: `/${locale}/opengraph-image`, width: 1200, height: 630, alt: siteCopy(locale).institute }] } : {}),
       ...(publishedTime ? { publishedTime } : {}),
     },
     twitter: { card: "summary_large_image", title: ogTitle, description: ogDescription },
-    ...(noindex ? { robots: { index: false, follow: true } } : {}),
+    ...(noindex || nofollow ? { robots: { index: !noindex, follow: !nofollow } } : {}),
   };
 }
 
@@ -86,6 +95,14 @@ export const institute = (locale: Locale) =>
     alternateName: locale === "pl" ? undefined : siteCopy("pl").institute,
     url: site.url,
     logo: `${site.url}/icon-512.png`,
+    email: site.controller.email,
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: site.controller.email,
+      url: absoluteUrl("/kontakt", locale),
+      contactType: "customer support",
+      availableLanguage: LOCALES.map((language) => LOCALE_INFO[language].tag),
+    },
   }) as const;
 
 /**

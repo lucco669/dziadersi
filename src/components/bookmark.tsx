@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
+import { signInPath } from "@/lib/account";
 import type { BookmarkKind } from "@/lib/profile";
 import { cx } from "@/lib/typo";
 import { patchAccount, useAccount } from "./account";
@@ -19,7 +20,8 @@ const COPY = defineCopy({
  * `label` replaces the default wording and should be in the edition being shown.
  */
 export function BookmarkButton({ kind, code, className, label }: { kind: BookmarkKind; code: string; className?: string; label?: string }) {
-  const t = COPY[useLocale()];
+  const locale = useLocale();
+  const t = COPY[locale];
   const account = useAccount();
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -29,7 +31,12 @@ export function BookmarkButton({ kind, code, className, label }: { kind: Bookmar
 
   if (!member) {
     return (
-      <Link href={`/profil/zachowaj?rodzaj=${kind}&kod=${encodeURIComponent(code)}`} className={className}>
+      <Link
+        href={signInPath(`/profil/zachowaj?rodzaj=${kind}&kod=${encodeURIComponent(code)}`, locale)}
+        prefetch={false}
+        rel="nofollow"
+        className={className}
+      >
         {text}
       </Link>
     );

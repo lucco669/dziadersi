@@ -21,7 +21,7 @@ const COPY = defineCopy({
     title: "Biuletyn tygodniowy",
     metaTitle: "Biuletyn tygodniowy: tydzień w liczbach",
     description:
-      "Tydzień w liczbach Instytutu Badań nad Dziaderstwem: badania, obserwacje terenowe, sprawa tygodnia w Komisji, Indeks i komunikat. Co tydzień na stronie, po zapisaniu także e-mailem.",
+      "Biuletyn Instytutu: tydzień w liczbach, badania, obserwacje, sprawa tygodnia i Indeks Dziaderstwa. Czytaj na stronie lub zapisz się na e-mail.",
     issue: (week: number, year: number) => `Biuletyn tygodniowy nr ${week}/${year}`,
     heading: (week: number) => `Tydzień ${week} w liczbach`,
     lead: (period: string) =>
@@ -48,7 +48,7 @@ const COPY = defineCopy({
     title: "Tedenski bilten",
     metaTitle: "Tedenski bilten: teden v številkah",
     description:
-      "Teden v številkah Inštituta za raziskave dziaderstva: pregledi, terenska opazovanja, primer tedna v Komisiji, Indeks in obvestilo. Vsak teden na strani, po prijavi tudi po e-pošti.",
+      "Bilten Inštituta: teden v številkah, pregledi, opazovanja, primer tedna in Indeks dziaderstva. Beri na strani ali se naroči po e-pošti.",
     issue: (week: number, year: number) => `Tedenski bilten št. ${week}/${year}`,
     heading: (week: number) => `${week}. teden v številkah`,
     lead: (period: string) =>

@@ -21,7 +21,7 @@ const COPY = defineCopy({
     title: "Narodowy Spis Dziadersów",
     metaTitle: "Narodowy Spis Dziadersów: wyniki Testu Dziadersa",
     description:
-      "Wyniki wszystkich badań Instytutu: gatunki, krzyżówki, najczęstsze odpowiedzi, najbardziej dziaderska godzina i województwa. Anonimowo, aktualizowane co kilka minut.",
+      "Narodowy Spis Dziadersów: wyniki badań, gatunki, krzyżówki, najczęstsze odpowiedzi i województwa. Anonimowe dane aktualizowane co kilka minut.",
     days: ["", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"],
     clock: (hour: number) => `${hour}:00`,
     figures: {

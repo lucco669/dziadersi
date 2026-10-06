@@ -279,7 +279,7 @@ const COPY = defineCopy({
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = COPY[locale];
-  return pageMetadata(locale, { title: t.title, description: t.description, path: "/profil", noindex: true });
+  return pageMetadata(locale, { title: t.title, description: t.description, path: "/profil", noindex: true, defaultImage: true });
 }
 
 /** "2026-10-02" from Postgres, as a date. */

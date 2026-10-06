@@ -17,7 +17,7 @@ const COPY = defineCopy({
     title: "Mapa obserwacji",
     metaTitle: "Mapa obserwacji dziadersów według województw",
     description:
-      "Gdzie widziano dziadersa: zgłoszenia Sieci Obserwatorów Terenowych według województw, dla wszystkich gatunków z Atlasu albo jednego. Aktualizowane co kilka minut.",
+      "Mapa obserwacji dziadersów: zgłoszenia obserwatorów terenowych według województw i gatunków z Atlasu. Zobacz dane aktualizowane co kilka minut.",
     dataset: "Mapa obserwacji: zgłoszenia według województw",
     country: "Polska",
     lead: "Gdzie widziano dziadersa. Zgłoszenia obserwatorów terenowych z Profilem Dziaderskim, według województw, dla wszystkich gatunków albo jednego.",

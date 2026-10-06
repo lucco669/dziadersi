@@ -12,9 +12,11 @@ const COPY = defineCopy({
     about:
       "Instytut Badań nad Dziaderstwem opisuje i klasyfikuje dziaderstwo w Polsce, od parkingu pod marketem budowlanym po wigilijny stół. Działa niezależnie, bez grantów i bez zgody rodziny.",
     sections: "Działy",
+    contact: "Kontakt",
     links: [
       ["/profil", "Profil Dziaderski"],
       ["/o-instytucie", "O Instytucie"],
+      ["/kontakt", "Kontakt"],
       ["/regulamin", "Regulamin"],
       ["/prywatnosc", "Prywatność"],
     ],
@@ -24,9 +26,11 @@ const COPY = defineCopy({
     about:
       "Inštitut za raziskave dziaderstva opisuje in razvršča dziaderstvo na Poljskem, od parkirišča pred gradbenim marketom do mize na sveti večer. Deluje neodvisno, brez projektnih sredstev in brez soglasja družine.",
     sections: "Oddelki",
+    contact: "Kontakt",
     links: [
       ["/profil", "Dziaderski profil"],
       ["/o-instytucie", "O Inštitutu"],
+      ["/kontakt", "Kontakt"],
       ["/regulamin", "Pogoji uporabe"],
       ["/prywatnosc", "Zasebnost"],
     ],
@@ -46,6 +50,10 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </Link>
           <p className="mt-6 max-w-md text-ink-soft">{typo(t.about)}</p>
           <p className="mt-6 max-w-md font-sans text-[0.9rem] leading-relaxed text-ink-soft">{typo(copy.disclaimer)}</p>
+          <p className="mt-6 font-sans text-sm">
+            <Link href="/kontakt" className="link">{t.contact}</Link>{" · "}
+            <a href={`mailto:${site.controller.email}`} className="link">{site.controller.email}</a>
+          </p>
         </div>
 
         <div className="lg:col-span-8">
