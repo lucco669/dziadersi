@@ -10,8 +10,8 @@
     {
       "name": "dziadersi-prod",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["start", "--port", "3001"],
-      "port": 3001
+      "runtimeArgs": ["start", "--port", "3200"],
+      "port": 3200
     }
   ]
 }

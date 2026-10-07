@@ -59,8 +59,17 @@ function authError(error: { code?: string; status?: number }, locale: Locale): P
   }
 }
 
-/** Shared server-side flow. Never return credentials, tokens, or raw provider errors to the form. */
-export async function passwordAuth(supabase: AuthClient, mode: PasswordMode | "resend", form: FormData, origin: string): Promise<AuthResult> {
+/**
+ * Shared server-side flow. Never return credentials, tokens, or raw provider errors to the form.
+ * `allow` spends the caller's budget for a sign-in attempt or a letter, once the form is valid.
+ */
+export async function passwordAuth(
+  supabase: AuthClient,
+  mode: PasswordMode | "resend",
+  form: FormData,
+  origin: string,
+  allow?: (scope: "sign-in" | "auth-mail") => Promise<boolean>,
+): Promise<AuthResult> {
   const locale = formEdition(form);
   const t = COPY[locale];
   const email = String(form.get("email") ?? "").trim().toLowerCase();
@@ -72,6 +81,9 @@ export async function passwordAuth(supabase: AuthClient, mode: PasswordMode | "r
     if (password !== form.get("passwordConfirm")) return { email, error: t.mismatch };
   }
   if (mode === "login" && (!password || password.length > PASSWORD_MAX)) return { email, error: t.required };
+  if (mode !== "password" && allow && !(await allow(mode === "login" ? "sign-in" : "auth-mail"))) {
+    return { email, error: t.wait, ...(mode === "resend" ? { confirm: true } : {}) };
+  }
 
   try {
     if (mode === "recovery") {

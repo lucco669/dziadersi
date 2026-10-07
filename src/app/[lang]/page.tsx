@@ -46,7 +46,7 @@ export default async function Home() {
   const locale = await getLocale();
   const copy = siteCopy(locale);
   const t = COPY[locale];
-  const [bulletin, community] = await Promise.all([getBulletin(locale), getCommunity()]);
+  const [bulletin, community] = await Promise.all([getBulletin(locale), getCommunity("counts")]);
   const home = absoluteUrl("/", locale);
   const language = LOCALE_INFO[locale].tag;
   const website = { "@id": `${site.url}/#serwis` };

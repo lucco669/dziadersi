@@ -9,6 +9,7 @@ import { EDITION_KEY, emailRedirectUrl, formEdition, isEmail, rememberEdition, s
 import { passwordAuth, type PasswordMode, type PasswordState } from "@/lib/password-auth";
 import { site } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
+import { limitAction } from "@/lib/write-limit";
 
 export type SignInState = {
   step: "email" | "code";
@@ -25,6 +26,7 @@ const COPY = defineCopy({
     down: "Rejestracja ma przerwę techniczną. Spróbuj za chwilę.",
     notEmail: "To nie wygląda na adres e-mail.",
     short: "Kod z listu ma co najmniej sześć cyfr.",
+    busy: "Zbyt wiele prób. Odczekaj kilka minut i spróbuj ponownie.",
   },
   sl: {
     wait: "Le počasi. Naslednjo napotnico lahko naročiš čez minuto.",
@@ -32,6 +34,7 @@ const COPY = defineCopy({
     down: "Prijavna služba ima tehnični odmor. Poskusi znova čez trenutek.",
     notEmail: "To ni videti kot e-naslov.",
     short: "Koda iz pisma ima najmanj šest števk.",
+    busy: "Preveč poskusov. Počakaj nekaj minut in poskusi znova.",
   },
 });
 
@@ -47,7 +50,7 @@ async function authOrigin() {
 }
 
 async function submitPassword(mode: PasswordMode | "resend", form: FormData): Promise<PasswordState> {
-  const result = await passwordAuth(await createClient(), mode, form, await authOrigin());
+  const result = await passwordAuth(await createClient(), mode, form, await authOrigin(), limitAction);
   if (result.destination) redirect(result.destination);
   return result;
 }
@@ -68,6 +71,7 @@ export async function requestLink(_: SignInState, formData: FormData): Promise<S
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const next = safeNext(formData.get("dalej"), localizePath("/profil", locale));
   if (!isEmail(email)) return { step: "email", next, email, error: COPY[locale].notEmail };
+  if (!(await limitAction("auth-mail"))) return { step: "email", next, email, error: COPY[locale].busy };
 
   const origin = await authOrigin();
   const supabase = await createClient();
@@ -86,6 +90,8 @@ export async function verifyCode(_: SignInState, formData: FormData): Promise<Si
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const next = safeNext(formData.get("dalej"), localizePath("/profil", locale));
   if (token.length < 6 || token.length > 10) return { step: "code", email, next, error: COPY[locale].short };
+  // Six digits can be guessed: Supabase counts attempts per address, and it sees our servers.
+  if (!(await limitAction("sign-in"))) return { step: "code", email, next, error: COPY[locale].busy };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.verifyOtp({ email, token, type: "email" });

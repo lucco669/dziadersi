@@ -28,7 +28,30 @@ test("auth redirects reject external origins, backslashes and browser-stripped c
   for (const path of [null, ["/profil"], "https://evil.example", "//evil.example", "/\\evil.example", "/\n/evil.example", "/\t/evil.example", "/\r/evil.example", " /profil"]) {
     assert.equal(safeNext(path, "/sl/profil"), "/sl/profil");
   }
+  // Dot segments that resolve to a protocol-relative address.
+  for (const path of ["/.//evil.example", "/%2e//evil.example", "/profil/..//evil.example", "/./%2e//evil.example"]) {
+    assert.equal(safeNext(path, "/sl/profil"), "/sl/profil");
+  }
   assert.equal(safeNext("/sl/profil/shrani/2abc?x=1#section"), "/sl/profil/shrani/2abc?x=1#section");
+  assert.equal(safeNext("/konto?dalej=//evil.example"), "/konto?dalej=//evil.example");
+});
+
+test("confirmation links may point to production and this deployment, not to other vercel.app projects", () => {
+  const saved = { url: process.env.VERCEL_URL, branch: process.env.VERCEL_BRANCH_URL };
+  process.env.VERCEL_URL = "dziadersi-abc123def-team.vercel.app";
+  delete process.env.VERCEL_BRANCH_URL;
+  try {
+    assert.equal(trustedOrigin("https://dziader.si/auth/callback")?.origin, "https://dziader.si");
+    assert.equal(trustedOrigin("https://dziadersi-abc123def-team.vercel.app/profil")?.origin, "https://dziadersi-abc123def-team.vercel.app");
+    for (const url of ["https://dziadersi-other-team.vercel.app/", "https://x-team.vercel.app/", "http://dziadersi-abc123def-team.vercel.app/", "https://evil.example/"]) {
+      assert.equal(trustedOrigin(url), null);
+    }
+  } finally {
+    for (const [key, value] of [["VERCEL_URL", saved.url], ["VERCEL_BRANCH_URL", saved.branch]] as const) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
 });
 
 test("email callbacks and the branded hook preserve locale, query strings and the original destination", () => {
@@ -95,6 +118,23 @@ test("wrong credentials, unconfirmed accounts, rate limits and service failures 
   }
   const { client } = fixture({ signInWithPassword: new Error("private network detail") });
   assert.ok((await passwordAuth(client, "login", form(), origin)).error);
+});
+
+test("sign-in attempts and letters spend the caller's budget, only once the form is valid", async () => {
+  const spent: string[] = [];
+  const refuse = async (scope: string) => { spent.push(scope); return false; };
+  const { client, calls } = fixture({});
+  for (const [mode, scope] of [["login", "sign-in"], ["register", "auth-mail"], ["recovery", "auth-mail"], ["resend", "auth-mail"]] as const) {
+    const result = await passwordAuth(client, mode, form(), origin, refuse);
+    assert.ok(result.error);
+    assert.equal(spent.at(-1), scope);
+  }
+  assert.equal(calls.length, 0);
+  spent.length = 0;
+  await passwordAuth(client, "register", form({ email: "invalid" }), origin, refuse);
+  assert.deepEqual(spent, []);
+  const allowed = fixture({ signInWithPassword: { data: { user: { id: "user", user_metadata: { jezyk: "pl" } } }, error: null } });
+  assert.deepEqual(await passwordAuth(allowed.client, "login", form(), origin, async () => true), { destination: "/profil/zapisz/2abc" });
 });
 
 test("recovery sends a callback that reaches the password form and does not assert account existence", async () => {

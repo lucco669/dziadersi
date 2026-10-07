@@ -122,7 +122,7 @@ export default async function CalendarPage() {
             url: absoluteUrl("/kalendarz", locale),
             inLanguage: LOCALE_INFO[locale].tag,
             publisher: institute(locale),
-            dateModified: today.at,
+            dateModified: today.date,
           },
         ]}
       />

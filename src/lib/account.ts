@@ -5,9 +5,15 @@ import { site } from "./site";
 
 /** A same-site path to continue to after signing in; anything else falls back to the profile. */
 export function safeNext(value: unknown, fallback = "/profil") {
-  return typeof value === "string" && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") && !/[\u0000-\u0020\u007f]/.test(value)
-    ? value
-    : fallback;
+  if (typeof value !== "string" || !value.startsWith("/") || value.includes("\\") || /[\u0000-\u0020\u007f]/.test(value)) return fallback;
+  // Judge the path as it resolves: "/.//evil.example" starts with one slash but becomes "//evil.example".
+  try {
+    const base = new URL(site.url);
+    const url = new URL(value, base);
+    return url.origin === base.origin && !url.pathname.startsWith("//") ? value : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 /** The password form, after Supabase has verified the recovery link. */
@@ -38,16 +44,21 @@ export function formEdition(formData: FormData): Locale {
   return hasLocale(value) ? value : DEFAULT_LOCALE;
 }
 
-/** Origins that confirmation links may point to: production, Vercel previews, local development. */
+/**
+ * Origins that confirmation links may point to: production, this deployment's own addresses, local development.
+ * Not any *.vercel.app host, nor a pattern of them: anyone can name a project so that its address matches.
+ * The hook runs on production, so a preview's letters link to production; the code in them works anywhere.
+ */
 export function trustedOrigin(url: string) {
   try {
     const parsed = new URL(url);
     const production = new URL(site.url);
+    const deployment = [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL];
     const trusted =
       parsed.origin === production.origin ||
       parsed.hostname === "localhost" ||
       parsed.hostname === "127.0.0.1" ||
-      (parsed.protocol === "https:" && parsed.hostname.endsWith(".vercel.app"));
+      (parsed.protocol === "https:" && deployment.includes(parsed.host));
     return trusted ? { origin: parsed.origin, next: safeNext(parsed.pathname + parsed.search) } : null;
   } catch {
     return null;

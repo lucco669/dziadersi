@@ -113,7 +113,7 @@ export default async function SpeciesPage({ params }: PageProps<"/[lang]/atlas/[
   const path = `/atlas/${species.slug}`;
   const url = absoluteUrl(path, locale);
   const range = species.region ? t.regional(species.region) : species.occasion ? t.occasional(species.occasion) : t.nationwide;
-  const community = await getCommunity();
+  const community = await getCommunity("counts");
 
   return (
     <main id="tresc">

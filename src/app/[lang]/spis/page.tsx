@@ -438,7 +438,7 @@ export default async function CensusPage() {
         meta={
           census ? (
             <>
-              {t.asOf(formatDate(locale, census.updated, { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }))} ·{" "}
+              {t.asOf(formatDate(locale, census.updated, { day: "numeric", month: "long" }))} ·{" "}
               <DataLicense />
             </>
           ) : (

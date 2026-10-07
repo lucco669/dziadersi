@@ -73,7 +73,7 @@ export default async function CasePage({ params }: PageProps<"/[lang]/czy-to-juz
   const cases = getCases(locale);
   const item = caseBySlug((await params).slug, locale);
   if (!item) notFound();
-  const community = await getCommunity();
+  const community = await getCommunity("counts");
   const index = cases.indexOf(item);
   const previous = cases[(index - 1 + cases.length) % cases.length];
   const next = cases[(index + 1) % cases.length];

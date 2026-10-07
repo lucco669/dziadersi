@@ -69,10 +69,10 @@ For local testing of the hook itself, Supabase must reach your machine (a tunnel
 
 - **Authentication → URL Configuration**
   - Site URL: `https://dziader.si`
-  - Redirect URLs: `http://localhost:3000/**`, `https://dziader.si/**`, and the preview pattern, e.g. `https://*-<team>.vercel.app/**`
+  - Redirect URLs: `http://localhost:3000/**` and `https://dziader.si/**`. No `vercel.app` wildcard: anyone can name a Vercel project so that its address matches a pattern such as `https://*-<team>.vercel.app/**`, and a password-reset link would then lead there. To test sign-in on a preview, add that preview's exact address and remove it afterwards. The application trusts only production, localhost and the deployment's own addresses (`VERCEL_URL`, `VERCEL_BRANCH_URL`), so letters sent by the production hook for a preview link to production; the code in them works on the preview.
 - **Authentication → Sign In / Providers → Email**: enabled, "Confirm email" on. Set the minimum password length to **8** to match the forms (the application accepts 8–128 characters). Supabase stores and verifies passwords; the application never stores them in its own tables. Keep signup enabled. Enable the password-change notification email if desired.
 - Email OTP length: 6 is the default and what the letters are designed for (6–10 digits work).
-- Rate limits (Authentication → Rate Limits): the defaults are fine; with the hook in place, Supabase's built-in email limit no longer applies.
+- Rate limits (Authentication → Rate Limits): the defaults are fine; with the hook in place, Supabase's built-in email limit no longer applies. Supabase also sees the application's servers rather than readers, so the application keeps its own budgets per network address (see write budgets below): 30 sign-in attempts (password or emailed code) and 10 letters (link, registration, recovery, resend) per ten minutes.
 
 ### Enable Google sign-in
 
@@ -87,7 +87,7 @@ Google was disabled in this project's public auth settings when this feature was
 
    For another Supabase project, use the callback shown in its Google provider settings. Google returns to Supabase; Supabase then returns to the application's `/auth/callback`.
 3. In **Supabase → Authentication → Sign In / Providers → Google**, enable Google, paste the client ID and client secret, and save. Leave nonce verification enabled. This app uses the ordinary OAuth redirect flow, without Google One Tap or extra Google API scopes.
-4. In **Supabase → Authentication → URL Configuration**, verify the existing redirect allow list includes `https://dziader.si/**` and `http://localhost:3000/**` (and your preview domain when testing there). These must allow `/auth/callback` with its query parameters.
+4. In **Supabase → Authentication → URL Configuration**, verify the existing redirect allow list includes `https://dziader.si/**` and `http://localhost:3000/**` (and, while testing there, a preview's exact address, never a `vercel.app` wildcard). These must allow `/auth/callback` with its query parameters.
 5. While Google's app is in testing, add your Google account as a test user. Set its audience/publishing status for public use when ready, and complete any verification Google requires.
 
 Provider reference: [Supabase Google sign-in](https://supabase.com/docs/guides/auth/social-login/auth-google). Password reference: [Supabase password authentication](https://supabase.com/docs/guides/auth/passwords).

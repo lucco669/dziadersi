@@ -1,5 +1,6 @@
 import { cacheLife } from "next/cache";
 import type { Verdict } from "@/content/cases";
+import { warsawDate } from "./calendar";
 import { createAdminClient, hasAdmin } from "./supabase/admin";
 
 /*
@@ -34,19 +35,28 @@ export type Community = {
   /** All-time totals per tally kind. */
   tallies: Record<string, number>;
   talliesToday: Record<string, number>;
+  /** The day the figures were read, Warsaw, YYYY-MM-DD. Not the minute: that would change every cached page on every read. */
   updated: string;
 };
 
-export async function getCommunity(): Promise<Community | null> {
+/**
+ * How fresh the figures must be: "live" (every minute) on the pages about them, "counts"
+ * (every quarter of an hour, see next.config.ts) on pages that only quote a count or two.
+ * Each is its own cache entry.
+ */
+export type Freshness = "live" | "counts";
+
+export async function getCommunity(freshness: Freshness = "live"): Promise<Community | null> {
   "use cache";
-  cacheLife("minutes");
+  if (freshness === "live") cacheLife("minutes");
+  else cacheLife("counts");
   if (!hasAdmin) return null;
   const { data, error } = await createAdminClient().rpc("community_summary");
   if (error) {
     console.error("Społeczność:", error.message);
     return null;
   }
-  return { ...(data as Omit<Community, "updated">), updated: new Date().toISOString() };
+  return { ...(data as Omit<Community, "updated">), updated: warsawDate(new Date()) };
 }
 
 /** Fresh counts for one case, straight after a vote. */

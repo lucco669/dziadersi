@@ -59,27 +59,38 @@ export function FamilyRanking({ initial }: { initial: FamilyGroup }) {
   const [group, setGroup] = useState(initial);
   const [status, setStatus] = useState("");
   const [expired, setExpired] = useState(false);
+  // A full list can't change and an expired one is gone: polling stops for both.
+  const startsFull = initial.codes.length >= GROUP_LIMIT;
   useEffect(() => {
+    if (startsFull) return;
     let cancelled = false;
     const controller = new AbortController();
     const copy = COPY[locale];
+    function stop() {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    }
     async function refresh() {
       if (document.hidden) return;
+      if (Date.parse(initial.expires) <= Date.now()) { stop(); setExpired(true); setStatus(copy.expired); return; }
       try {
         const response = await fetch(`/api/grupy/${initial.id}`, { cache: "no-store", signal: controller.signal });
         if (cancelled) return;
-        if (response.status === 404) { setExpired(true); setStatus(copy.expired); return; }
+        if (response.status === 404) { stop(); setExpired(true); setStatus(copy.expired); return; }
         if (!response.ok) { setStatus(copy.failed); return; }
         const next = await response.json() as FamilyGroup;
-        if (!cancelled) { setGroup(next); setStatus(""); }
+        if (cancelled) return;
+        setGroup(next);
+        setStatus("");
+        if (next.codes.length >= GROUP_LIMIT) stop();
       } catch {
         if (!cancelled) setStatus(copy.offline);
       }
     }
     const timer = window.setInterval(refresh, 30000);
     document.addEventListener("visibilitychange", refresh);
-    return () => { cancelled = true; controller.abort(); window.clearInterval(timer); document.removeEventListener("visibilitychange", refresh); };
-  }, [initial.id, locale]);
+    return () => { cancelled = true; controller.abort(); stop(); };
+  }, [initial.id, initial.expires, startsFull, locale]);
   const members = ranked(familyMembers(group, locale));
   const full = members.length >= GROUP_LIMIT;
   return (

@@ -44,6 +44,12 @@ export function warsawTime(date: Date): LocalTime {
   };
 }
 
+/** The day in Poland as YYYY-MM-DD. */
+export function warsawDate(date: Date) {
+  const { year, month, day } = warsawTime(date);
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 export const daysInYear = (year: number) =>
   (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365;
 

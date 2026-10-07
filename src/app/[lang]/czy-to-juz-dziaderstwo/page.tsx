@@ -91,7 +91,7 @@ export default async function CommissionPage() {
   const cases = getCases(locale);
   const verdicts = getVerdicts(locale);
   const categories = caseCategories(locale);
-  const community = await getCommunity();
+  const community = await getCommunity("counts");
   const votes = community?.verdicts.total ?? 0;
   // Keyed by caseKey(): the Polish slug, in both editions.
   const counts = community?.verdicts.cases ?? null;

@@ -717,7 +717,7 @@ export default async function YearbookPage() {
           <>
             {t.metaBefore}
             <time dateTime={updated}>
-              {formatDate(locale, updated, { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+              {formatDate(locale, updated, { day: "numeric", month: "long", year: "numeric" })}
             </time>
             {t.metaAfter} · <DataLicense />
           </>

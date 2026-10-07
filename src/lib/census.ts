@@ -1,4 +1,6 @@
 import { cacheLife } from "next/cache";
+import { warsawDate } from "./calendar";
+import type { Freshness } from "./community";
 import { createAdminClient, hasAdmin } from "./supabase/admin";
 
 /*
@@ -24,7 +26,7 @@ export type Census = {
   /** isodow 1–7 (Monday first) × hour 0–23, Warsaw time. */
   hours: { dow: number; hour: number; n: number; average: number }[];
   regions: Record<string, { n: number; average: number }>;
-  /** When the figures were read, ISO. */
+  /** The day the figures were read, Warsaw, YYYY-MM-DD. */
   updated: string;
 };
 
@@ -40,12 +42,13 @@ export async function getCensus(): Promise<Census | null> {
     console.error("Spis:", error.message);
     return null;
   }
-  return { ...(data as Omit<Census, "updated">), updated: new Date().toISOString() };
+  return { ...(data as Omit<Census, "updated">), updated: warsawDate(new Date()) };
 }
 
-export async function getAnswerCounts(): Promise<AnswerCounts | null> {
+export async function getAnswerCounts(freshness: Freshness = "live"): Promise<AnswerCounts | null> {
   "use cache";
-  cacheLife("minutes");
+  if (freshness === "live") cacheLife("minutes");
+  else cacheLife("counts");
   if (!hasAdmin) return null;
   const { data, error } = await createAdminClient().rpc("answer_counts");
   if (error) {
@@ -59,10 +62,10 @@ export async function getAnswerCounts(): Promise<AnswerCounts | null> {
   return counts;
 }
 
-/** How many results have each score, 0–100. */
+/** How many results have each score, 0–100. Only the result pages read it, for a percentile. */
 export async function getScoreHistogram(): Promise<number[] | null> {
   "use cache";
-  cacheLife("minutes");
+  cacheLife("counts");
   if (!hasAdmin) return null;
   const { data, error } = await createAdminClient().rpc("score_histogram");
   if (error) {

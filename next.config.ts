@@ -70,11 +70,17 @@ const LONG_LIVED = [
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  poweredByHeader: false,
-  experimental: {
-    // Tailwind's CSS is small: inlining it saves the render-blocking stylesheet request.
-    inlineCss: true,
+  /*
+   * "counts": pages that only quote a count or two (a species' sightings, a case's votes, a result's
+   * percentile) refresh every quarter of an hour instead of every minute. Every regeneration that
+   * changes a page rewrites the whole page in the cache, so live figures stay on the pages about them.
+   */
+  cacheLife: {
+    counts: { stale: 300, revalidate: 900, expire: 86400 },
   },
+  poweredByHeader: false,
+  // No experimental.inlineCss: the stylesheet (86 KB) was copied into the HTML, its inline RSC payload,
+  // the .rsc file and two segment files of every page, half of every cache write. As a file it is cached once.
   // Certificates are rendered at request time and read these from disk.
   outputFileTracingIncludes: {
     "/[lang]/wynik/**": ["./assets/fonts/*.ttf"],

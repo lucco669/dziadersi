@@ -187,7 +187,7 @@ export default async function ResultPage({ params }: PageProps<"/[lang]/wynik/[k
   const [bulletin, histogram, counts] = await Promise.all([
     getBulletin(locale),
     getScoreHistogram(),
-    result.version === 2 ? getAnswerCounts() : null,
+    result.version === 2 ? getAnswerCounts("counts") : null,
   ]);
   const real = realPercentile(histogram, result.score);
 
