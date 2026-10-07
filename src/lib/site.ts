@@ -184,6 +184,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       summary: "Karty bingo na wesele, Wigilię, imieniny, majówkę, podróż autem i plażę, do skreślania na telefonie albo do druku.",
     },
     {
+      href: "/kolejka",
+      label: "Pan tu nie stał!",
+      short: "Kolejka",
+      group: "pomoce",
+      summary: "Symulator kolejki urzędowej. Broń miejsca, zarządzaj cierpliwością i zdąż przed zamknięciem. Kolejka dnia i protokół wyniku.",
+      isNew: true,
+    },
+    {
       href: "/kalendarz",
       label: "Kartka z kalendarza",
       short: "Kalendarz",
@@ -304,6 +312,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Bingo",
       group: "pomoce",
       summary: "Bingo listki za svatbo, sveti večer, godovanje, prvomajski vikend, vožnjo z avtom in plažo, za prečrtavanje na telefonu ali za tisk.",
+    },
+    {
+      href: "/kolejka",
+      label: "Vi pa niste bili v vrsti!",
+      short: "Vrsta",
+      group: "pomoce",
+      summary: "Simulator čakanja na uradu. Brani mesto, ohrani potrpežljivost in pridi na vrsto pred zaprtjem. Današnja vrsta in zapisnik rezultata.",
+      isNew: true,
     },
     {
       href: "/kalendarz",

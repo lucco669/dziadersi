@@ -22,6 +22,7 @@ export const SEGMENTS: SegmentMap = {
   generator: { sl: "pogovornik" },
   superinteligencja: { sl: "superinteligenca" },
   bingo: { sl: "bingo", children: { druk: "tisk" } },
+  kolejka: { sl: "cakalna-vrsta" },
   kalendarz: { sl: "koledar" },
   biuletyn: { sl: "bilten", children: { wypisz: "odjava" } },
   egzamin: { sl: "izpit" },

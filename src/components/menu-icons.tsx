@@ -158,6 +158,9 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       <line x1={12} y1={37} x2={36} y2={37} stroke={INK} strokeWidth={1.8} strokeLinecap="round" />
     </g>
   ),
+  "/kolejka": (
+    <g><path d="M3 5H15V32H3Z" fill="none" stroke={INK} strokeWidth={1.5} /><path d="M1 23H18" stroke={INK} strokeWidth={2} /><Tiny x={23} y={33} color={RED} /><Tiny x={32} y={33} /><Tiny x={41} y={33} /><path d="M2 36H46" stroke={INK} strokeWidth={1.4} /></g>
+  ),
   "/bingo": (
     <g>
       <rect x={9} y={3} width={30} height={34} fill={PAPER} stroke={INK} strokeWidth={2} />

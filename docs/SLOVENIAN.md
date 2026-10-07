@@ -74,6 +74,7 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Superinteligencja · SI · /superinteligencja | Superinteligenca · SI · /sl/superinteligenca (the model keeps its name, SZWAGIER 1.9 TDI; a translator's note says szwagier is svak) |
 | 1.9 TDI z namysłem · Elektryk | 1.9 TDI s premislekom · Električni |
 | Dziaders Bingo · Bingo | Dziaders bingo · Bingo |
+| Pan tu nie stał! · Kolejka · /kolejka | Vi pa niste bili v vrsti! · Vrsta · /sl/cakalna-vrsta |
 | Kartka z kalendarza · Kalendarz · /kalendarz | Trgalni koledar · Koledar · /sl/koledar |
 | Profil Dziaderski · Profil | Dziaderski profil · Profil |
 | Legitymacja Obserwatora | Opazovalska izkaznica |

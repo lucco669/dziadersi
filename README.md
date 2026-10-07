@@ -31,6 +31,8 @@ Browser QA on 3 October 2026 covered a complete 16-task examination at the mobil
 
 ## Where things live
 
+`/kolejka` (Slovenian: `/sl/cakalna-vrsta`) is **Pan tu nie stał!**, a turn-based queue game. Sixteen translated encounters, a Warsaw-date daily seed, random queues, one manager intervention, three endings, local resume and records, challenge links and a downloadable PNG report. No account or backend is required. Time advances only on decisions. Version 1 seeds and decisions are replayed by `src/lib/queue.ts`; keep its encounter pool and effects stable or version the format. Encounters and their Slovenian overlay live in `src/content/queue.ts` and `src/content/sl/queue.ts`, the interface in `src/components/queue-game.tsx`, the SVG waiting room in `queue-scene.tsx` and the local certificate renderer in `src/lib/queue-report.ts`.
+
 | Path | What |
 | --- | --- |
 | `src/app/[lang]/` | Every page and share image, in both editions (`pl` without a URL prefix, `sl` under `/sl`); the root layout, 404 and catch-all |
