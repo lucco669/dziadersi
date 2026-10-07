@@ -56,6 +56,19 @@ const rewriteTree = (source: string, destination: string): Rule[] => [
   ...rscRewrites(source, destination),
 ];
 
+/**
+ * Redirects from the routed form of the Slovenian edition (/sl/slownik/x) to its public address
+ * (/sl/slovar/x), as /pl/… does in the Polish edition. Share images keep the routed path: Next.js links them by it.
+ */
+export function slovenianRedirects(): (Rule & { permanent: true })[] {
+  return Object.entries(SEGMENTS)
+    .filter(([pl, { sl }]) => sl !== pl)
+    .flatMap(([pl, { sl }]) => [
+      { source: `/sl/${pl}`, destination: `/sl/${sl}`, permanent: true as const },
+      { source: `/sl/${pl}/:path((?!.*opengraph-image).*)`, destination: `/sl/${sl}/:path`, permanent: true as const },
+    ]);
+}
+
 /** Rewrites from Slovenian URLs to the route folders, most specific first. */
 export function slovenianRewrites(): Rule[] {
   const rules: Rule[] = [];

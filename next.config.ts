@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { rscRewrites, SEGMENTS, slovenianRewrites } from "./src/i18n/segments";
+import { rscRewrites, SEGMENTS, slovenianRedirects, slovenianRewrites } from "./src/i18n/segments";
 
 const isDev = process.env.NODE_ENV === "development";
 // The Vercel Toolbar on preview deployments loads from vercel.live.
@@ -100,10 +100,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/security.txt", destination: "/.well-known/security.txt", permanent: true },
-      // The routed form of the Polish edition is never a public address (share images excepted:
+      // The routed form of either edition is never a public address (share images excepted:
       // Next.js links them by the routed path).
       { source: "/pl", destination: "/", permanent: true },
       { source: "/pl/:path((?!.*opengraph-image).*)", destination: "/:path", permanent: true },
+      ...slovenianRedirects(),
       // dziader.si/si reads well, but the language code is sl.
       { source: "/si", destination: "/sl", permanent: true },
       { source: "/si/:path*", destination: "/sl/:path*", permanent: true },

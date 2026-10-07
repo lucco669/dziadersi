@@ -6,7 +6,7 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 
 ## How it is built
 
-- Routes live in `src/app/[lang]/`. Polish URLs have no prefix (`/atlas`); `next.config.ts` rewrites them to `/pl/…`. Slovenian URLs are `/sl/…` with Slovenian words (`/sl/slovar/…`), mapped in `src/i18n/segments.ts`. `/si` redirects to `/sl`.
+- Routes live in `src/app/[lang]/`. Polish URLs have no prefix (`/atlas`); `next.config.ts` rewrites them to `/pl/…`. Slovenian URLs are `/sl/…` with Slovenian words (`/sl/slovar/…`), mapped in `src/i18n/segments.ts`. `/si` redirects to `/sl`. The routed forms (`/pl/atlas`, `/sl/slownik/…`) redirect to the public address; only share images keep them.
 - Code always builds **internal paths**: route folders without the locale, with the edition's own content slugs (`/slownik/${entry.slug}`). `import Link from "@/i18n/link"` localises them; elsewhere use `localizePath(path, locale)` from `@/i18n/routes`.
 - The locale: `await getLocale()` (`@/i18n/server`) in Server Components and server utilities; `useLocale()` (`@/i18n/client`) in Client Components; `params.lang` in route handlers and image routes; an explicit argument in Server Actions and functions shared with the client. Use `useInternalPath()` instead of `usePathname()` when comparing with hrefs.
 - **Interface copy** sits next to the code that uses it, in a `defineCopy({ pl: {...}, sl: {...} })` object (`@/i18n/copy`). The Polish object defines the shape; the type check fails until Slovenian matches. Functions are fine for interpolation and plurals.

@@ -73,6 +73,30 @@ test("rewrites reach the route folders, also from the RSC paths of client naviga
   }
 });
 
+test("the routed form of the Slovenian edition redirects to its public address, share images excepted", async () => {
+  const { getPathMatch } = await import("next/dist/shared/lib/router/utils/path-match.js");
+  const { prepareDestination } = await import("next/dist/shared/lib/router/utils/prepare-destination.js");
+  const { default: config } = await import("../next.config");
+  const redirects = await config.redirects!();
+  const redirect = (path: string) => {
+    for (const rule of redirects) {
+      if ("has" in rule || "missing" in rule) continue;
+      const params = getPathMatch(rule.source, { removeUnnamedParams: true, strict: true })(path);
+      if (params) return prepareDestination({ appendParamsToQuery: false, destination: rule.destination, params, query: {} }).parsedDestination.pathname;
+    }
+    return null;
+  };
+
+  assert.equal(redirect("/sl/slownik"), "/sl/slovar");
+  assert.equal(redirect("/sl/slownik/ja-ves"), "/sl/slovar/ja-ves");
+  assert.equal(redirect("/sl/czy-to-juz-dziaderstwo/klucze-w-zamku"), "/sl/je-to-ze-dziaderstvo/klucze-w-zamku");
+  assert.equal(redirect("/sl/wynik/2abc/certyfikat"), "/sl/izvid/2abc/certyfikat");
+  assert.equal(redirect("/sl/slownik/ja-ves/opengraph-image"), null);
+  // Public addresses and sections with the same word in both editions stay where they are.
+  assert.equal(redirect("/sl/slovar/ja-ves"), null);
+  assert.equal(redirect("/sl/atlas/zarni-dziaders"), null);
+});
+
 test("content slugs map one to one and the switcher finds the twin page", () => {
   for (const [section, map] of Object.entries({ atlas: SPECIES_SLUGS, slownik: DICTIONARY_SLUGS, raporty: REPORT_SLUGS, "czy-to-juz-dziaderstwo": CASE_SLUGS })) {
     const slugs = Object.values(map);
