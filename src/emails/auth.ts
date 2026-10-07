@@ -41,7 +41,7 @@ const COPY = defineCopy({
         invite
           ? "Ktoś zgłosił ten adres do rejestru Instytutu. Wystarczy potwierdzić go przyciskiem poniżej, a Profil Dziaderski będzie gotowy."
           : "Instytut przyjął zgłoszenie. Wystarczy potwierdzić adres przyciskiem poniżej, a Profil Dziaderski będzie gotowy.",
-      more: "W profilu zapiszesz wyniki badań, zbierzesz gatunki do kolekcji i dostaniesz odznaki. Hasła nie ma: za każdym razem przyślemy skierowanie.",
+      more: "W profilu zapiszesz wyniki badań, zbierzesz gatunki do kolekcji i dostaniesz odznaki. Następnym razem możesz zalogować się swoim hasłem, przez Google lub linkiem z e-maila.",
       button: "Potwierdzam adres",
     },
     change: {
@@ -56,10 +56,10 @@ const COPY = defineCopy({
     },
     recovery: {
       subject: "Odzyskanie dostępu do Profilu Dziaderskiego",
-      preheader: "Jedno kliknięcie przywraca dostęp do profilu.",
+      preheader: "Ustaw nowe hasło do swojego profilu.",
       title: "Odzyskanie dostępu",
-      paragraphs: ["Na ten adres zamówiono odzyskanie dostępu do Profilu Dziaderskiego. Przycisk poniżej wpuści cię z powrotem."],
-      button: "Odzyskuję dostęp",
+      paragraphs: ["Na ten adres zamówiono zmianę hasła do Profilu Dziaderskiego. Kliknij przycisk poniżej i ustaw nowe hasło.", "Link działa jeden raz. Jeśli wygaśnie, zamów nowy w oknie logowania."],
+      button: "Ustawiam nowe hasło",
     },
     reauthentication: {
       subject: "Kod potwierdzający",
@@ -74,7 +74,7 @@ const COPY = defineCopy({
       },
       password_changed_notification: {
         title: "Hasło zmienione",
-        text: "Hasło do Profilu Dziaderskiego zostało zmienione, choć Instytut haseł zasadniczo nie używa.",
+        text: "Hasło do Profilu Dziaderskiego zostało zmienione.",
       },
       identity_linked_notification: {
         title: "Nowy sposób logowania",
@@ -110,7 +110,7 @@ const COPY = defineCopy({
         invite
           ? "Nekdo je ta naslov prijavil v register Inštituta. Dovolj je, da ga potrdiš s spodnjim gumbom, in Dziaderski profil bo pripravljen."
           : "Inštitut je prijavo sprejel. Dovolj je, da naslov potrdiš s spodnjim gumbom, in Dziaderski profil bo pripravljen.",
-      more: "V profilu shranjuješ izvide, zbiraš vrste v zbirko in prejemaš značke. Gesla ni: vsakič ti pošljemo novo napotnico.",
+      more: "V profilu shranjuješ izvide, zbiraš vrste v zbirko in prejemaš značke. Naslednjič se lahko prijaviš s svojim geslom, z Googlom ali s povezavo iz e-pošte.",
       button: "Potrjujem naslov",
     },
     change: {
@@ -125,10 +125,10 @@ const COPY = defineCopy({
     },
     recovery: {
       subject: "Obnovitev dostopa do Dziaderskega profila",
-      preheader: "En klik in dostop do profila je obnovljen.",
+      preheader: "Nastavi novo geslo za svoj profil.",
       title: "Obnovitev dostopa",
-      paragraphs: ["Na ta naslov je bila naročena obnovitev dostopa do Dziaderskega profila. Spodnji gumb te spusti nazaj."],
-      button: "Obnavljam dostop",
+      paragraphs: ["Na ta naslov je bila naročena sprememba gesla za Dziaderski profil. Klikni spodnji gumb in nastavi novo geslo.", "Povezava deluje enkrat. Če poteče, v oknu za prijavo naroči novo."],
+      button: "Nastavljam novo geslo",
     },
     reauthentication: {
       subject: "Potrditvena koda",
@@ -143,7 +143,7 @@ const COPY = defineCopy({
       },
       password_changed_notification: {
         title: "Geslo spremenjeno",
-        text: "Geslo za Dziaderski profil je bilo spremenjeno, čeprav Inštitut gesel načeloma ne uporablja.",
+        text: "Geslo za Dziaderski profil je bilo spremenjeno.",
       },
       identity_linked_notification: {
         title: "Nov način prijave",
@@ -213,7 +213,6 @@ export function authLetter({ type, link, token }: AuthEmail, locale: Locale): Le
         title: t.recovery.title,
         paragraphs: t.recovery.paragraphs,
         button: link ? { href: link, label: t.recovery.button } : undefined,
-        code,
         note: t.ignore,
       };
 

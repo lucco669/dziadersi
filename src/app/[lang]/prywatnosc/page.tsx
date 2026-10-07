@@ -53,7 +53,8 @@ const COPY = defineCopy<{
         paragraphs: [
           "Konto wymaga adresu e-mail. Przechowujemy go razem z pseudonimem (jeśli go podasz), zapisanymi wynikami i datami logowania. Robimy to, żeby prowadzić konto (art. 6 ust. 1 lit. b RODO), i tylko tak długo, jak konto istnieje.",
           "Konto usuwa się przyciskiem w Profilu Dziaderskim, natychmiast i na zawsze, razem z pseudonimem, kartoteką, obserwacjami, zakładkami, kartkami z kalendarza, zgodami i zgłoszonymi sprawami. Anonimowe wpisy w Narodowym Spisie zostają, bo nie wiadomo, czyje są. Głosy w Komisji Orzekającej zostają w statystyce, ale tracą powiązanie z kontem.",
-          "Na adres e-mail wysyłamy wiadomości potrzebne do konta (skierowania do logowania i potwierdzenia zmian), a Biuletyn tygodniowy tylko wtedy, gdy go zamówisz. Reklam nie wysyłamy.",
+          "Na adres e-mail wysyłamy wiadomości potrzebne do konta (potwierdzenie rejestracji, linki do logowania i odzyskania hasła oraz potwierdzenia zmian), a Biuletyn tygodniowy tylko wtedy, gdy go zamówisz. Reklam nie wysyłamy.",
+          "Możesz logować się hasłem, linkiem z e-maila lub przez Google. Hasła obsługuje Supabase. Przy logowaniu przez Google Supabase otrzymuje adres e-mail, identyfikator konta i podstawowe dane profilu Google, takie jak nazwa i zdjęcie. Nie prosimy o dostęp do poczty, kontaktów ani plików na Dysku Google.",
         ],
       },
       {
@@ -135,7 +136,8 @@ const COPY = defineCopy<{
         paragraphs: [
           "Za račun potrebujemo e-poštni naslov. Hranimo ga skupaj z vzdevkom (če ga navedeš), shranjenimi rezultati in datumi prijav. To počnemo zaradi vodenja računa (točka (b) prvega odstavka 6. člena GDPR) in samo dokler račun obstaja.",
           "Račun izbrišeš z gumbom v Dziaderskem profilu, takoj in za vedno, skupaj z vzdevkom, kartoteko, opazovanji, zaznamki, listi koledarja, soglasji in prijavljenimi primeri. Anonimni vpisi v Nacionalnem popisu ostanejo, ker se ne ve, čigavi so. Glasovi v Razsodni komisiji ostanejo v statistiki, vendar niso več povezani z računom.",
-          "Na e-poštni naslov pošiljamo sporočila, potrebna za račun (napotnice za prijavo in potrditve sprememb), Tedenski bilten pa samo, če ga naročiš. Oglasov ne pošiljamo.",
+          "Na e-poštni naslov pošiljamo sporočila, potrebna za račun (potrditev registracije, povezave za prijavo in ponastavitev gesla ter potrditve sprememb), Tedenski bilten pa samo, če ga naročiš. Oglasov ne pošiljamo.",
+          "Prijaviš se lahko z geslom, s povezavo iz e-pošte ali z Googlom. Za gesla skrbi Supabase. Ob prijavi z Googlom Supabase prejme e-naslov, identifikator računa in osnovne podatke profila Google, kot sta ime in fotografija. Ne zahtevamo dostopa do pošte, stikov ali datotek v storitvi Google Drive.",
         ],
       },
       {

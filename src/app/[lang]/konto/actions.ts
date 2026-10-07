@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { localizePath } from "@/i18n/routes";
-import { EDITION_KEY, formEdition, isEmail, rememberEdition, safeNext } from "@/lib/account";
+import { EDITION_KEY, emailRedirectUrl, formEdition, isEmail, rememberEdition, safeNext, trustedOrigin } from "@/lib/account";
+import { passwordAuth, type PasswordMode, type PasswordState } from "@/lib/password-auth";
 import { site } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 
@@ -41,6 +42,22 @@ function explain(message: string, locale: Locale) {
   return t.down;
 }
 
+async function authOrigin() {
+  return trustedOrigin((await headers()).get("origin") ?? "")?.origin ?? site.url;
+}
+
+async function submitPassword(mode: PasswordMode | "resend", form: FormData): Promise<PasswordState> {
+  const result = await passwordAuth(await createClient(), mode, form, await authOrigin());
+  if (result.destination) redirect(result.destination);
+  return result;
+}
+
+export async function signInPassword(_: PasswordState, form: FormData) { return submitPassword("login", form); }
+export async function registerPassword(_: PasswordState, form: FormData) { return submitPassword("register", form); }
+export async function requestPasswordReset(_: PasswordState, form: FormData) { return submitPassword("recovery", form); }
+export async function updatePassword(_: PasswordState, form: FormData) { return submitPassword("password", form); }
+export async function resendConfirmation(_: PasswordState, form: FormData) { return submitPassword("resend", form); }
+
 /**
  * Step one: Supabase sends the email through our hook, with a link and a six-digit code.
  * The redirect is the public path of the reader's edition, so the hook writes the letter in it;
@@ -52,11 +69,11 @@ export async function requestLink(_: SignInState, formData: FormData): Promise<S
   const next = safeNext(formData.get("dalej"), localizePath("/profil", locale));
   if (!isEmail(email)) return { step: "email", next, email, error: COPY[locale].notEmail };
 
-  const origin = (await headers()).get("origin") ?? site.url;
+  const origin = await authOrigin();
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${origin}${next}`, shouldCreateUser: true, data: { [EDITION_KEY]: locale } },
+    options: { emailRedirectTo: emailRedirectUrl(origin, next, locale), shouldCreateUser: true, data: { [EDITION_KEY]: locale } },
   });
   if (error) return { step: "email", next, email, error: explain(error.message, locale) };
   return { step: "code", next, email };

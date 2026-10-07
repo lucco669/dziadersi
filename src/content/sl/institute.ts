@@ -148,7 +148,7 @@ export const FAQ: Record<string, Text<Question>> = {
   "Jak zostać obserwatorem terenowym?": {
     question: "Kako postanem terenski opazovalec?",
     answer:
-      "Ustvariti moraš Dziaderski profil. Dovolj je e-poštni naslov, brez gesla: Inštitut ti pošlje pismo z gumbom in kodo za prijavo. Prijavljeni opazovalec sporoča opazovanja na straneh vrst v Atlasu, z vojvodstvom ali brez. Fotografij Inštitut ne sprejema: opazovalec naj gleda, ne fotografira.",
+      "Ustvariti moraš Dziaderski profil. Prijaviš se lahko z e-naslovom in geslom, z Googlom ali s povezavo iz e-pošte. Prijavljeni opazovalec sporoča opazovanja na straneh vrst v Atlasu, z vojvodstvom ali brez. Fotografij Inštitut ne sprejema: opazovalec naj gleda, ne fotografira.",
   },
   "Kto może orzekać w Komisji Orzekającej?": {
     question: "Kdo lahko razsoja v Razsodni komisiji?",

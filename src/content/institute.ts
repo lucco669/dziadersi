@@ -188,7 +188,7 @@ export const FAQ: Question[] = [
   {
     question: "Jak zostać obserwatorem terenowym?",
     answer:
-      "Trzeba założyć Profil Dziaderski. Wystarczy adres e-mail, bez hasła: Instytut wyśle list z przyciskiem i kodem do logowania. Zalogowany obserwator zgłasza obserwacje na stronach gatunków w Atlasie, z województwem albo bez. Zdjęć Instytut nie przyjmuje: obserwator ma patrzeć, a nie fotografować.",
+      "Trzeba założyć Profil Dziaderski. Można logować się adresem e-mail i hasłem, przez Google lub linkiem z e-maila. Zalogowany obserwator zgłasza obserwacje na stronach gatunków w Atlasie, z województwem albo bez. Zdjęć Instytut nie przyjmuje: obserwator ma patrzeć, a nie fotografować.",
   },
   {
     question: "Kto może orzekać w Komisji Orzekającej?",

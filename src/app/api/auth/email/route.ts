@@ -5,7 +5,7 @@ import { canSendEmail, sendLetter } from "@/emails/send";
 import { DEFAULT_LOCALE, hasLocale, type Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { localizePath, parsePath } from "@/i18n/routes";
-import { accountEdition, trustedOrigin } from "@/lib/account";
+import { accountEdition, emailRedirectTarget, trustedOrigin } from "@/lib/account";
 import { site } from "@/lib/site";
 import { verifyWebhook } from "@/lib/webhook";
 
@@ -68,7 +68,8 @@ export async function POST(request: Request) {
 
   const { user, email_data: data } = payload;
   const type = data.email_action_type;
-  const requested = trustedOrigin(data.redirect_to);
+  const trusted = trustedOrigin(data.redirect_to);
+  const requested = trusted ? emailRedirectTarget(trusted) : null;
   const locale = editionOf(user, requested);
   const t = COPY[locale];
   if (!canSendEmail) return failure(500, t.closed);

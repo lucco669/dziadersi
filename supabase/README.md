@@ -3,7 +3,7 @@
 The project uses Supabase for these things:
 
 - **Narodowy Spis Dziadersów** (`/spis`): every finished test is stored anonymously in `public.results`.
-- **Profil Dziaderski** (`/konto`, `/profil`): magic-link accounts with saved results, species collection, field observations, bookmarks and badges.
+- **Profil Dziaderski** (`/konto`, `/profil`): email/password and Google accounts, with email-link sign-in retained, saved results, species collection, field observations, bookmarks and badges.
 - **Komisja Orzekająca** (`/czy-to-juz-dziaderstwo`): votes on curated cases, and a moderation queue of cases proposed by signed-in judges.
 - **Mały Rocznik Statystyczny** (`/statystyki`): anonymous daily tallies (Rozmówki lines, bingo squares, horn presses…) and the aggregates of everything above.
 - **Branded auth emails**: Supabase's Send Email Hook calls `/api/auth/email`, which renders the Institute's letters and sends them through Brevo.
@@ -57,9 +57,11 @@ Authentication → **Hooks** → **Send Email hook** → Add:
 - URL: `https://dziader.si/api/auth/email`
 - Generate the secret, copy it into `SEND_EMAIL_HOOK_SECRET` (Vercel and `.env.local`), redeploy, then enable the hook.
 
-From then on Supabase no longer sends its own emails: every login link, signup confirmation and address change goes through the Institute's templates (`src/emails/`). In development, `http://localhost:3000/api/auth/email?podglad=magiclink` shows a letter in the browser (also `signup`, `email_change`, `reauthentication`, `email_changed_notification`); add `&jezyk=sl` for the Slovenian letter.
+From then on Supabase no longer sends its own emails: every login link, signup confirmation, password recovery and address change goes through the Institute's templates (`src/emails/`). In development, `http://localhost:3000/api/auth/email?podglad=magiclink` shows a letter in the browser (also `signup`, `recovery`, `email_change`, `reauthentication`, `password_changed_notification`, `email_changed_notification`); add `&jezyk=sl` for the Slovenian letter.
 
-Letters go out in the reader's edition. The hook reads it from the redirect address (`/sl/…` is Slovenian) and otherwise from the account's user metadata, `jezyk`, which sign-in and subscribing to the bulletin keep up to date. Nothing stored means Polish. The redirect allow list below already covers the Slovenian addresses.
+Letters go out in the reader's edition. New email flows use `/auth/callback?flow=email&jezyk=…&dalej=…`; the hook unwraps that callback and reads the destination's edition (`/sl/…` is Slovenian). Legacy direct destinations still work. Otherwise it uses account metadata, `jezyk`, which sign-in and subscribing to the bulletin keep up to date. Nothing stored means Polish. The redirect allow list below covers the callback and Slovenian addresses.
+
+The built-in Supabase mailer also works with the callback, using PKCE: open its confirmation/recovery links in the browser that requested them. The branded hook uses `/auth/potwierdz` and token hashes, so its links work on another device too. Deploy the updated email hook together with the new account forms.
 
 For local testing of the hook itself, Supabase must reach your machine (a tunnel such as `cloudflared` or `ngrok`); otherwise test the flow on a Vercel preview with the hook pointing there.
 
@@ -68,9 +70,39 @@ For local testing of the hook itself, Supabase must reach your machine (a tunnel
 - **Authentication → URL Configuration**
   - Site URL: `https://dziader.si`
   - Redirect URLs: `http://localhost:3000/**`, `https://dziader.si/**`, and the preview pattern, e.g. `https://*-<team>.vercel.app/**`
-- **Authentication → Sign In / Providers → Email**: enabled, "Confirm email" on. Passwords are not used anywhere.
+- **Authentication → Sign In / Providers → Email**: enabled, "Confirm email" on. Set the minimum password length to **8** to match the forms (the application accepts 8–128 characters). Supabase stores and verifies passwords; the application never stores them in its own tables. Keep signup enabled. Enable the password-change notification email if desired.
 - Email OTP length: 6 is the default and what the letters are designed for (6–10 digits work).
 - Rate limits (Authentication → Rate Limits): the defaults are fine; with the hook in place, Supabase's built-in email limit no longer applies.
+
+### Enable Google sign-in
+
+Google was disabled in this project's public auth settings when this feature was added. The application is wired up; the following provider configuration is still required. No Google client secret belongs in `.env.local` or a `NEXT_PUBLIC_…` variable.
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), create or select a project. Open **Google Auth Platform** and configure the app's branding, support email, audience and contact details. Use `dziader.si` as the authorized domain; the home page is `https://dziader.si`, privacy policy `https://dziader.si/prywatnosc`, and terms `https://dziader.si/regulamin`.
+2. Create an OAuth client of type **Web application**. Add this **Authorized redirect URI** for the current Supabase project:
+
+   ```text
+   https://edmxfswgqrgawoojszev.supabase.co/auth/v1/callback
+   ```
+
+   For another Supabase project, use the callback shown in its Google provider settings. Google returns to Supabase; Supabase then returns to the application's `/auth/callback`.
+3. In **Supabase → Authentication → Sign In / Providers → Google**, enable Google, paste the client ID and client secret, and save. Leave nonce verification enabled. This app uses the ordinary OAuth redirect flow, without Google One Tap or extra Google API scopes.
+4. In **Supabase → Authentication → URL Configuration**, verify the existing redirect allow list includes `https://dziader.si/**` and `http://localhost:3000/**` (and your preview domain when testing there). These must allow `/auth/callback` with its query parameters.
+5. While Google's app is in testing, add your Google account as a test user. Set its audience/publishing status for public use when ready, and complete any verification Google requires.
+
+Provider reference: [Supabase Google sign-in](https://supabase.com/docs/guides/auth/social-login/auth-google). Password reference: [Supabase password authentication](https://supabase.com/docs/guides/auth/passwords).
+
+### Verify the account flows
+
+Use a test address you control. Both `/konto` and `/sl/racun` offer password login, registration, recovery, Google and the existing email-link option.
+
+- Register with a password, confirm the email, sign out, and sign in with the password. Before confirmation, the form offers to resend the confirmation.
+- Choose **Nie pamiętasz hasła? / Si pozabil geslo?**, open the recovery letter, and set a new password. Sign out and verify the new password works. Existing email-link and Google accounts can use recovery to add a password.
+- Expired or reused recovery links must return to the recovery request form; opening `/konto?tryb=haslo` without a session must not expose a working password-update form.
+- After enabling Google, sign in from both editions, check that the profile is created, then sign out and sign in again. Cancel the Google flow and verify the translated retry message.
+- Start sign-in from a save-to-profile link and confirm that password, Google, and email confirmation return to that destination. No new database migration is required: the existing Auth signup trigger creates profiles for every provider.
+
+`pnpm test` covers password validation and server flows, authorization of password updates, safe return paths, translated errors and recovery emails. Live email delivery and the Google consent flow require the provider setup above.
 
 ## What is stored
 
