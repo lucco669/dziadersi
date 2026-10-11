@@ -83,6 +83,7 @@ const nextConfig: NextConfig = {
   // the .rsc file and two segment files of every page, half of every cache write. As a file it is cached once.
   // Certificates are rendered at request time and read these from disk.
   outputFileTracingIncludes: {
+    "/[lang]/muzeum/**": ["./assets/fonts/*.ttf"],
     "/[lang]/wynik/**": ["./assets/fonts/*.ttf"],
     "/[lang]/grupa/**": ["./assets/fonts/*.ttf"],
     "/[lang]/generator/**": ["./assets/fonts/*.ttf"],

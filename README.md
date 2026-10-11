@@ -31,6 +31,10 @@ Browser QA on 3 October 2026 covered a complete 16-task examination at the mobil
 
 ## Where things live
 
+The introductory guide (`/dziaders`), occasion dossiers (`/okazje`: Wigilia, wesele, majówka), print library (`/do-druku`) and satirical museum (`/muzeum`) connect the existing Atlas, dictionary, cases and bingo. Their Slovenian addresses are `/sl/dziaders`, `/sl/priloznosti`, `/sl/za-tisk` and `/sl/muzej`. Dossier and museum content has translated overlays and slug maps; both collections are in search and the bilingual sitemap. Print-only views remain `noindex`.
+
+The museum has six SVG catalogue drawings, native expandable drawers, exhibit permalinks and PNG downloads at `/muzeum/[slug]/karta`. The visitor's collection uses `ibd-museum-v1` in local storage, with the same exhibit identifiers in both editions; it needs no account. `src/components/print-materials.tsx` provides ten species cards on three A4 sheets and a one-sheet folding field guide. Their print styles are isolated in `print-materials.module.css`.
+
 `/kolejka` (Slovenian: `/sl/cakalna-vrsta`) is **Pan tu nie stał!**, a turn-based queue game. Sixteen translated encounters, a Warsaw-date daily seed, random queues, one manager intervention, three endings, local resume and records, challenge links and a downloadable PNG report. No account or backend is required. Time advances only on decisions. Version 1 seeds and decisions are replayed by `src/lib/queue.ts`; keep its encounter pool and effects stable or version the format. Encounters and their Slovenian overlay live in `src/content/queue.ts` and `src/content/sl/queue.ts`, the interface in `src/components/queue-game.tsx`, the SVG waiting room in `queue-scene.tsx` and the local certificate renderer in `src/lib/queue-report.ts`.
 
 | Path | What |

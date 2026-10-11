@@ -84,6 +84,8 @@ function useIndex() {
 }
 
 const KIND_ICON: Record<SearchKind, string> = {
+  okazja: "/okazje",
+  eksponat: "/muzeum",
   dzial: "",
   gatunek: "",
   haslo: "/slownik",

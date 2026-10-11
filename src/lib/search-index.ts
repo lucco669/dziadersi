@@ -4,6 +4,8 @@ import { getDictionary } from "@/content/dictionary";
 import { getSituations } from "@/content/phrasebook";
 import { getReports } from "@/content/reports";
 import { getSpecies } from "@/content/species";
+import { getDossiers } from "@/content/dossiers";
+import { getExhibits } from "@/content/museum";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { sampleCard } from "./bingo";
@@ -41,6 +43,14 @@ export function buildSearchIndex(locale: Locale): SearchEntry[] {
       h: `/atlas/${species.slug}`,
       x: join(species.name, species.latin, species.code, species.teaser, species.summary, species.description, species.calls, species.symptoms, species.handling, species.habitat, species.activity, species.fieldMarks, species.enemies, species.occasion),
       i: species.key,
+    })),
+    ...getDossiers(locale).map((item) => ({
+      k: "okazja" as const, t: item.title, s: item.lead, h: "/okazje/" + item.slug,
+      x: join(item.title, item.short, item.lead, item.introduction, item.signals, item.protocol.map((step) => step.text)),
+    })),
+    ...getExhibits(locale).map((item) => ({
+      k: "eksponat" as const, t: item.name, s: item.subtitle, h: "/muzeum/" + item.slug,
+      x: join(item.name, item.subtitle, item.history, item.provenance, item.reason),
     })),
     ...getDictionary(locale).map((entry) => ({
       k: "haslo" as const,

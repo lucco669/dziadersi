@@ -1,0 +1,108 @@
+.sheet {
+  max-width: 186mm;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  color: #161513;
+  border: 1px solid #d8d0c0;
+}
+.cards {
+  display: grid;
+  gap: 1rem;
+}
+.card {
+  border: 1px solid #161513;
+  padding: 1.25rem;
+  break-inside: avoid;
+}
+.panel {
+  padding: 1.25rem;
+  border: 1px dashed #d8d0c0;
+}
+.pocket {
+  display: grid;
+}
+.notes {
+  height: 3rem;
+  margin-top: 1rem;
+  background: repeating-linear-gradient(transparent, transparent 1.4rem, #d8d0c0 1.4rem, #d8d0c0 1.45rem);
+}
+@media (min-width: 640px) {
+  .cards,
+  .pocket {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media print {
+  .sheet {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    break-after: page;
+  }
+  .sheet:last-child {
+    break-after: auto;
+  }
+}
+/* Desktop previews use the same physical dimensions as the printed sheets. */
+@media print, screen and (min-width: 800px) {
+  .sheet {
+    padding: 0;
+  }
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5mm;
+  }
+  .card {
+    height: 125mm;
+    padding: 5mm;
+    font-size: 9pt;
+    line-height: 1.3;
+    overflow: visible;
+  }
+  .card h2 {
+    font-size: 16pt;
+    line-height: 1.1;
+  }
+  .card svg {
+    height: 34mm;
+    margin: 3mm auto;
+  }
+  .card p {
+    margin-top: 2mm;
+  }
+  .pocket {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    height: 264mm;
+  }
+  .panel {
+    min-width: 0;
+    padding: 5mm;
+    font-size: 9pt;
+    line-height: 1.35;
+    border-color: #999;
+  }
+  .panel h2 {
+    font-size: 19pt;
+  }
+  .panel h3 {
+    font-size: 11pt;
+  }
+  .panel li {
+    margin-top: 3mm;
+  }
+  .panel svg {
+    height: 23mm;
+  }
+  .panel p {
+    margin-top: 2mm;
+  }
+  .notes {
+    height: 21mm;
+    background: none;
+    border-bottom: 1px solid #999;
+  }
+}

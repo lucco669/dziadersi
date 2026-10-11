@@ -80,6 +80,10 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Legitymacja Obserwatora | Opazovalska izkaznica |
 | Wyszukiwarka · /szukaj | Iskalnik · /sl/iskanje |
 | O Instytucie · Regulamin · Polityka prywatności | O Inštitutu · Pogoji uporabe · Politika zasebnosti |
+| Dziaders — kto to jest? · /dziaders | Dziaders — kdo je to? · /sl/dziaders |
+| Przewodniki na okazje · /okazje | Vodniki za priložnosti · /sl/priloznosti |
+| Muzeum rzeczy · /muzeum | Muzej stvari · /sl/muzej |
+| Materiały do druku · /do-druku | Gradivo za tisk · /sl/za-tisk |
 | Konto (sign-in) · /konto | Račun · /sl/racun |
 | Ranking (grupa) · /grupa | Lestvica · /sl/lestvica |
 | Groups: Badania · Zbiory · Dane · Pomoce naukowe | Raziskave · Zbirke · Podatki · Učni pripomočki (short: Pripomočki) |

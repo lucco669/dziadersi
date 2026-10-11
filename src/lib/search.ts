@@ -7,7 +7,7 @@ import { defineCopy } from "@/i18n/copy";
  * "lozko" finds "łóżko" and "zaba" finds "žaba".
  */
 
-export type SearchKind = "dzial" | "gatunek" | "haslo" | "sprawa" | "raport" | "bingo" | "rozmowki";
+export type SearchKind = "dzial" | "gatunek" | "haslo" | "sprawa" | "raport" | "bingo" | "rozmowki" | "okazja" | "eksponat";
 
 const KINDS = defineCopy<Record<SearchKind, string>>({
   pl: {
@@ -18,6 +18,8 @@ const KINDS = defineCopy<Record<SearchKind, string>>({
     raport: "Raporty",
     bingo: "Dziaders Bingo",
     rozmowki: "Rozmówki",
+    okazja: "Przewodniki na okazje",
+    eksponat: "Muzeum rzeczy",
   },
   sl: {
     dzial: "Oddelki",
@@ -27,6 +29,8 @@ const KINDS = defineCopy<Record<SearchKind, string>>({
     raport: "Poročila",
     bingo: "Dziaders bingo",
     rozmowki: "Pogovornik",
+    okazja: "Vodniki za priložnosti",
+    eksponat: "Muzej stvari",
   },
 });
 
@@ -58,7 +62,7 @@ export const fold = (text: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const KIND_WEIGHT: Record<SearchKind, number> = { dzial: 6, gatunek: 4, haslo: 3, sprawa: 2, raport: 2, bingo: 1, rozmowki: 1 };
+const KIND_WEIGHT: Record<SearchKind, number> = { dzial: 6, gatunek: 4, haslo: 3, sprawa: 2, raport: 2, bingo: 1, rozmowki: 1, okazja: 3, eksponat: 2 };
 
 /** Every token must appear somewhere; titles and word starts count most. */
 export function search(index: SearchEntry[], query: string, locale: Locale, limit = 24): SearchEntry[] {

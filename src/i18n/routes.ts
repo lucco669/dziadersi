@@ -2,6 +2,8 @@ import { CASE_SLUGS } from "@/content/sl/slugs/cases";
 import { DICTIONARY_SLUGS } from "@/content/sl/slugs/dictionary";
 import { REPORT_SLUGS } from "@/content/sl/slugs/reports";
 import { SPECIES_SLUGS } from "@/content/sl/slugs/species";
+import { DOSSIER_SLUGS } from "@/content/sl/slugs/dossiers";
+import { MUSEUM_SLUGS } from "@/content/sl/slugs/museum";
 import { DEFAULT_LOCALE, type Locale } from "./config";
 import { SEGMENTS } from "./segments";
 
@@ -66,6 +68,8 @@ const SLUGS: Record<string, Record<string, string>> = {
   slownik: DICTIONARY_SLUGS,
   raporty: REPORT_SLUGS,
   "czy-to-juz-dziaderstwo": CASE_SLUGS,
+  okazje: DOSSIER_SLUGS,
+  muzeum: MUSEUM_SLUGS,
 };
 
 const REVERSE: Record<string, Record<string, string>> = Object.fromEntries(

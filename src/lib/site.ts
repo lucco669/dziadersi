@@ -71,6 +71,9 @@ export type Department = {
 /** The departments of the Institute, in the order of the footer and the menu. */
 const SECTION_COPY = defineCopy<Department[]>({
   pl: [
+    { href: "/okazje", label: "Przewodniki na okazje", short: "Okazje", group: "zbiory", summary: "Wigilia, wesele i majówka: gatunki, powiedzenia, sprawy Komisji i bingo do druku.", isNew: true },
+    { href: "/muzeum", label: "Muzeum rzeczy", short: "Muzeum", group: "zbiory", summary: "Rzeczy, które jeszcze się przydadzą: sześć szuflad, karty eksponatów i własne zbiory.", isNew: true },
+    { href: "/do-druku", label: "Materiały do druku", short: "Do druku", group: "pomoce", summary: "Bingo na rodzinne okazje, karty oznaczania gatunków i kieszonkowy przewodnik na papierze A4.", isNew: true },
     {
       href: "/test",
       label: "Test Dziadersa",
@@ -201,6 +204,9 @@ const SECTION_COPY = defineCopy<Department[]>({
     },
   ],
   sl: [
+    { href: "/okazje", label: "Vodniki za priložnosti", short: "Priložnosti", group: "zbiory", summary: "Sveti večer, svatba in prvomajski vikend: vrste, izjave, primeri Komisije in bingo za tisk.", isNew: true },
+    { href: "/muzeum", label: "Muzej stvari", short: "Muzej", group: "zbiory", summary: "Stvari, ki bodo še prišle prav: šest predalov, kartice eksponatov in lastna zbirka.", isNew: true },
+    { href: "/do-druku", label: "Gradivo za tisk", short: "Za tisk", group: "pomoce", summary: "Bingo za družinske priložnosti, kartice za določanje vrst in žepni vodnik na papirju A4.", isNew: true },
     {
       href: "/test",
       label: "Test dziadersa",
@@ -337,6 +343,7 @@ export const sections = (locale: Locale) => SECTION_COPY[locale];
 /** Pages outside the departments, for search and the bottom of the menu. */
 const EXTRA_COPY = defineCopy<Pick<Department, "href" | "label" | "summary">[]>({
   pl: [
+    { href: "/dziaders", label: "Dziaders — kto to jest?", summary: "Znaczenie słowa, zachowania i różnica między dziaderstwem a zwykłymi przyzwyczajeniami. Wprowadzenie do Instytutu." },
     { href: "/profil", label: "Profil Dziaderski", summary: "Kartoteka badań, kolekcja gatunków, dziennik obserwacji, zakładki, odznaki i legitymacja obserwatora." },
     { href: "/szukaj", label: "Wyszukiwarka", summary: "Gatunki, hasła, sprawy, raporty i działy Instytutu w jednym miejscu." },
     { href: "/o-instytucie", label: "O Instytucie", summary: "Statut, historia, struktura organizacyjna i najczęstsze pytania." },
@@ -344,6 +351,7 @@ const EXTRA_COPY = defineCopy<Pick<Department, "href" | "label" | "summary">[]>(
     { href: "/prywatnosc", label: "Polityka prywatności", summary: "Jakie dane zbiera Instytut, po co, jak długo je trzyma i jak je usunąć." },
   ],
   sl: [
+    { href: "/dziaders", label: "Dziaders — kdo je to?", summary: "Pomen besede, vedenja in razlika med dziaderstvom in običajnimi navadami. Uvod v Inštitut." },
     { href: "/profil", label: "Dziaderski profil", summary: "Kartoteka pregledov, zbirka vrst, dnevnik opazovanj, zaznamki, značke in opazovalska izkaznica." },
     { href: "/szukaj", label: "Iskalnik", summary: "Vrste, gesla, primeri, poročila in oddelki Inštituta na enem mestu." },
     { href: "/o-instytucie", label: "O Inštitutu", summary: "Statut, zgodovina, organizacijska struktura, pogosta vprašanja in beseda o slovenski izdaji." },

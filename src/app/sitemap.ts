@@ -3,6 +3,8 @@ import { getCases } from "@/content/cases";
 import { getDictionary } from "@/content/dictionary";
 import { getReports } from "@/content/reports";
 import { getSpecies } from "@/content/species";
+import { getDossiers } from "@/content/dossiers";
+import { getExhibits } from "@/content/museum";
 import { LOCALES, type Locale } from "@/i18n/config";
 import { absoluteUrl, languageAlternates } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -29,6 +31,12 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
   return [
     page("/", "daily", 1),
     page("/test", "monthly", 0.9),
+    page("/dziaders", "monthly", 0.8),
+    page("/okazje", "monthly", 0.7),
+    ...getDossiers(locale).map((item) => page("/okazje/" + item.slug, "monthly", 0.7)),
+    page("/do-druku", "monthly", 0.7),
+    page("/muzeum", "monthly", 0.7),
+    ...getExhibits(locale).map((item) => page("/muzeum/" + item.slug, "monthly", 0.6)),
     page("/atlas", "weekly", 0.8),
     ...getSpecies(locale).map((species) => page(`/atlas/${species.slug}`, "monthly", 0.7)),
     page("/slownik", "weekly", 0.7),

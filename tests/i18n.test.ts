@@ -4,6 +4,8 @@ import { CASE_SLUGS } from "../src/content/sl/slugs/cases";
 import { DICTIONARY_SLUGS } from "../src/content/sl/slugs/dictionary";
 import { REPORT_SLUGS } from "../src/content/sl/slugs/reports";
 import { SPECIES_SLUGS } from "../src/content/sl/slugs/species";
+import { DOSSIER_SLUGS } from "../src/content/sl/slugs/dossiers";
+import { MUSEUM_SLUGS } from "../src/content/sl/slugs/museum";
 import { alternatePath, localizePath, parsePath, switchPath } from "../src/i18n/routes";
 import { SEGMENTS } from "../src/i18n/segments";
 
@@ -98,7 +100,7 @@ test("the routed form of the Slovenian edition redirects to its public address, 
 });
 
 test("content slugs map one to one and the switcher finds the twin page", () => {
-  for (const [section, map] of Object.entries({ atlas: SPECIES_SLUGS, slownik: DICTIONARY_SLUGS, raporty: REPORT_SLUGS, "czy-to-juz-dziaderstwo": CASE_SLUGS })) {
+  for (const [section, map] of Object.entries({ atlas: SPECIES_SLUGS, slownik: DICTIONARY_SLUGS, raporty: REPORT_SLUGS, "czy-to-juz-dziaderstwo": CASE_SLUGS, okazje: DOSSIER_SLUGS, muzeum: MUSEUM_SLUGS })) {
     const slugs = Object.values(map);
     assert.equal(new Set(slugs).size, slugs.length, `${section}: duplicate Slovenian slugs`);
     for (const [pl, sl] of Object.entries(map)) {
@@ -133,8 +135,11 @@ test("every content module has a complete Slovenian translation", async () => {
     import("../src/content/regions"),
     import("../src/content/szwagier"),
     import("../src/content/queue"),
+    import("../src/content/dossiers"),
+    import("../src/content/guide"),
+    import("../src/content/museum"),
   ]);
-  assert.equal(modules.length, 14);
+  assert.equal(modules.length, 17);
   const [species, dictionary, reports, , test2, , , cases, bingo, phrasebook, , , szwagier] = modules;
   assert.equal(szwagier.getSzwagier("sl").topics.length, szwagier.SZWAGIER.topics.length);
   assert.equal(species.getSpecies("sl").length, species.SPECIES.length);

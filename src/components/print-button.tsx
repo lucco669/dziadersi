@@ -9,13 +9,14 @@ const COPY = defineCopy({
   sl: { print: "Natisni" },
 });
 
-export function PrintButton({ label }: { label?: string }) {
+export function PrintButton({ label, kind }: { label?: string; kind?: string }) {
   const locale = useLocale();
   return (
     <button
       type="button"
       onClick={() => {
-        track("Bingo", { akcja: "druk" });
+        if (kind) track("Druk", { typ: kind });
+        else track("Bingo", { akcja: "druk" });
         window.print();
       }}
       className="btn bg-ink text-paper hover:bg-red"

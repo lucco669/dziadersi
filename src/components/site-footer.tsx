@@ -14,6 +14,7 @@ const COPY = defineCopy({
     sections: "Działy",
     contact: "Kontakt",
     links: [
+      ["/dziaders", "Dziaders — kto to?"],
       ["/profil", "Profil Dziaderski"],
       ["/o-instytucie", "O Instytucie"],
       ["/kontakt", "Kontakt"],
@@ -28,6 +29,7 @@ const COPY = defineCopy({
     sections: "Oddelki",
     contact: "Kontakt",
     links: [
+      ["/dziaders", "Dziaders — kdo je to?"],
       ["/profil", "Dziaderski profil"],
       ["/o-instytucie", "O Inštitutu"],
       ["/kontakt", "Kontakt"],
