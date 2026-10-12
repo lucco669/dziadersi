@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyContentRedirects } from "./src/i18n/legacy-redirects";
 import { rscRewrites, SEGMENTS, slovenianRedirects, slovenianRewrites } from "./src/i18n/segments";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -51,7 +52,10 @@ const EMBEDDABLE = [
 /** Private pages: results, rankings, the save-to-profile links and asked questions are never indexed or leak a referrer. */
 const PRIVATE = ["grupy", "grupa", "wynik"]
   .flatMap((pl) => [`/${pl}/:path*`, `/sl/${sl(pl)}/:path*`])
-  .concat(["/konto", "/sl/racun", "/auth/:path*", "/profil/zapisz/:path*", "/sl/profil/shrani/:path*", "/profil/zachowaj", "/sl/profil/ohrani", "/superinteligencja/:kod", `/sl/${sl("superinteligencja")}/:kod`]);
+  .concat(["/auth/:path*", "/profil/zapisz/:path*", "/sl/profil/shrani/:path*", "/profil/zachowaj", "/sl/profil/ohrani", "/superinteligencja/:kod", `/sl/${sl("superinteligencja")}/:kod`]);
+
+/** Account and search pages may lead to public content, but never belong in search results. */
+const NOINDEX = ["/konto", "/sl/racun", "/profil/:path*", "/sl/profil/:path*", "/szukaj", "/sl/iskanje", "/api/:path*", "/manifest.webmanifest"];
 
 /** Paths the Polish edition must not rewrite: the other edition, the routed form, APIs and Next's own. */
 const NOT_POLISH = ["sl", "pl", "si", "api", "auth", "_next", "_vercel"].map((segment) => `${segment}(?:/|$)`).join("|");
@@ -101,6 +105,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/security.txt", destination: "/.well-known/security.txt", permanent: true },
+      ...legacyContentRedirects(),
       // The routed form of either edition is never a public address (share images excepted:
       // Next.js links them by the routed path).
       { source: "/pl", destination: "/", permanent: true },
@@ -138,6 +143,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      ...NOINDEX.map((source) => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }] })),
+      ...["/konto", "/sl/racun", "/rejestracja", "/sl/registracija", "/profil/:path*", "/sl/profil/:path*"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }] })),
       ...PRIVATE.map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }] })),
       ...["/test", "/sl/test"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }] })),
       ...EMBEDDABLE.map((source) => ({

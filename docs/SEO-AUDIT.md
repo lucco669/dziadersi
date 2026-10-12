@@ -41,3 +41,29 @@ W odczycie publicznego DNS potwierdzono brak CAA, delegacji DNSSEC przez DS oraz
 Zmiany są lokalne. Po wdrożeniu należy powtórzyć skan produkcji i sprawdzić indeksowanie w Google Search Console. Ta kontrola techniczna nie gwarantuje wyniku 100/100 ani pozycji w wyszukiwarce.
 
 Kontakt w `security.txt` należy ponownie sprawdzić i odnowić przed **5 października 2027**, zgodnie z [RFC 9116](https://www.rfc-editor.org/rfc/rfc9116.html).
+
+## Kontrola raportów Coverage — 12 października 2026
+
+Sprawdzono oba archiwa `dziader.si-Coverage-Drilldown-2026-10-12`: 35 adresów w raporcie 404 oraz 48 adresów „Strona zeskanowana, ale jeszcze nie zindeksowana”. Raporty są materiałem diagnostycznym; sam status wykluczenia nie oznacza błędu wymagającego otwarcia strony do indeksowania.
+
+- **33 artykuły z raportu 404** mają słoweńskie slugi pod polskimi ścieżkami, np. `/slownik/koliko-ste-pa-dali-za-to`. Dodano przekierowania 308 na właściwe strony `/sl/slovar/…` i `/sl/atlas/…`. Reguły powstają z istniejących słowników slugów wszystkich sześciu działów, obejmują też alias `/pl/…`, zachowują parametry zapytania i prowadzą bezpośrednio do stron z sitemap. Polskie slugi i adresy wspólne dla obu języków zachowują swoją stronę.
+- **`/$` i `/&` pozostają 404**: nie mają odpowiedników w serwisie. Nie przekierowujemy nieznanych adresów na stronę główną. To zgodne z [zaleceniami Google dotyczącymi brakujących stron](https://developers.google.com/search/docs/crawling-indexing/large-site-managing-crawl-budget).
+- **Drugi raport zawiera 34 obrazy OG, 10 fontów, favicon, manifest, stronę główną `/sl` i adres logowania**. Fonty i manifest nie są stronami redakcyjnymi. Stare fonty mają hashe poprzedniego wdrożenia; wszystkie dziesięć historycznych adresów jest nieobecnych w lokalnym buildzie, ale wszystkie zasoby wskazane przez aktualny HTML działają. Obrazy OG pozostają dostępne dla robotów i podglądów. Nie dodajemy blokad robots.txt do CSS, JavaScript ani fontów.
+- **Konto, profil i wyszukiwarka** mają spójne `noindex, follow` w HTML i HTTP. Prywatne wyniki i operacje zapisu zachowują `noindex, nofollow`. API i manifest mają HTTP `noindex`; żaden z tych adresów nie trafia do sitemap. Nagłówek działa także dla zasobów innych niż HTML: [dokumentacja Google](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag).
+- **`/sl` działa lokalnie z 200**, właściwym językiem, canonical, hreflang i bez `noindex`. Sam raport „zeskanowana, ale jeszcze nie zindeksowana” nie wskazuje technicznej przyczyny wykluczenia tej strony.
+
+### Rejestracja w obu wydaniach
+
+Dodano publiczne `/rejestracja` i `/sl/registracija`: formularz otwiera rejestrację, a treść wyjaśnia korzyści profilu, trzy sposoby logowania, potwierdzenie adresu, dobrowolne zgody, usuwanie konta i zasady udostępniania wyników. Te same informacje rozszerzają dotychczasową stronę `/konto` i `/sl/racun`. Formularze zachowują bezpieczną, lokalizowaną kontynuację `dalej`; treść nie zmienia mechanizmu uwierzytelniania ani domyślnych zgód.
+
+Nowe strony mają wzajemne hreflang, własny canonical, opis, kartę podglądu danego wydania, `WebPage` i `BreadcrumbList`, wpisy sitemap oraz linki w stopce i menu gościa. Linki przełączające tryb prowadzą do formularza. `useId()` rozdziela etykiety i opisy pól między formularzami utrzymywanymi przez router przy przełączaniu wydania. Strony konta i rejestracji nie wysyłają referrera.
+
+### Weryfikacja i wdrożenie
+
+- `pnpm test`: 63 testy, wszystkie poprawne; `pnpm lint`, `pnpm typecheck`, `pnpm build`: poprawne.
+- Lokalny build produkcyjny: **304 strony sitemap**, **298 odrębnych obrazów podglądu** i **44 zasoby z HTML**, bez błędów skanera SEO. Sprawdzono statusy, canonical, hreflang, język, jeden H1, tytuły i opisy, robots, OG/Twitter, JSON-LD i identyfikatory w HTML.
+- Wszystkie **33 przekierowania z dostarczonego raportu** zwracają 308 i prowadzą do 200. Przypadkowe adresy `/$` i `/&` zwracają 404. Surowe wyniki: `artifacts/qa/coverage-2026-10-12.json` i `artifacts/qa/seo-local-after.json` (ignorowane przez Git).
+- Przeglądarka: rejestracja w obu językach, przełącznik wydania, etykiety formularza, układ mobilny 390 px i desktop. Kontrola nie obejmuje tworzenia prawdziwego konta ani wysyłania e-maili.
+- **Produkcja zwracała 429 z `X-Vercel-Mitigated: challenge`** do żądań automatycznych, w tym dla `/sl`, robots.txt i sitemap.xml. To ogranicza możliwość potwierdzenia aktualnego stanu produkcji; nie dowodzi, że zweryfikowany Googlebot lub Bingbot otrzymuje ten sam wynik.
+
+Po wdrożeniu uruchomić test aktywnego adresu `/sl` i strony rejestracji w Google Search Console oraz inspekcję adresów w Bing Webmaster Tools. Sprawdzić w logach Vercel, czy zweryfikowane roboty otrzymują 200 dla stron publicznych, robots.txt, sitemap.xml i zasobów renderowania; dostosować regułę powodującą challenge, jeśli blokuje te roboty. Potwierdzić pobranie `https://dziader.si/sitemap.xml` przez obie usługi i uruchomić walidację naprawionych 404 w GSC. Bez dostępu do tych paneli nie wykonano zgłoszeń ani zmian zapory. [Bing ocenia zgłoszone strony przed indeksowaniem i nie gwarantuje indeksacji](https://www.bing.com/webmasters/help/why-is-my-site-not-in-the-index-2141dfab).

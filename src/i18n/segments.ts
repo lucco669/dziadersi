@@ -35,6 +35,7 @@ export const SEGMENTS: SegmentMap = {
   grupy: { sl: "skupina" },
   profil: { sl: "profil", children: { zapisz: "shrani", zachowaj: "ohrani", legitymacja: "izkaznica" } },
   konto: { sl: "racun" },
+  rejestracja: { sl: "registracija" },
   szukaj: { sl: "iskanje" },
   "o-instytucie": { sl: "o-institutu" },
   kontakt: { sl: "kontakt" },

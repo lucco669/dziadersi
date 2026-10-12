@@ -16,6 +16,7 @@ const COPY = defineCopy({
     links: [
       ["/dziaders", "Dziaders — kto to?"],
       ["/profil", "Profil Dziaderski"],
+      ["/rejestracja", "Załóż konto"],
       ["/o-instytucie", "O Instytucie"],
       ["/kontakt", "Kontakt"],
       ["/regulamin", "Regulamin"],
@@ -31,6 +32,7 @@ const COPY = defineCopy({
     links: [
       ["/dziaders", "Dziaders — kdo je to?"],
       ["/profil", "Dziaderski profil"],
+      ["/rejestracja", "Ustvari račun"],
       ["/o-instytucie", "O Inštitutu"],
       ["/kontakt", "Kontakt"],
       ["/regulamin", "Pogoji uporabe"],

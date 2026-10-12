@@ -104,7 +104,7 @@ function AccountLine({ onNavigate }: { onNavigate: () => void }) {
     );
   }
   return (
-    <Link href="/profil" onClick={onNavigate} className="mi group flex items-center gap-3">
+    <Link href="/rejestracja" onClick={onNavigate} className="mi group flex items-center gap-3">
       <MenuIcon href="/profil" className="w-11" />
       <span>
         <span className="block font-bold leading-tight group-hover:text-red">{t.profile}</span>

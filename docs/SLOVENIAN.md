@@ -85,6 +85,7 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Muzeum rzeczy · /muzeum | Muzej stvari · /sl/muzej |
 | Materiały do druku · /do-druku | Gradivo za tisk · /sl/za-tisk |
 | Konto (sign-in) · /konto | Račun · /sl/racun |
+| Rejestracja · /rejestracja | Registracija · /sl/registracija |
 | Ranking (grupa) · /grupa | Lestvica · /sl/lestvica |
 | Groups: Badania · Zbiory · Dane · Pomoce naukowe | Raziskave · Zbirke · Podatki · Učni pripomočki (short: Pripomočki) |
 | Wykonaj test | Opravi test |

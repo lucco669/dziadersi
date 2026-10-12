@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useId } from "react";
 import { requestLink, verifyCode, type SignInState } from "@/app/[lang]/konto/actions";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
@@ -46,6 +46,9 @@ const field =
 export function SignInForm({ next, linkFailed }: { next: string; linkFailed?: boolean }) {
   const locale = useLocale();
   const t = COPY[locale];
+  const formId = useId();
+  const emailId = `${formId}-email`;
+  const codeId = `${formId}-code`;
   const [sent, request, requesting] = useActionState(requestLink, { step: "email", next } as SignInState);
   const [checked, verify, verifying] = useActionState(verifyCode, { step: "code", next } as SignInState);
 
@@ -59,11 +62,11 @@ export function SignInForm({ next, linkFailed }: { next: string; linkFailed?: bo
           <input type="hidden" name="email" value={sent.email} />
           <input type="hidden" name="dalej" value={next} />
           <input type="hidden" name="jezyk" value={locale} />
-          <label htmlFor="kod" className="label text-ink-soft">
+          <label htmlFor={codeId} className="label text-ink-soft">
             {t.code}
           </label>
           <input
-            id="kod"
+            id={codeId}
             name="kod"
             inputMode="numeric"
             autoComplete="one-time-code"
@@ -99,11 +102,11 @@ export function SignInForm({ next, linkFailed }: { next: string; linkFailed?: bo
           {typo(t.linkFailed)}
         </p>
       )}
-      <label htmlFor="email" className="label text-ink-soft">
+      <label htmlFor={emailId} className="label text-ink-soft">
         {t.email}
       </label>
       <input
-        id="email"
+        id={emailId}
         name="email"
         type="email"
         required

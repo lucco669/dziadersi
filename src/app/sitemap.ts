@@ -60,6 +60,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/tablica-honorowa", "daily", 0.6),
     page("/kalendarz", "daily", 0.7),
     page("/biuletyn", "weekly", 0.6),
+    page("/rejestracja", "monthly", 0.5),
     page("/o-instytucie", "yearly", 0.4),
     page("/kontakt", "yearly", 0.3),
     page("/regulamin", "yearly", 0.2),

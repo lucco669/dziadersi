@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useId } from "react";
 import { registerPassword, requestPasswordReset, resendConfirmation, signInPassword, updatePassword } from "@/app/[lang]/konto/actions";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
@@ -19,6 +19,8 @@ const COPY = defineCopy({
     google: "Zaloguj się przez Google", or: "lub", resend: "Wyślij potwierdzenie ponownie",
     recoveryHint: "Podaj adres swojego konta. Wyślemy link do ustawienia nowego hasła. W ten sposób możesz też dodać hasło do konta założonego przez e-mail lub Google.",
     signupHint: "Po rejestracji poprosimy o potwierdzenie adresu e-mail.",
+    signupGoogle: "Kontynuuj przez Google", signupMagic: "Załóż konto linkiem z e-maila",
+    privacy: "Polityka prywatności", terms: "Regulamin", signupNote: "Konto jest bezpłatne. Biuletyn zamówisz osobno w profilu.",
     linkFailed: "Link wygasł albo został już użyty. Poproś o nowy link lub zaloguj się ponownie.",
     googleFailed: "Nie udało się zalogować przez Google. Spróbuj ponownie lub skorzystaj z e-maila.",
     resetFor: (email: string) => `Nowe hasło dla: ${email}`,
@@ -32,6 +34,8 @@ const COPY = defineCopy({
     google: "Prijavi se z Googlom", or: "ali", resend: "Znova pošlji potrditev",
     recoveryHint: "Vnesi e-naslov svojega računa. Poslali ti bomo povezavo za nastavitev novega gesla. Tako lahko dodaš geslo tudi računu, ustvarjenemu po e-pošti ali z Googlom.",
     signupHint: "Po registraciji te bomo prosili za potrditev e-naslova.",
+    signupGoogle: "Nadaljuj z Googlom", signupMagic: "Ustvari račun s povezavo iz e-pošte",
+    privacy: "Politika zasebnosti", terms: "Pogoji uporabe", signupNote: "Račun je brezplačen. Na bilten se prijaviš posebej v profilu.",
     linkFailed: "Povezava je potekla ali pa je že bila uporabljena. Naroči novo povezavo ali se znova prijavi.",
     googleFailed: "Prijava z Googlom ni uspela. Poskusi znova ali uporabi e-pošto.",
     resetFor: (email: string) => `Novo geslo za: ${email}`,
@@ -61,6 +65,11 @@ function Confirmation({ email, next }: { email: string; next: string }) {
 
 function PasswordForm({ mode, next, email }: { mode: PasswordMode; next: string; email?: string }) {
   const t = COPY[useLocale()];
+  const formId = useId();
+  const emailId = `${formId}-email`;
+  const passwordId = `${formId}-password`;
+  const hintId = `${formId}-password-hint`;
+  const confirmId = `${formId}-password-confirm`;
   const [state, action, pending] = useActionState(actions[mode], {} as PasswordState);
   const newPassword = mode === "register" || mode === "password";
   return (
@@ -73,17 +82,17 @@ function PasswordForm({ mode, next, email }: { mode: PasswordMode; next: string;
           <FormContext next={next} />
           <fieldset disabled={pending} className="space-y-6 disabled:opacity-60">
             {mode !== "password" && <div>
-              <label htmlFor="email" className="label text-ink-soft">{t.email}</label>
-              <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} defaultValue={state.email} className={field} />
+              <label htmlFor={emailId} className="label text-ink-soft">{t.email}</label>
+              <input id={emailId} name="email" type="email" autoComplete="email" required maxLength={254} defaultValue={state.email} className={field} />
             </div>}
             {mode !== "recovery" && <div>
-              <label htmlFor="password" className="label text-ink-soft">{mode === "password" ? t.newPassword : t.passwordLabel}</label>
-              <input id="password" name="password" type="password" autoComplete={newPassword ? "new-password" : "current-password"} required minLength={newPassword ? PASSWORD_MIN : undefined} maxLength={PASSWORD_MAX} aria-describedby={newPassword ? "password-hint" : undefined} className={field} />
-              {newPassword && <p id="password-hint" className="mt-2 font-sans text-sm text-ink-soft">{t.hint}</p>}
+              <label htmlFor={passwordId} className="label text-ink-soft">{mode === "password" ? t.newPassword : t.passwordLabel}</label>
+              <input id={passwordId} name="password" type="password" autoComplete={newPassword ? "new-password" : "current-password"} required minLength={newPassword ? PASSWORD_MIN : undefined} maxLength={PASSWORD_MAX} aria-describedby={newPassword ? hintId : undefined} className={field} />
+              {newPassword && <p id={hintId} className="mt-2 font-sans text-sm text-ink-soft">{t.hint}</p>}
             </div>}
             {newPassword && <div>
-              <label htmlFor="password-confirm" className="label text-ink-soft">{t.confirm}</label>
-              <input id="password-confirm" name="passwordConfirm" type="password" autoComplete="new-password" required minLength={PASSWORD_MIN} maxLength={PASSWORD_MAX} className={field} />
+              <label htmlFor={confirmId} className="label text-ink-soft">{t.confirm}</label>
+              <input id={confirmId} name="passwordConfirm" type="password" autoComplete="new-password" required minLength={PASSWORD_MIN} maxLength={PASSWORD_MAX} className={field} />
             </div>}
             {state.error && <p className="font-sans text-sm text-red" role="alert">{state.error}</p>}
             <button type="submit" className="btn w-full justify-center bg-ink text-paper hover:bg-red">
@@ -101,7 +110,7 @@ function PasswordForm({ mode, next, email }: { mode: PasswordMode; next: string;
 export function AccountAccess({ mode, next, failure, email }: { mode: PasswordMode | "magic"; next: string; failure?: "link" | "google"; email?: string }) {
   const locale = useLocale();
   const t = COPY[locale];
-  const href = (mode: string) => `/konto?tryb=${mode}&dalej=${encodeURIComponent(next)}`;
+  const href = (mode: string) => mode === "register" ? `/rejestracja?dalej=${encodeURIComponent(next)}#rejestracja-form-${locale}` : `/konto?tryb=${mode}&dalej=${encodeURIComponent(next)}#konto-form-${locale}`;
   return (
     <div className="max-w-md">
       {failure && <p className="mb-8 border-l-2 border-red pl-4 font-sans text-sm text-red" role="alert">{failure === "google" ? t.googleFailed : t.linkFailed}</p>}
@@ -114,10 +123,12 @@ export function AccountAccess({ mode, next, failure, email }: { mode: PasswordMo
         <Link href={href("recovery")} className="link mt-5 inline-block font-sans text-sm">{t.forgot}</Link>
         <div className="my-7 flex items-center gap-4 text-ink-soft"><span className="h-px flex-1 bg-ink/20" /><span className="label">{t.or}</span><span className="h-px flex-1 bg-ink/20" /></div>
         {/* Auth routes are shared by both editions and must not be localised or prefetched. */}
-        <a href={`/auth/google?${new URLSearchParams({ dalej: next, jezyk: locale })}`} className="btn w-full justify-center border border-ink bg-paper hover:bg-ink hover:text-paper">{t.google}</a>
-        <Link href={href("magic")} className="link mt-6 inline-block font-sans text-sm text-ink-soft">{t.magic}</Link>
+        <a href={`/auth/google?${new URLSearchParams({ dalej: next, jezyk: locale })}`} rel="nofollow" className="btn w-full justify-center border border-ink bg-paper hover:bg-ink hover:text-paper">{mode === "register" ? t.signupGoogle : t.google}</a>
+        <Link href={href("magic")} prefetch={false} rel="nofollow" className="link mt-6 inline-block font-sans text-sm text-ink-soft">{mode === "register" ? t.signupMagic : t.magic}</Link>
       </>}
       {mode !== "login" && mode !== "register" && <Link href={href("login")} className="link mt-8 inline-block font-sans text-sm">{t.back}</Link>}
+      <p className="mt-6 font-sans text-sm leading-relaxed text-ink-soft">{typo(t.signupNote)}</p>
+      <p className="mt-3 font-sans text-sm"><Link href="/prywatnosc#konto" className="link">{t.privacy}</Link>{" · "}<Link href="/regulamin" className="link">{t.terms}</Link></p>
     </div>
   );
 }
