@@ -1,4 +1,5 @@
 "use client";
+import { ResultSpecimenChoice } from "./result-specimen-choice";
 
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
@@ -94,7 +95,8 @@ export function ResultActions({
   const [editing, setEditing] = useState(false);
   const [nameDraft, setNameDraft] = useState(name);
   const [nameError, setNameError] = useState(false);
-  const [storyFile, setStoryFile] = useState<File | null>(null);
+  const [storyAsset, setStoryAsset] = useState<{ code: string; locale: string; file: File } | null>(null);
+  const storyFile = storyAsset?.code === code && storyAsset.locale === locale ? storyAsset.file : null;
 
   const url = `${origin}${localizePath(`/wynik/${code}`, locale)}`;
   const text = t.text(score, diagnosis);
@@ -110,7 +112,7 @@ export function ResultActions({
       .then((blob) => {
         if (!blob || cancelled) return;
         const file = new File([blob], `${COPY[locale].file}-${score}.png`, { type: "image/png" });
-        if (navigator.canShare({ files: [file] })) setStoryFile(file);
+        if (navigator.canShare({ files: [file] })) setStoryAsset({ code, locale, file });
       })
       .catch(() => {});
     return () => {
@@ -178,6 +180,7 @@ export function ResultActions({
 
   return (
     <div className="mt-10 border-t border-ink pt-6">
+      <ResultSpecimenChoice code={code} />
       <div className="flex flex-wrap gap-3">
         <button type="button" onClick={share} className="btn bg-ink text-paper hover:bg-red">
           {t.share} <span aria-hidden="true">→</span>

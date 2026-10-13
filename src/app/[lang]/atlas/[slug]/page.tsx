@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Stamp } from "@/components/brand";
 import { breadcrumbList, JsonLd, PageHeader, Pager, TestPromo, TranslatorNotes } from "@/components/page";
-import { SpeciesPlate } from "@/components/pictograms";
+import { SpeciesGallery } from "@/components/species-gallery";
 import { SightingPanel } from "@/components/sighting";
 import { ActivityCalendar, RangeMap, SpeciesTile, StatusScale, TraitBars } from "@/components/species-parts";
 import { getDictionary } from "@/content/dictionary";
@@ -162,7 +162,7 @@ export default async function SpeciesPage({ params }: PageProps<"/[lang]/atlas/[
               {species.isNew && <Stamp className="rotate-[-3deg] text-[0.7rem]">{t.isNew}</Stamp>}
             </span>
           }
-          aside={<SpeciesPlate species={species.key} animated title={t.plate(species.name)} className="w-full" />}
+          aside={<SpeciesGallery species={species.key} name={species.name} locale={locale} />}
         />
 
         <div className="wrap mt-14 grid gap-16 pb-16 md:mt-20 md:pb-24 lg:grid-cols-12 lg:gap-12">

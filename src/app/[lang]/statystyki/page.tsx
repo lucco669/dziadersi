@@ -829,7 +829,7 @@ export default async function YearbookPage() {
                     return (
                       <li key={key} className="grid grid-cols-[1.5rem_3rem_1fr_auto] items-center gap-3 border-b border-rule py-2">
                         <span className="font-sans text-[0.85rem] font-semibold text-red">{i + 1}</span>
-                        <SpeciesPlate species={key as SpeciesKey} className="w-full" />
+                        <SpeciesPlate species={key as SpeciesKey} variant="pictogram" className="w-full" />
                         <Link href={`/atlas/${species.slug}`} className="font-bold leading-tight hover:text-red">
                           {species.name}
                         </Link>

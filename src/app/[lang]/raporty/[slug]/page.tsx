@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { StaticArtwork } from "@/components/static-artwork";
 import { reportArt } from "@/lib/illustrations";
 import { notFound } from "next/navigation";
 import { Tally } from "@/components/crowd";
@@ -145,7 +145,7 @@ export default async function ReportPage({ params }: PageProps<"/[lang]/raporty/
 
         <div className="wrap">
           {art && <figure className="mt-8 max-w-3xl">
-            <Image src={`/illustrations/${artKey}.webp`} width={1200} height={800} alt={art.alt} sizes="(max-width: 767px) 90vw, 768px" className="h-auto w-full" />
+            <StaticArtwork src={`/illustrations/${artKey}.webp`} width={1200} height={800} alt={art.alt} sizes="(max-width: 767px) 90vw, 768px" className="h-auto w-full" />
             <figcaption className="label mt-3 text-ink-soft">{art.caption}</figcaption>
           </figure>}
           <dl className="mt-12 grid border-y border-ink md:grid-cols-3">

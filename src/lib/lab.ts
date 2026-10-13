@@ -50,7 +50,7 @@ const limit = (locale: Locale, value: number, decimals: number) => number(locale
  */
 export function labResults(result: Result, locale: Locale): LabRow[] {
   const t = COPY[locale];
-  const seed = hash(`lab:${result.code.split("~")[0]}`);
+  const seed = hash(`lab:${result.code.split("~")[0].replace(/![012]$/, "")}`);
   const rows: LabRow[] = getLab(locale).map((parameter, i) => {
     const factor = parameter.source === "score" ? result.score / 100 : (result.share[parameter.source] ?? 0);
     const scatter = (((seed >>> i) % 997) / 997 - 0.5) * 0.08;

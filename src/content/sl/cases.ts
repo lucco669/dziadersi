@@ -28,6 +28,42 @@ export const CASE_CATEGORIES: Text<typeof CaseCategoriesPl> = {
 
 /** Keyed by the case number. Slugs are not translated here: they come from slugs/cases.ts. */
 export const CASES: Record<number, Text<Case, "slug">> = {
+  "31": {
+    "title": "Skrbnik brez povabila",
+    "facts": "Udeleženec, star 31 let, brez posvetovanja spreminja nastavitve telefonov družinskih članov in urnik ogrevanja. Po ugovoru nastavi geslo za nadzorno ploščo, da nihče ne bi pokvaril konfiguracije. Drugi člani gospodinjstva nova pravila spoznajo ob vrnitvi domov.",
+    "defence": "Saj sem to naredil za vaše udobje.",
+    "opinion": "Komisija ugotavlja, da udobje enega skrbnika ni soglasje drugih uporabnikov. Sprememba gesla je težavo dostopa do nadzorne plošče rešila z odpravo dostopa. Starost Udeleženca ne vpliva na razvrstitev."
+  },
+  "32": {
+    "title": "Leta 2014 to ni delovalo",
+    "facts": "Udeleženka, stara 47 let, zavrne nov način vodenja projekta, ker so podoben poskus izvedli leta 2014. Sedanjega orodja in predloga ekipe ne pregleda. Vsem pošlje sken starega postopka kot dokončno odločitev.",
+    "defence": "To sem že dala skozi. Ne bomo na novo odkrivali kolesa.",
+    "opinion": "Komisija izkušnje šteje za pomožno gradivo, ne za prepoved novega preverjanja. Dokumentacija kaže, da so se od leta 2014 spremenili orodja, ekipa in težava. Nespremenjen je ostal odgovor Udeleženke."
+  },
+  "33": {
+    "title": "Pravilnik iz skupine soseske",
+    "facts": "Udeleženka, stara 57 let, v skupini soseske objavi lastna pravila parkiranja in jih pripne kot pravilnik. Uprava takega dokumenta ni sprejela. Udeleženka fotografira avtomobile, parkirane v nasprotju z njenimi pravili, in od sosedov zahteva pojasnila.",
+    "defence": "Nekdo mora končno narediti red.",
+    "opinion": "Komisija ugotavlja, da gumb za pripenjanje sporočila ne podeljuje upravnih pooblastil. Udeleženka je združila vloge avtorice pravilnika, nadzornega organa in pritožbene stopnje. Pritožbe obravnava osebno."
+  },
+  "34": {
+    "title": "Klešče prevzete s soglasjem",
+    "facts": "Udeleženec, star 33 let, osebo ob žaru vpraša, ali potrebuje pomoč. Po soglasju za nekaj minut prevzame klešče in jih vrne, ko se gostitelj vrne. Ne spremeni položaja rešetke ali družinskega recepta.",
+    "defence": "Vprašali so, ali lahko popazim. Pa sem popazil.",
+    "opinion": "Komisija ne ugotavlja dziaderstva. Ugotavlja pomoč, dogovorjeno z zainteresirano osebo. Klešče so se vrnile lastniku, kar je zabeleženo kot posebej ugodna okoliščina."
+  },
+  "35": {
+    "title": "Strokovni nasvet po naročilu",
+    "facts": "Udeleženka, stara 35 let, se poklicno ukvarja s prenovami. Na vprašanje o namestitvi police predstavi dve rešitvi, pojasni njune omejitve in izbiro prepusti lastniku. Ko lastnik izbere drugo rešitev, ne začne predavanja.",
+    "defence": "To je njegova stena. Jaz moram pojasniti možnosti.",
+    "opinion": "Komisija ne ugotavlja dziaderstva. Znanje je bilo posredovano po naročilu in brez prevzema pravice do odločanja. Udeleženka ima izkušnje, vendar jih ni uporabila za končanje pogovora."
+  },
+  "36": {
+    "title": "Seznam skladb zaprt leta 2010",
+    "facts": "Udeleženec, star 38 let, pred družinskim izletom s skupnega seznama skladb odstrani nove pesmi. Dovoli le posnetke iz svojih šolskih let in zavrne vsak predlog otrok. To utemeljuje s splošnim propadom glasbe.",
+    "defence": "Vam predvajam pravo glasbo, še zahvalili se mi boste.",
+    "opinion": "Komisija priznava pravico do lastnega okusa, ne pa do upravljanja okusa vseh potnikov. Meja kakovosti glasbe se natančno ujema s koncem šolanja Udeleženca. Sovpadanje je predano v nadaljnje raziskave."
+  },
   1: {
     title: "Ključi v ključavnici, da se ne izgubijo",
     facts:

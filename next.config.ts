@@ -6,6 +6,9 @@ const isDev = process.env.NODE_ENV === "development";
 // The Vercel Toolbar on preview deployments loads from vercel.live.
 const toolbar = process.env.VERCEL_ENV === "preview";
 
+// Satori embeds these local PNGs in share cards and downloadable certificates.
+const imageAssets = ["./assets/fonts/*.ttf", "./assets/illustrations/species/*.png"];
+
 /**
  * Pages are prerendered, so scripts can't carry a per-request nonce:
  * inline scripts (the React payload) stay allowed, everything else is same-origin.
@@ -69,11 +72,14 @@ const LONG_LIVED = [
   "/icon-maskable-:size.png",
   "/manifest.webmanifest",
   "/plansze/:file*",
+  "/illustrations/:file*",
   "/email/:file*",
 ];
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // Artwork has checked-in responsive WebPs. Never invoke Vercel Image Optimization.
+  images: { unoptimized: true },
   /*
    * "counts": pages that only quote a count or two (a species' sightings, a case's votes, a result's
    * percentile) refresh every quarter of an hour instead of every minute. Every regeneration that
@@ -87,20 +93,25 @@ const nextConfig: NextConfig = {
   // the .rsc file and two segment files of every page, half of every cache write. As a file it is cached once.
   // Certificates are rendered at request time and read these from disk.
   outputFileTracingIncludes: {
-    "/[lang]/muzeum/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/wynik/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/grupa/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/generator/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/superinteligencja/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/bingo/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/atlas/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/slownik/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/raporty/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/profil/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/egzamin/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/czy-to-juz-dziaderstwo/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/kalendarz/**": ["./assets/fonts/*.ttf"],
-    "/[lang]/opengraph-image": ["./assets/fonts/*.ttf"],
+    "/[lang]/muzeum/**": imageAssets,
+    "/[lang]/wynik/**": imageAssets,
+    "/[lang]/grupa/**": imageAssets,
+    "/[lang]/generator/**": imageAssets,
+    "/[lang]/superinteligencja/**": imageAssets,
+    "/[lang]/bingo/**": imageAssets,
+    "/[lang]/atlas/**": imageAssets,
+    "/[lang]/slownik/**": imageAssets,
+    "/[lang]/raporty/**": imageAssets,
+    "/[lang]/profil/**": imageAssets,
+    "/[lang]/egzamin/**": imageAssets,
+    "/[lang]/czy-to-juz-dziaderstwo/**": imageAssets,
+    "/[lang]/kalendarz/**": imageAssets,
+    "/[lang]/opengraph-image": imageAssets,
+    "/[lang]/kolejka/**": imageAssets,
+    "/[lang]/krol-grilla/**": [...imageAssets, "./assets/illustrations/grill/hero-600.png"],
+    "/[lang]/dziaders/**": imageAssets,
+    "/[lang]/okazje/**": imageAssets,
+    "/[lang]/do-druku/**": imageAssets,
   },
   async redirects() {
     return [

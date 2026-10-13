@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import type { ReactElement, ReactNode } from "react";
 import { ISO, type IsoKind } from "@/components/isotype";
-import { Binoculars, Figure, GREY, INK, plateDrawing } from "@/components/pictograms";
+import { Binoculars, Figure, GREY, INK } from "@/components/pictograms";
 import type { Entry } from "@/content/dictionary";
 import { formatReportDate, type Report } from "@/content/reports";
 import { statusLabel, type Species, type SpeciesKey } from "@/content/species";
@@ -11,6 +11,8 @@ import type { ExamResult } from "./exam";
 import { C, OG_FONTS, OgFrame, OgStamp, bold, italic, sans, serif } from "./og";
 import { svgDataUri } from "./svg-string";
 import { quote } from "./typo";
+import { speciesArtDataUri } from "./species-art.server";
+import type { SpecimenIndex } from "@/content/specimens";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
@@ -40,8 +42,8 @@ export const render = (node: ReactElement, headers?: Record<string, string>) =>
   new ImageResponse(node, { ...OG_SIZE, fonts: OG_FONTS, headers });
 
 /** A species plate as an image, `width` wide. */
-export function OgPlate({ species, width }: { species: SpeciesKey; width: number }) {
-  return <img src={svgDataUri("0 0 120 100", plateDrawing(species))} width={width} height={(width * 100) / 120} alt="" />;
+export function OgPlate({ species, width, specimen }: { species: SpeciesKey; width: number; specimen?: SpecimenIndex }) {
+  return <img src={speciesArtDataUri(species, specimen)} width={width} height={(width * 100) / 120} alt="" />;
 }
 
 /** Ten figures, `count` of them dziaders: picture statistics for a percentage. */

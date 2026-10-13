@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@layer components {
+  /* Utility widths/heights still win, including the small certificate and profile plates. */
+  .species-plate {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    aspect-ratio: 6 / 5;
+    object-fit: contain;
+  }
+
+  .species-plate-enter {
+    animation: question-in 320ms ease-out both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .species-plate-enter {
+    animation: none;
+  }
+}
+
 /* Keep the examination focused; navigating back to the introduction restores the site. */
 .test-active .test-navigation,
 .test-active footer {

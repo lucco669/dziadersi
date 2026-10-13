@@ -35,7 +35,7 @@ const COPY = defineCopy({
     metaTitle: "Atlas Dziadersów: gatunki, objawy i klucz do oznaczania",
     description: (count: number) =>
       `Katalog ${count} gatunków dziadersów występujących w Polsce, od Grillowego po Bieszczadzkiego: objawy, siedliska, naturalni wrogowie i klucz do oznaczania.`,
-    lead: "Systematyczny katalog gatunków występujących na terenie Rzeczypospolitej. Każdy wpis zawiera opis, siedem objawów rozpoznawczych, typowe wokalizacje, naturalnych wrogów, kalendarz aktywności i status ochrony.",
+    lead: "Systematyczny katalog zachowań występujących na terenie Rzeczypospolitej. 28 gatunków, 84 okazy: kobiety i mężczyźni w różnym wieku. Każdy gatunek ma trzy ryciny, siedem objawów rozpoznawczych i kartę terenową. O klasyfikacji decyduje postawa, nie metryka.",
     meta: (count: number, nationwide: number, regional: number, occasional: number) =>
       `Opisano ${count} z ok. ${ESTIMATED_SPECIES} gatunków: ${nationwide} ogólnopolskich, ${regional} regionalnych i ${occasional} okazjonalnych`,
     featured: "Gatunek tygodnia",
@@ -70,7 +70,7 @@ const COPY = defineCopy({
     metaTitle: "Atlas dziadersov: vrste, simptomi in določevalni ključ",
     description: (count: number) =>
       `Katalog ${count} vrst dziadersov, ki živijo na Poljskem, od Žarnega do Bieszczadskega: simptomi, habitati, naravni sovražniki in določevalni ključ.`,
-    lead: "Sistematični katalog vrst, ki živijo na ozemlju Republike Poljske. Vsak vnos vsebuje opis, sedem prepoznavnih simptomov, značilno oglašanje, naravne sovražnike, koledar aktivnosti in varstveni status.",
+    lead: "Sistematični katalog vedenj na ozemlju Republike Poljske. 28 vrst, 84 osebkov: ženske in moški različnih starosti. Vsaka vrsta ima tri risbe, sedem prepoznavnih simptomov in terensko kartico. Razvrščanje temelji na drži, ne na letnici rojstva.",
     meta: (count: number, nationwide: number, regional: number, occasional: number) =>
       `Opisanih ${count} od pribl. ${ESTIMATED_SPECIES} vrst: ${nationwide} vsepoljskih, ${regional} regionalnih in ${occasional} priložnostnih`,
     featured: "Vrsta tedna",

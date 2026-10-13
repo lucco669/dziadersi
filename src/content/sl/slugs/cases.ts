@@ -30,4 +30,10 @@ export const CASE_SLUGS: Record<string, string> = {
   "rozmowy-na-glosniku": "telefon-na-zvocniku",
   "kolejka-przed-otwarciem": "vrsta-pred-trgovino",
   "prasowany-papier": "likanje-papirja",
+  "administrator-bez-zaproszenia": "skrbnik-brez-povabila",
+  "w-2014-nie-dzialalo": "leta-2014-ni-delovalo",
+  "regulamin-z-grupy-osiedlowej": "pravilnik-iz-soseske-skupine",
+  "szczypce-za-zgoda": "klesce-prevzete-s-soglasjem",
+  "fachowa-rada-na-zamowienie": "strokovni-nasvet-po-narocilu",
+  "playlista-zamknieta-w-2010": "seznam-skladb-zaprt-leta-2010",
 };

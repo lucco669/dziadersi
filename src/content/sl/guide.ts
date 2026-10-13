@@ -49,7 +49,7 @@ export const GUIDE_TEXT: Text<Guide> = {
     {
       question: "Se dziaderstvo nanaša samo na moške?",
       answer:
-        "Na strani imajo vrste tradicionalne brke in moška imena. Navade, kot so pridiganje, nezmotljivost in nostalgija, pa se lahko pojavijo pri vsakomer.",
+        "Ne. Atlas prikazuje ženske in moške različnih starosti pod skupnimi imeni vrst. Razvrščanje temelji na pridiganju, prepričanosti o nezmotljivosti in zavračanju tujih rešitev, ne na spolu ali datumu rojstva.",
     },
     {
       question: "Kako preverim, ali sem sam dziaders?",

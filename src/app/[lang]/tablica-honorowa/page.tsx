@@ -380,7 +380,7 @@ export default async function HonorPage() {
                     <li key={key}>
                       <Link href={`/atlas/${species.slug}`} className="group grid grid-cols-[2rem_4.5rem_1fr_auto] items-center gap-4 border-b border-rule py-2.5">
                         <span className="font-sans text-[0.9rem] font-semibold text-red">{i + 1}</span>
-                        <SpeciesPlate species={key as SpeciesKey} className="w-full" />
+                        <SpeciesPlate species={key as SpeciesKey} variant="pictogram" className="w-full" />
                         <span className="text-xl font-bold leading-tight group-hover:text-red">{species.name}</span>
                         <span className="font-sans font-semibold tabular-nums">{formatNumber(locale, n)}</span>
                       </Link>

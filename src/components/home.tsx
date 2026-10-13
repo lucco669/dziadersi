@@ -17,13 +17,13 @@ import { Crowd } from "./crowd";
 import { CollectionLine } from "./profile-notes";
 import { SpeciesPlate } from "./pictograms";
 import { Section } from "./page";
-import { Specimen } from "./specimen";
+import { SpecimenPopulation } from "./specimen-population";
 import { CaseFile } from "./verdict";
 
 const COPY = defineCopy({
   pl: {
     heading: "Dziaderstwo nie wybiera.",
-    lead: "Instytut Badań nad Dziaderstwem opisuje, klasyfikuje i mierzy dziaderstwo w Polsce. Zbadaj się, zanim będzie za późno: badanie trwa cztery minuty i kończy się certyfikatem.",
+    lead: "Dziaderstwo to postawa, nie metryka. Instytut bada nawyki osób w każdym wieku. Zbadaj się: cztery minuty, pięć gabinetów i certyfikat.",
     test: "Wykonaj test",
     atlas: "Atlas Dziadersów",
     facts: "5 gabinetów · ok. 4 minuty · bez pobierania krwi",
@@ -63,7 +63,7 @@ const COPY = defineCopy({
   },
   sl: {
     heading: "Dziaderstvo ne izbira.",
-    lead: "Inštitut za raziskave dziaderstva opisuje, razvršča in meri dziaderstvo na Poljskem. Preglej se, preden bo prepozno: pregled traja štiri minute in se konča s certifikatom.",
+    lead: "Dziaderstvo je drža, ne letnica rojstva. Inštitut raziskuje navade ljudi vseh starosti. Preglej se: štiri minute, pet ordinacij in certifikat.",
     test: "Opravi test",
     atlas: "Atlas dziadersov",
     facts: "5 ordinacij · pribl. 4 minute · brez odvzema krvi",
@@ -134,7 +134,7 @@ export function Hero({ locale }: { locale: Locale }) {
         </div>
         <p className="label mt-6 text-ink-faint">{t.facts}</p>
       </div>
-      <Specimen locale={locale} className="lg:col-span-6" />
+      <div className="lg:col-span-6"><SpecimenPopulation locale={locale} /></div>
     </section>
   );
 }
@@ -213,6 +213,7 @@ export function TestBand({ locale }: { locale: Locale }) {
             latin={sample.diagnosis.latin}
             number={sample.certificate}
             species={sample.diagnosis.species.map((species) => species.key)}
+            specimen={sample.specimen}
           />
         </div>
       </div>
@@ -231,7 +232,7 @@ export function AtlasPlates({ locale }: { locale: Locale }) {
         {featured.map((item) => (
           <li key={item.key}>
             <Link href={`/atlas/${item.slug}`} className="group block">
-              <SpeciesPlate species={item.key} className="mx-auto w-full max-w-80 transition-transform duration-300 motion-safe:group-hover:-translate-y-1" />
+              <SpeciesPlate species={item.key} sizes="(max-width: 639px) 320px, (max-width: 1023px) 30vw, 320px" className="mx-auto w-full max-w-80 transition-transform duration-300 motion-safe:group-hover:-translate-y-1" />
               <span className="mt-3 block text-[1.2rem] font-bold leading-tight transition-colors group-hover:text-red">{item.name}</span>
               <span className="mt-1 block font-sans text-[0.9rem] leading-snug text-ink-soft">{typo(item.teaser)}</span>
             </Link>

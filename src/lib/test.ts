@@ -11,6 +11,7 @@ import {
   type Weights,
 } from "@/content/test";
 import { getQuestionsV1, QUESTIONS_V1, type QuestionV1 } from "@/content/test-v1";
+import type { SpecimenIndex } from "@/content/specimens";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { fromBase64Url, toBase64Url } from "./base64url";
@@ -21,7 +22,8 @@ import { formatDate } from "./typo";
  *
  * Version 2 (Formularz IBD-T2): "2" + every answer packed as one mixed-radix number in base36
  * (the first digit says whether it was a family interview) + the test date (3 base36 chars,
- * days since 1 January 2026), optionally followed by "~" and the name as base64url.
+ * days since 1 January 2026), optionally followed by "~" and the name as base64url,
+ * then an optional "!0", "!1" or "!2" cosmetic specimen choice. Scores retain their form version.
  *
  * Version 1 (Formularz IBD-T1, retired): "1" + 24 base-4 answers in 10 base36 chars + the date.
  * Still decoded and scored exactly as before, so old links keep their results.
@@ -46,6 +48,7 @@ const COPY = defineCopy({
 const EPOCH = Date.UTC(2026, 0, 1);
 const DAY_MS = 86_400_000;
 const NAME = "(?:~([A-Za-z0-9_-]{2,100}))?";
+const SPECIMEN = "(?:!([012]))?";
 
 export type Draft = {
   version: 1 | 2;
@@ -55,6 +58,8 @@ export type Draft = {
   name?: string;
   /** Family interview: the answers describe someone else. */
   proxy?: boolean;
+  /** Cosmetic specimen choice, carried by a backward-compatible optional URL suffix. */
+  specimen?: SpecimenIndex;
 };
 
 // Kept off certificates served from our domain: Polish, Slovenian and English.
@@ -317,8 +322,8 @@ const inEdition = (species: Diagnosable, locale: Locale) => speciesByKey(species
 const V2_RADICES = [2, ...TASKS.map(radix)];
 const V2_SPACE = V2_RADICES.reduce((product, size) => product * BigInt(size), BigInt(1));
 const V2_LENGTH = (V2_SPACE - BigInt(1)).toString(36).length;
-const CODE_V1 = new RegExp(`^1([0-9a-z]{10})([0-9a-z]{3})${NAME}$`);
-const CODE_V2 = new RegExp(`^2([0-9a-z]{${V2_LENGTH}})([0-9a-z]{3})${NAME}$`);
+const CODE_V1 = new RegExp(`^1([0-9a-z]{10})([0-9a-z]{3})${NAME}${SPECIMEN}$`);
+const CODE_V2 = new RegExp(`^2([0-9a-z]{${V2_LENGTH}})([0-9a-z]{3})${NAME}${SPECIMEN}$`);
 
 const dayCode = (day: number) => Math.min(Math.max(day, 0), 36 ** 3 - 1).toString(36).padStart(3, "0");
 
@@ -328,9 +333,9 @@ function parse36(text: string) {
   return value;
 }
 
-export function encodeResult({ version, answers, day, name = "", proxy }: Draft) {
+export function encodeResult({ version, answers, day, name = "", proxy, specimen }: Draft) {
   const cleaned = cleanName(name);
-  const suffix = dayCode(day) + (cleaned ? `~${toBase64Url(cleaned)}` : "");
+  const suffix = dayCode(day) + (cleaned ? `~${toBase64Url(cleaned)}` : "") + (specimen === undefined ? "" : `!${specimen}`);
   if (version === 1) {
     const packed = answers.reduce((sum, answer) => sum * 4 + answer, 0);
     return `1${packed.toString(36).padStart(10, "0")}${suffix}`;
@@ -357,6 +362,7 @@ export function decodeResult(code: string): Draft | null {
       answers: digits.slice(1),
       day: parseInt(v2[2], 36),
       name: v2[3] ? cleanName(fromBase64Url(v2[3])) : "",
+      ...(v2[4] === undefined ? {} : { specimen: Number(v2[4]) as SpecimenIndex }),
     };
   }
 
@@ -370,8 +376,18 @@ export function decodeResult(code: string): Draft | null {
     packed = Math.floor(packed / 4);
   }
   if (answers.some((answer, i) => answer >= QUESTIONS_V1[i].answers.length)) return null;
-  return { version: 1, answers, day: parseInt(v1[2], 36), name: v1[3] ? cleanName(fromBase64Url(v1[3])) : "" };
+  return { version: 1, answers, day: parseInt(v1[2], 36), name: v1[3] ? cleanName(fromBase64Url(v1[3])) : "", ...(v1[4] === undefined ? {} : { specimen: Number(v1[4]) as SpecimenIndex }) };
 }
+
+/** Appearance changes neither respondent identity nor the certificate number. */
+export const resultIdentity = (code: string) => code.split("~")[0].replace(/![012]$/, "");
+export const withoutSpecimen = (code: string) => code.replace(/![012]$/, "");
+export const resultAppearanceCodes = (code: string) => {
+  const original = withoutSpecimen(code);
+  return [original, ...[0, 1, 2].map(specimen => `${original}!${specimen}`)];
+};
+
+const distinctResultCodes = (codes: string[]) => [...new Map(codes.map(code => [withoutSpecimen(code), code])).values()];
 
 /** Calendar day in the visitor's own time zone, counted from 1 January 2026. */
 export function dayNumber(date: Date) {
@@ -400,6 +416,7 @@ export type Symptom = {
 
 export type Result = {
   code: string;
+  specimen: SpecimenIndex;
   version: 1 | 2;
   answers: number[];
   name: string;
@@ -500,6 +517,7 @@ export function evaluate(draft: Draft, locale: Locale): Result {
 
   return {
     code,
+    specimen: draft.specimen ?? (hash(resultIdentity(code)) % 3) as SpecimenIndex,
     version: draft.version,
     answers: draft.answers,
     name: cleanName(draft.name ?? ""),
@@ -521,7 +539,7 @@ export function evaluate(draft: Draft, locale: Locale): Result {
     ) as Record<SpeciesKey, number>,
     reflex: reflexIndex >= 0 ? reflexOutcome(draft.answers[reflexIndex]) : undefined,
     percentile: Math.min(99, Math.max(1, Math.round(normalCdf((score - 46) / 19) * 100))),
-    certificate: String(hash(code.split("~")[0]) % 1_000_000).padStart(6, "0"),
+    certificate: String(hash(resultIdentity(code)) % 1_000_000).padStart(6, "0"),
   };
 }
 
@@ -559,13 +577,13 @@ export function compatibility(a: Result, b: Result) {
 export const GROUP_LIMIT = 12;
 
 export function decodeGroup(list: string): Draft[] | null {
-  const codes = [...new Set(list.split("."))];
+  const codes = distinctResultCodes(list.split("."));
   if (codes.length === 0 || codes.length > GROUP_LIMIT) return null;
   const drafts = codes.map(decodeResult);
   return drafts.every((draft): draft is Draft => draft !== null) ? drafts : null;
 }
 
-export const groupPath = (codes: string[]) => `/grupa/${[...new Set(codes)].join(".")}`;
+export const groupPath = (codes: string[]) => `/grupa/${distinctResultCodes(codes).join(".")}`;
 
 /** The front page preview and the prerendered sample: 83%, Dziaders Grillowo-Motoryzacyjny (Žarno-avtomobilski dziaders). */
 export const SAMPLE_DRAFT: Draft = {

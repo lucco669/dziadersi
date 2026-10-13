@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+import { StaticArtwork } from "./static-artwork";
+import type { SpecimenIndex } from "@/content/specimens";
 import type { SpeciesKey } from "@/content/species";
+import { SPECIES_ART_SIZE, speciesArtPath } from "@/lib/species-art";
 
 /*
  * The Institute's picture statistics: flat pictograms in the Isotype manner.
@@ -1127,18 +1130,39 @@ const PLATES: Record<SpeciesKey, () => Plate> = {
   }),
 };
 
-/** A species with its attributes, as on the plates of the Atlas. */
+/** Field-guide illustrations by default; compact Isotype plates for data and small markers. */
 export function SpeciesPlate({
   species,
+  specimen,
+  eager,
   className,
   title,
   animated,
+  variant = "illustration",
+  sizes = "(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 400px",
 }: {
   species: SpeciesKey;
+  specimen?: SpecimenIndex;
+  eager?: boolean;
   className?: string;
   title?: string;
   animated?: boolean;
+  variant?: "illustration" | "pictogram";
+  sizes?: string;
 }) {
+  if (variant === "illustration") {
+    return (
+      <StaticArtwork
+        src={speciesArtPath(species, specimen)}
+        eager={eager}
+        {...SPECIES_ART_SIZE}
+        alt={title ?? ""}
+        aria-hidden={title ? undefined : true}
+        sizes={sizes}
+        className={["species-plate", animated ? "species-plate-enter" : "", className].filter(Boolean).join(" ")}
+      />
+    );
+  }
   const plate = PLATES[species]();
   return (
     <svg

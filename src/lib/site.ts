@@ -195,6 +195,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       isNew: true,
     },
     {
+      href: "/krol-grilla",
+      label: "Król grilla",
+      short: "Grill",
+      group: "pomoce",
+      summary: "90 sekund przy ruszcie. Obracaj kiełbasy w punkt, odpędzaj osy i nie oddawaj szczypiec. Gra zręcznościowa z protokołem wyniku.",
+      isNew: true,
+    },
+    {
       href: "/kalendarz",
       label: "Kartka z kalendarza",
       short: "Kalendarz",
@@ -325,6 +333,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Vrsta",
       group: "pomoce",
       summary: "Simulator čakanja na uradu. Brani mesto, ohrani potrpežljivost in pridi na vrsto pred zaprtjem. Današnja vrsta in zapisnik rezultata.",
+      isNew: true,
+    },
+    {
+      href: "/krol-grilla",
+      label: "Kralj žara",
+      short: "Žar",
+      group: "pomoce",
+      summary: "90 sekund pri žaru. Obračaj klobase ob pravem času, odganjaj ose in ne predaj klešč. Spretnostna igra z zapisnikom rezultata.",
       isNew: true,
     },
     {

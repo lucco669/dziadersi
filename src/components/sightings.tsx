@@ -99,7 +99,7 @@ export async function Sightings({ community }: { community: Community | null }) 
                 return (
                   <li key={key}>
                     <Link href={`/atlas/${species.slug}`} className="group grid grid-cols-[3.5rem_1fr] items-center gap-3 border-b border-rule py-2.5">
-                      <SpeciesPlate species={species.key as SpeciesKey} className="w-full" />
+                      <SpeciesPlate species={species.key as SpeciesKey} variant="pictogram" className="w-full" />
                       <span>
                         <span className="flex items-baseline justify-between gap-3">
                           <span className="font-bold leading-tight group-hover:text-red">{species.name}</span>

@@ -59,7 +59,7 @@ export const GUIDE: Guide = {
     {
       question: "Czy dziaderstwo dotyczy tylko mężczyzn?",
       answer:
-        "W serwisie gatunki mają tradycyjny wąs i męskie nazwy. Nawyki takie jak pouczanie, nieomylność i nostalgia mogą jednak pojawić się u każdego.",
+        "Nie. Atlas przedstawia kobiety i mężczyzn w różnym wieku pod wspólnymi nazwami gatunków. O klasyfikacji decydują pouczanie, przekonanie o nieomylności i odrzucanie cudzych rozwiązań, a nie płeć ani data urodzenia.",
     },
     {
       question: "Jak sprawdzić, czy sam jestem dziadersem?",

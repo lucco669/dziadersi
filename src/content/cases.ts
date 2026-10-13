@@ -443,6 +443,85 @@ export const CASES: Case[] = [
     expert: "tak",
     species: ["wigilijny", "oszczednosciowy"],
   },
+  {
+    "slug": "administrator-bez-zaproszenia",
+    "number": 31,
+    "title": "Administrator bez zaproszenia",
+    "category": "technologia",
+    "facts": "Uczestnik, lat 31, zmienia ustawienia telefonów domowników i harmonogram ogrzewania bez konsultacji. Po sprzeciwie zakłada hasło do panelu, żeby nikt nie popsuł konfiguracji. Pozostali domownicy poznają nowe zasady po powrocie do domu.",
+    "defence": "Przecież zrobiłem to dla waszej wygody.",
+    "opinion": "Komisja uznaje, że wygoda jednego administratora nie stanowi zgody pozostałych użytkowników. Zmiana hasła rozwiązała problem dostępu do panelu przez usunięcie dostępu. Wiek Uczestnika nie wpływa na kwalifikację.",
+    "expert": "tak",
+    "species": [
+      "smart"
+    ]
+  },
+  {
+    "slug": "w-2014-nie-dzialalo",
+    "number": 32,
+    "title": "W 2014 roku to nie działało",
+    "category": "praca",
+    "facts": "Uczestniczka, lat 47, odrzuca nową metodę prowadzenia projektu, ponieważ podobną próbę podjęto w 2014 roku. Nie zapoznaje się z obecnym narzędziem ani propozycją zespołu. Wysyła wszystkim skan dawnej procedury jako ostateczne rozstrzygnięcie.",
+    "defence": "Ja już przez to przechodziłam. Nie będziemy odkrywać koła na nowo.",
+    "opinion": "Komisja uznaje doświadczenie za materiał pomocniczy, a nie zakaz przeprowadzenia nowego sprawdzenia. Z dokumentacji wynika, że od 2014 roku zmieniły się narzędzia, zespół i problem. Niezmienna pozostała odpowiedź Uczestniczki.",
+    "expert": "tak",
+    "species": [
+      "korpo"
+    ]
+  },
+  {
+    "slug": "regulamin-z-grupy-osiedlowej",
+    "number": 33,
+    "title": "Regulamin z grupy osiedlowej",
+    "category": "sasiedzi",
+    "facts": "Uczestniczka, lat 57, ogłasza na grupie osiedlowej własne zasady parkowania i przypina je jako regulamin. Administracja nie przyjęła takiego dokumentu. Uczestniczka fotografuje samochody stojące niezgodnie z jej zasadami i żąda wyjaśnień od sąsiadów.",
+    "defence": "Ktoś musi wreszcie zaprowadzić porządek.",
+    "opinion": "Komisja stwierdza, że przycisk przypięcia wiadomości nie nadaje uprawnień administracyjnych. Uczestniczka połączyła funkcje autora regulaminu, organu kontroli i instancji odwoławczej. Odwołania rozpatruje osobiście.",
+    "expert": "kliniczne",
+    "species": [
+      "parking",
+      "facebook"
+    ]
+  },
+  {
+    "slug": "szczypce-za-zgoda",
+    "number": 34,
+    "title": "Szczypce przejęte za zgodą",
+    "category": "rodzina",
+    "facts": "Uczestnik, lat 33, pyta osobę przy grillu, czy potrzebuje pomocy. Po otrzymaniu zgody przejmuje szczypce na kilka minut i oddaje je, gdy gospodarz wraca. Nie zmienia ustawienia rusztu ani rodzinnego przepisu.",
+    "defence": "Zapytali, czy mogę przypilnować. To przypilnowałem.",
+    "opinion": "Komisja nie stwierdza dziaderstwa. Stwierdza pomoc uzgodnioną z zainteresowaną osobą. Szczypce wróciły do właściciela, co odnotowano jako okoliczność szczególnie korzystną.",
+    "expert": "nie",
+    "species": [
+      "grill"
+    ]
+  },
+  {
+    "slug": "fachowa-rada-na-zamowienie",
+    "number": 35,
+    "title": "Fachowa rada na zamówienie",
+    "category": "dom",
+    "facts": "Uczestniczka, lat 35, wykonuje remonty zawodowo. Zapytana o montaż półki przedstawia dwa rozwiązania, wyjaśnia ich ograniczenia i pozostawia wybór właścicielowi. Gdy właściciel wybiera inne rozwiązanie, nie rozpoczyna wykładu.",
+    "defence": "To jego ściana. Ja mam wyjaśnić możliwości.",
+    "opinion": "Komisja nie stwierdza dziaderstwa. Wiedza została przekazana na zamówienie i bez przejęcia prawa do decyzji. Uczestniczka dysponuje doświadczeniem, ale nie użyła go do zakończenia rozmowy.",
+    "expert": "nie",
+    "species": [
+      "budowa"
+    ]
+  },
+  {
+    "slug": "playlista-zamknieta-w-2010",
+    "number": 36,
+    "title": "Playlista zamknięta w 2010 roku",
+    "category": "rodzina",
+    "facts": "Uczestnik, lat 38, usuwa nowe utwory ze wspólnej playlisty przed rodzinnym wyjazdem. Dopuszcza wyłącznie nagrania z okresu swojej szkoły i odrzuca każdą propozycję dzieci. Uzasadnia to ogólnym upadkiem muzyki.",
+    "defence": "Ja wam puszczam prawdziwą muzykę, jeszcze mi podziękujecie.",
+    "opinion": "Komisja uznaje prawo do własnego gustu, ale nie do zarządzania gustem wszystkich pasażerów. Granica jakości muzyki pokrywa się dokładnie z zakończeniem szkoły Uczestnika. Zbieżność przekazano do dalszych badań.",
+    "expert": "tak",
+    "species": [
+      "festiwalowy"
+    ]
+  },
 ];
 
 export const docket = (item: Case) => `IBD-K ${item.number}/26`;

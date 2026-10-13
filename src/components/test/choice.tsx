@@ -6,6 +6,7 @@ import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import { cx, typo } from "@/lib/typo";
 import { Mark } from "../brand";
+import { StaticArtwork } from "../static-artwork";
 import { AnswerRow, keyIndex, LETTERS, shuffled, useKeys, useLater, type TaskProps } from "./shared";
 
 const ADVANCE_MS = 420;
@@ -109,9 +110,9 @@ export function Plate({ task, className }: { task: Pick<BlotTask, "plate" | "ima
         <span>{t.plate} {task.plate}</span>
         <span>{t.series}</span>
       </figcaption>
-      {/* eslint-disable-next-line @next/next/no-img-element -- already sized and compressed; no need for the optimiser */}
-      <img
+      <StaticArtwork
         src={task.image}
+        sizes="(max-width: 639px) 80vw, 500px"
         width={task.width}
         height={task.height}
         alt={t.blot}

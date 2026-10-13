@@ -250,7 +250,7 @@ function SpeciesRanking({ census, locale, t }: { census: Census; locale: Locale;
         {ranked.map(({ species, n }, i) => (
           <li key={species.key}>
             <Link href={`/atlas/${species.slug}`} className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-x-5 border-b border-rule py-3 md:grid-cols-[6rem_16rem_1fr_5rem]">
-              <SpeciesPlate species={species.key} className="w-full" />
+              <SpeciesPlate species={species.key} variant="pictogram" className="w-full" />
               <span>
                 <span className="block font-bold leading-tight group-hover:text-red">{species.name}</span>
                 <span className="label text-ink-faint">
@@ -273,8 +273,8 @@ function SpeciesRanking({ census, locale, t }: { census: Census; locale: Locale;
             {hybrids.map(({ a, b, n }) => (
               <li key={`${a.key}-${b.key}`} className="flex items-center gap-3 border-b border-rule py-3">
                 <span className="flex shrink-0">
-                  <SpeciesPlate species={a.key} className="w-14" />
-                  <SpeciesPlate species={b.key} className="-ml-3 w-14" />
+                  <SpeciesPlate species={a.key} variant="pictogram" className="w-14" />
+                  <SpeciesPlate species={b.key} variant="pictogram" className="-ml-3 w-14" />
                 </span>
                 <span className="min-w-0">
                   <span className="block font-bold leading-tight">{t.species.hybrid(a, b)}</span>

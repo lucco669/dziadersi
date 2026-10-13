@@ -1,11 +1,13 @@
 import type { SpeciesKey } from "@/content/species";
+import type { SpecimenIndex } from "@/content/specimens";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { localizePath } from "@/i18n/routes";
 import { siteCopy } from "@/lib/site";
 import { cx, typo } from "@/lib/typo";
 import { Seal, Stamp } from "./brand";
-import { Figure, SpeciesPlate } from "./pictograms";
+import { SpeciesPlate } from "./pictograms";
+import { CommonPlate } from "./common-plate";
 
 const COPY = defineCopy({
   pl: {
@@ -44,6 +46,7 @@ export type CertificateProps = {
   number: string;
   /** The diagnosed species (two for a hybrid), drawn on the certificate; none for an unspecified diagnosis. */
   species: SpeciesKey[];
+  specimen?: SpecimenIndex;
   name?: string;
   date?: string;
   /** Marks the certificate as a specimen. */
@@ -54,7 +57,7 @@ export type CertificateProps = {
 };
 
 /** The certificate, with the red stripe of a Polish school certificate awarded with distinction. */
-export function Certificate({ locale, score, diagnosis, latin, number, species, name, date, sample, proxy, className }: CertificateProps) {
+export function Certificate({ locale, score, diagnosis, latin, number, species, specimen, name, date, sample, proxy, className }: CertificateProps) {
   const t = COPY[locale];
   const home = localizePath("/", locale);
   return (
@@ -85,12 +88,10 @@ export function Certificate({ locale, score, diagnosis, latin, number, species, 
         <div className="mt-4 flex justify-center gap-2">
           {species.length > 0 ? (
             species.map((key) => (
-              <SpeciesPlate key={key} species={key} className={species.length > 1 ? "h-20 md:h-24" : "h-24 md:h-28"} />
+              <SpeciesPlate key={key} species={key} specimen={specimen} sizes={species.length > 1 ? "120px" : "160px"} className={species.length > 1 ? "h-20 md:h-24" : "h-24 md:h-28"} />
             ))
           ) : (
-            <svg viewBox="-40 0 120 100" className="h-24 md:h-28" aria-hidden="true">
-              <Figure />
-            </svg>
+            <CommonPlate specimen={specimen} className="h-24 md:h-28" />
           )}
         </div>
 

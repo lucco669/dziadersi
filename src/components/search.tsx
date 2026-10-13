@@ -96,7 +96,7 @@ const KIND_ICON: Record<SearchKind, string> = {
 };
 
 function ResultIcon({ entry }: { entry: SearchEntry }) {
-  if (entry.k === "gatunek" && entry.i) return <SpeciesPlate species={entry.i as SpeciesKey} className="w-12" />;
+  if (entry.k === "gatunek" && entry.i) return <SpeciesPlate species={entry.i as SpeciesKey} variant="pictogram" className="w-12" />;
   return <MenuIcon href={entry.k === "dzial" ? (entry.i ?? "") : KIND_ICON[entry.k]} className="w-10" />;
 }
 

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import Image from "next/image";
+import { StaticArtwork } from "./static-artwork";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { cx } from "@/lib/typo";
@@ -65,7 +65,7 @@ export function Specimen({ locale, className }: { locale: Locale; className?: st
   return (
     <figure className={className}>
       <div className="relative" style={{ aspectRatio: `${W} / ${H}` }}>
-        <Image src="/illustrations/specimen.webp" alt={t.alt} width={960} height={1440} preload sizes="(max-width: 1023px) 60vw, 380px" className="absolute left-[20%] top-0 h-full w-[60%] object-contain" />
+        <StaticArtwork src="/illustrations/specimen.webp" alt={t.alt} width={960} height={1440} eager sizes="(max-width: 1023px) 60vw, 380px" className="absolute left-[20%] top-0 h-full w-[60%] object-contain" />
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           {parts.map((part, i) => {
             const [x, y] = part.at;

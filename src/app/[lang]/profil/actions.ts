@@ -33,7 +33,9 @@ export async function saveNickname(formData: FormData) {
 export async function removeResult(formData: FormData) {
   const locale = formEdition(formData);
   const { supabase, user } = await signedIn(locale);
-  await supabase.from("saved_results").delete().eq("user_id", user.id).eq("code", String(formData.get("kod") ?? ""));
+  const code = String(formData.get("kod") ?? "");
+  const { resultAppearanceCodes, decodeResult } = await import("@/lib/test");
+  if (decodeResult(code)) await supabase.from("saved_results").delete().eq("user_id", user.id).in("code", resultAppearanceCodes(code));
   refresh(locale);
 }
 

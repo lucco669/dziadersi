@@ -283,6 +283,7 @@ export const MENU_ICONS: Record<string, ReactNode> = {
 };
 
 const FIELD_ICONS: Record<string, ReactNode> = {
+  "/krol-grilla": <g><path d="M9 17H39L35 28H13Z" fill={INK} /><path d="M16 28L12 38M32 28L36 38M15 34H33" stroke={INK} strokeWidth={2.4} /><path d="M17 14C12 9 22 9 17 3M25 14C20 9 30 9 25 3M33 14C28 9 38 9 33 3" fill="none" stroke={RED} strokeWidth={2} /><path d="M8 17H40" stroke={INK} strokeWidth={3} /></g>,
   "/dziaders": <g><circle cx={24} cy={17} r={11} fill={INK} /><path d={MUSTACHE_PATH} transform="translate(15 16) scale(.18)" fill={PAPER} /><path d="M8 38Q8 28 24 28Q40 28 40 38" fill={INK} /></g>,
   "/okazje": <g><rect x={6} y={6} width={36} height={31} fill={PAPER} stroke={INK} strokeWidth={2} /><path d="M6 15H42M15 2V10M33 2V10" stroke={INK} strokeWidth={3} /><path d="M13 23H20V30H13ZM28 23H35V30H28Z" fill={RED} /></g>,
   "/muzeum": <g><rect x={5} y={5} width={38} height={32} fill={PAPER} stroke={INK} strokeWidth={2} /><path d="M5 21H43M18 13H30M18 29H30" stroke={INK} strokeWidth={2} /><circle cx={12} cy={13} r={2} fill={RED} /><circle cx={12} cy={29} r={2} fill={RED} /></g>,

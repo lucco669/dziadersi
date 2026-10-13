@@ -262,6 +262,7 @@ function Summary({
 
         <div className="lg:col-span-5 lg:pt-2">
           <Certificate
+            specimen={result.specimen}
             locale={locale}
             score={result.score}
             diagnosis={result.diagnosis.name}
@@ -364,6 +365,7 @@ function CaseDescription({ result, locale }: { result: Result; locale: Locale })
           {diagnosis.species.length > 0 ? (
             diagnosis.species.map((species, i) => (
               <SpeciesNote
+                specimen={result.specimen}
                 key={species.key}
                 species={species}
                 role={diagnosis.species.length > 1 ? (i === 0 ? t.dominant : t.accompanying) : t.species}
@@ -379,7 +381,7 @@ function CaseDescription({ result, locale }: { result: Result; locale: Locale })
   );
 }
 
-function SpeciesNote({ species, role, locale }: { species: Species; role: string; locale: Locale }) {
+function SpeciesNote({ species, role, locale, specimen }: { species: Species; role: string; locale: Locale; specimen: Result["specimen"] }) {
   const t = COPY[locale];
   return (
     <article aria-labelledby={`gatunek-${species.key}`} className="border-t border-ink pt-5">
@@ -395,7 +397,7 @@ function SpeciesNote({ species, role, locale }: { species: Species; role: string
             {species.latin} ({species.authority})
           </p>
         </div>
-        <SpeciesPlate species={species.key} className="w-full max-w-48" />
+        <SpeciesPlate species={species.key} specimen={specimen} sizes="192px" className="w-full max-w-48" />
       </div>
       <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
         <Field label={t.habitat}>{typo(species.habitat)}</Field>

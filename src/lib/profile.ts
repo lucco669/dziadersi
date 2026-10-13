@@ -4,7 +4,7 @@ import { SPECIES, type SpeciesKey } from "@/content/species";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { decodeExam, evaluateExam, type ExamResult } from "./exam";
-import { decodeResult, DIAGNOSABLE, evaluate, type Result } from "./test";
+import { decodeResult, DIAGNOSABLE, evaluate, withoutSpecimen, type Result } from "./test";
 
 /*
  * The Profil Dziaderski is computed from what the account saved: results, observations,
@@ -173,8 +173,12 @@ export type Profile = {
 
 /** The profile in the words of an edition: diagnoses, exam grades and badges follow `locale`, the figures don't. */
 export function buildProfile(records: Records, locale: Locale, today = warsawToday()): Profile {
+  const seenResults = new Set<string>();
   const results = records.results.flatMap((row) => {
     const draft = decodeResult(row.code);
+    const identity = withoutSpecimen(row.code);
+    if (!draft || seenResults.has(identity)) return [];
+    seenResults.add(identity);
     return draft ? [{ ...evaluate(draft, locale), savedAt: row.saved_at }] : [];
   });
   const collected = new Set(results.flatMap((result) => result.diagnosis.species.map((species) => species.key)));

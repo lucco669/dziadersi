@@ -151,7 +151,7 @@ export function ObservationMap({
                 {top.map(({ item, n }) => (
                   <li key={item.key}>
                     <Link href={`/atlas/${item.slug}`} className="group grid grid-cols-[4rem_1fr_auto] items-center gap-4 border-b border-rule py-2.5">
-                      <SpeciesPlate species={item.key} className="w-full" />
+                      <SpeciesPlate species={item.key} variant="pictogram" className="w-full" />
                       <span className="font-bold leading-tight group-hover:text-red">{item.name}</span>
                       <span className="font-sans text-[0.95rem] font-semibold tabular-nums">{count(n)}</span>
                     </Link>

@@ -1,11 +1,10 @@
 import { ImageResponse } from "next/og";
-import { Figure } from "@/components/pictograms";
+import { commonArtDataUri } from "./species-art.server";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { C, OG_FONTS, OgFrame, OgLogo, OgSeal, OgStamp, bold, italic, printedUrl, sans, serif } from "./og";
 import { OgPlate } from "./og-cards";
 import { siteCopy } from "./site";
-import { svgDataUri } from "./svg-string";
 import type { Result } from "./test";
 
 const COPY = defineCopy({
@@ -63,12 +62,12 @@ export function certificateImage(result: Result, format: CertificateFormat, loca
 function Drawing({ result, width }: { result: Result; width: number }) {
   const { species } = result.diagnosis;
   if (species.length === 0) {
-    return <img src={svgDataUri("-40 0 120 100", <Figure />)} width={width} height={(width * 100) / 120} alt="" />;
+    return <img src={commonArtDataUri(result.specimen)} width={width} height={(width * 100) / 120} alt="" />;
   }
   return (
     <div style={{ display: "flex" }}>
       {species.map((item) => (
-        <OgPlate key={item.key} species={item.key} width={species.length > 1 ? width * 0.7 : width} />
+        <OgPlate key={item.key} species={item.key} specimen={result.specimen} width={species.length > 1 ? width * 0.7 : width} />
       ))}
     </div>
   );
