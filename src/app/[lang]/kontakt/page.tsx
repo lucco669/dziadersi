@@ -11,6 +11,8 @@ import { typo } from "@/lib/typo";
 const COPY = defineCopy({
   pl: {
     title: "Kontakt",
+    // "Kontakt" is spelled the same in both editions; the browser title tells them apart.
+    metaTitle: "Kontakt z Instytutem i administratorem",
     description: "Kontakt z administratorem DZIADER.SI: pytania o serwis, zgłoszenia błędów i sprawy danych osobowych. Napisz na admin@dziader.si.",
     lead: "Pytania o serwis, błędy na stronie i sprawy danych osobowych prosimy kierować do administratora.",
     write: "Napisz do administratora",
@@ -26,6 +28,7 @@ const COPY = defineCopy({
   },
   sl: {
     title: "Kontakt",
+    metaTitle: "Kontakt z inštitutom in administratorjem",
     description: "Kontakt z administratorjem DZIADER.SI: vprašanja o strani, prijave napak in osebni podatki. Piši na admin@dziader.si.",
     lead: "Vprašanja o strani, napake na strani in zadeve glede osebnih podatkov pošlji administratorju.",
     write: "Piši administratorju",
@@ -44,7 +47,7 @@ const COPY = defineCopy({
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = COPY[locale];
-  return pageMetadata(locale, { title: t.title, description: t.description, path: "/kontakt", defaultImage: true });
+  return pageMetadata(locale, { title: t.metaTitle, description: t.description, path: "/kontakt", defaultImage: true });
 }
 
 export default async function ContactPage() {

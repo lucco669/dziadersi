@@ -26,6 +26,7 @@ const COPY = defineCopy({
     lead: "Dziaderstwo to postawa, nie metryka. Instytut bada nawyki osób w każdym wieku. Zbadaj się: cztery minuty, pięć gabinetów i certyfikat.",
     test: "Wykonaj test",
     atlas: "Atlas Dziadersów",
+    meaning: "Co znaczy „dziaders”?",
     facts: "5 gabinetów · ok. 4 minuty · bez pobierania krwi",
     edition: null as { stamp: string; text: string } | null,
     index: "Narodowy Indeks Dziaderstwa",
@@ -66,6 +67,7 @@ const COPY = defineCopy({
     lead: "Dziaderstvo je drža, ne letnica rojstva. Inštitut raziskuje navade ljudi vseh starosti. Preglej se: štiri minute, pet ordinacij in certifikat.",
     test: "Opravi test",
     atlas: "Atlas dziadersov",
+    meaning: "Kaj pomeni »dziaders«?",
     facts: "5 ordinacij · pribl. 4 minute · brez odvzema krvi",
     edition: {
       stamp: "Slovenska izdaja",
@@ -112,7 +114,7 @@ const FEATURED = ["grill", "parking", "wakacje"];
 export function Hero({ locale }: { locale: Locale }) {
   const t = COPY[locale];
   return (
-    <section className="wrap grid items-center gap-14 pb-16 pt-10 md:pb-24 md:pt-16 lg:grid-cols-12 lg:gap-8">
+    <section className="wrap grid grid-cols-1 items-center gap-14 pb-16 pt-10 md:pb-24 md:pt-16 lg:grid-cols-12 lg:gap-8">
       <div className="lg:col-span-6">
         {t.edition && (
           <p className="mb-7 flex max-w-xl flex-wrap items-center gap-x-4 gap-y-2">
@@ -122,7 +124,7 @@ export function Hero({ locale }: { locale: Locale }) {
             <span className="font-sans text-[0.9rem] leading-snug text-ink-soft">{typo(t.edition.text)}</span>
           </p>
         )}
-        <h1 className="text-[clamp(3.4rem,8vw,7rem)] font-bold leading-[0.9] tracking-[-0.025em]">{t.heading}</h1>
+        <h1 className="text-[clamp(2.9rem,15vw,3.4rem)] font-bold leading-[0.9] tracking-[-0.025em] sm:text-[clamp(3.4rem,8vw,7rem)]">{t.heading}</h1>
         <p className="mt-7 max-w-xl text-[clamp(1.2rem,2vw,1.45rem)] leading-snug text-ink-soft">{typo(t.lead)}</p>
         <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
           <Link href="/test" className="btn bg-ink text-paper hover:bg-red">
@@ -130,6 +132,9 @@ export function Hero({ locale }: { locale: Locale }) {
           </Link>
           <Link href="/atlas" className="link font-sans font-medium">
             {t.atlas}
+          </Link>
+          <Link href="/dziaders" className="link font-sans font-medium">
+            {t.meaning}
           </Link>
         </div>
         <p className="label mt-6 text-ink-faint">{t.facts}</p>

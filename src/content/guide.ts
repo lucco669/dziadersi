@@ -4,6 +4,8 @@ import { GUIDE_TEXT } from "./sl/guide";
 
 export type Guide = {
   title: string;
+  /** Browser title: the wording people search with ("co to znaczy"), while the page keeps its heading. */
+  metaTitle: string;
   lead: string;
   definition: string;
   context: string;
@@ -13,9 +15,10 @@ export type Guide = {
 };
 export const GUIDE: Guide = {
   title: "Dziaders — kto to jest?",
+  metaTitle: "Dziaders i dziaderstwo — co to znaczy? Definicja",
   lead: "Co znaczy „dziaders”, po czym rozpoznać dziaderstwo i dlaczego sam wiek nie wystarcza. Wprowadzenie do zbiorów Instytutu.",
   definition:
-    "Dziaders to potoczne, zwykle krytyczne określenie osoby, która poucza innych, traktuje własne doświadczenie jako ostateczny argument i niechętnie przyjmuje, że świat mógł się zmienić. W naszym Atlasie przyjmuje różne postacie: od strażnika grilla po eksperta od każdego remontu.",
+    "Dziaders to potoczne, zwykle krytyczne określenie osoby, która poucza innych, traktuje własne doświadczenie jako ostateczny argument i niechętnie przyjmuje, że świat mógł się zmienić. Dziaderstwo to sama ta postawa, zestaw takich nawyków; nie zależy od wieku ani płci. W naszym Atlasie przyjmuje różne postacie: od strażnika grilla po eksperta od każdego remontu.",
   context:
     "Słowo bywa używane jako docinek i zależy od kontekstu. Instytut opisuje nawyki, nie orzeka o wartości człowieka. Nasz katalog jest satyrą, a test zabawą; wynik nie stanowi diagnozy psychologicznej ani medycznej.",
   signs: [
@@ -51,6 +54,16 @@ export const GUIDE: Guide = {
     },
   ],
   questions: [
+    {
+      question: "Co to jest dziaderstwo?",
+      answer:
+        "Dziaderstwo to postawa, a nie metryka: pouczanie bez pytania, traktowanie własnych przyzwyczajeń jak przepisów i przekonanie, że dawniej wszystko było lepsze. Instytut opisuje je jako zbiór nawyków, które można zauważyć u osób w każdym wieku.",
+    },
+    {
+      question: "Skąd pochodzi słowo „dziaders”?",
+      answer:
+        "Powstało od „dziad” z żartobliwą, angielsko brzmiącą końcówką „-ers”. W liczbie mnogiej: dziadersi. Od niego pochodzi „dziaderstwo”, nazwa całego zjawiska.",
+    },
     {
       question: "Czy każdy tata albo dziadek jest dziadersem?",
       answer:

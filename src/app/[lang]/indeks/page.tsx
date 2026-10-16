@@ -200,7 +200,7 @@ export default async function IndexPage() {
       />
 
       <Section id="dzis" title={t.today} aside={capitalize(season.title, locale)}>
-        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-5">
             <p className="text-[clamp(5rem,12vw,9rem)] font-bold leading-[0.85] tracking-[-0.03em] tabular-nums">
               {pct(value)}
@@ -235,7 +235,7 @@ export default async function IndexPage() {
               >
                 <p className="label text-ink-soft">
                   {item.from}–{item.to}
-                  {current && <span className="ml-2 font-semibold text-red">{t.now}</span>}
+                  {current && <span className="ml-2 font-semibold text-red-deep">{t.now}</span>}
                 </p>
                 <p className="mt-1 text-xl font-bold">
                   {t.intensity} {item.label}
@@ -252,7 +252,8 @@ export default async function IndexPage() {
       </Section>
 
       <Section id="sezony" title={t.seasons} intro={typo(t.seasonsIntro)}>
-        <div className="overflow-x-auto">
+        {/* Scrolls sideways on phones; focusable so the keyboard can scroll it too. */}
+        <div className="overflow-x-auto" tabIndex={0} role="region" aria-labelledby="sezony">
           <table className="w-full min-w-[40rem] border-collapse text-left">
             <thead>
               <tr className="label border-b border-ink text-ink-soft">
@@ -281,13 +282,13 @@ export default async function IndexPage() {
                     </td>
                     <th scope="row" className="py-4 pr-6 text-xl font-bold">
                       {capitalize(item.title, locale)}
-                      {current && <span className="label ml-3 align-middle font-semibold text-red">{t.now}</span>}
+                      {current && <span className="label ml-3 align-middle font-semibold text-red-deep">{t.now}</span>}
                     </th>
                     <td className="py-4 pr-6">
                       <span
                         className={cx(
                           "label inline-block whitespace-nowrap border px-2 py-1 font-semibold",
-                          item.level === 3 ? "border-red bg-red text-paper" : item.level === 2 ? "border-red text-red" : "border-ink/40 text-ink-soft",
+                          item.level === 3 ? "border-red bg-red text-paper" : item.level === 2 ? "border-red text-red-deep" : "border-ink/40 text-ink-soft",
                         )}
                       >
                         {t.levelBadge(roman(item.level))}
@@ -303,14 +304,14 @@ export default async function IndexPage() {
       </Section>
 
       <Section id="regiony" title={t.regions} aside={t.regionsAside} intro={typo(t.regionsIntro)}>
-        <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-12">
           <RegionMap regions={regions} className="lg:col-span-5" />
           <ol className="border-t border-ink lg:col-span-7">
             {ranking.map((region, i) => (
               <li key={region.code} className="border-b border-rule">
-                <Link href={`/atlas/${region.speciesSlug}`} className="group grid grid-cols-[2.5rem_1fr_auto] items-baseline gap-3 py-3">
+                <Link href={`/atlas/${region.speciesSlug}`} className="group grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-baseline gap-3 py-3">
                   <span className="font-sans text-[0.9rem] font-semibold text-ink-soft tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                  <span>
+                  <span className="break-words">
                     <span className="text-lg font-bold">{region.name}</span>
                     <span className="ml-2 text-ink-soft transition-colors group-hover:text-red">· {region.speciesName}</span>
                   </span>

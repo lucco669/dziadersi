@@ -130,7 +130,7 @@ export default async function EntryPage({ params }: PageProps<"/[lang]/slownik/[
           meta={t.position(index + 1, entries.length)}
         />
 
-        <div className="wrap grid gap-16 pb-20 pt-12 md:pb-28 md:pt-16 lg:grid-cols-12 lg:gap-12">
+        <div className="wrap grid grid-cols-1 gap-16 pb-20 pt-12 md:pb-28 md:pt-16 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
             <ol className="space-y-5 border-t border-ink pt-8">
               {entry.senses.map((sense, i) => (

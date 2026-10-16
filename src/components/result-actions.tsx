@@ -12,6 +12,7 @@ import { tally } from "@/lib/tally";
 import { cleanName, decodeResult, encodeResult } from "@/lib/test";
 import { cx } from "@/lib/typo";
 import { CreateFamilyGroup } from "./family-group";
+import { ShareOutlet, shareOutlets } from "./share-bar";
 
 const COPY = defineCopy({
   pl: {
@@ -168,15 +169,10 @@ export function ResultActions({
     router.replace(localizePath(`/wynik/${encodeResult({ ...draft, name: cleaned })}`, locale), { scroll: false });
   }
 
-  const outlets = [
-    { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
-    { label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}` },
-    { label: "X", href: `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
-    {
-      label: t.email,
-      href: `mailto:?subject=${encodeURIComponent(t.subject(score))}&body=${encodeURIComponent(`${text}\n\n${url}`)}`,
-    },
-  ];
+  const sent = (channel: string) => {
+    track("Udostępnienie", { kanal: channel });
+    tally("udostepnienie");
+  };
 
   return (
     <div className="mt-10 border-t border-ink pt-6">
@@ -227,21 +223,16 @@ export function ResultActions({
         </dd>
         <dt className="label pt-0.5 text-ink-soft">{t.send}</dt>
         <dd className="flex flex-wrap gap-x-5 gap-y-1">
-          {outlets.map((outlet) => (
-            <a
-              key={outlet.label}
-              href={outlet.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                track("Udostępnienie", { kanal: outlet.label });
-                tally("udostepnienie");
-              }}
-              className="link"
-            >
-              {outlet.label}
-            </a>
+          {shareOutlets(url, text).map((outlet) => (
+            <ShareOutlet key={outlet.label} {...outlet} onOpen={() => sent(outlet.label)} className="link" />
           ))}
+          <a
+            href={`mailto:?subject=${encodeURIComponent(t.subject(score))}&body=${encodeURIComponent(`${text}\n\n${url}`)}`}
+            onClick={() => sent(t.email)}
+            className="link"
+          >
+            {t.email}
+          </a>
         </dd>
         <dt className="label pt-0.5 text-ink-soft">{t.profile}</dt>
         <dd>

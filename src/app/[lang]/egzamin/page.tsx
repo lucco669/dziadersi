@@ -102,7 +102,7 @@ export default async function ExamPage() {
       </Section>
 
       <Section id="oceny" title={t.scale} aside={t.scaleNote} intro={typo(t.scaleIntro)}>
-        <div className="grid items-start gap-14 lg:grid-cols-12 lg:gap-10">
+        <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-12 lg:gap-10">
           <ol className="border-t border-ink lg:col-span-6">
             {[...grades(locale)].reverse().map((grade) => (
               <li key={grade.value} className="grid grid-cols-[3rem_1fr] items-baseline gap-x-4 border-b border-rule py-4">

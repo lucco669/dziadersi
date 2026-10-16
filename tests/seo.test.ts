@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import robots from "../src/app/robots";
 import sitemap from "../src/app/sitemap";
 import { GET as securityRecord } from "../src/app/.well-known/security.txt/route";
 import { signInPath } from "../src/lib/account";
@@ -30,6 +31,35 @@ test("legal previews have an edition-specific fallback without replacing dedicat
     assert.deepEqual(privateResult.robots, { index: false, follow: false });
     const account = pageMetadata(locale, { title: "Account", description: "Sign in", path: "/konto", noindex: true });
     assert.deepEqual(account.robots, { index: false, follow: true });
+  }
+});
+
+test("hreflang pairs only indexable pages", () => {
+  for (const locale of ["pl", "sl"] as const) {
+    const card = pageMetadata(locale, { title: "Card", description: "A bingo card", path: "/bingo/wigilia-0nof0", noindex: true });
+    assert.equal(card.alternates?.languages, undefined);
+    assert.equal(card.alternates?.canonical, locale === "pl" ? "/bingo/wigilia-0nof0" : "/sl/bingo/wigilia-0nof0");
+    const guide = pageMetadata(locale, { title: "Guide", description: "A guide", path: "/dziaders" });
+    assert.deepEqual(Object.keys(guide.alternates?.languages ?? {}), ["pl", "sl", "x-default"]);
+  }
+});
+
+test("robots.txt keeps crawlers out of sign-in variants and auth steps, not out of public pages", () => {
+  const rules = robots().rules;
+  assert.ok(Array.isArray(rules));
+  // Longest matching prefix wins, as Google and Bing read robots.txt.
+  const allowed = (path: string, rule: (typeof rules)[number]) => {
+    const match = (patterns: string | string[] | undefined) =>
+      Math.max(-1, ...[patterns ?? []].flat().filter((pattern) => path.startsWith(pattern)).map((pattern) => pattern.length));
+    return match(rule.allow) >= match(rule.disallow);
+  };
+  for (const rule of rules) {
+    for (const path of ["/konto?dalej=%2Fatlas", "/sl/racun?tryb=login&dalej=%2Fsl", "/rejestracja?dalej=%2Fprofil", "/sl/registracija?dalej=%2Fsl", "/auth/google?dalej=%2F", "/profil/zachowaj?rodzaj=bingo", "/sl/profil/ohrani?rodzaj=bingo", "/profil/zapisz/code", "/sl/profil/shrani/code"]) {
+      assert.equal(allowed(path, rule), false, path);
+    }
+    for (const path of ["/", "/sl", "/konto", "/sl/racun", "/rejestracja", "/sl/registracija", "/profil", "/atlas/dziaders-grillowy", "/sl/atlas/zarni-dziaders", "/kontakt", "/opengraph-image", "/_next/static/chunks/app.js"]) {
+      assert.equal(allowed(path, rule), true, path);
+    }
   }
 });
 

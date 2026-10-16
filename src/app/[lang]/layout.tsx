@@ -16,7 +16,18 @@ import "../globals.css";
 const poltawski = Poltawski_Nowy({
   variable: "--font-poltawski",
   subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
+  style: "normal",
+  adjustFontFallback: false,
+  fallback: ["Poltawski Fallback"],
+});
+
+// The italic joins the same family ("Poltawski Nowy") but is not preloaded: browsers fetch it when a page
+// shows italic text, instead of every page spending a phone's first second on two files beside the headline.
+const poltawskiItalic = Poltawski_Nowy({
+  variable: "--font-poltawski-italic",
+  subsets: ["latin", "latin-ext"],
+  style: "italic",
+  preload: false,
   adjustFontFallback: false,
   fallback: ["Poltawski Fallback"],
 });
@@ -62,7 +73,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   if (!hasLocale(lang)) notFound();
 
   return (
-    <html lang={LOCALE_INFO[lang].tag} data-scroll-behavior="smooth" className={`${poltawski.variable} ${schibsted.variable}`}>
+    <html lang={LOCALE_INFO[lang].tag} data-scroll-behavior="smooth" className={`${poltawski.variable} ${poltawskiItalic.variable} ${schibsted.variable}`}>
       <body>
         <LocaleProvider locale={lang}>
           <SiteHeader locale={lang} />

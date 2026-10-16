@@ -38,6 +38,7 @@ const COPY = defineCopy({
     lead: "Systematyczny katalog zachowań występujących na terenie Rzeczypospolitej. 28 gatunków, 84 okazy: kobiety i mężczyźni w różnym wieku. Każdy gatunek ma trzy ryciny, siedem objawów rozpoznawczych i kartę terenową. O klasyfikacji decyduje postawa, nie metryka.",
     meta: (count: number, nationwide: number, regional: number, occasional: number) =>
       `Opisano ${count} z ok. ${ESTIMATED_SPECIES} gatunków: ${nationwide} ogólnopolskich, ${regional} regionalnych i ${occasional} okazjonalnych`,
+    guide: "Co znaczy „dziaders”?",
     featured: "Gatunek tygodnia",
     count: (n: number) => `${n} ${plural(n, "gatunek", "gatunki", "gatunków")}`,
     isNew: "nowość",
@@ -73,6 +74,7 @@ const COPY = defineCopy({
     lead: "Sistematični katalog vedenj na ozemlju Republike Poljske. 28 vrst, 84 osebkov: ženske in moški različnih starosti. Vsaka vrsta ima tri risbe, sedem prepoznavnih simptomov in terensko kartico. Razvrščanje temelji na drži, ne na letnici rojstva.",
     meta: (count: number, nationwide: number, regional: number, occasional: number) =>
       `Opisanih ${count} od pribl. ${ESTIMATED_SPECIES} vrst: ${nationwide} vsepoljskih, ${regional} regionalnih in ${occasional} priložnostnih`,
+    guide: "Kaj pomeni »dziaders«?",
     featured: "Vrsta tedna",
     count: (n: number) => `${n} ${pluralSl(n, "vrsta", "vrsti", "vrste", "vrst")}`,
     isNew: "novo",
@@ -153,7 +155,14 @@ export default async function AtlasPage() {
       <PageHeader
         crumbs={[{ label: t.title }]}
         title={t.title}
-        lead={typo(t.lead)}
+        lead={
+          <>
+            {typo(t.lead)}{" "}
+            <Link href="/dziaders" className="link text-ink">
+              {t.guide}
+            </Link>
+          </>
+        }
         meta={t.meta(species.length, nationwide.length, regional.length, occasional.length)}
         aside={
           <Link href={`/atlas/${featured.slug}`} className="group block border-t border-ink pt-4">

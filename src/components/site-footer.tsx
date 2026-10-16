@@ -46,7 +46,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
   const copy = siteCopy(locale);
   return (
     <footer className="border-t border-ink print:hidden">
-      <div className="wrap grid gap-12 py-14 md:py-20 lg:grid-cols-12">
+      <div className="wrap grid grid-cols-1 gap-12 py-14 md:py-20 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <Link href="/" className="flex items-center gap-3" aria-label={t.home}>
             <Mark className="size-12 text-ink" />
@@ -61,7 +61,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
 
         <div className="lg:col-span-8">
-          <nav aria-label={t.sections} className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+          <nav aria-label={t.sections} className="grid grid-cols-1 gap-x-5 gap-y-10 min-[360px]:grid-cols-2 sm:grid-cols-4 sm:gap-x-8">
             {groups(locale).map((group) => (
               <div key={group.key}>
                 <p className="label text-ink-faint">{group.label}</p>

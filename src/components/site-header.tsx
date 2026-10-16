@@ -8,8 +8,8 @@ import { AccountLink, DesktopMenu, MobileMenu } from "./main-menu";
 import { SearchButton, SearchDialog } from "./search";
 
 const COPY = defineCopy({
-  pl: { skip: "Przejdź do treści", home: "DZIADER.SI, strona główna", test: "Wykonaj test", sections: "Działy", main: "Główna" },
-  sl: { skip: "Skoči na vsebino", home: "DZIADER.SI, domača stran", test: "Opravi test", sections: "Oddelki", main: "Glavni meni" },
+  pl: { skip: "Przejdź do treści", home: "DZIADER.SI, strona główna", test: "Wykonaj test", testShort: "Test", sections: "Działy", main: "Główna" },
+  sl: { skip: "Skoči na vsebino", home: "DZIADER.SI, domača stran", test: "Opravi test", testShort: "Test", sections: "Oddelki", main: "Glavni meni" },
 });
 
 export function SiteHeader({ locale }: { locale: Locale }) {
@@ -43,7 +43,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             </div>
             <LanguageSwitch className="hidden min-[420px]:block" />
             <Link href="/test" className="btn bg-ink px-3.5 text-[0.95rem] text-paper hover:bg-red sm:px-4 sm:text-base md:px-5">
-              {t.test}
+              {/* 320-pixel screens (the first iPhone SE, Display Zoom on newer ones) fit the wordmark and a short label. */}
+              <span className="max-[359px]:hidden">{t.test}</span>
+              <span className="hidden max-[359px]:inline">{t.testShort}</span>
             </Link>
           </div>
         </div>

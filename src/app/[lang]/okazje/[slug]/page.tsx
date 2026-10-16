@@ -40,6 +40,7 @@ const COPY = defineCopy({
     vote: "Przeczytaj sprawę i zagłosuj",
     report: "Z dokumentacji Instytutu",
     materials: "Wszystkie materiały do druku",
+    others: "Inne przewodniki terenowe",
     jump: "Przejdź do bingo",
     promo: "Rozpoznajesz kogoś przy stole?",
     promoText: "Sprawdź najpierw siebie. Test Dziadersa wydaje certyfikat, który można spokojnie pokazać rodzinie.",
@@ -62,6 +63,7 @@ const COPY = defineCopy({
     vote: "Preberi primer in glasuj",
     report: "Iz dokumentacije Inštituta",
     materials: "Vse gradivo za tisk",
+    others: "Drugi terenski vodniki",
     jump: "Pojdi na bingo",
     promo: "Prepoznaš koga pri mizi?",
     promoText: "Najprej preveri sebe. Test dziadersa izda certifikat, ki ga lahko mirno pokažeš družini.",
@@ -132,7 +134,7 @@ export default async function DossierPage({ params }: Props) {
             ))}
           </div>
           <div className="border border-rule bg-paper-deep p-6 md:p-8">
-            <h3 className="label text-red">{t.signals}</h3>
+            <h3 className="label text-red-deep">{t.signals}</h3>
             <ul className="mt-5 space-y-4">
               {dossier.signals.map((signal, i) => (
                 <li key={signal} className="flex gap-4">
@@ -229,6 +231,21 @@ export default async function DossierPage({ params }: Props) {
             <ShareBar path={path} text={dossier.title} kind="okazja" />
           </div>
         </div>
+      </Section>
+      <Section id="inne" title={t.others}>
+        <ul className="grid gap-5 md:grid-cols-2">
+          {getDossiers(locale)
+            .filter((item) => item.slug !== dossier.slug)
+            .map((item) => (
+              <li key={item.slug}>
+                <Link href={"/okazje/" + item.slug} className="group block border-t border-ink pt-4">
+                  <span className="label text-ink-soft">{item.code}</span>
+                  <span className="mt-2 block text-2xl font-bold group-hover:text-red">{item.title}</span>
+                  <span className="mt-1 block text-ink-soft">{item.season}</span>
+                </Link>
+              </li>
+            ))}
+        </ul>
       </Section>
       <TestPromo title={t.promo} text={t.promoText} />
     </main>

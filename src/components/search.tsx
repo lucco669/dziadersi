@@ -68,12 +68,13 @@ function loadIndex(locale: Locale) {
   return loading[locale];
 }
 
-function useIndex() {
+/** The edition's index once it has arrived. `load` fetches it on mount; the dialog waits to be opened. */
+function useIndex(load: boolean) {
   const locale = useLocale();
   return useSyncExternalStore(
     (listener) => {
       listeners.add(listener);
-      void loadIndex(locale);
+      if (load) void loadIndex(locale);
       return () => {
         listeners.delete(listener);
       };
@@ -183,7 +184,7 @@ export function SearchDialog() {
   const [active, setActive] = useState(0);
   const input = useRef<HTMLInputElement>(null);
   const listId = useId();
-  const entries = useIndex();
+  const entries = useIndex(false);
   const results = entries && open ? search(entries, query, locale, 8) : [];
 
   const [lastPath, setLastPath] = useState(pathname);
@@ -303,7 +304,7 @@ export function SearchPage() {
   const router = useRouter();
   const params = useSearchParams();
   const [query, setQuery] = useState(() => params.get("q") ?? "");
-  const entries = useIndex();
+  const entries = useIndex(true);
   const results = entries ? search(entries, query, locale, 60) : [];
   const groups = Object.keys(kinds)
     .map((kind) => ({ kind: kind as SearchKind, items: results.filter((entry) => entry.k === kind) }))

@@ -5,10 +5,11 @@ import { SpeciesPlate } from "@/components/pictograms";
 import { ShareBar } from "@/components/share-bar";
 import { getGuide } from "@/content/guide";
 import { getSpecies } from "@/content/species";
+import { LOCALE_INFO } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { getLocale } from "@/i18n/server";
-import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl, pageMetadata } from "@/lib/seo";
 import { typo } from "@/lib/typo";
 
 const COPY = defineCopy({
@@ -44,7 +45,7 @@ const COPY = defineCopy({
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const guide = getGuide(locale);
-  return pageMetadata(locale, { title: guide.title, description: guide.lead, path: "/dziaders", type: "article" });
+  return pageMetadata(locale, { title: guide.metaTitle, description: guide.lead, path: "/dziaders", type: "article" });
 }
 export default async function GuidePage() {
   const locale = await getLocale();
@@ -56,7 +57,21 @@ export default async function GuidePage() {
       <JsonLd
         data={[
           breadcrumbList(locale, [{ label: guide.title }]),
-          publicationSchema(locale, "/dziaders", guide.title, guide.lead, "Article"),
+          {
+            ...publicationSchema(locale, "/dziaders", guide.title, guide.lead, "Article"),
+            about: { "@type": "DefinedTerm", name: "dziaders", description: guide.definition, inLanguage: LOCALE_INFO[locale].tag },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            url: absoluteUrl("/dziaders", locale),
+            inLanguage: LOCALE_INFO[locale].tag,
+            mainEntity: guide.questions.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+          },
         ]}
       />
       <PageHeader

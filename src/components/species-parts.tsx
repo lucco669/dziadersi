@@ -166,7 +166,7 @@ export async function SpeciesTile({ species, className }: { species: Species; cl
           {species.status}
         </abbr>
       </span>
-      <span className="mt-1 block text-[1.3rem] font-bold leading-tight transition-colors group-hover:text-red">
+      <span className="mt-1 block break-words text-[1.3rem] font-bold leading-tight transition-colors group-hover:text-red">
         {species.name}
       </span>
       <span className="mt-0.5 block italic text-ink-soft">{species.latin}</span>

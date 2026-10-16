@@ -54,7 +54,7 @@ export function ExamCertificate({
   return (
     <figure className={cx("relative mx-auto w-full max-w-[34rem] overflow-hidden bg-card p-2 text-ink", className)}>
       {distinction && <div aria-hidden="true" className="absolute -left-20 top-4 h-6 w-56 -rotate-45 bg-red md:-left-16 md:top-12 md:h-7" />}
-      <div className="relative border border-ink px-6 pb-6 pt-6 text-center md:px-10 md:pb-8">
+      <div className="relative border border-ink px-4 pb-6 pt-6 text-center sm:px-6 md:px-10 md:pb-8">
         <p className="label text-[0.75rem] text-ink-soft">
           {siteCopy(locale).institute}{" "}
           <span className="block sm:inline">
@@ -73,9 +73,9 @@ export function ExamCertificate({
         </div>
         <p className="label mt-6 text-ink-soft">{t.rights}</p>
         <p className="mt-1 text-balance text-[1.45rem] font-bold leading-tight">{result.grade.title}</p>
-        <div className="mt-8 flex items-end justify-between gap-6 text-left">
+        <div className="mt-8 flex items-end justify-between gap-3 text-left sm:gap-6">
           <Seal locale={locale} className="size-24 shrink-0 rotate-[-10deg] text-red md:size-28" />
-          <svg viewBox="-4 -1 48 97" className="h-24 shrink-0" aria-hidden="true">
+          <svg viewBox="-4 -1 48 97" className="h-24 shrink-0 max-[359px]:hidden" aria-hidden="true">
             <Figure right="point" glasses="eyes" hat="bucket" />
           </svg>
           <div className="w-full max-w-[11rem]">

@@ -122,9 +122,9 @@ export function AccountAccess({ mode, next, failure, email }: { mode: PasswordMo
       {(mode === "login" || mode === "register") && <>
         <Link href={href("recovery")} className="link mt-5 inline-block font-sans text-sm">{t.forgot}</Link>
         <div className="my-7 flex items-center gap-4 text-ink-soft"><span className="h-px flex-1 bg-ink/20" /><span className="label">{t.or}</span><span className="h-px flex-1 bg-ink/20" /></div>
-        {/* Auth routes are shared by both editions and must not be localised or prefetched. */}
-        <a href={`/auth/google?${new URLSearchParams({ dalej: next, jezyk: locale })}`} rel="nofollow" className="btn w-full justify-center border border-ink bg-paper hover:bg-ink hover:text-paper">{mode === "register" ? t.signupGoogle : t.google}</a>
-        <Link href={href("magic")} prefetch={false} rel="nofollow" className="link mt-6 inline-block font-sans text-sm text-ink-soft">{mode === "register" ? t.signupMagic : t.magic}</Link>
+        {/* Auth routes are shared by both editions and must not be localised or prefetched; robots.txt keeps crawlers out. */}
+        <a href={`/auth/google?${new URLSearchParams({ dalej: next, jezyk: locale })}`} className="btn w-full justify-center border border-ink bg-paper hover:bg-ink hover:text-paper">{mode === "register" ? t.signupGoogle : t.google}</a>
+        <Link href={href("magic")} prefetch={false} className="link mt-6 inline-block font-sans text-sm text-ink-soft">{mode === "register" ? t.signupMagic : t.magic}</Link>
       </>}
       {mode !== "login" && mode !== "register" && <Link href={href("login")} className="link mt-8 inline-block font-sans text-sm">{t.back}</Link>}
       <p className="mt-6 font-sans text-sm leading-relaxed text-ink-soft">{typo(t.signupNote)}</p>

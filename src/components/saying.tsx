@@ -9,7 +9,7 @@ export function Saying({ children, note, className }: { children: ReactNode; not
       <svg viewBox="-4 -1 56 97" className="h-44 shrink-0 md:h-52" aria-hidden="true">
         <Figure right="point" glasses="eyes" />
       </svg>
-      <div className="mb-24 md:mb-28">
+      <div className="mb-24 min-w-0 break-words md:mb-28">
         <blockquote className="relative bg-red px-5 py-4 text-paper">
           <span
             aria-hidden="true"

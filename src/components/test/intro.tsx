@@ -93,16 +93,16 @@ export function TestIntro({ region, setRegion, proxy, setProxy, invite, saved, o
   return (
     <section className="wrap pb-16 pt-6 md:pb-24 md:pt-12">
       <nav aria-label={t.trail} className="label text-ink-soft"><Link href="/" className="link">{t.home}</Link><span className="mx-2">/</span>{t.title}</nav>
-      <div className="mt-6 grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
-          <h1 className="text-[clamp(2.75rem,7.4vw,6rem)] font-bold leading-[0.95] tracking-[-0.02em]">{t.title}</h1>
+          <h1 className="break-words text-[clamp(2.25rem,11vw,2.75rem)] font-bold leading-[0.95] tracking-[-0.02em] sm:text-[clamp(2.75rem,7.4vw,6rem)]">{t.title}</h1>
           <p className="mt-4 max-w-xl text-xl leading-snug text-ink-soft">{typo(t.lead)}</p>
           <form onSubmit={onStart} className="mt-6">
             <fieldset>
               <legend className="label text-ink-soft">{t.who}</legend>
               <div className="mt-2 grid max-w-xl grid-cols-2 border-y border-ink">
                 {[{ value: false, label: t.self }, { value: true, label: t.other }].map((option) => (
-                  <label key={option.label} className={cx("relative flex cursor-pointer items-center justify-between gap-2 px-3 py-4 focus-within:outline-2 focus-within:outline-red", proxy === option.value ? "bg-red/[0.06]" : "hover:bg-paper-deep")}>
+                  <label key={option.label} className={cx("relative flex cursor-pointer items-center justify-between gap-2 px-2 py-4 focus-within:outline-2 focus-within:outline-red min-[360px]:px-3", proxy === option.value ? "bg-red/[0.06]" : "hover:bg-paper-deep")}>
                     <input type="radio" name="tryb" checked={proxy === option.value} onChange={() => setProxy(option.value)} className="sr-only" />
                     <span className="text-lg font-bold">{option.label}</span><Box checked={proxy === option.value} />
                   </label>

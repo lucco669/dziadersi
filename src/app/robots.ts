@@ -1,4 +1,6 @@
 import type { MetadataRoute } from "next";
+import { LOCALES } from "@/i18n/config";
+import { localizePath } from "@/i18n/routes";
 import { site } from "@/lib/site";
 
 /**
@@ -23,11 +25,22 @@ const AI_CRAWLERS = [
   "MistralAI-User",
 ];
 
+/**
+ * Every sign-in link carries its way back (`/konto?dalej=…`), so each page that offers an account adds
+ * another address of the same noindex form. The bare account pages stay open; their variants, the auth
+ * handlers and the save-to-profile steps are not crawled. Both editions, in their public spelling.
+ */
+const PRIVATE_STEPS = LOCALES.flatMap((locale) => [
+  ...["/konto", "/rejestracja"].map((path) => `${localizePath(path, locale)}?`),
+  `${localizePath("/profil/zapisz", locale)}/`,
+  localizePath("/profil/zachowaj", locale),
+]).concat("/auth/");
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/" },
-      { userAgent: AI_CRAWLERS, allow: "/" },
+      { userAgent: "*", allow: "/", disallow: PRIVATE_STEPS },
+      { userAgent: AI_CRAWLERS, allow: "/", disallow: PRIVATE_STEPS },
     ],
     sitemap: `${site.url}/sitemap.xml`,
   };

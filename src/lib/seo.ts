@@ -67,7 +67,8 @@ export function pageMetadata(
   return {
     title: branded.length <= MAX_TITLE ? title : { absolute: title },
     description: snippet,
-    alternates: { canonical: url, languages: languageAlternates(path, locale) },
+    // hreflang only links indexable twins; a noindex page would point search engines at another noindex page.
+    alternates: noindex ? { canonical: url } : { canonical: url, languages: languageAlternates(path, locale) },
     openGraph: {
       type,
       locale: LOCALE_INFO[locale].og,

@@ -57,7 +57,7 @@ export function RegionMap({ regions, className }: { regions: Record<string, MapR
               onMouseEnter={() => setActive(code)}
               onFocus={() => setActive(code)}
               className={cx(
-                "flex aspect-square flex-col justify-between p-2 text-left outline-[3px] outline-offset-2 transition-[outline-color] md:p-2.5",
+                "flex aspect-square min-w-0 flex-col justify-between p-1.5 text-left outline-[3px] outline-offset-2 transition-[outline-color] min-[360px]:p-2 md:p-2.5",
                 shadeFor(item.value),
                 selected ? "outline-red" : "outline-transparent",
               )}

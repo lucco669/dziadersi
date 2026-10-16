@@ -34,7 +34,6 @@ export function BookmarkButton({ kind, code, className, label }: { kind: Bookmar
       <Link
         href={signInPath(`/profil/zachowaj?rodzaj=${kind}&kod=${encodeURIComponent(code)}`, locale)}
         prefetch={false}
-        rel="nofollow"
         className={className}
       >
         {text}

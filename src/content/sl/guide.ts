@@ -3,9 +3,10 @@ import type { Text } from "@/i18n/overlay";
 
 export const GUIDE_TEXT: Text<Guide> = {
   title: "Dziaders — kdo je to?",
+  metaTitle: "Dziaders in dziaderstvo — kaj pomeni? Definicija",
   lead: "Kaj pomeni »dziaders«, kako prepoznati dziaderstvo in zakaj sama starost ne zadošča. Uvod v zbirke Inštituta.",
   definition:
-    "Dziaders je poljski pogovorni, navadno kritični izraz za osebo, ki drugim pridiga, lastne izkušnje obravnava kot dokončen argument in težko sprejme, da se je svet morda spremenil. V našem Atlasu ima različne podobe: od varuha žara do izvedenca za vsako prenovo.",
+    "Dziaders je poljski pogovorni, navadno kritični izraz za osebo, ki drugim pridiga, lastne izkušnje obravnava kot dokončen argument in težko sprejme, da se je svet morda spremenil. Dziaderstvo je ta drža sama, skupek takšnih navad; ni odvisno od starosti ali spola. V našem Atlasu ima različne podobe: od varuha žara do izvedenca za vsako prenovo.",
   context:
     "Beseda se lahko uporablja kot zbadljivka, njen pomen pa je odvisen od okoliščin. Inštitut opisuje navade, ne presoja vrednosti človeka. Naš katalog je satira, test pa igra; rezultat ni psihološka ali medicinska diagnoza.",
   signs: [
@@ -41,6 +42,16 @@ export const GUIDE_TEXT: Text<Guide> = {
     },
   ],
   questions: [
+    {
+      question: "Kaj je dziaderstvo?",
+      answer:
+        "Dziaderstvo je drža, ne letnica rojstva: pridiganje brez vprašanja, lastne navade v vlogi predpisov in prepričanje, da je bilo nekoč vse boljše. Inštitut ga opisuje kot skupek navad, ki jih je mogoče opaziti pri ljudeh vseh starosti.",
+    },
+    {
+      question: "Od kod izvira beseda »dziaders«?",
+      answer:
+        "Nastala je iz poljske besede »dziad« (starec, dedec) s šaljivo, angleško zvenečo končnico »-ers«. Množina je dziadersi. Iz nje izhaja dziaderstvo (polj. dziaderstwo), ime za celoten pojav.",
+    },
     {
       question: "Je vsak oče ali dedek dziaders?",
       answer:

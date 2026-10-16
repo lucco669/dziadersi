@@ -120,7 +120,7 @@ export function ObservationMap({
                 onMouseEnter={() => setActive(code)}
                 onFocus={() => setActive(code)}
                 className={cx(
-                  "flex aspect-square flex-col justify-between p-2 text-left outline-[3px] outline-offset-2 transition-[outline-color,background-color] md:p-3",
+                  "flex aspect-square min-w-0 flex-col justify-between p-1.5 text-left outline-[3px] outline-offset-2 transition-[outline-color,background-color] min-[360px]:p-2 md:p-3",
                   shadeFor(value, max),
                   code === active ? "outline-red" : "outline-transparent",
                 )}

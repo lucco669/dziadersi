@@ -44,7 +44,7 @@ export async function Breadcrumbs({ crumbs, className }: { crumbs: Crumb[]; clas
   const all: Crumb[] = [{ label: t.home, href: "/" }, ...crumbs];
   return (
     <nav aria-label={t.trail} className={cx("label text-ink-soft", className)}>
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <ol className="flex flex-wrap items-center gap-x-2">
         {all.map((crumb, i) => (
           <li key={crumb.label} className="flex items-center gap-x-2">
             {i > 0 && (
@@ -53,7 +53,7 @@ export async function Breadcrumbs({ crumbs, className }: { crumbs: Crumb[]; clas
               </span>
             )}
             {crumb.href && i < all.length - 1 ? (
-              <Link href={crumb.href} className="transition-colors hover:text-red">
+              <Link href={crumb.href} className="py-1 transition-colors hover:text-red">
                 {crumb.label}
               </Link>
             ) : (
@@ -99,9 +99,9 @@ export function PageHeader({
   return (
     <header className={cx("wrap pt-8 md:pt-12", className)}>
       <Breadcrumbs crumbs={crumbs} />
-      <div className="mt-8 grid items-end gap-10 md:mt-12 lg:grid-cols-12">
+      <div className="mt-8 grid grid-cols-1 items-end gap-10 md:mt-12 lg:grid-cols-12">
         <div className={aside ? "lg:col-span-8" : "lg:col-span-10"}>
-          <h1 id={titleId} className="text-[clamp(2.75rem,7.4vw,6rem)] font-bold leading-[0.95] tracking-[-0.02em]">
+          <h1 id={titleId} className="break-words text-[clamp(2.25rem,11vw,2.75rem)] font-bold leading-[0.95] tracking-[-0.02em] sm:text-[clamp(2.75rem,7.4vw,6rem)]">
             {title}
           </h1>
           {lead && <div className="mt-6 max-w-2xl text-[clamp(1.2rem,2vw,1.45rem)] leading-snug text-ink-soft">{lead}</div>}
