@@ -53,14 +53,34 @@ export const GUIDE_TEXT: Text<Guide> = {
         "Nastala je iz poljske besede »dziad« (starec, dedec) s šaljivo, angleško zvenečo končnico »-ers«. Množina je dziadersi. Iz nje izhaja dziaderstvo (polj. dziaderstwo), ime za celoten pojav.",
     },
     {
+      question: "V čem se dziaders razlikuje od boomerja?",
+      answer:
+        "»Boomer« označuje generacijo: izhaja iz angleškega »baby boomer«, torej osebe iz povojnega demografskega razcveta (rojene približno med letoma 1946 in 1964), razširil pa se je z odzivom »OK boomer«. »Dziaders« ne kaže na letnik, temveč na držo: pridiganje, nezmotljivost in prepričanje, da je bilo nekoč bolje. Boomer ni nujno dziaders, dziaders pa lahko postaneš že pred tridesetim.",
+    },
+    {
+      question: "Katere so sopomenke besede »dziaders«?",
+      answer:
+        "Natančne sopomenke ni. Najbližje sta »vsevednež« in »godrnjač«. »Boomer« se včasih uporablja namesto nje, čeprav govori o generaciji, ne o vedenju. Poljska beseda »dziad«, iz katere izhaja, je ostrejša in bolj žaljiva.",
+    },
+    {
+      question: "Kako se »dziaders« reče v angleščini?",
+      answer:
+        "Enega samega ustreznika ni. Pomen opisno zajameta »know-it-all« (vsevednež) ali »condescending old-timer«. Najbližji pogovorni izraz je »boomer« v pomenu, znanem iz »OK boomer«, čeprav se nanaša na generacijo. Inštitut besede v nobeni izdaji ne prevaja.",
+    },
+    {
+      question: "So dziadersi generacija?",
+      answer:
+        "Ne. Za razliko od generacij X, Y (milenijcev) ali Z dziadersov ne določa leto rojstva. Beseda najpogosteje leti na starejše, a opisuje način pogovora, tega pa lahko človek prevzame pri kateri koli starosti.",
+    },
+    {
       question: "Je vsak oče ali dedek dziaders?",
       answer:
         "Ne. Sorodstvo in starost ne opisujeta teh navad. Tudi skupno pečenje na žaru ne zadošča; pomembno je, ali ob žaru ostane prostor za tuje mnenje.",
     },
     {
-      question: "Se dziaderstvo nanaša samo na moške?",
+      question: "Je lahko dziaders tudi ženska?",
       answer:
-        "Ne. Atlas prikazuje ženske in moške različnih starosti pod skupnimi imeni vrst. Razvrščanje temelji na pridiganju, prepričanosti o nezmotljivosti in zavračanju tujih rešitev, ne na spolu ali datumu rojstva.",
+        "Da. Beseda je moškega spola in najpogosteje leti na moške, vendar Atlas prikazuje ženske in moške različnih starosti pod skupnimi imeni vrst. Razvrščanje temelji na pridiganju, prepričanosti o nezmotljivosti in zavračanju tujih rešitev, ne na spolu ali datumu rojstva.",
     },
     {
       question: "Kako preverim, ali sem sam dziaders?",

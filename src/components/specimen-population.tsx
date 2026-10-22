@@ -3,12 +3,12 @@ import { SPECIMEN_COUNT, specimenByIndex } from "@/content/specimens";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
-import { typo } from "@/lib/typo";
+import { plural, typo } from "@/lib/typo";
 import { SpeciesPlate } from "./pictograms";
 
 const CAST = [{ species: "grill", specimen: 1 }, { species: "korpo", specimen: 2 }, { species: "budowa", specimen: 0 }] as const;
 const COPY = defineCopy({
-  pl: { figure: "Rys. 1. Przekrój populacji", heading: "Różne osoby. Ta sama pewność, że wiedzą lepiej.", note: "Dziaderstwo to postawa, nie metryka. Wiek i płeć nie dają zwolnienia z badania.", age: (age: number) => `Wiek: ${age}`, collection: (count: number, species: number) => `${count} okazy · ${species} gatunków · zobacz Atlas →` },
+  pl: { figure: "Rys. 1. Przekrój populacji", heading: "Różne osoby. Ta sama pewność, że wiedzą lepiej.", note: "Dziaderstwo to postawa, nie metryka. Wiek i płeć nie dają zwolnienia z badania.", age: (age: number) => `Wiek: ${age}`, collection: (count: number, species: number) => `${count} ${plural(count, "okaz", "okazy", "okazów")} · ${species} ${plural(species, "gatunek", "gatunki", "gatunków")} · zobacz Atlas →` },
   sl: { figure: "Sl. 1. Prerez populacije", heading: "Različne osebe. Enaka prepričanost, da vedo bolje.", note: "Dziaderstvo je drža, ne letnica rojstva. Starost in spol ne pomenita oprostitve pregleda.", age: (age: number) => `Starost: ${age}`, collection: (count: number, species: number) => `${count} osebkov · ${species} vrst · odpri Atlas →` },
 });
 

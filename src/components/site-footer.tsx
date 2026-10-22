@@ -14,7 +14,7 @@ const COPY = defineCopy({
     sections: "Działy",
     contact: "Kontakt",
     links: [
-      ["/dziaders", "Dziaders — kto to?"],
+      ["/dziaders", "Dziaders — kto to jest?"],
       ["/profil", "Profil Dziaderski"],
       ["/rejestracja", "Załóż konto"],
       ["/o-instytucie", "O Instytucie"],

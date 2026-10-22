@@ -30,7 +30,7 @@ const COPY = defineCopy({
     today: "Dziś już zgłoszone. Kolejna obserwacja jutro.",
     log: "Dziennik",
     where: "Gdzie",
-    region: "Województwo (nieobowiązkowo)",
+    region: "Województwo (nieobowiązkowe)",
     sending: "Zgłaszam…",
     report: "Zgłoś obserwację",
     pitch: "Obserwacje zapisuje Profil Dziaderski, razem z kolekcją gatunków i odznakami. Logowanie przez e-mail, bez hasła.",

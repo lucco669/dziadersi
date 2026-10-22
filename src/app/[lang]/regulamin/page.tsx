@@ -43,7 +43,7 @@ const COPY = defineCopy<{
         id: "konto",
         title: "Profil Dziaderski",
         points: [
-          "Konto zakłada się, podając adres e-mail. Logowanie odbywa się przez link albo kod wysłany na ten adres; serwis nie używa haseł.",
+          "Konto zakłada się, podając adres e-mail. Logować się można hasłem, linkiem lub kodem wysłanym na ten adres albo przez Google.",
           "Konto jest osobiste. Nie zakładaj kont na cudze adresy e-mail.",
           "Konto można w każdej chwili usunąć w Profilu Dziaderskim. Usunięcie jest natychmiastowe i nieodwracalne.",
           "Pseudonim jest widoczny publicznie wyłącznie na Tablicy Honorowej i wyłącznie po zaznaczeniu tej zgody w Profilu. Pseudonim nie może naśladować cudzego imienia i nazwiska ani zawierać treści obraźliwych; Instytut może go usunąć z Tablicy bez uprzedzenia.",
@@ -112,7 +112,7 @@ const COPY = defineCopy<{
         id: "konto",
         title: "Dziaderski profil",
         points: [
-          "Račun odpreš z e-poštnim naslovom. Prijava poteka s povezavo ali kodo, poslano na ta naslov; stran ne uporablja gesel.",
+          "Račun odpreš z e-poštnim naslovom. Prijaviš se lahko z geslom, s povezavo ali kodo, poslano na ta naslov, ali prek Googla.",
           "Račun je oseben. Ne odpiraj računov na tuje e-poštne naslove.",
           "Račun lahko kadar koli izbrišeš v Dziaderskem profilu. Izbris je takojšen in nepovraten.",
           "Vzdevek je javno viden samo na Častni tabli in samo, če to soglasje označiš v profilu. Vzdevek ne sme posnemati imena in priimka druge osebe ali vsebovati žaljivih vsebin; Inštitut ga lahko brez opozorila odstrani s Table.",

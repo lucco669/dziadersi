@@ -114,3 +114,21 @@ Surowe wyniki (ignorowane przez Git) i skrypty kontroli są w katalogu roboczym 
 - Ponowić skan SEOMaster. Wyniki z 12 października (osierocone strony, błędy JS) należy zamknąć dopiero po nowym, pełnym skanie.
 - W Search Console: inspekcja `/dziaders` i `/sl/dziaders` z prośbą o indeksowanie, test `robots.txt`.
 - Rozważyć regułę zapory Vercel przepuszczającą zweryfikowane roboty i narzędzie audytu; challenge z 12 października fałszował wyniki audytu.
+
+## Eksport SEOMaster — 22 października 2026
+
+Eksport nie zawiera nowego skanu: ostatni pochodzi z 16 października (11:31), czyli zaraz po poprzedniej poprawce. Ostrzeżenia o 50 martwych linkach zewnętrznych i 50 przekierowaniach mają dowody z 15 października (linki udostępniania `x.com` i `facebook.com/sharer`, usunięte 16 października).
+
+| Ustalenie | Zmiana |
+| --- | --- |
+| robots.txt blokuje `/konto?dalej=%2Fprofil`, link ze strony głównej | `signInHref("/profil")` prowadzi do samego `/konto` (konto i tak wraca do profilu). Na stronie głównej nie ma już linku do adresu zablokowanego w robots.txt. |
+| Obraz bez `srcset` (zapowiedź „Króla grilla”) | Wersje 360, 600 i 900 px w `srcset`. Na telefonie z ekranem 2× obraz nie jest już powiększany z 360 px. |
+| LCP 3,1 s (laboratorium, telefon) | Bez zmian w kodzie. W śladzie PageSpeed sam dokument HTML kończy się po 2,5 s; elementem LCP jest nagłówek, a fonty są już ograniczone (bez preloadu kursywy, metryki zastępcze). Do potwierdzenia w danych terenowych (CrUX), gdy ruch będzie wystarczający. |
+| 84 strony noindex i linki do nich | Zamierzone (konto, profil, karty bingo, wypowiedzi, wyniki, wersje do druku). |
+| Brak CAA | Wymaga dostępu do DNS; zalecenie bez zmian (`@ 3600 IN CAA 0 issue "letsencrypt.org"` po sprawdzeniu wystawcy). |
+
+**Zapytania.** Narzędzie fraz SEOMaster wskazało pytania o znaczenie słowa z mierzalnym popytem: „boomer a dziaders” (50/mies.), „dziaders synonim” (40), „dziaders kobieta” (30), „pokolenie dziadersów” i „dziadersi jakie to pokolenie” (po 30), „dziaders po angielsku” (20). `/dziaders` i `/sl/dziaders` mają cztery nowe pytania (boomer, synonimy, angielski odpowiednik, pokolenie). Pytanie o kobiety brzmi teraz „Czy kobieta też może być dziadersem?”, a odpowiedź przyznaje, że słowo najczęściej trafia do mężczyzn. `FAQPage` obejmuje 10 pytań.
+
+**Korekta polszczyzny.** Przejrzano treści `src/content/` i polskie teksty interfejsu. Poprawiono między innymi: „niepytany”, „co sobotę”, „niczego nie potrzebuje”, „wpół do pierwszej”, „w sylwestra”, „nie tyle…, ile”, „mijają 3 lata”, małą literę w nazwach pojedynczych samochodów („passat”, „astra”), „Wpisana na wokandę”, „(nieobowiązkowe)”, jednolite „podpałka”, „Załóż Profil” i „Wykonaj test”. Uzgodniono sprzeczności: liczby „ja tylko zapytać” w Słowniku i raporcie, przebieg dwóch spraw Komisji oraz regulamin, który twierdził, że serwis nie używa haseł (oba wydania). Liczby spraw, gatunków i okazów odmieniają się przez `plural()`.
+
+**Weryfikacja:** `pnpm test` (80), `pnpm typecheck`, `pnpm lint`, `pnpm build` poprawne; `check-seo.mjs` na lokalnym buildzie produkcyjnym: 318 stron sitemap, 0 problemów. Przeglądarka: `/dziaders` i `/sl/dziaders` (10 pytań, bez przepełnienia przy 375 px), strona główna (link `/konto`, obraz 900w przy 2×).

@@ -72,14 +72,14 @@ export const PROVERBS: string[][] = [
   ],
   [
     "W czerwcu dzieci niosą świadectwa z paskiem, / a tata mówi, że jego pasek był szerszy, i mówi to z naciskiem.",
-    "W czerwcu wesela co sobota, / tata krawat na czoło wkłada, gdy przyjdzie ochota.",
+    "W czerwcu wesele w każdą sobotę, / tata krawat na czoło wkłada, gdy poczuje ochotę.",
     "Gdy w czerwcu mundial albo mistrzostwa Europy, / tata z kanapy strzela gole, aż drżą mu stopy.",
     "W czerwcu na działce wszystko rośnie, / tata mierzy cukinię i mówi o niej podniośle.",
     "Pod koniec czerwca zaczynają się wakacje, / tata już pakuje auto: ma na to swoje racje.",
     "W czerwcu komary nad wodą latają, / tata mówi, że go nie gryzą, bo komary tatę znają.",
     "Gdy w czerwcu upał, tata okna zamyka, / bo „ciepło wpada”, a zasłony to jego taktyka.",
     "Kto w czerwcu grilla codziennie rozpala, / ten w lipcu szczypiec dotknąć nie pozwala.",
-    "Na Dzień Ojca krawat albo skarpety: / tata mówi, że nic nie potrzebuje, i bierze, niestety.",
+    "Na Dzień Ojca krawat albo skarpety: / tata mówi, że niczego nie potrzebuje, i bierze, niestety.",
     "Czerwcowe truskawki liczy się co rano, / żeby było wiadomo, ile zjedzono.",
   ],
   [
@@ -128,7 +128,7 @@ export const PROVERBS: string[][] = [
     "Październik złoty, las kolorowy, / a tata już liczy dni do Wigilii, gotowy.",
     "W październiku deszcze i słoty, / tata w garażu naprawia, co się da, z braku innej roboty.",
     "W październiku wieczory długie i ciemne, / tata ogląda programy o pociągach: wszystkie przyjemne.",
-    "W październiku zbiera się kasztany, / tata robi z nich ludzika z wąsami, wyjątkowo udany.",
+    "W październiku zbiera się kasztany, / tata robi z nich ludzika z wąsami. Autoportret udany.",
   ],
   [
     "Listopad, liście, deszcz i opad, / a tata mówi: „Kiedyś to był listopad”.",
@@ -152,7 +152,7 @@ export const PROVERBS: string[][] = [
     "Gdy w grudniu Indeks dobija do klinicznego, / to znaczy, że rodzina zjeżdża do stołu wigilijnego.",
     "W grudniu kartki z życzeniami pisze się ręcznie, / tata pisze wszystkie tak samo: krótko, zwięźle i niezręcznie.",
     "Gdy w grudniu śnieg sypie całą noc, / tata o piątej odśnieża, bo ma w sobie moc.",
-    "W Sylwestra o północy tata strzela szampanem, / a o pół do pierwszej śpi w fotelu przed ekranem.",
+    "W sylwestra o północy tata strzela szampanem, / a o wpół do pierwszej śpi w fotelu przed ekranem.",
   ],
 ];
 
@@ -188,11 +188,11 @@ export const TIPS: string[] = [
   "Na wesele zabiera się kopertę i zeszyt. Koperta jest na prezent, zeszyt na koszty, długopis na wszelki wypadek.",
   "Kartka za wycieraczką powinna zawierać słowo „uprzejmie”. Bez niego to tylko kartka.",
   "Prąd oszczędza się wieczorem. Wystarczy jedna lampa, w pokoju z telewizorem, i telewizor.",
-  "Do grilla nie trzeba rozpałki w żelu. Wystarczy gazeta z zeszłego tygodnia, zapałki i godzina dyskusji.",
+  "Do grilla nie trzeba podpałki w żelu. Wystarczy gazeta z zeszłego tygodnia, zapałki i godzina dyskusji.",
   "Hydraulika wzywa się po trzeciej własnej naprawie. Wtedy przynajmniej wiadomo, czego nie robić.",
   "Aplikację w telefonie ustawia syn. Potem się jej nie rusza, żeby się nie rozstroiła.",
   "Przy promocji „druga sztuka gratis” kupuje się dwie sztuki. Trzecia też by się przydała, ale na trzecią nie ma promocji.",
-  "Zegarek w samochodzie można zostawić na czasie zimowym. Przez pół roku i tak pokazuje dobrze.",
+  "Zegar w samochodzie można zostawić na czasie zimowym. Przez pół roku i tak pokazuje dobrze.",
   "Szklanki po musztardzie są najtrwalsze w całym domu. Kryształy stoją w meblościance, szklanki po musztardzie pracują.",
   "Dywan odkurza się w sobotę, a trzepie raz w roku, na trzepaku. Trzepak to też mebel, tylko wspólny.",
   "Do urzędu dokumenty nosi się w koszulce foliowej. Urzędnik od razu widzi, że ma do czynienia z kimś przygotowanym.",
@@ -300,7 +300,7 @@ export const OBSERVANCES: { date: string; name: string; note: string }[] = [
   { date: "11-28", name: "Dzień Swetra Zamiast Kaloryfera", note: "Kaloryfer zostaje na dwójce. Swetry wydaje się z szafy, po jednym na domownika." },
   { date: "12-08", name: "Dzień Rozplątywania Lampek", note: "Lampki z zeszłego roku rozplątuje się w skupieniu. Trwa to do zmroku albo dłużej." },
   { date: "12-15", name: "Dzień Karpia w Wannie", note: "Kąpiel w łazience przenosi się na po świętach. Karp ma pierwszeństwo." },
-  { date: "12-30", name: "Dzień Planowania Sylwestra w Domu", note: "Plan jest prosty: telewizor, szampan o północy, sen o pół do pierwszej." },
+  { date: "12-30", name: "Dzień Planowania Sylwestra w Domu", note: "Plan jest prosty: telewizor, szampan o północy, sen o wpół do pierwszej." },
 ];
 
 /* Editions: the Polish calendar above with each edition's text laid over it. */

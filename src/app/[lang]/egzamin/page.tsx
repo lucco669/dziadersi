@@ -10,7 +10,7 @@ import { getLocale } from "@/i18n/server";
 import { encodeExam, evaluateExam, grades, SAMPLE_EXAM } from "@/lib/exam";
 import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
-import { typo } from "@/lib/typo";
+import { plural, typo } from "@/lib/typo";
 
 const COPY = defineCopy({
   pl: {
@@ -21,7 +21,7 @@ const COPY = defineCopy({
     shareDescription: "Dwanaście pytań z Atlasu Dziadersów. Rozpoznasz Parkingowego po wokalizacji?",
     level: "Obserwator terenowy",
     lead: "Egzamin na obserwatora terenowego Instytutu. Dwanaście pytań z oznaczania gatunków: po wokalizacji, rycinie, siedlisku, objawach, naturalnych wrogach i nazwie łacińskiej.",
-    meta: (species: number) => `12 pytań · ${species} gatunków w puli · każdy egzamin inny`,
+    meta: (species: number) => `12 pytań · ${species} ${plural(species, "gatunek", "gatunki", "gatunków")} w puli · każdy egzamin inny`,
     sheet: "Arkusz egzaminacyjny",
     form: "Formularz IBD-E1",
     scale: "Skala ocen",

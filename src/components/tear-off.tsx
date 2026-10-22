@@ -35,7 +35,7 @@ const COPY = defineCopy({
       `Kartka nr ${total} w kolekcji. Seria: ${streak} ${plural(streak, "dzień", "dni", "dni")} z rzędu${best > streak ? `, rekord: ${best}` : ""}.`,
     badge: (days: number) => `Do odznaki Zdzieraka brakuje ${days} ${plural(days, "dnia", "dni", "dni")}.`,
     guest: "Kolekcję zerwanych kartek, serię dni i odznakę Zdzieraka prowadzi Profil Dziaderski.",
-    join: "Załóż profil",
+    join: "Załóż Profil",
     next: "Następna kartka za",
     tornToday: "Dziś zerwało",
     people: (n: number) => `${n} ${plural(n, "osoba", "osoby", "osób")}`,

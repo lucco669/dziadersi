@@ -112,7 +112,7 @@ export const SPECIES: Species[] = [
     habitat: "Ogrody, działki i balkony z widokiem na cudzy grill. Sezonowo cała Polska.",
     activity: "Przejmowanie szczypiec. Ocenianie, jak inni rozpalają.",
     calls: ["Nie tak się rozpala.", "Karkówka musi swoje odstać."],
-    enemies: "Grill gazowy, rozpałka w żelu, gość, który przyniósł halloumi.",
+    enemies: "Grill gazowy, podpałka w żelu, gość, który przyniósł halloumi.",
     fieldMarks: "Fartuch z napisem. Szczypce trzymane w dłoni także z dala od rusztu.",
     traits: [
       { label: "Kontrola nad szczypcami", value: 97 },
@@ -439,7 +439,7 @@ export const SPECIES: Species[] = [
     ],
     symptoms: [
       "Porównuje swoje pomidory z pomidorami sąsiada. Na głos.",
-      "Doradza zza siatki, nie pytany o zdanie.",
+      "Doradza zza siatki, niepytany o zdanie.",
       "Ma altanę z 1983 roku i plan jej rozbudowy z tego samego roku.",
       "Słucha radia nastawionego na jedną stację od 1991 roku.",
       "Przywozi rodzinie cukinie w ilościach hurtowych.",
@@ -604,7 +604,7 @@ export const SPECIES: Species[] = [
     summary: "Gatunek leśny, aktywny we wrześniu i październiku. Zna miejsca od dzieciństwa i nie powie ich nikomu.",
     description: [
       "Dziaders Grzybiarski pojawia się w lesie przed świtem, w dniu po pierwszym porządnym deszczu. Porusza się szybko i bezszelestnie, a na pytania o drogę odpowiada wymijająco. Swoje stanowiska zna od dzieciństwa i chroni je skuteczniej niż niejedno państwo swoje granice.",
-      "Gatunek gardzi aplikacjami do rozpoznawania grzybów i atlasami, bo sam jest nieomylny, przynajmniej we własnej opinii. Po powrocie z lasu stawia koszyk w widocznym miejscu i czeka, aż ktoś zapyta. Na pytanie „Gdzie?” odpowiada „W lesie”.",
+      "Gatunek gardzi aplikacjami do rozpoznawania grzybów i atlasami, bo sam jest nieomylny, przynajmniej we własnym mniemaniu. Po powrocie z lasu stawia koszyk w widocznym miejscu i czeka, aż ktoś zapyta. Na pytanie „Gdzie?” odpowiada „W lesie”.",
     ],
     habitat: "Lasy Podlasia, ze szczególnym uwzględnieniem Puszczy Knyszyńskiej. Dokładne stanowiska objęte tajemnicą.",
     activity: "Zbieranie grzybów przed świtem. Ukrywanie miejsc. Porównywanie koszyków.",
@@ -1138,7 +1138,7 @@ export const SPECIES: Species[] = [
     summary:
       "Gatunek okazjonalny, aktywny przez jeden wieczór w roku. Liczy potrawy, opowiada o karpiu w wannie i zasypia przed telewizorem przy kolędach.",
     description: [
-      "Dziaders Wigilijny ujawnia się 24 grudnia, mniej więcej wtedy, gdy ktoś przy oknie ogłasza pierwszą gwiazdkę. Zanim usiądzie do stołu, przelicza potrawy. Zwykle wychodzi mu jedenaście: barszcz z uszkami liczy jako jedno danie, a kompotu z suszu nie uznaje za potrawę. Gdyby wyszło dwanaście, liczy jeszcze raz, inną metodą.",
+      "Dziaders Wigilijny ujawnia się 24 grudnia, mniej więcej wtedy, gdy ktoś przy oknie ogłasza pierwszą gwiazdkę. Zanim usiądzie do stołu, przelicza potrawy. Zwykle wychodzi mu jedenaście: barszcz z uszkami liczy jako jedno danie, a kompotu z suszu nie uznaje za potrawę. Jeśli wyjdzie dwanaście, liczy jeszcze raz, inną metodą.",
       "Przy rybie gatunek przechodzi do części wspomnieniowej. Co roku, tymi samymi słowami, opowiada o karpiu, który pływał w wannie trzy dni, więc nikt w domu nie mógł się wykąpać. Następnie objaśnia, jak należy kroić karpia w dzwonka, choć sam robił to ostatnio w 1998 roku. Po kolacji zajmuje fotel przed telewizorem i zasypia przy kolędach. Budzi się na makowiec i oświadcza, że nie spał.",
     ],
     habitat:
@@ -1324,7 +1324,7 @@ export const SPECIES: Species[] = [
     summary:
       "Gatunek okazjonalny, spotykany na kempingach od maja do września. Godzinę poziomuje przyczepę, a potem przez dwa tygodnie siedzi przed nią na składanym krześle.",
     description: [
-      "Dziaders Kempingowy przyjeżdża na kemping z przyczepą, którą ciągnie za samochodem od 1988 roku. Najczęściej jest to klasyczna przyczepa Niewiadów, odnawiana co zimę w garażu. Rozbicie obozu trwa całe popołudnie, a najwięcej czasu zajmuje poziomowanie. Gatunek kładzie poziomicę na podłodze przyczepy, podkłada pod koła deski i klocki, sprawdza, przestawia i sprawdza ponownie. Pęcherzyk musi stać dokładnie pośrodku. W tym czasie rodzina zdąża rozpakować samochód, zjeść kanapki i wrócić znad jeziora.",
+      "Dziaders Kempingowy przyjeżdża na kemping z przyczepą, którą ciągnie za samochodem od 1988 roku. Najczęściej jest to klasyczna przyczepa Niewiadów, odnawiana co zimę w garażu. Rozbicie obozu trwa całe popołudnie, a najwięcej czasu zajmuje poziomowanie. Gatunek kładzie poziomicę na podłodze przyczepy, podkłada pod koła deski i klocki, sprawdza, przestawia i sprawdza ponownie. Pęcherzyk musi stać dokładnie pośrodku. W tym czasie rodzina zdąży rozpakować samochód, zjeść kanapki i wrócić znad jeziora.",
       "Po wypoziomowaniu gatunek rozkłada przedsionek, stolik i składane krzesło, na którym spędza resztę urlopu. Obiad gotuje na dwupalnikowej kuchence gazowej, a każdą nowo przybyłą przyczepę ocenia przy cofaniu, najpierw w milczeniu, potem na głos. Kierownika kempingu zna po imieniu, a stałych bywalców po numerach parcel.",
     ],
     habitat: "Kempingi nad jeziorami Mazur i Kaszub oraz nad morzem. Zawsze ta sama parcela, zajmowana od 1993 roku.",

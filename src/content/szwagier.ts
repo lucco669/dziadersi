@@ -175,7 +175,7 @@ const TOPICS: Topic[] = [
     name: "Praca",
     cores: [
       "Pracę zmienia się raz w życiu. Najlepiej wcale.",
-      "Zebranie to rozmowa, po której wszyscy wiedzą mniej niż przed.",
+      "Zebranie to rozmowa, po której wszyscy wiedzą mniej niż przedtem.",
       "Do pracy przychodzi się kwadrans przed czasem. Szef może nie widzi, ale ja widzę.",
       "Praca zdalna to nie praca. Praca jest wtedy, jak się wraca zmęczonym.",
       "O podwyżkę się nie prosi. Czeka się, aż docenią. Ja czekam od dziewięćdziesiątego szóstego.",

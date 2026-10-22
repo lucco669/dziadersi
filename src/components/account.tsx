@@ -114,5 +114,6 @@ export function AccountSync() {
 /**
  * "Zaloguj się, a …": a sign-in link that returns to `next`. Both are internal paths: Link localises
  * the account page, and the account page localises `dalej` into the edition it is shown in.
+ * The profile is where the account page goes anyway, so that link stays the bare, crawlable `/konto`.
  */
-export const signInHref = (next: string) => `/konto?dalej=${encodeURIComponent(next)}`;
+export const signInHref = (next: string) => (next === "/profil" ? "/konto" : `/konto?dalej=${encodeURIComponent(next)}`);

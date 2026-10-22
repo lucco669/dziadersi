@@ -239,7 +239,7 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
     pronunciation: "izg. že pri okencu, s hrbtom proti vrsti",
     senses: [
       {
-        text: "Formula, ki omogoča obiti vrsto katere koli dolžine. Vprašanje traja povprečno enajst minut in se nanaša na tri opravke.",
+        text: "Formula, ki omogoča obiti vrsto katere koli dolžine. Vprašanje traja povprečno štiri minute in obsega 3,4 dodatnega vprašanja.",
       },
       { text: "Prepričanje, da vrsta velja za tiste, ki imajo opravek, ne pa za tiste, ki imajo vprašanje." },
     ],

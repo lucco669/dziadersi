@@ -21,7 +21,7 @@ const COPY = defineCopy({
     title: "Kto tu jest dziadersem?",
     lead: "Jeden link dla całej rodziny. Nowe wyniki pojawiają się na tej liście automatycznie.",
     note: (date: string) => `Każdy z linkiem może zobaczyć podpisy i wyniki oraz dołączyć. Ranking jest dostępny do ${date}.`,
-    join: "Zrób test i dołącz →",
+    join: "Wykonaj test i dołącz →",
     own: "Wykonaj własny test →",
     share: "Rodzinny ranking dziaderstwa. Zrób test i dołącz!",
     full: "Komplet osób. Instytut zamyka listę.",

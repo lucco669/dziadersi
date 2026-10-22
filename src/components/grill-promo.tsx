@@ -1,4 +1,4 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element -- responsive WebPs are encoded before deployment. */
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
@@ -10,5 +10,5 @@ const COPY = defineCopy({
 
 export function GrillPromo({ locale }: { locale: Locale }) {
   const t = COPY[locale];
-  return <section className="border-y border-ink bg-paper-deep" aria-labelledby="grill-promo"><div className="wrap grid items-center gap-6 py-10 md:grid-cols-12 md:py-12"><div className="md:col-span-7"><p className="label text-red-deep">{t.tag}</p><h2 id="grill-promo" className="mt-4 text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-none tracking-tight">{t.title}</h2><p className="mt-4 max-w-md text-xl leading-snug text-ink-soft">{t.text}</p><Link href="/krol-grilla" className="btn btn-ink mt-6">{t.play} <span aria-hidden="true">→</span></Link></div><Image src="/illustrations/grill/hero-360.webp" width={360} height={240} alt="" className="mx-auto h-auto w-full max-w-sm md:col-span-5" loading="lazy" /></div></section>;
+  return <section className="border-y border-ink bg-paper-deep" aria-labelledby="grill-promo"><div className="wrap grid items-center gap-6 py-10 md:grid-cols-12 md:py-12"><div className="md:col-span-7"><p className="label text-red-deep">{t.tag}</p><h2 id="grill-promo" className="mt-4 text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-none tracking-tight">{t.title}</h2><p className="mt-4 max-w-md text-xl leading-snug text-ink-soft">{t.text}</p><Link href="/krol-grilla" className="btn btn-ink mt-6">{t.play} <span aria-hidden="true">→</span></Link></div><img src="/illustrations/grill/hero-600.webp" srcSet="/illustrations/grill/hero-360.webp 360w, /illustrations/grill/hero-600.webp 600w, /illustrations/grill/hero.webp 900w" sizes="(max-width: 767px) min(100vw - 2.5rem, 24rem), 24rem" width={600} height={400} alt="" className="mx-auto h-auto w-full max-w-sm md:col-span-5" loading="lazy" decoding="async" /></div></section>;
 }

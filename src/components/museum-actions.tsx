@@ -13,7 +13,7 @@ const COPY = defineCopy({
     note: "Twoje zbiory są zapisane tylko w tej przeglądarce.",
     added: "Eksponat zachowany.",
     removed: "Eksponat usunięty ze zbiorów.",
-    count: (count: number, total: number) => "W Twoich zbiorach: " + count + " z " + total,
+    count: (count: number, total: number) => "W twoich zbiorach: " + count + " z " + total,
   },
   sl: {
     keep: "To bo še prišlo prav",

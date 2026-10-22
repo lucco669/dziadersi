@@ -41,7 +41,7 @@ const COPY = defineCopy({
     shareMore: (text: string) => `${text} Orzeka Komisja ${site.name}.`,
     copy: "Skopiuj link do sprawy:",
     profile: "Ławnicy z Profilem Dziaderskim mają orzeczenia w kartotece, a po dziesięciu sprawach odznakę.",
-    signUp: "Załóż profil",
+    signUp: "Załóż Profil",
     judged: (judged: number, total: number) => `Rozpatrzono ${judged} z ${total}`,
     docketNav: "Sprawy na wokandzie",
   },

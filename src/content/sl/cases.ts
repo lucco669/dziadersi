@@ -32,7 +32,7 @@ export const CASES: Record<number, Text<Case, "slug">> = {
     "title": "Skrbnik brez povabila",
     "facts": "Udeleženec, star 31 let, brez posvetovanja spreminja nastavitve telefonov družinskih članov in urnik ogrevanja. Po ugovoru nastavi geslo za nadzorno ploščo, da nihče ne bi pokvaril konfiguracije. Drugi člani gospodinjstva nova pravila spoznajo ob vrnitvi domov.",
     "defence": "Saj sem to naredil za vaše udobje.",
-    "opinion": "Komisija ugotavlja, da udobje enega skrbnika ni soglasje drugih uporabnikov. Sprememba gesla je težavo dostopa do nadzorne plošče rešila z odpravo dostopa. Starost Udeleženca ne vpliva na razvrstitev."
+    "opinion": "Komisija ugotavlja, da udobje enega skrbnika ni soglasje drugih uporabnikov. Nastavitev gesla je težavo dostopa do nadzorne plošče rešila z odpravo dostopa. Starost Udeleženca ne vpliva na razvrstitev."
   },
   "32": {
     "title": "Leta 2014 to ni delovalo",
@@ -49,7 +49,7 @@ export const CASES: Record<number, Text<Case, "slug">> = {
   "34": {
     "title": "Klešče prevzete s soglasjem",
     "facts": "Udeleženec, star 33 let, osebo ob žaru vpraša, ali potrebuje pomoč. Po soglasju za nekaj minut prevzame klešče in jih vrne, ko se gostitelj vrne. Ne spremeni položaja rešetke ali družinskega recepta.",
-    "defence": "Vprašali so, ali lahko popazim. Pa sem popazil.",
+    "defence": "Vprašal sem, ali naj popazim. Rekli so ja, pa sem popazil.",
     "opinion": "Komisija ne ugotavlja dziaderstva. Ugotavlja pomoč, dogovorjeno z zainteresirano osebo. Klešče so se vrnile lastniku, kar je zabeleženo kot posebej ugodna okoliščina."
   },
   "35": {

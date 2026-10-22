@@ -65,14 +65,34 @@ export const GUIDE: Guide = {
         "Powstało od „dziad” z żartobliwą, angielsko brzmiącą końcówką „-ers”. W liczbie mnogiej: dziadersi. Od niego pochodzi „dziaderstwo”, nazwa całego zjawiska.",
     },
     {
+      question: "Czym różni się dziaders od boomera?",
+      answer:
+        "„Boomer” to określenie pokoleniowe: pochodzi od angielskiego „baby boomer”, czyli osoby z powojennego wyżu demograficznego (urodzonej mniej więcej w latach 1946–1964), i rozpowszechniło się w odzywce „OK boomer”. „Dziaders” nie wskazuje rocznika, tylko postawę: pouczanie, nieomylność i przekonanie, że dawniej było lepiej. Boomer nie musi być dziadersem, a dziadersem można zostać przed trzydziestką.",
+    },
+    {
+      question: "Jakie są synonimy słowa „dziaders”?",
+      answer:
+        "Dokładnego synonimu nie ma. Najbliżej leżą „wszystkowiedzący”, „mądrala” i „zgred”. „Boomer” bywa używany zamiennie, choć mówi o pokoleniu, a nie o zachowaniu. Słowo „dziad”, od którego pochodzi „dziaders”, jest ostrzejsze i bardziej obraźliwe.",
+    },
+    {
+      question: "Jak jest „dziaders” po angielsku?",
+      answer:
+        "Nie ma jednego odpowiednika. Sens oddają opisowo „know-it-all” (wszystkowiedzący) albo „condescending old-timer”. Najbliższy potoczny odpowiednik to „boomer” w znaczeniu znanym z „OK boomer”, choć ono dotyczy pokolenia. Instytut w żadnym wydaniu nie tłumaczy tego słowa.",
+    },
+    {
+      question: "Czy dziadersi to pokolenie?",
+      answer:
+        "Nie. W przeciwieństwie do pokoleń X, Y (milenialsów) czy Z dziadersów nie wyznacza rok urodzenia. Słowo najczęściej trafia do starszych osób, ale opisuje sposób prowadzenia rozmowy, a ten można przejąć w każdym wieku.",
+    },
+    {
       question: "Czy każdy tata albo dziadek jest dziadersem?",
       answer:
         "Nie. Pokrewieństwo i wiek nie opisują tych nawyków. Wspólny grill też nie wystarcza; istotne jest to, czy przy grillu pozostaje miejsce na cudze zdanie.",
     },
     {
-      question: "Czy dziaderstwo dotyczy tylko mężczyzn?",
+      question: "Czy kobieta też może być dziadersem?",
       answer:
-        "Nie. Atlas przedstawia kobiety i mężczyzn w różnym wieku pod wspólnymi nazwami gatunków. O klasyfikacji decydują pouczanie, przekonanie o nieomylności i odrzucanie cudzych rozwiązań, a nie płeć ani data urodzenia.",
+        "Tak. Słowo ma rodzaj męski i najczęściej trafia do mężczyzn, ale Atlas przedstawia kobiety i mężczyzn w różnym wieku pod wspólnymi nazwami gatunków. O klasyfikacji decydują pouczanie, przekonanie o nieomylności i odrzucanie cudzych rozwiązań, a nie płeć ani data urodzenia.",
     },
     {
       question: "Jak sprawdzić, czy sam jestem dziadersem?",

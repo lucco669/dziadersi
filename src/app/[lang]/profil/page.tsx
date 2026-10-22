@@ -29,7 +29,7 @@ const COPY = defineCopy({
     lead: "Kartoteka badań, kolekcja gatunków, dziennik obserwacji terenowych, zakładki i odznaki Instytutu.",
     loading: "Instytut wyszukuje kartotekę…",
     closed: "Profile są chwilowo nieczynne.",
-    status: { nowe: "W rozpatrzeniu", przyjete: "Przyjęta do wokandy", odrzucone: "Umorzona" } as Record<string, string>,
+    status: { nowe: "W rozpatrzeniu", przyjete: "Wpisana na wokandę", odrzucone: "Umorzona" } as Record<string, string>,
     savedNotice: {
       rozmowki: "Wypowiedź dopisana do zakładek.",
       bingo: "Karta bingo dopisana do zakładek.",
@@ -72,7 +72,7 @@ const COPY = defineCopy({
       title: "Dziennik obserwacji",
       aside: (observed: number, total: number) => `${observed} z ${total} ${plural(total, "gatunku", "gatunków", "gatunków")}`,
       intro:
-        "Obserwacje terenowe zgłasza się na stronie gatunku w Atlasie, przyciskiem „Widziałem” przy karcie gatunku. Jedna obserwacja gatunku dziennie. Wesela i Wigilia się liczą.",
+        "Obserwacje terenowe zgłasza się na stronie gatunku w Atlasie, przyciskiem „Zgłoś obserwację” przy karcie gatunku. Jedna obserwacja gatunku dziennie. Wesela i Wigilia się liczą.",
       /** The plate caption: the name without the genus word, and the count. */
       plate: (name: string, count: number) => `${name.replace("Dziaders ", "")} ×${count}`,
       latest: "Ostatnie zgłoszenia",

@@ -34,7 +34,7 @@ const COPY = defineCopy({
     privacy: "Polityka prywatności", terms: "Regulamin", contact: "Pomoc w sprawie konta",
     faqTitle: "Przed podejściem do okienka",
     faq: [
-      { question: "Czy konto jest płatne?", answer: "Nie. Założenie i korzystanie z Profilu Dziaderskiego są bezpłatne. Przy rejestracji nie podajesz danych karty płatniczej." },
+      { question: "Czy konto jest płatne?", answer: "Nie. Założenie Profilu Dziaderskiego i korzystanie z niego są bezpłatne. Przy rejestracji nie podajesz danych karty płatniczej." },
       { question: "Czy muszę mieć konto, żeby wykonać test?", answer: "Nie. Test wykonasz i pobierzesz certyfikat bez logowania. Konto przydaje się, jeśli chcesz zachować wyniki i prowadzić swoją kartotekę." },
       { question: "Czy mogę korzystać bez hasła?", answer: "Tak. Wybierz link z e-maila albo Google. Przy pierwszym poprawnym logowaniu w ten sposób powstaje konto. Zawsze korzystaj z tego samego adresu e-mail." },
       { question: "Co z wynikiem zrobionym przed rejestracją?", answer: "Otwórz link do tego wyniku i wybierz zapisanie w Profilu Dziaderskim. Po zalogowaniu wynik trafi do kartoteki. Samo utworzenie konta nie przenosi wcześniejszych wyników." },

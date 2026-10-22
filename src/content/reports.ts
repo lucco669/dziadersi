@@ -329,7 +329,7 @@ export const REPORTS: Report[] = [
       {
         heading: "Dyskusja",
         paragraphs: [
-          "Skarpeta pełni funkcję nie tyle odzieżową, co tożsamościową. Jej biel sygnalizuje czystość intencji, a frotte gotowość na każde warunki. Zjawisko jest w pełni odporne na krytykę, modę i dane meteorologiczne.",
+          "Skarpeta pełni funkcję nie tyle odzieżową, ile tożsamościową. Jej biel sygnalizuje czystość intencji, a frotte gotowość na każde warunki. Zjawisko jest w pełni odporne na krytykę, modę i dane meteorologiczne.",
         ],
       },
     ],
@@ -410,7 +410,7 @@ export const REPORTS: Report[] = [
     date: "2026-04-08",
     category: "Badanie podłużne",
     title: "Od „zaraz to naprawię” do wezwania fachowca. Badanie podłużne",
-    lede: "Od zapowiedzi „zaraz to naprawię” do wezwania fachowca mija średnio 3 lata i 2 miesiące. W 41% przypadków fachowcem okazuje się szwagier.",
+    lede: "Od zapowiedzi „zaraz to naprawię” do wezwania fachowca mijają średnio 3 lata i 2 miesiące. W 41% przypadków fachowcem okazuje się szwagier.",
     sample: "318 usterek w 204 gospodarstwach domowych, obserwowanych od 2019 roku",
     abstract:
       "Instytut przez siedem lat śledził losy 318 domowych usterek zgłoszonych słowami „zaraz to naprawię”. Średni czas do wezwania fachowca wyniósł 3 lata i 2 miesiące. Ani jedna usterka nie została naprawiona w ciągu zapowiedzianego „zaraz”. W 41% przypadków fachowcem okazał się szwagier.",
@@ -510,7 +510,7 @@ export const REPORTS: Report[] = [
         heading: "Wyniki",
         paragraphs: [
           "Przeznaczenia 61% kabli nie ustalili ani właściciele, ani badacze. Kolejne 17% to ładowarki do telefonów, których w gospodarstwie już nie ma. 19% respondentów twierdziło, że wie, do czego służy dany kabel, „ale nie będzie teraz szukać”.",
-          "Na pytanie, czy można wyrzucić którykolwiek z kabli, wszyscy respondenci odpowiedzieli „To się jeszcze przyda”. Odpowiedź padała średnio po 1,2 sekundy, co wskazuje na odruch, a nie na namysł.",
+          "Na pytanie, czy można wyrzucić którykolwiek z kabli, wszyscy respondenci odpowiedzieli: „To się jeszcze przyda”. Odpowiedź padała średnio po 1,2 sekundy, co wskazuje na odruch, a nie na namysł.",
         ],
       },
       {

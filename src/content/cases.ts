@@ -450,7 +450,7 @@ export const CASES: Case[] = [
     "category": "technologia",
     "facts": "Uczestnik, lat 31, zmienia ustawienia telefonów domowników i harmonogram ogrzewania bez konsultacji. Po sprzeciwie zakłada hasło do panelu, żeby nikt nie popsuł konfiguracji. Pozostali domownicy poznają nowe zasady po powrocie do domu.",
     "defence": "Przecież zrobiłem to dla waszej wygody.",
-    "opinion": "Komisja uznaje, że wygoda jednego administratora nie stanowi zgody pozostałych użytkowników. Zmiana hasła rozwiązała problem dostępu do panelu przez usunięcie dostępu. Wiek Uczestnika nie wpływa na kwalifikację.",
+    "opinion": "Komisja uznaje, że wygoda jednego administratora nie stanowi zgody pozostałych użytkowników. Założenie hasła rozwiązało problem dostępu do panelu przez usunięcie dostępu. Wiek Uczestnika nie wpływa na kwalifikację.",
     "expert": "tak",
     "species": [
       "smart"
@@ -489,7 +489,7 @@ export const CASES: Case[] = [
     "title": "Szczypce przejęte za zgodą",
     "category": "rodzina",
     "facts": "Uczestnik, lat 33, pyta osobę przy grillu, czy potrzebuje pomocy. Po otrzymaniu zgody przejmuje szczypce na kilka minut i oddaje je, gdy gospodarz wraca. Nie zmienia ustawienia rusztu ani rodzinnego przepisu.",
-    "defence": "Zapytali, czy mogę przypilnować. To przypilnowałem.",
+    "defence": "Zapytałem, czy przypilnować. Zgodzili się, to przypilnowałem.",
     "opinion": "Komisja nie stwierdza dziaderstwa. Stwierdza pomoc uzgodnioną z zainteresowaną osobą. Szczypce wróciły do właściciela, co odnotowano jako okoliczność szczególnie korzystną.",
     "expert": "nie",
     "species": [

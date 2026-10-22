@@ -17,7 +17,7 @@ const COPY = defineCopy({
     title: "Czy to już dziaderstwo?",
     section: "Komisja Orzekająca",
     description: (cases: number) =>
-      `Czy to już dziaderstwo? Komisja Orzekająca rozpatruje ${cases} spraw z życia wziętych. Głosuj jako ławnik i przeczytaj uzasadnienie Komisji.`,
+      `Czy to już dziaderstwo? Komisja Orzekająca rozpatruje ${cases} ${plural(cases, "sprawę", "sprawy", "spraw")} z życia wziętych. Głosuj jako ławnik i przeczytaj uzasadnienie Komisji.`,
     shareDescription: "Sprawy z życia wzięte. Orzekasz jako ławnik, Komisja uzasadnia.",
     rules: [
       "Ławnik orzeka raz w każdej sprawie. Zmiana zdania po głosowaniu jest możliwa wyłącznie przy rodzinnym stole.",

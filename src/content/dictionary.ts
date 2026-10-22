@@ -326,7 +326,7 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. już przy okienku, plecami do kolejki",
     senses: [
       {
-        text: "Formuła, która pozwala ominąć kolejkę dowolnej długości. Pytanie trwa średnio jedenaście minut i dotyczy trzech spraw.",
+        text: "Formuła, która pozwala ominąć kolejkę dowolnej długości. Pytanie trwa średnio cztery minuty i obejmuje 3,4 pytania dodatkowego.",
       },
       {
         text: "Przekonanie, że kolejka obowiązuje tych, którzy mają sprawę, a nie tych, którzy mają pytanie.",
@@ -389,7 +389,7 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z pauzą, którą słuchacz ma wypełnić sam",
     senses: [
       {
-        text: "Wstęp do porównania, którego wynik jest znany z góry. Wiedza mówiącego o Niemczech pochodzi z trzech sezonów na szparagach i jednego Passata.",
+        text: "Wstęp do porównania, którego wynik jest znany z góry. Wiedza mówiącego o Niemczech pochodzi z trzech sezonów na szparagach i jednego passata.",
       },
       { text: "Wzór porządku, który obowiązuje wszystkich z wyjątkiem mówiącego.", figurative: true },
     ],
@@ -586,7 +586,7 @@ export const DICTIONARY: Entry[] = [
       },
       { text: "Wszczęcie postępowania wyjaśniającego, zamykanego zwykle przed kolacją." },
     ],
-    example: "Srebrna Astra, rejestracja nie nasza. A to do kogo?",
+    example: "Srebrna astra, rejestracja nie nasza. A to do kogo?",
     exampleNote: "Sprawę zamknięto o 18:40. Do tych z trzeciego, co mają remont.",
     seeAlso: ["ja tam w oknie nie siedzę", "kto to tak zaparkował?"],
     species: "parapetowy",

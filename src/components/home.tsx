@@ -52,7 +52,7 @@ const COPY = defineCopy({
     caseTitle: "Sprawa dnia",
     commission: "Komisja Orzekająca",
     casePosition: (number: number, total: number) => `Sprawa ${number} z ${total}`,
-    docket: (total: number) => `Cała wokanda: ${total} spraw`,
+    docket: (total: number) => `Cała wokanda: ${total} ${plural(total, "sprawa", "sprawy", "spraw")}`,
     shelf: "Słownik, raporty i kalendarz",
     word: "Hasło dnia · Słownik Dziaderski",
     dictionaryAll: (count: number) => `Cały słownik: ${count} ${plural(count, "hasło", "hasła", "haseł")}`,

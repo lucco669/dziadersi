@@ -11,7 +11,7 @@ import Link from "@/i18n/link";
 import { getLocale } from "@/i18n/server";
 import { getCommunity } from "@/lib/community";
 import { absoluteUrl, describe, institute, pageMetadata } from "@/lib/seo";
-import { pluralSl, typo } from "@/lib/typo";
+import { plural, pluralSl, typo } from "@/lib/typo";
 
 const COPY = defineCopy({
   pl: {
@@ -23,7 +23,7 @@ const COPY = defineCopy({
     case: (number: string) => `Sprawa ${number}`,
     position: (number: number, total: number) => `Sprawa ${number} z ${total}`,
     species: "Gatunki w aktach sprawy",
-    all: (total: number) => `Cała wokanda: ${total} spraw`,
+    all: (total: number) => `Cała wokanda: ${total} ${plural(total, "sprawa", "sprawy", "spraw")}`,
     pager: "Sąsiednie sprawy",
     promoTitle: "Komisja orzeka o innych. Test o tobie.",
     promoText: "Pięć gabinetów, około czterech minut. Wynik, rozpoznanie gatunku i certyfikat.",

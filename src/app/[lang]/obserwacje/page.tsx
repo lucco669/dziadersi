@@ -22,7 +22,7 @@ const COPY = defineCopy({
     country: "Polska",
     lead: "Gdzie widziano dziadersa. Zgłoszenia obserwatorów terenowych z Profilem Dziaderskim, według województw, dla wszystkich gatunków albo jednego.",
     meta: (total: number, species: number) =>
-      `${formatNumber("pl", total)} ${plural(total, "zgłoszenie", "zgłoszenia", "zgłoszeń")} · ${species} gatunków w Atlasie · 16 województw`,
+      `${formatNumber("pl", total)} ${plural(total, "zgłoszenie", "zgłoszenia", "zgłoszeń")} · ${species} ${plural(species, "gatunek", "gatunki", "gatunków")} w Atlasie · 16 województw`,
     map: "Zgłoszenia według województw",
     network: "Sieć Obserwatorów Terenowych IBD",
     promoTitle: "Obserwujesz innych? Zbadaj siebie.",
