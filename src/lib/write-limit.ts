@@ -17,11 +17,18 @@ const LIMITS: Record<Scope, number> = {
   "auth-mail": 10,
 };
 
-/** Vercel overwrites this header. Never trust a caller-provided forwarding header elsewhere. */
+/**
+ * The caller's address. In production the site is reachable only through Cloudflare (a tunnel
+ * to the home server, no open port), and Cloudflare overwrites cf-connecting-ip on every
+ * request, so it can't be forged. On Vercel the same holds for x-vercel-forwarded-for. Never
+ * trust a caller-provided forwarding header elsewhere.
+ */
 export function networkKey(requestHeaders: Pick<Headers, "get">, scope: Scope) {
-  const address = process.env.VERCEL === "1"
-    ? requestHeaders.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "unknown"
-    : "local";
+  const cloudflare = requestHeaders.get("cf-connecting-ip")?.trim();
+  const address = cloudflare
+    || (process.env.VERCEL === "1"
+      ? requestHeaders.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "unknown"
+      : "local");
   const day = new Date().toISOString().slice(0, 10);
   return createHmac("sha256", process.env.SUPABASE_SECRET_KEY || "local-development")
     .update(`${scope}:${day}:${address}`).digest("hex");

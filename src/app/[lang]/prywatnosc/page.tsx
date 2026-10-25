@@ -81,7 +81,7 @@ const COPY = defineCopy<{
         id: "dostawcy",
         title: "Kto jeszcze ma dostęp",
         paragraphs: [
-          "Supabase przechowuje bazę danych i obsługuje logowanie, na serwerach w Unii Europejskiej. Vercel utrzymuje serwis i liczy odwiedziny bez plików cookie. Brevo wysyła wiadomości e-mail. Każdy z nich przetwarza dane wyłącznie na zlecenie Instytutu. Jeśli dane trafiają przy tym poza Europejski Obszar Gospodarczy, dzieje się to na podstawie standardowych klauzul umownych Komisji Europejskiej.",
+          "Supabase przechowuje bazę danych i obsługuje logowanie, na serwerach w Unii Europejskiej. Serwis działa na naszym własnym serwerze i dociera do Ciebie przez Cloudflare; odwiedziny liczy bez plików cookie Umami na tym samym serwerze, nie zapisując adresów IP. Brevo wysyła wiadomości e-mail. Każdy z nich przetwarza dane wyłącznie na zlecenie Instytutu. Jeśli dane trafiają przy tym poza Europejski Obszar Gospodarczy, dzieje się to na podstawie standardowych klauzul umownych Komisji Europejskiej.",
         ],
       },
       {
@@ -164,7 +164,7 @@ const COPY = defineCopy<{
         id: "dostawcy",
         title: "Kdo še ima dostop",
         paragraphs: [
-          "Supabase hrani podatkovno zbirko in skrbi za prijavo, na strežnikih v Evropski uniji. Vercel gosti stran in šteje obiske brez piškotkov. Brevo pošilja e-pošto. Vsak od njih obdeluje podatke izključno po naročilu Inštituta. Če pri tem podatki zapustijo Evropski gospodarski prostor, se to zgodi na podlagi standardnih pogodbenih klavzul Evropske komisije.",
+          "Supabase hrani podatkovno zbirko in skrbi za prijavo, na strežnikih v Evropski uniji. Stran teče na našem lastnem strežniku in do vas pride prek Cloudflare; obiske brez piškotkov šteje Umami na istem strežniku in ne shranjuje naslovov IP. Brevo pošilja e-pošto. Vsak od njih obdeluje podatke izključno po naročilu Inštituta. Če pri tem podatki zapustijo Evropski gospodarski prostor, se to zgodi na podlagi standardnih pogodbenih klavzul Evropske komisije.",
         ],
       },
       {

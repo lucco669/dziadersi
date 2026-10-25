@@ -11,15 +11,16 @@ const imageAssets = ["./assets/fonts/*.ttf", "./assets/illustrations/species/*.p
 
 /**
  * Pages are prerendered, so scripts can't carry a per-request nonce:
- * inline scripts (the React payload) stay allowed, everything else is same-origin.
+ * inline scripts (the React payload) stay allowed, everything else is same-origin except Umami
+ * on stats.szram.uk.
  */
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}${toolbar ? " https://vercel.live" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://stats.szram.uk${isDev ? " 'unsafe-eval'" : ""}${toolbar ? " https://vercel.live" : ""}`,
   `style-src 'self' 'unsafe-inline'${toolbar ? " https://vercel.live" : ""}`,
   `img-src 'self' data: blob:${toolbar ? " https://vercel.live https://vercel.com" : ""}`,
   `font-src 'self'${toolbar ? " https://vercel.live https://assets.vercel.com" : ""}`,
-  `connect-src 'self'${toolbar ? " https://vercel.live wss://ws-us3.pusher.com" : ""}`,
+  `connect-src 'self' https://stats.szram.uk${toolbar ? " https://vercel.live wss://ws-us3.pusher.com" : ""}`,
   `frame-src ${toolbar ? "https://vercel.live" : "'none'"}`,
   "object-src 'none'",
   "base-uri 'self'",

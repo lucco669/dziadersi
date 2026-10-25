@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 

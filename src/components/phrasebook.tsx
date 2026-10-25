@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 import { useRef, useState, useSyncExternalStore } from "react";
 import { getSituations, SITUATIONS } from "@/content/phrasebook";
 import { useLocale } from "@/i18n/client";

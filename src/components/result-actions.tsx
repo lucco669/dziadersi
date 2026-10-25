@@ -1,7 +1,7 @@
 "use client";
 import { ResultSpecimenChoice } from "./result-specimen-choice";
 
-import { track } from "@vercel/analytics";
+import { track } from "@/lib/analytics";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 import { useLocale } from "@/i18n/client";

@@ -36,7 +36,7 @@ async function editionOf(admin: Admin, id: string): Promise<Locale> {
 }
 
 /**
- * The weekly bulletin, sent by Vercel Cron (vercel.json) on Monday morning.
+ * The weekly bulletin, sent by a Coolify scheduled task (0 6 * * 1) on Monday morning.
  * Authorised with CRON_SECRET; one issue per week (bulletin_issues), so a retry never sends twice.
  * Each subscriber gets the issue of their edition, with links into it.
  * In development, ?podglad shows the letter in the browser; &jezyk=sl in Slovenian.
