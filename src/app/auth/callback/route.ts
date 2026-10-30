@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { DEFAULT_LOCALE, hasLocale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routes";
 import { rememberEdition, safeNext } from "@/lib/account";
@@ -7,7 +8,8 @@ import { createClient } from "@/lib/supabase/server";
 
 /** Exchange an OAuth or email authorization code using the PKCE verifier in this browser's cookies. */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
+  const origin = requestOrigin(request);
   const lang = searchParams.get("jezyk");
   const locale = hasLocale(lang) ? lang : DEFAULT_LOCALE;
   const next = safeNext(searchParams.get("dalej"), localizePath("/profil", locale));

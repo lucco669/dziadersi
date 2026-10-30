@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { hasLocale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routes";
 import { signInPath } from "@/lib/account";
@@ -9,13 +10,13 @@ import { decodeResult, encodeResult } from "@/lib/test";
 export async function GET(request: NextRequest, { params }: RouteContext<"/[lang]/profil/zapisz/[kod]">) {
   const { lang, kod } = await params;
   if (!hasLocale(lang)) return new Response(null, { status: 404 });
-  const at = (path: string) => new URL(localizePath(path, lang), request.url);
+  const at = (path: string) => new URL(localizePath(path, lang), requestOrigin(request));
   const draft = decodeResult(decodeURIComponent(kod));
   if (!draft) return NextResponse.redirect(at("/profil"));
   const code = encodeResult(draft);
 
   const { supabase, user } = await currentUser();
-  if (!user) return NextResponse.redirect(new URL(signInPath(`/profil/zapisz/${code}`, lang), request.url));
+  if (!user) return NextResponse.redirect(new URL(signInPath(`/profil/zapisz/${code}`, lang), requestOrigin(request)));
 
   await supabase.from("saved_results").upsert({ user_id: user.id, code }, { onConflict: "user_id,code", ignoreDuplicates: true });
   return NextResponse.redirect(at("/profil?zapisano=1#kartoteka"));

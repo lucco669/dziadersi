@@ -1,5 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { localizePath, parsePath } from "@/i18n/routes";
 import { passwordResetPath, rememberEdition, safeNext } from "@/lib/account";
 import { hasAuth } from "@/lib/supabase/config";
@@ -11,7 +12,8 @@ import { createClient } from "@/lib/supabase/server";
  * where the reader goes back to if the link has expired.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
+  const origin = requestOrigin(request);
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const next = safeNext(searchParams.get("dalej"));

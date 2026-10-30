@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { DEFAULT_LOCALE, hasLocale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routes";
 import { verifyUnsubscribe } from "@/lib/newsletter";
@@ -21,5 +22,5 @@ export function GET(request: NextRequest) {
   const lang = params.get("jezyk");
   const locale = hasLocale(lang) ? lang : DEFAULT_LOCALE;
   const query = new URLSearchParams({ u: params.get("u") ?? "", t: params.get("t") ?? "" });
-  return Response.redirect(new URL(`${localizePath("/biuletyn/wypisz", locale)}?${query}`, request.nextUrl.origin), 303);
+  return Response.redirect(new URL(`${localizePath("/biuletyn/wypisz", locale)}?${query}`, requestOrigin(request)), 303);
 }

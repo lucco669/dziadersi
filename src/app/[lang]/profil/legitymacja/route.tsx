@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { hasLocale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { signInPath } from "@/lib/account";
@@ -42,6 +43,6 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/[lang
   }
 
   const { supabase, user } = await currentUser();
-  if (!user) return NextResponse.redirect(new URL(signInPath("/profil#legitymacja", lang), request.url));
+  if (!user) return NextResponse.redirect(new URL(signInPath("/profil#legitymacja", lang), requestOrigin(request)));
   return idCardImage(buildProfile(await loadRecords(supabase, user), lang), user.id, formatDate(lang, new Date()), headers, lang);
 }

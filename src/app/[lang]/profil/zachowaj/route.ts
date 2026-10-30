@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { requestOrigin } from "@/lib/request-origin";
 import { hasLocale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routes";
 import { signInPath } from "@/lib/account";
@@ -9,7 +10,7 @@ import { currentUser } from "@/lib/supabase/server";
 export async function GET(request: NextRequest, { params }: RouteContext<"/[lang]/profil/zachowaj">) {
   const { lang } = await params;
   if (!hasLocale(lang)) return new Response(null, { status: 404 });
-  const at = (path: string) => new URL(localizePath(path, lang), request.url);
+  const at = (path: string) => new URL(localizePath(path, lang), requestOrigin(request));
   const search = request.nextUrl.searchParams;
   const item = bookmarkCode(search.get("rodzaj"), search.get("kod"));
   if (!item) return NextResponse.redirect(at("/profil"));
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/[lang
   const { supabase, user } = await currentUser();
   if (!user) {
     const back = `/profil/zachowaj?rodzaj=${item.kind}&kod=${encodeURIComponent(item.code)}`;
-    return NextResponse.redirect(new URL(signInPath(back, lang), request.url));
+    return NextResponse.redirect(new URL(signInPath(back, lang), requestOrigin(request)));
   }
 
   await supabase.from("saved_items").upsert({ user_id: user.id, ...item }, { onConflict: "user_id,kind,code", ignoreDuplicates: true });
