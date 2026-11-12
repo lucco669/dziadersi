@@ -81,9 +81,9 @@ export function LanguageSwitch({ className }: { className?: string }) {
         {LOCALES.map((target, i) => {
           const current = target === locale;
           return (
-            <li key={target} className={cx("items-center", current ? "hidden lg:flex" : "flex")}>
+            <li key={target} className={cx("items-center", current ? "hidden xl:flex" : "flex")}>
               {i > 0 && (
-                <span aria-hidden="true" className="hidden px-1 text-ink-faint lg:inline">
+                <span aria-hidden="true" className="hidden px-1 text-ink-faint xl:inline">
                   /
                 </span>
               )}
@@ -98,8 +98,8 @@ export function LanguageSwitch({ className }: { className?: string }) {
                 className={cx(
                   "relative px-1.5 py-2 transition-colors",
                   current ? "text-ink" : "text-ink-soft hover:text-red",
-                  // Below lg the other edition is a small bordered tab next to the test button.
-                  !current && "max-lg:border max-lg:border-ink max-lg:px-2 max-lg:py-1 max-lg:text-ink",
+                  // Below xl (with the sheet menu) the other edition is a small bordered tab next to the test button.
+                  !current && "max-xl:border max-xl:border-ink max-xl:px-2 max-xl:py-1 max-xl:text-ink",
                 )}
               >
                 <span className="sr-only">{LOCALE_INFO[target].name}: </span>

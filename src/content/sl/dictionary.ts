@@ -22,6 +22,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   panie: {
     headword: "ja, veš …",
     grammar: "uvodni medmet",
+    usage:
+      "»Ja, veš …« je pogovorni uvod, ki napove pritožbo ali razlago s področja, na katerem se govorec čuti strokovnjaka. Zveni kot vzdih in kupi čas za premislek. V poljskem izvirniku je to »panie…«, ogovor neznanega moškega, ki ga je slišati v avtomehanični delavnici, na tržnici in na gradbišču.",
     pronunciation: "izg. z vzdihom, ki mu sledi premor",
     senses: [
       {
@@ -33,6 +35,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "za-moich-czasow": {
     headword: "v mojih časih",
     grammar: "predložna zveza, časovna enota",
+    usage:
+      "Zveza uvede primerjavo sedanjosti z govorčevo mladostjo, skoraj vedno v škodo sedanjosti. Pade v pogovorih o cenah, delu, šoli in vzgoji otrok. Natančen datum se v njej le redko pojavi: »moji časi« so navadno leta, ko je imel govorec od petnajst do trideset let.",
     pronunciation: "izg. s poudarkom na »mojih«",
     senses: [
       { text: "Obdobje z nedoločenimi mejami, v katerem je bilo vse cenejše, trpežnejše in poštenejše." },
@@ -43,6 +47,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "kiedys-to-byly-zimy": {
     headword: "včasih so bile prave zime",
     grammar: "meteorološki stavek",
+    usage:
+      "Rek pomeni, da so bile zime nekoč hladnejše in bolj zasnežene kot danes. Pade ob vsaki odjugi, v pogovorih o vremenu in ob spominih na otroštvo. Podnebni podatki res kažejo, da so zime milejše, a stavek ne temelji na podatkih, temveč na spominu.",
     pronunciation: "izg. ne glede na letni čas",
     senses: [
       {
@@ -68,6 +74,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "nie-ruszaj-mam-to-poustawiane": {
     headword: "pusti, imam nastavljeno",
     grammar: "varovalna formula",
+    usage:
+      "»Nastavljeno« pomeni urejeno po svoje: programi, glasnost, naslanjač ali ogledala so nastavljeni in vsaka sprememba grozi, da se ta ureditev izgubi. Zveza je prošnja, naj nihče ničesar ne premika, izrečena hitreje, kot se je kdor koli česa dotaknil. Pogosto velja za nastavitve, ki jih govorec sam ne bi znal ponoviti.",
     pronunciation: "izg. hitro, z roko, iztegnjeno proti daljincu",
     senses: [{ text: "Prepoved, ki velja za daljinec, televizor, naslanjač in ogledala v avtu." }],
     example: "Pusti daljinec, imam nastavljeno.",
@@ -83,6 +91,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "tego-juz-teraz-nie-robia": {
     headword: "tega več ne delajo",
     grammar: "povedni stavek, nostalgični",
+    usage:
+      "Zveza izraža prepričanje, da so bili nekdanji predmeti trpežnejši in trdnejši od današnjih. Pade ob starih avtomobilih, orodju, pohištvu in gospodinjskih aparatih, pogosto s trkanjem po ohišju. Včasih drži, saj so mnoge stare stvari preživele, a pozabi na tiste, ki so se pokvarile in so že zdavnaj na odpadu.",
     pronunciation: "izg. z dlanjo na karoseriji",
     senses: [
       { text: "Ocena predmeta, izdelanega pred letom 2004. Vedno pozitivna." },
@@ -93,6 +103,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "diesel-to-jest-diesel": {
     headword: "dizel je dizel",
     grammar: "avtomobilska tavtologija",
+    usage:
+      "Tavtologija, ki pomeni, da je dizelski motor po definiciji najboljša izbira: varčen, trpežen in »vleče«. Pade v sporih o pogonu, zlasti ko kdo omeni bencin, hibrid ali električni avto. Ne vsebuje argumenta, le njegovo napoved; pogovor se nato navadno nadaljuje s porabo na avtocesti in z legendarnim motorjem 1.9 TDI.",
     pronunciation: "izg. v tonu, ki zaključi razpravo",
     senses: [
       { text: "Argument, ki odloči vsak spor o avtomobilih. Ne potrebuje utemeljitve, ker je sam utemeljitev." },
@@ -126,6 +138,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "kiedys-to-sie-pracowalo": {
     headword: "včasih se je garalo",
     grammar: "spominski stavek",
+    usage:
+      "Zveza postavlja nekdanje težko fizično delo nasproti današnjemu, ki se govorcu zdi lažje: pisarniškemu, delu od doma ali »za računalnikom«. Pade v pogovorih o mlajši generaciji in dopustih. Navadno ne gre za število ur, temveč za to, ali se delo vidi: utrujenost za pisalno mizo se ne šteje v delovno dobo.",
     pronunciation: "izg. med odmorom za kavo",
     senses: [{ text: "Trditev, da je bilo delo nekoč težje, daljše in bolj resnično kot danes." }],
     example: "Včasih se je garalo, ne pa ta vaš home office.",
@@ -133,6 +147,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "zrobmy-calla": {
     headword: "dajmo en call",
     grammar: "korporativni izraz",
+    usage:
+      "»Call« je izposojenka iz angleščine za telefonski ali video klic, najpogosteje službeni. »Dajmo en call« torej pomeni »pogovorimo se na spletnem sestanku«. Zveza spada v korporativni jezik, ob »sestanek o sestanku«, »feedback« in »asap«; v Slovar pride zaradi dziadersa, ki jo rad uporablja, zapiske pa še vedno tiska.",
     pronunciation: "izg. tik pred sklicem sestanka v živo",
     senses: [{ text: "Predlog pogovora, po katerem se zapisnik vseeno natisne." }],
     example: "Dajmo en call. Ali pa raje skoči do mene.",
@@ -140,6 +156,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "pozdrawiam-serdecznie": {
     headword: "lep pozdrav",
     grammar: "sklepna formula",
+    usage:
+      "»Lep pozdrav« je vljudnostna formula, s katero se konča pismo, e-pošta ali sporočilo. V službeni korespondenci velja za vljudno in nevtralno. V kratkem sporočilu v klepetu, zlasti za besedo »ok«, pa zveni zelo uradno, včasih celo hladno. V poljskem izvirniku je to »pozdrawiam serdecznie«, dobesedno »prisrčno pozdravljam«.",
     pronunciation: "izg. s piko na koncu",
     senses: [{ text: "Zaključek vsakega sporočila, tudi sporočila v klepetu z vsebino »ok«." }],
     example: "Ok. Lep pozdrav.",
@@ -199,6 +217,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "zgas-swiatlo-prad-nie-jest-za-darmo": {
     headword: "ugasni luč, elektrika ni zastonj",
     grammar: "opomin",
+    usage:
+      "Opomin, naj ugašamo luč, ko zapustimo sobo, ker elektrika stane. Spada v domači kanon varčevanja, ob zapiranju vode in hladilnika. Nasvet je razumen; dziaderski postane zaradi tempa, s katerim se izreka, in zato, ker velja za vse razen za televizor, ki igra v prazni dnevni sobi.",
     pronunciation: "izg. iz druge sobe",
     senses: [{ text: "Sporočilo, izrečeno, ko član gospodinjstva zapusti sobo za dlje kot štiri sekunde." }],
     example: "Kam greš? Ugasni luč, elektrika ni zastonj.",
@@ -206,6 +226,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "rzuce-wszystko-i-wyjade-w-bieszczady": {
     headword: "vse bom pustil in šel past ovce",
     grammar: "izjava",
+    usage:
+      "Zveza pomeni: dovolj imam obveznosti in sanjam o preprostem življenju daleč od ljudi. Navadno je šala ali vzdih po napornem dnevu, ne pa načrt z datumom odhoda. Poljski izvirnik omenja Bieszczade, gorovje na jugovzhodu Poljske, ki je že desetletja simbol pobega iz mesta.",
     pronunciation: "izg. po drugem pivu",
     senses: [{ text: "Življenjski načrt, ki ga uresniči manj kot odstotek tistih, ki ga napovejo." }],
     example: "Še eno leto v tej firmi, potem pa bom vse pustil in šel past ovce¹.",
@@ -216,6 +238,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "wnuczek-mi-to-ustawil": {
     headword: "vnukec mi je to nastavil",
     grammar: "tehnološko pojasnilo",
+    usage:
+      "Zveza pojasni, da je napravo nastavil mlajši družinski član, zato govorec ne odgovarja za njeno delovanje in ničesar ne namerava spreminjati. Velja za telefone, televizorje, usmerjevalnike in bančne aplikacije. Je tudi prošnja: če nekaj preneha delovati, lahko to popravi le isti vnukec.",
     pronunciation: "izg. z nemočnim nasmehom",
     senses: [
       { text: "Formula, ki govorca odvezuje odgovornosti za delovanje katere koli elektronske naprave v hiši." },
@@ -236,6 +260,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "ja-tylko-zapytac": {
     headword: "jaz bi samo vprašal",
     grammar: "pogojnik prednosti",
+    usage:
+      "Formula, s katero kdo stopi do okenca mimo vrste, ker ima »samo vprašanje«. Predpostavlja, da bo vprašanje trajalo trenutek in ne zahteva čakanja. V praksi se pogosto prelevi v urejanje cele zadeve, kar v vrsti sproži glasno »Vi pa niste bili v vrsti!«.",
     pronunciation: "izg. že pri okencu, s hrbtom proti vrsti",
     senses: [
       {
@@ -292,6 +318,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "oryginal-niemiecki": {
     headword: "original, iz Nemčije",
     grammar: "potrdilo o poreklu",
+    usage:
+      "Zveza poudari, da predmet prihaja iz Nemčije, kar na trgu rabljenih stvari že dolgo velja za jamstvo kakovosti. Pade pri prodaji avtomobilov, delov, orodja in čistil. Namiguje, da je stvar boljša od domače, tudi če je bila izdelana drugje, v Nemčiji pa le kupljena.",
     pronunciation: "izg. z eno roko na srcu, z drugo na pokrovu motorja",
     senses: [
       {
@@ -332,6 +360,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "ja-bym-to-strzelil": {
     headword: "jaz bi to zabil",
     grammar: "pogojni stavek, nepreverljiv",
+    usage:
+      "Navijaški komentar, ki pomeni, da je igralec zapravil lahko priložnost, ki bi jo govorec zagotovo izkoristil. Pade pred televizorjem, med tekmo ali takoj po njej. V širšem smislu velja za vsako tujo odločitev, ocenjeno z udobnega položaja: s kavča je vse preprostejše, kot je bilo na igrišču.",
     pronunciation: "izg. s kavča, med ponovnim posnetkom",
     senses: [
       {
@@ -358,6 +388,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "cicho-bo-ryby-sploszysz": {
     headword: "tiho, ribe boš splašil",
     grammar: "zapoved tišine, enostranska",
+    usage:
+      "Ribiški opomin, naj ne govorimo in ne delamo hrupa, ker hrup prežene ribe. Ribiči se prepirajo, koliko ribe slišijo pogovor na bregu, a topotanje po pomolu in udarci ob čoln jih lahko splašijo. V Slovar pride zaradi dziadersa, ker prepoved velja za vse razen za tistega, ki jo razglasi.",
     pronunciation: "izg. s šepetom, ki se sliši na drugem bregu",
     senses: [
       { text: "Prepoved pogovora, ki na pomolu velja za vse razen za govorca." },
@@ -369,6 +401,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "a-gdzie-jest-pilot": {
     headword: "kje je pa daljinec?",
     grammar: "prijava pogrešanja",
+    usage:
+      "Vprašanje o izgubljenem daljincu, zastavljeno vsem v hiši hkrati. Navadno pade tik pred pomembno oddajo in preden vprašalec preišče najbližjo okolico: žepe, naslanjač in kavč. V mnogih družinah je obred, ki mu sledi skupno prekopavanje blazin in ugotavljanje, kdo je zadnji gledal.",
     pronunciation: "izg. iz naslanjača, brez vstajanja",
     senses: [
       {
@@ -394,6 +428,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "pusc-pan-cos-normalnego": {
     headword: "šef, daj kaj normalnega",
     grammar: "velelnik, vljudnostni",
+    usage:
+      "Prošnja didžeju, šoferju ali prodajalcu, naj zamenja glasbo za takšno, ki jo govorec pozna in ima rad. »Normalno« navadno pomeni uspešnice izpred let, »nenormalno« pa vse, kar je izšlo pozneje. Ogovor »šef« je značilen za svatbe, taksije in družinska praznovanja.",
     pronunciation: "izg. didžeju, s komolcem na mešalni mizi",
     senses: [
       {
@@ -432,6 +468,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "a-to-do-kogo": {
     headword: "h komu je pa ta prišel?",
     grammar: "evidenčno vprašanje",
+    usage:
+      "Vprašanje, h komu je prišel neznani avto ali obiskovalec, ki ga zastavi sosed, ki pozna vse avtomobile na ulici. Izraža radovednost, včasih budnost, in spada v repertoar blokovskih naselij in vasi. Odgovor je le redko potreben: vprašalec ga navadno ugotovi sam, ko opazuje, pred katerim vhodom je gost parkiral.",
     pronunciation: "izg. izza zavese, s komolci na blazini",
     senses: [
       {
@@ -492,6 +530,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "wyslalem-ci-maila": {
     headword: "poslal sem ti mejl",
     grammar: "telefonsko obvestilo o pošiljki",
+    usage:
+      "Zveza pomeni telefonsko opozorilo, da je bilo pravkar poslano elektronsko sporočilo. Izhaja iz previdnosti do e-pošte: govorec želi biti prepričan, da je sporočilo prispelo in bo prebrano. V službi je pri nujnih zadevah lahko smiselna; dziaderska postane, ko spremlja vsak mejl, tudi tistega z vsebino »v priponki«.",
     pronunciation: "izg. v slušalko, dve minuti po pošiljanju",
     senses: [
       { text: "Telefonsko obvestilo o poslanem elektronskem sporočilu." },
@@ -514,6 +554,8 @@ export const DICTIONARY_SL: Record<string, Text<Entry, "slug" | "seeAlso" | "ori
   "w-gazetce-bylo-taniej": {
     headword: "v letaku je bilo ceneje",
     grammar: "ustna reklamacija",
+    usage:
+      "»Letak« je akcijski katalog trgovine s cenami za tekoči teden. Zveza je reklamacija pri blagajni: cena na računu se ne ujema s tisto iz akcije. Včasih je upravičena, saj do razlik prihaja, pogosto pa se izkaže, da je akcija veljala za drugo pakiranje, za imetnike kartice zvestobe ali se je končala včeraj.",
     pronunciation: "izg. pri blagajni, z letakom, razprostrtim na tekočem traku",
     senses: [
       {

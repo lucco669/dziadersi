@@ -17,6 +17,8 @@ test("Polish paths are public as they are; Slovenian ones get /sl and Slovenian 
   assert.equal(localizePath("/wynik/2abc/certyfikat?format=post", "sl"), "/sl/izvid/2abc/certifikat?format=post");
   assert.equal(localizePath("/profil/zapisz/2abc", "sl"), "/sl/profil/shrani/2abc");
   assert.equal(localizePath("/czy-to-juz-dziaderstwo#wokanda", "sl"), "/sl/je-to-ze-dziaderstvo#wokanda");
+  assert.equal(localizePath("/dziaders/kobieta", "sl"), "/sl/dziaders/zenska");
+  assert.equal(parsePath("/sl/dziaders/zenska").path, "/dziaders/kobieta");
   assert.equal(localizePath("/test?grupa=a.b", "sl"), "/sl/test?grupa=a.b");
   // Already public, external and API paths pass through.
   assert.equal(localizePath("/sl/slovar/x", "sl"), "/sl/slovar/x");
@@ -94,6 +96,9 @@ test("the routed form of the Slovenian edition redirects to its public address, 
   assert.equal(redirect("/sl/czy-to-juz-dziaderstwo/klucze-w-zamku"), "/sl/je-to-ze-dziaderstvo/klucze-w-zamku");
   assert.equal(redirect("/sl/wynik/2abc/certyfikat"), "/sl/izvid/2abc/certyfikat");
   assert.equal(redirect("/sl/slownik/ja-ves/opengraph-image"), null);
+  assert.equal(redirect("/sl/dziaders/kobieta"), "/sl/dziaders/zenska");
+  assert.equal(redirect("/sl/dziaders/kobieta/opengraph-image"), null);
+  assert.equal(redirect("/sl/dziaders/zenska"), null);
   // Public addresses and sections with the same word in both editions stay where they are.
   assert.equal(redirect("/sl/slovar/ja-ves"), null);
   assert.equal(redirect("/sl/atlas/zarni-dziaders"), null);
@@ -144,6 +149,11 @@ test("every content module has a complete Slovenian translation", async () => {
   assert.equal(szwagier.getSzwagier("sl").topics.length, szwagier.SZWAGIER.topics.length);
   assert.equal(species.getSpecies("sl").length, species.SPECIES.length);
   assert.equal(dictionary.getDictionary("sl").length, dictionary.DICTIONARY.length);
+  // Optional text falls back to Polish silently, so plain meanings are checked one by one.
+  dictionary.getDictionary("sl").forEach((entry, i) => {
+    const polish = dictionary.DICTIONARY[i].usage;
+    if (polish) assert.ok(entry.usage && entry.usage !== polish, `usage: ${entry.slug}`);
+  });
   assert.equal(reports.getReports("sl").length, reports.REPORTS.length);
   assert.equal(test2.getTasks("sl").length, test2.TASKS.length);
   assert.equal(cases.getCases("sl").length, cases.CASES.length);

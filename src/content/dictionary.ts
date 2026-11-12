@@ -13,6 +13,8 @@ export type Entry = {
   senses: { text: string; figurative?: boolean }[];
   example: string;
   exampleNote?: string;
+  /** What the phrase means outside the Institute, in plain words: for readers who search for its meaning. */
+  usage?: string;
   /** Other headwords, spelled exactly as in this file. In the Slovenian edition: the Slovenian headwords of those entries. */
   seeAlso: string[];
   /** The Atlas species this phrase is typical of. */
@@ -49,6 +51,8 @@ export const DICTIONARY: Entry[] = [
       },
     ],
     example: "Panie… to już nie ta stal.",
+    usage:
+      "„Panie” to wołacz od „pan”, używany potocznie jako zwrot do mężczyzny, którego imienia się nie zna. Na początku zdania działa jak westchnienie: zapowiada narzekanie albo wykład z dziedziny, w której mówiący czuje się ekspertem. Typowe miejsca: warsztat samochodowy, targ, budowa i kolejka do kasy.",
     seeAlso: ["za moich czasów", "ile pan za to dał?", "tego już teraz nie robią"],
   },
   {
@@ -61,6 +65,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Argument kończący dyskusję, niezależnie od jej tematu.", figurative: true },
     ],
     example: "Za moich czasów bułka kosztowała dwadzieścia groszy i była większa.",
+    usage:
+      "Zwrot wprowadza porównanie teraźniejszości z młodością mówiącego, prawie zawsze na niekorzyść teraźniejszości. Pada w rozmowach o cenach, pracy, szkole i wychowaniu dzieci. Konkretna data rzadko się w nim pojawia: „moje czasy” to zwykle lata, w których mówiący miał od kilkunastu do trzydziestu lat.",
     seeAlso: ["kiedyś to były zimy", "panie…", "kiedyś to się pracowało"],
   },
   {
@@ -74,6 +80,8 @@ export const DICTIONARY: Entry[] = [
       },
     ],
     example: "Kiedyś to były zimy. Do szkoły pięć kilometrów pod górę. W obie strony.",
+    usage:
+      "Powiedzenie oznacza, że dawniej zimy były mroźniejsze i bardziej śnieżne niż dziś. Pada przy każdej odwilży, w rozmowach o pogodzie i przy wspomnieniach z dzieciństwa. Dane klimatyczne rzeczywiście pokazują, że zimy łagodnieją, ale zdanie nie opiera się na danych, tylko na pamięci.",
     seeAlso: ["za moich czasów", "będzie padać, czuję w kolanie"],
     species: "meteorologiczny",
   },
@@ -104,6 +112,8 @@ export const DICTIONARY: Entry[] = [
     senses: [{ text: "Zakaz dotyczący pilota, telewizora, fotela i lusterek w samochodzie." }],
     example: "Nie ruszaj tego pilota, mam to poustawiane.",
     exampleNote: "Ustawiony jest jeden kanał.",
+    usage:
+      "„Poustawiane” znaczy „ustawione po swojemu”: kanały, głośność, fotel albo lusterka zostały skonfigurowane i każda zmiana grozi utratą tego układu. Zwrot jest prośbą, żeby niczego nie przestawiać, zwykle wypowiadaną szybciej, niż ktokolwiek zdążył czegoś dotknąć. Często dotyczy ustawień, których mówiący sam nie potrafiłby odtworzyć.",
     seeAlso: ["ja nie potrzebuję instrukcji", "wnuczek mi to ustawił"],
     species: "smart",
   },
@@ -127,6 +137,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Ukryta ocena wszystkiego, co wyprodukowano później." },
     ],
     example: "Panie, to jest blacha. Tego już teraz nie robią.",
+    usage:
+      "Zwrot wyraża przekonanie, że dawne przedmioty były trwalsze i solidniejsze niż obecne. Pada przy starych samochodach, narzędziach, meblach i sprzęcie AGD, często z poklepaniem obudowy. Bywa trafny, bo wiele starych rzeczy przetrwało, ale pomija te, które się zepsuły i dawno trafiły na złom.",
     seeAlso: ["panie…", "diesel to jest diesel"],
     species: "moto",
   },
@@ -139,6 +151,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Argument rozstrzygający każdy spór o samochody. Nie wymaga uzasadnienia, bo sam jest uzasadnieniem." },
     ],
     example: "Elektryk? A zasięg? A zimą? Diesel to jest diesel.",
+    usage:
+      "Tautologia oznaczająca, że silnik wysokoprężny jest z definicji najlepszym wyborem: oszczędny, trwały i „ciągnie”. Pada w sporach o napęd, zwłaszcza gdy ktoś wspomni o benzynie, hybrydzie albo samochodzie elektrycznym. Nie zawiera argumentu, tylko jego zapowiedź; dalsza rozmowa zwykle dotyczy spalania w trasie i legendarnego silnika 1.9 TDI.",
     seeAlso: ["tego już teraz nie robią", "a ile pali?"],
     species: "moto",
   },
@@ -182,6 +196,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. w trakcie przerwy na kawę",
     senses: [{ text: "Twierdzenie, że praca w dawnych czasach była cięższa, dłuższa i bardziej prawdziwa niż obecnie." }],
     example: "Kiedyś to się pracowało, a nie home office.",
+    usage:
+      "Zwrot przeciwstawia dawną, ciężką pracę fizyczną obecnej, którą mówiący uważa za łatwiejszą: biurowej, zdalnej albo „przy komputerze”. Pada w rozmowach o młodszym pokoleniu, urlopach i pracy z domu. Zwykle nie chodzi w nim o liczbę godzin, tylko o to, czy pracę widać: zmęczenie przy biurku nie liczy się do stażu.",
     seeAlso: ["za moich czasów", "zróbmy calla", "rzucę wszystko i wyjadę w Bieszczady"],
     species: "korpo",
   },
@@ -192,6 +208,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. tuż przed zwołaniem spotkania na żywo",
     senses: [{ text: "Propozycja rozmowy, po której i tak zostanie wydrukowana notatka." }],
     example: "Zróbmy calla. Albo lepiej wpadnij do mnie.",
+    usage:
+      "„Call” to zapożyczenie z angielskiego oznaczające rozmowę telefoniczną albo wideorozmowę, najczęściej służbową. „Zróbmy calla” znaczy więc „porozmawiajmy na spotkaniu online”. Zwrot należy do języka korporacyjnego, obok „spotkania o spotkaniu”, „feedbacku” i „asapa”; do Słownika trafia przez dziadersa, który używa go chętnie, ale wciąż drukuje notatki.",
     seeAlso: ["pozdrawiam serdecznie", "kiedyś to się pracowało"],
     species: "korpo",
   },
@@ -202,6 +220,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z kropką na końcu",
     senses: [{ text: "Zamknięcie każdej wiadomości, w tym wiadomości na czacie o treści „ok”." }],
     example: "Ok. Pozdrawiam serdecznie.",
+    usage:
+      "„Pozdrawiam serdecznie” to grzecznościowa formuła kończąca list, e-mail albo wiadomość. Znaczy tyle co „przesyłam życzliwe pozdrowienia” i jest cieplejsza od samego „pozdrawiam”. W korespondencji służbowej uchodzi za uprzejmą i neutralną. W krótkiej wiadomości na czacie, zwłaszcza po słowie „ok”, brzmi już bardzo oficjalnie, a czasem chłodno.",
     seeAlso: ["zróbmy calla"],
     species: "korpo",
   },
@@ -280,6 +300,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z drugiego pokoju",
     senses: [{ text: "Komunikat wygłaszany, gdy domownik opuścił pokój na dłużej niż cztery sekundy." }],
     example: "Gdzie idziesz? Zgaś światło, prąd nie jest za darmo.",
+    usage:
+      "Upomnienie, żeby wyłączać światło po wyjściu z pokoju, bo prąd kosztuje. Należy do domowego kanonu oszczędzania obok zakręcania wody i zamykania lodówki. Sama rada jest rozsądna; dziaderskie staje się tempo jej wydawania i to, że obowiązuje wszystkich poza telewizorem, który gra w pustym salonie.",
     seeAlso: ["to się jeszcze przyda"],
     species: "oszczednosciowy",
   },
@@ -290,6 +312,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. po drugim piwie",
     senses: [{ text: "Plan życiowy realizowany przez mniej niż jeden procent deklarujących." }],
     example: "Jeszcze rok w tej firmie, a potem rzucę wszystko i wyjadę w Bieszczady.",
+    usage:
+      "„Rzucę wszystko i wyjadę w Bieszczady” znaczy: mam dość obowiązków i marzę o prostym życiu z dala od ludzi. Bieszczady to góry w południowo-wschodniej Polsce, od dziesięcioleci symbol ucieczki od miasta i pracy. Zwrot jest zwykle żartem albo westchnieniem po ciężkim dniu, a nie planem z datą wyjazdu.",
     seeAlso: ["kiedyś to się pracowało"],
     species: "bieszczadzki",
   },
@@ -302,6 +326,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Formuła zwalniająca z odpowiedzialności za działanie każdego urządzenia elektronicznego w domu." },
     ],
     example: "Nie wiem, czemu gra. Wnuczek mi to ustawił.",
+    usage:
+      "Zwrot wyjaśnia, że urządzenie skonfigurowała młodsza osoba z rodziny, więc mówiący nie odpowiada za jego działanie i nie zamierza niczego zmieniać. Dotyczy telefonów, telewizorów, routerów i aplikacji bankowych. Bywa też prośbą: jeśli coś przestało działać, naprawić to może tylko ten sam wnuczek.",
     seeAlso: ["nie ruszaj, mam to poustawiane"],
     species: "smart",
   },
@@ -335,6 +361,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Przepraszam, ja tylko zapytać. I od razu nadam paczkę.",
     exampleNote: "Paczek było pięć. Każda za pobraniem.",
+    usage:
+      "Skrót od „ja chciałem tylko zapytać”: formuła, z którą ktoś podchodzi do okienka bez stania w kolejce, bo ma „tylko pytanie”. Zakłada, że pytanie zajmie chwilę i nie wymaga czekania. W praktyce często przechodzi w załatwienie całej sprawy, co w kolejce wywołuje głośne „pan tu nie stał”.",
     seeAlso: ["ja tu stałem", "może by tak drugą kasę otworzyli?"],
     species: "kolejkowy",
   },
@@ -414,6 +442,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Golf czwórka, rocznik 2003. Oryginał, niemiecki. Niemiec płakał, jak sprzedawał.",
     exampleNote: "Przebieg: 186 tysięcy kilometrów, według licznika i sprzedającego.",
+    usage:
+      "Zwrot podkreśla, że przedmiot pochodzi z Niemiec, co w polskim handlu używanymi rzeczami od lat uchodzi za gwarancję jakości. Pada przy sprzedaży samochodów, części, narzędzi i chemii gospodarczej. Ma sugerować, że rzecz jest lepsza od krajowej, nawet jeśli wyprodukowano ją gdzie indziej, a w Niemczech tylko ją kupiono.",
     seeAlso: ["w Niemczech to by…", "tego już teraz nie robią", "diesel to jest diesel"],
     species: "moto",
   },
@@ -467,6 +497,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Z pięciu metrów, na pustą bramkę? Ja bym to strzelił.",
     exampleNote: "Ostatni udokumentowany strzał mówiącego, oddany w 1982 roku, trafił w okno sąsiada z parteru.",
+    usage:
+      "Komentarz kibica oznaczający, że piłkarz zmarnował łatwą sytuację, którą mówiący na pewno by wykorzystał. Pada przed telewizorem, w trakcie meczu albo tuż po nim. Szerzej odnosi się do każdej cudzej decyzji ocenianej z wygodnej pozycji: z kanapy wszystko jest prostsze, niż było na boisku.",
     seeAlso: ["sędzia kalosz", "a gdzie jest pilot?"],
     species: "kibicowski",
   },
@@ -500,6 +532,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Cicho, bo ryby spłoszysz. A wiesz, jakiego szczupaka tu wyciągnąłem w osiemdziesiątym szóstym?",
     exampleNote: "Opowieść trwała czterdzieści minut. Nie brały.",
+    usage:
+      "Wędkarskie upomnienie, żeby nie rozmawiać i nie hałasować, bo hałas odstrasza ryby. Wędkarze spierają się, na ile ryby słyszą rozmowę na brzegu, ale tupanie po pomoście i stukanie o łódź mogą je płoszyć. Do Słownika zwrot trafia przez dziadersa, bo zakaz obowiązuje wszystkich poza osobą, która go ogłasza.",
     seeAlso: ["dziś nie brały", "taka była"],
     species: "wedka",
   },
@@ -516,6 +550,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Zaraz będą wiadomości. A gdzie jest pilot? Kto ruszał pilota?",
     exampleNote: "Pilota znaleziono po dwudziestu minutach, pod mówiącym.",
+    usage:
+      "Pytanie o zaginiony pilot do telewizora, zadawane całemu domowi naraz. Zwykle pada tuż przed ważnym programem i zanim pytający przeszuka najbliższe otoczenie: kieszenie, fotel i kanapę. W wielu rodzinach jest rytuałem, po którym następuje wspólne przetrząsanie poduszek i ustalanie, kto ostatni oglądał.",
     seeAlso: ["nie ruszaj, mam to poustawiane", "znowu puszczają Kevina", "mówili w telewizji"],
   },
   {
@@ -545,6 +581,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Panie, co to jest? Puść pan coś normalnego.",
     exampleNote: "Zamówienie zrealizowano. Mówiący tańczył bez przerwy do oczepin.",
+    usage:
+      "Prośba do DJ-a, kierowcy albo sprzedawcy o zmianę muzyki na taką, którą mówiący zna i lubi. „Normalne” oznacza zwykle przeboje sprzed lat, a „nienormalne” wszystko, co wydano później. Forma „puść pan” łączy grzecznościowe „pan” z potocznym trybem rozkazującym i jest typowa dla wesel, taksówek i imprez rodzinnych.",
     seeAlso: ["dobrze karmili", "za moich czasów"],
     species: "weselny",
   },
@@ -588,6 +626,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Srebrna astra, rejestracja nie nasza. A to do kogo?",
     exampleNote: "Sprawę zamknięto o 18:40. Do tych z trzeciego, co mają remont.",
+    usage:
+      "Pytanie, do kogo przyjechał nieznany samochód albo gość, zadawane przez sąsiada, który zna wszystkie auta na ulicy. Wyraża ciekawość, czasem czujność, i należy do repertuaru osiedli, bloków i wsi. Odpowiedź rzadko jest potrzebna: pytający zwykle ustala ją sam, obserwując, pod którą klatką gość zaparkował.",
     seeAlso: ["ja tam w oknie nie siedzę", "kto to tak zaparkował?"],
     species: "parapetowy",
   },
@@ -661,6 +701,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Halo? Wysłałem ci maila. Sprawdź, czy doszedł.",
     exampleNote: "Mail zawierał prośbę o telefon.",
+    usage:
+      "Zwrot oznacza telefoniczne uprzedzenie, że właśnie wysłano wiadomość e-mail. Wynika z ostrożności wobec poczty elektronicznej: mówiący chce mieć pewność, że wiadomość dotarła i zostanie przeczytana. W pracy bywa rozsądny przy pilnych sprawach; dziaderski staje się wtedy, gdy towarzyszy każdemu mailowi, łącznie z tym o treści „w załączniku”.",
     seeAlso: ["pozdrawiam serdecznie", "zróbmy calla"],
     species: "korpo",
   },
@@ -690,6 +732,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Proszę pani, w gazetce było taniej. Po trzy dziewięćdziesiąt dziewięć.",
     exampleNote: "Gazetka dotyczyła następnego tygodnia. Mówiący wrócił w poniedziałek.",
+    usage:
+      "„Gazetka” to potoczna nazwa ulotki promocyjnej sklepu z cenami na dany tydzień. Zwrot jest reklamacją przy kasie: cena na paragonie nie zgadza się z tą z promocji. Bywa słuszny, bo różnice się zdarzają, ale często okazuje się, że promocja dotyczyła innej gramatury, karty lojalnościowej albo skończyła się wczoraj.",
     seeAlso: ["ile pan za to dał?", "może by tak drugą kasę otworzyli?", "umawialiśmy się, że bez prezentów"],
     species: "oszczednosciowy",
   },

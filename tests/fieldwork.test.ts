@@ -72,7 +72,7 @@ test("every new publication has a unique translated slug and reciprocal sitemap 
       }
     }
   }
-  for (const path of ["/dziaders", "/do-druku", "/okazje", "/muzeum"]) {
+  for (const path of ["/dziaders", "/dziaders/kobieta", "/do-druku", "/okazje", "/muzeum"]) {
     for (const locale of ["pl", "sl"] as const)
       assert.ok(
         entries.some((entry) => entry.url === site.url + localizePath(path, locale)),

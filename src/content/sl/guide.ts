@@ -41,6 +41,25 @@ export const GUIDE_TEXT: Text<Guide> = {
       text: "Vprašanje, ali koga zebe, je skrb. Odločitev namesto njega, da ga ne zebe, ker termostat kaže dvojko, pa že zahteva terensko opazovanje.",
     },
   ],
+  usage: {
+    intro:
+      "»Dziaders« je v slovenski izdaji samostalnik moškega spola, ki se sklanja kot druge izposojenke na soglasnik: dziaders, dziadersa. Iz njega izhajata pridevnik »dziaderski« in samostalnik »dziaderstvo«, ime za celoten pojav.",
+    cases: [
+      { name: "Imenovalnik (kdo?)", singular: "dziaders", plural: "dziadersi" },
+      { name: "Rodilnik (koga?)", singular: "dziadersa", plural: "dziadersov" },
+      { name: "Dajalnik (komu?)", singular: "dziadersu", plural: "dziadersom" },
+      { name: "Tožilnik (koga?)", singular: "dziadersa", plural: "dziaderse" },
+      { name: "Mestnik (pri kom?)", singular: "pri dziadersu", plural: "pri dziadersih" },
+      { name: "Orodnik (s kom?)", singular: "z dziadersom", plural: "z dziadersi" },
+    ],
+    examples: [
+      "Svak se je ob žaru vedel kot pravi dziaders.",
+      "Ne bodi dziaders, pusti mu, da sam nastavi televizor.",
+      "V družini imamo tri dziaderse in eno dziadersko teto.",
+      "»Dziaders, vrni daljinec!« (zvalnik je enak imenovalniku)",
+    ],
+    note: "Dvojina: dva dziadersa, dveh dziadersov, z dvema dziadersoma. Beseda je pogovorna in je lahko zbadljivka; v besedilih Inštituta nastopa samo opisno: imenuje navade, ne oseb.",
+  },
   questions: [
     {
       question: "Kaj je dziaderstvo?",

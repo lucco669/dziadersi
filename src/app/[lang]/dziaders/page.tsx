@@ -17,6 +17,11 @@ const COPY = defineCopy({
     definition: "Co znaczy „dziaders”?",
     signs: "Cztery zachowania do obserwacji",
     difference: "Co odróżnia dziaderstwo od zwykłych przyzwyczajeń?",
+    usage: "Odmiana i przykłady użycia",
+    usageHead: ["Przypadek", "Liczba pojedyncza", "Liczba mnoga"],
+    examples: "W zdaniu",
+    more: "Więcej",
+    woman: "Dziaders — kobieta też? Dziaderstwo bez względu na płeć",
     atlas: "Jedno zjawisko, różne gatunki",
     questions: "Najczęstsze pytania",
     next: "Wybierz dalszy kierunek",
@@ -31,6 +36,11 @@ const COPY = defineCopy({
     definition: "Kaj pomeni »dziaders«?",
     signs: "Štiri vedenja za opazovanje",
     difference: "Kaj loči dziaderstvo od običajnih navad?",
+    usage: "Sklanjatev in primeri rabe",
+    usageHead: ["Sklon", "Ednina", "Množina"],
+    examples: "V stavku",
+    more: "Več",
+    woman: "Dziaders — tudi ženska? Dziaderstvo ne glede na spol",
     atlas: "En pojav, različne vrste",
     questions: "Pogosta vprašanja",
     next: "Izberi naslednjo smer",
@@ -107,6 +117,43 @@ export default async function GuidePage() {
           ))}
         </div>
       </Section>
+      <Section id="odmiana" title={t.usage} intro={typo(guide.usage.intro)}>
+        <div className="grid gap-10 lg:grid-cols-2">
+          <table className="w-full border-t border-ink text-left">
+            <thead>
+              <tr className="label text-ink-soft">
+                {t.usageHead.map((label) => (
+                  <th key={label} scope="col" className="border-b border-rule py-3 pr-4 font-normal">
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {guide.usage.cases.map((row) => (
+                <tr key={row.name} className="border-b border-rule">
+                  <th scope="row" className="label py-3 pr-4 font-normal text-ink-soft">
+                    {row.name}
+                  </th>
+                  <td className="py-3 pr-4 text-lg font-bold">{row.singular}</td>
+                  <td className="py-3 text-lg font-bold">{row.plural}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div>
+            <h3 className="label text-ink-soft">{t.examples}</h3>
+            <ul className="mt-4 space-y-3 text-lg">
+              {guide.usage.examples.map((example) => (
+                <li key={example} className="border-l-2 border-red pl-4">
+                  {typo(example)}
+                </li>
+              ))}
+            </ul>
+            <p className="label mt-6 text-ink-soft">{typo(guide.usage.note)}</p>
+          </div>
+        </div>
+      </Section>
       <Section id="gatunki" title={t.atlas}>
         <div className="grid gap-8 sm:grid-cols-3">
           {species.map((item) => (
@@ -124,12 +171,24 @@ export default async function GuidePage() {
             <details key={item.question} className="group py-5">
               <summary className="cursor-pointer text-xl font-bold hover:text-red">{item.question}</summary>
               <p className="mt-4 leading-relaxed text-ink-soft">{typo(item.answer)}</p>
+              {item.href && (
+                <p className="mt-3 font-sans">
+                  <Link href={item.href} className="link">
+                    {t.more} →
+                  </Link>
+                </p>
+              )}
             </details>
           ))}
         </div>
       </Section>
       <Section id="dalej" title={t.next}>
         <ul className="space-y-4 font-sans text-lg">
+          <li>
+            <Link href="/dziaders/kobieta" className="link">
+              {t.woman} →
+            </Link>
+          </li>
           <li>
             <Link href="/okazje" className="link">
               {t.occasions} →

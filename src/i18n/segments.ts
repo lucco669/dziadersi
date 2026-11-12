@@ -14,7 +14,7 @@ export const SEGMENTS: SegmentMap = {
   atlas: { sl: "atlas" },
   slownik: { sl: "slovar" },
   raporty: { sl: "porocila" },
-  dziaders: { sl: "dziaders" },
+  dziaders: { sl: "dziaders", children: { kobieta: "zenska" } },
   okazje: { sl: "priloznosti" },
   muzeum: { sl: "muzej", children: { karta: "kartica" } },
   "do-druku": { sl: "za-tisk", children: { "karty-gatunkow": "kartice-vrst", przewodnik: "vodnik" } },
@@ -67,12 +67,19 @@ const rewriteTree = (source: string, destination: string): Rule[] => [
  * (/sl/slovar/x), as /pl/… does in the Polish edition. Share images keep the routed path: Next.js links them by it.
  */
 export function slovenianRedirects(): (Rule & { permanent: true })[] {
-  return Object.entries(SEGMENTS)
+  const sections = Object.entries(SEGMENTS)
     .filter(([pl, { sl }]) => sl !== pl)
     .flatMap(([pl, { sl }]) => [
       { source: `/sl/${pl}`, destination: `/sl/${sl}`, permanent: true as const },
       { source: `/sl/${pl}/:path((?!.*opengraph-image).*)`, destination: `/sl/${sl}/:path`, permanent: true as const },
     ]);
+  // A renamed page directly under its section (/sl/dziaders/kobieta → /sl/dziaders/zenska); its share image stays put.
+  const children = Object.values(SEGMENTS).flatMap(({ sl, children = {} }) =>
+    Object.entries(children)
+      .filter(([childPl, childSl]) => childSl !== childPl)
+      .map(([childPl, childSl]) => ({ source: `/sl/${sl}/${childPl}`, destination: `/sl/${sl}/${childSl}`, permanent: true as const })),
+  );
+  return [...sections, ...children];
 }
 
 /** Rewrites from Slovenian URLs to the route folders, most specific first. */

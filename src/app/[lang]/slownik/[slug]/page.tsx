@@ -30,6 +30,7 @@ const COPY = defineCopy({
     original: "Oryginał:",
     figurative: "przen.",
     example: "Przykład użycia",
+    usage: "W codziennym użyciu",
     neighbours: "Sąsiednie hasła",
     previous: "Poprzednie hasło",
     next: "Następne hasło",
@@ -47,6 +48,7 @@ const COPY = defineCopy({
     original: "Poljski izvirnik:",
     figurative: "pren.",
     example: "Primer rabe",
+    usage: "V vsakdanji rabi",
     neighbours: "Sosednja gesla",
     previous: "Prejšnje geslo",
     next: "Naslednje geslo",
@@ -65,9 +67,16 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/slownik/[s
   const entry = entryBySlug((await params).slug, locale);
   if (!entry) return {};
   const headword = capitalize(entry.headword, locale);
+  // A plain meaning starts with the phrase itself or gets it as a lead-in, so the snippet names what it explains.
+  const plain =
+    entry.usage &&
+    (/^[„»]/.test(entry.usage) ? entry.usage : `${headword}: ${entry.usage.charAt(0).toLocaleLowerCase(LOCALE_INFO[locale].tag)}${entry.usage.slice(1)}`);
   return pageMetadata(locale, {
     title: t.title(headword),
-    description: describe(`${headword}: ${entry.grammar}. ${entry.senses[0].text}`, t.describeLong, t.describeShort),
+    // A plain meaning, where the entry has one, answers "what does it mean" searches better than the joke.
+    description: plain
+      ? describe(plain, t.describeShort)
+      : describe(`${headword}: ${entry.grammar}. ${entry.senses[0].text}`, t.describeLong, t.describeShort),
     path: `/slownik/${entry.slug}`,
     shareTitle: `${headword} · ${t.dictionary}`,
     shareDescription: entry.senses[0].text,
@@ -150,6 +159,15 @@ export default async function EntryPage({ params }: PageProps<"/[lang]/slownik/[
                 {quote(entry.example, locale)}
               </Saying>
             </div>
+
+            {entry.usage && (
+              <section aria-labelledby="w-uzyciu" className="mt-12 border-t border-rule pt-6">
+                <h2 id="w-uzyciu" className="label text-ink-soft">
+                  {t.usage}
+                </h2>
+                <p className="mt-3 max-w-2xl text-lg leading-relaxed">{typo(entry.usage)}</p>
+              </section>
+            )}
 
             <TranslatorNotes notes={entry.notes} className="mt-12" />
 

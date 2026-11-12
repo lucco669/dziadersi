@@ -33,12 +33,13 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             </span>
           </Link>
 
+          {/* The full menu needs about 1120 px in Polish and 1170 px in Slovenian, so it starts at xl; below, the sheet menu. */}
           <div className="test-navigation flex items-center gap-4 xl:gap-6">
-            <nav aria-label={t.main} className="hidden lg:block">
+            <nav aria-label={t.main} className="hidden xl:block">
               <DesktopMenu />
             </nav>
-            <SearchButton className="hidden py-2 transition-colors hover:text-red lg:block" />
-            <div className="hidden lg:block">
+            <SearchButton className="hidden py-2 transition-colors hover:text-red xl:block" />
+            <div className="hidden xl:block">
               <AccountLink />
             </div>
             <LanguageSwitch className="hidden min-[420px]:block" />
@@ -51,7 +52,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </div>
       </header>
 
-      <nav aria-label={t.sections} className="test-navigation lg:hidden print:hidden">
+      <nav aria-label={t.sections} className="test-navigation xl:hidden print:hidden">
         <MobileMenu />
       </nav>
       <SearchDialog />

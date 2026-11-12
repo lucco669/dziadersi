@@ -11,7 +11,15 @@ export type Guide = {
   context: string;
   signs: { title: string; text: string }[];
   distinction: { title: string; text: string }[];
-  questions: { question: string; answer: string }[];
+  /** Declension and example sentences: the edition's own grammar of the word. */
+  usage: {
+    intro: string;
+    cases: { name: string; singular: string; plural: string }[];
+    examples: string[];
+    note: string;
+  };
+  /** `href` points to the page that answers the question at length; it is data, kept from the Polish entry. */
+  questions: { question: string; answer: string; href?: string }[];
 };
 export const GUIDE: Guide = {
   title: "Dziaders — kto to jest?",
@@ -53,6 +61,25 @@ export const GUIDE: Guide = {
       text: "Pytanie, czy komuś jest zimno, to troska. Ustalenie za niego, że nie jest, bo termostat pokazuje dwójkę, wymaga już obserwacji terenowej.",
     },
   ],
+  usage: {
+    intro:
+      "„Dziaders” to potoczny rzeczownik rodzaju męskiego i odmienia się regularnie. Od niego pochodzą przymiotnik „dziaderski” i rzeczownik „dziaderstwo”, nazwa całego zjawiska.",
+    cases: [
+      { name: "Mianownik (kto?)", singular: "dziaders", plural: "dziadersi" },
+      { name: "Dopełniacz (kogo?)", singular: "dziadersa", plural: "dziadersów" },
+      { name: "Celownik (komu?)", singular: "dziadersowi", plural: "dziadersom" },
+      { name: "Biernik (kogo?)", singular: "dziadersa", plural: "dziadersów" },
+      { name: "Narzędnik (z kim?)", singular: "dziadersem", plural: "dziadersami" },
+      { name: "Miejscownik (o kim?)", singular: "dziadersie", plural: "dziadersach" },
+    ],
+    examples: [
+      "Szwagier zachowywał się przy grillu jak typowy dziaders.",
+      "Nie bądź dziadersem, pozwól mu samemu ustawić telewizor.",
+      "W rodzinie mamy trzech dziadersów i jedną dziaderską ciocię.",
+      "Dziadersie, oddaj pilota! (wołacz)",
+    ],
+    note: "Słowo jest potoczne i bywa docinkiem. W tekstach Instytutu występuje wyłącznie w znaczeniu opisowym: nazywa nawyki, nie osoby.",
+  },
   questions: [
     {
       question: "Co to jest dziaderstwo?",
@@ -90,11 +117,13 @@ export const GUIDE: Guide = {
         "Nie. Pokrewieństwo i wiek nie opisują tych nawyków. Wspólny grill też nie wystarcza; istotne jest to, czy przy grillu pozostaje miejsce na cudze zdanie.",
     },
     {
+      href: "/dziaders/kobieta",
       question: "Czy kobieta też może być dziadersem?",
       answer:
         "Tak. Słowo ma rodzaj męski i najczęściej trafia do mężczyzn, ale Atlas przedstawia kobiety i mężczyzn w różnym wieku pod wspólnymi nazwami gatunków. O klasyfikacji decydują pouczanie, przekonanie o nieomylności i odrzucanie cudzych rozwiązań, a nie płeć ani data urodzenia.",
     },
     {
+      href: "/test",
       question: "Jak sprawdzić, czy sam jestem dziadersem?",
       answer:
         "Możesz wykonać satyryczny Test Dziadersa. Trwa około czterech minut, obejmuje pięć gabinetów i kończy się wynikiem oraz certyfikatem do udostępnienia.",

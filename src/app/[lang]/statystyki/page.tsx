@@ -44,14 +44,18 @@ function countedSl(value: number, one: string, two: string, few: string, other: 
 const COPY = defineCopy({
   pl: {
     title: "Mały Rocznik Statystyczny",
-    metaTitle: "Mały Rocznik Statystyczny Dziaderstwa",
+    metaTitle: (year: number) => `Mały Rocznik Statystyczny Dziaderstwa ${year}`,
     description:
       "Mały Rocznik Statystyczny Dziaderstwa: badania, obserwacje, orzeczenia, bingo, Rozmówki i trąbienia klaksonem. Na żywo, z przeliczeniem na rosoły.",
     shareDescription: "Badania, obserwacje, orzeczenia i trąbienia klaksonem. Z przeliczeniem na rosoły.",
     variables: ["Badania", "Obserwacje terenowe", "Orzeczenia", "Wypowiedzi z Rozmówek", "Skreślenia w bingo", "Trąbienia klaksonem"],
     cover: { label: "Rys. Stos roczników statystycznych i dziaders, który je czytał", spine: "MAŁY ROCZNIK" },
     lead: "Wszystko, co Instytut policzył od otwarcia: badania, obserwacje, orzeczenia, skreślenia w bingo i trąbienia klaksonem. Dane z Narodowego Spisu, Sieci Obserwatorów Terenowych, Komisji Orzekającej i liczników w pomocach naukowych.",
-    metaBefore: "Rocznik 2026 · Stan na ",
+    metaBefore: (year: number) => `Rocznik ${year} · Stan na `,
+    notGus: {
+      before: "Nie mylić z „Małym Rocznikiem Statystycznym Polski”, wydawanym przez GUS: oficjalne dane o kraju są na ",
+      after: ". Tutaj policzono wyłącznie dziaderstwo.",
+    },
     metaAfter: " · aktualizacja co kilka minut",
     contents: "Działy Rocznika",
     chapters: ["Badania", "Obserwacje terenowe", "Komisja Orzekająca", "Pomoce naukowe", "Zbiory Instytutu", "Przeliczenia Instytutu", "Objaśnienia znaków umownych"],
@@ -255,14 +259,18 @@ const COPY = defineCopy({
   },
   sl: {
     title: "Mali statistični letopis",
-    metaTitle: "Mali statistični letopis dziaderstva",
+    metaTitle: (year: number) => `Mali statistični letopis dziaderstva ${year}`,
     description:
       "Mali statistični letopis dziaderstva: pregledi, opazovanja, razsodbe, bingo, Pogovornik in pritiski na hupo. V živo, s preračunom v nedeljske juhe.",
     shareDescription: "Pregledi, opazovanja, razsodbe in pritiski na hupo. S preračunom v nedeljske juhe.",
     variables: ["Pregledi", "Terenska opazovanja", "Razsodbe", "Izjave iz Pogovornika", "Prečrtana polja v bingu", "Pritiski na hupo"],
     cover: { label: "Slika. Kup statističnih letopisov in dziaders, ki jih je bral", spine: "MALI LETOPIS" },
     lead: "Vse, kar je Inštitut preštel od odprtja: preglede, opazovanja, razsodbe, prečrtana polja v bingu in pritiske na hupo. Podatki Nacionalnega popisa, Mreže terenskih opazovalcev, Razsodne komisije in števcev v učnih pripomočkih.",
-    metaBefore: "Letopis 2026 · Stanje na ",
+    metaBefore: (year: number) => `Letopis ${year} · Stanje na `,
+    notGus: {
+      before: "Ne gre za Mali statistični letopis Poljske, ki ga izdaja poljski statistični urad GUS: uradni podatki o državi so na ",
+      after: ". Tu je preštet samo dziaderstvo.",
+    },
     metaAfter: " · posodobitev vsakih nekaj minut",
     contents: "Poglavja Letopisa",
     chapters: ["Pregledi", "Terenska opazovanja", "Razsodna komisija", "Učni pripomočki", "Zbirke Inštituta", "Preračuni Inštituta", "Pojasnila dogovorjenih znakov"],
@@ -471,8 +479,10 @@ type Copy = (typeof COPY)[Locale];
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = COPY[locale];
+  // The year of the cached data, like the page itself: a clock read would block prerendering.
+  const { updated } = await getBulletin(locale);
   return pageMetadata(locale, {
-    title: t.metaTitle,
+    title: t.metaTitle(new Date(updated).getFullYear()),
     description: t.description,
     path: "/statystyki",
     shareTitle: `${t.title} · ${site.name}`,
@@ -699,7 +709,7 @@ export default async function YearbookPage() {
         data={[
           breadcrumbList(locale, [{ label: t.title, href: "/statystyki" }]),
           dataset(locale, "/statystyki", {
-            name: t.metaTitle,
+            name: t.metaTitle(new Date(updated).getFullYear()),
             description: t.description,
             datePublished: site.launched,
             temporalCoverage: `${site.launched}/..`,
@@ -715,7 +725,7 @@ export default async function YearbookPage() {
         lead={typo(t.lead)}
         meta={
           <>
-            {t.metaBefore}
+            {t.metaBefore(new Date(updated).getFullYear())}
             <time dateTime={updated}>
               {formatDate(locale, updated, { day: "numeric", month: "long", year: "numeric" })}
             </time>
@@ -724,6 +734,13 @@ export default async function YearbookPage() {
         }
         aside={<Cover t={t} />}
       />
+      <p className="wrap label mt-6 text-ink-soft">
+        {typo(t.notGus.before)}
+        <a href="https://stat.gov.pl/" className="link text-ink">
+          stat.gov.pl
+        </a>
+        {typo(t.notGus.after)}
+      </p>
 
       <nav aria-label={t.contents} className="wrap mt-12">
         <ol className="grid border-t border-ink sm:grid-cols-2 lg:grid-cols-4">
