@@ -1,4 +1,4 @@
-import { caseKey, getCases } from "@/content/cases";
+import { caseKey, caseMeta, getCases } from "@/content/cases";
 import { getDictionary } from "@/content/dictionary";
 import { formatReportDate, getReports } from "@/content/reports";
 import { getSpecies } from "@/content/species";
@@ -18,7 +18,7 @@ import { CollectionLine } from "./profile-notes";
 import { SpeciesPlate } from "./pictograms";
 import { Section } from "./page";
 import { SpecimenPopulation } from "./specimen-population";
-import { CaseFile } from "./verdict";
+import { CaseFile } from "./case-file";
 
 const COPY = defineCopy({
   pl: {
@@ -271,7 +271,7 @@ export function CaseOfTheDay({ bulletin, counts, locale }: { bulletin: Bulletin;
         </Link>
       }
     >
-      <CaseFile item={item} initial={counts?.[caseKey(item)] ?? null} position={t.casePosition(item.number, cases.length)} />
+      <CaseFile item={item} meta={caseMeta(item, locale)} initial={counts?.[caseKey(item)] ?? null} position={t.casePosition(item.number, cases.length)} />
       <p className="mt-10">
         <Link href="/czy-to-juz-dziaderstwo#wokanda" className="link font-sans font-medium">
           {t.docket(cases.length)}

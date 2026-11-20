@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs, breadcrumbList, JsonLd, Pager, TestPromo } from "@/components/page";
 import { SpeciesTile } from "@/components/species-parts";
-import { CaseFile } from "@/components/verdict";
-import { caseBySlug, caseKey, docket, getCases } from "@/content/cases";
+import { CaseFile } from "@/components/case-file";
+import { caseBySlug, caseKey, caseMeta, docket, getCases } from "@/content/cases";
 import { speciesByKey } from "@/content/species";
 import { hasLocale, LOCALE_INFO } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
@@ -110,6 +110,7 @@ export default async function CasePage({ params }: PageProps<"/[lang]/czy-to-juz
         <div className="mt-10 md:mt-14">
           <CaseFile
             item={item}
+            meta={caseMeta(item, locale)}
             initial={community?.verdicts.cases[caseKey(item)] ?? null}
             heading="h1"
             position={t.position(item.number, cases.length)}

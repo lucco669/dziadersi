@@ -559,3 +559,13 @@ const KEYS = new Map(CASES.map((item) => [item.number, item.slug]));
  * slug, whatever the edition. Both editions vote on the same case and see the same split.
  */
 export const caseKey = (item: Pick<Case, "number">) => KEYS.get(item.number)!;
+
+/** What the case file shows besides the case itself, worked out where the cases are loaded so the file doesn't need them. */
+export type CaseMeta = { key: string; docket: string; category: string; verdicts: typeof VERDICTS };
+
+export const caseMeta = (item: Case, locale: Locale): CaseMeta => ({
+  key: caseKey(item),
+  docket: docket(item),
+  category: caseCategories(locale)[item.category],
+  verdicts: getVerdicts(locale),
+});

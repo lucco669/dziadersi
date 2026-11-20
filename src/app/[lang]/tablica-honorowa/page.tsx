@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { SignLine } from "@/components/conventional-sign";
 import { CommissionPlate, Medal } from "@/components/court";
 import { HonorCta } from "@/components/honor";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
@@ -47,6 +48,10 @@ const COPY = defineCopy({
       pages: "kartek",
       order:
         "Kolejność: obserwatorzy według liczby gatunków, potem zgłoszeń; ławnicy według liczby orzeczeń; zdzieracze według najdłuższej serii. Instytut nie publikuje niczego poza pseudonimem i tymi liczbami.",
+      allEmpty:
+        "Zjawisko nie wystąpiło. Na żadnej z trzech list nie ma jeszcze pseudonimu, więc pierwsze miejsce zajmie pierwszy chętny: obserwator w Atlasie, ławnik w Komisji albo zdzierający kartki z kalendarza.",
+      unknown: "Brak informacji. Tablica jest chwilowo nieczynna.",
+      actions: { observers: "Obserwuj w Atlasie", jurors: "Orzekaj w Komisji", calendar: "Zrywaj kartki" },
     },
     cases: {
       title: "Sprawy, które podzieliły naród",
@@ -59,6 +64,8 @@ const COPY = defineCopy({
       clinicalNote: (percent: number) => `${percent}% „kliniczne”`,
       votes: (n: number) => `${n} ${plural(n, "głos", "głosy", "głosów")}`,
       none: "Żadna sprawa nie zebrała jeszcze pięciu głosów. Komisja nie wyróżnia spraw, o których zdecydowały dwie osoby i kot.",
+      nearest: "Najbliżej progu",
+      nearestNote: (votes: string) => `${votes} z 5 potrzebnych`,
       link: "Do Komisji",
     },
     species: {
@@ -77,6 +84,8 @@ const COPY = defineCopy({
       /** "Grillowy" from "Dziaders Grillowy", for the hybrid line. */
       short: (species: Species) => species.name.replace("Dziaders ", ""),
       diagnosedNone: `Ranking rozpoznań publikuje się od ${MIN_RESULTS} badań w Narodowym Spisie.`,
+      allEmpty: `Zjawisko nie wystąpiło. Gatunki wyróżnia się na podstawie obserwacji terenowych, a rozpoznania od ${MIN_RESULTS} badań w Narodowym Spisie. Pierwszą obserwację zgłasza się na stronie gatunku w Atlasie.`,
+      action: "Do Atlasu",
     },
     promo: { title: "Na Tablicę trafia się czynami.", text: "A na certyfikat testem. Pięć gabinetów, około czterech minut." },
   },
@@ -109,6 +118,10 @@ const COPY = defineCopy({
       pages: "listov",
       order:
         "Vrstni red: opazovalci po številu vrst, nato prijav; porotniki po številu razsodb; trgalci po najdaljšem nizu. Inštitut ne objavlja ničesar razen psevdonima in teh številk.",
+      allEmpty:
+        "Pojava ni bilo. Na nobenem od treh seznamov še ni psevdonima, zato bo prvo mesto dobil prvi, ki se javi: opazovalec v Atlasu, porotnik v Komisiji ali trgalec listov s koledarja.",
+      unknown: "Ni podatka. Tabla je začasno zaprta.",
+      actions: { observers: "Opazuj v Atlasu", jurors: "Razsojaj v Komisiji", calendar: "Trgaj liste" },
     },
     cases: {
       title: "Primeri, ki so razdelili narod",
@@ -121,6 +134,8 @@ const COPY = defineCopy({
       clinicalNote: (percent: number) => `${percent}% »klinično«`,
       votes: (n: number) => `${n} ${pluralSl(n, "glas", "glasova", "glasovi", "glasov")}`,
       none: "Noben primer še ni zbral petih glasov. Komisija ne izpostavlja primerov, o katerih so odločile dve osebi in mačka.",
+      nearest: "Najbližje pragu",
+      nearestNote: (votes: string) => `${votes} od 5 potrebnih`,
       link: "Na Komisijo",
     },
     species: {
@@ -139,6 +154,8 @@ const COPY = defineCopy({
       /** "Žarni" from "Žarni dziaders", for the hybrid line. */
       short: (species: Species) => species.name.replace(/ dziaders$/, ""),
       diagnosedNone: `Lestvica diagnoz se objavlja šele od ${MIN_RESULTS} pregledov v Nacionalnem popisu naprej.`,
+      allEmpty: `Pojava ni bilo. Vrste se odlikujejo na podlagi terenskih opazovanj, diagnoze pa šele od ${MIN_RESULTS} pregledov v Nacionalnem popisu naprej. Prvo opazovanje se prijavi na strani vrste v Atlasu.`,
+      action: "V Atlas",
     },
     promo: { title: "Na Tablo prideš z dejanji.", text: "Do certifikata pa s testom. Pet ordinacij, približno štiri minute." },
   },
@@ -159,14 +176,24 @@ function Leaders<T extends { nickname: string }>({
   rows,
   orders,
   empty,
+  action,
   figures,
 }: {
   rows: T[];
   orders: string[];
   empty: string;
+  action: { href: string; label: string };
   figures: (row: T) => [string, string][];
 }) {
-  if (!rows.length) return <p className="max-w-md border-t border-ink pt-5 leading-snug text-ink-soft">{typo(empty)}</p>;
+  if (!rows.length)
+    return (
+      <div className="max-w-md border-t border-ink pt-5">
+        <p className="leading-snug text-ink-soft">{typo(empty)}</p>
+        <Link href={action.href} className="link mt-3 inline-block font-sans font-medium">
+          {action.label}
+        </Link>
+      </div>
+    );
   return (
     <ol className="border-t border-ink">
       {rows.map((row, i) => (
@@ -261,6 +288,22 @@ export default async function HonorPage() {
           .slice(0, 3)
       : [];
   const hybrid = census && census.total >= MIN_RESULTS ? census.hybrids[0] : undefined;
+  const speciesEmpty = !observed.length && !weekTop && !region && !diagnosed.length;
+
+  // Before any case reaches five votes: the one closest to it, so the next juror knows where to go.
+  const nearest = CASES.map((source, index) => ({
+    item: edition[index],
+    total: VERDICTS.reduce((sum, option) => sum + (community?.verdicts.cases[source.slug]?.[option.key] ?? 0), 0),
+  }))
+    .filter((entry) => entry.total > 0 && entry.total < 5)
+    .sort((a, b) => b.total - a.total)[0];
+
+  const boards = {
+    observers: { href: "/atlas", label: t.leaders.actions.observers },
+    jurors: { href: "/czy-to-juz-dziaderstwo", label: t.leaders.actions.jurors },
+    calendar: { href: "/kalendarz", label: t.leaders.actions.calendar },
+  };
+  const anyLeader = Boolean(board && (board.observers.length || board.jurors.length || board.calendar.length));
 
   return (
     <main id="tresc">
@@ -293,41 +336,50 @@ export default async function HonorPage() {
       />
 
       <Section id="przodownicy" title={t.leaders.title} aside={t.leaders.aside}>
-        <div className="grid gap-14 lg:grid-cols-3 lg:gap-10">
-          <div>
-            <h3 className="mb-4 text-2xl font-bold leading-tight">{t.leaders.observers}</h3>
-            <Leaders
-              rows={board?.observers ?? []}
-              orders={t.orders.observers}
-              empty={t.leaders.observersEmpty}
-              figures={(row) => [
-                [`${row.species}`, t.leaders.ofSpecies(SPECIES.length)],
-                [formatNumber(locale, row.sightings), t.leaders.sightings],
-              ]}
-            />
+        {!anyLeader ? (
+          <SignLine sign={board ? "–" : "·"} actions={board ? Object.values(boards) : []}>
+            {typo(board ? t.leaders.allEmpty : t.leaders.unknown)}
+          </SignLine>
+        ) : (
+          <div className="grid gap-14 lg:grid-cols-3 lg:gap-10">
+            <div>
+              <h3 className="mb-4 text-2xl font-bold leading-tight">{t.leaders.observers}</h3>
+              <Leaders
+                rows={board?.observers ?? []}
+                orders={t.orders.observers}
+                empty={t.leaders.observersEmpty}
+                action={boards.observers}
+                figures={(row) => [
+                  [`${row.species}`, t.leaders.ofSpecies(SPECIES.length)],
+                  [formatNumber(locale, row.sightings), t.leaders.sightings],
+                ]}
+              />
+            </div>
+            <div>
+              <h3 className="mb-4 text-2xl font-bold leading-tight">{t.leaders.jurors}</h3>
+              <Leaders
+                rows={board?.jurors ?? []}
+                orders={t.orders.jurors}
+                empty={t.leaders.jurorsEmpty}
+                action={boards.jurors}
+                figures={(row) => [[formatNumber(locale, row.votes), t.leaders.votes]]}
+              />
+            </div>
+            <div>
+              <h3 className="mb-4 text-2xl font-bold leading-tight">{t.leaders.calendar}</h3>
+              <Leaders
+                rows={board?.calendar ?? []}
+                orders={t.orders.calendar}
+                empty={t.leaders.calendarEmpty}
+                action={boards.calendar}
+                figures={(row) => [
+                  [`${row.best}`, t.leaders.streak],
+                  [formatNumber(locale, row.pages), t.leaders.pages],
+                ]}
+              />
+            </div>
           </div>
-          <div>
-            <h3 className="mb-4 text-2xl font-bold leading-tight">{t.leaders.jurors}</h3>
-            <Leaders
-              rows={board?.jurors ?? []}
-              orders={t.orders.jurors}
-              empty={t.leaders.jurorsEmpty}
-              figures={(row) => [[formatNumber(locale, row.votes), t.leaders.votes]]}
-            />
-          </div>
-          <div>
-            <h3 className="mb-4 text-2xl font-bold leading-tight">{t.leaders.calendar}</h3>
-            <Leaders
-              rows={board?.calendar ?? []}
-              orders={t.orders.calendar}
-              empty={t.leaders.calendarEmpty}
-              figures={(row) => [
-                [`${row.best}`, t.leaders.streak],
-                [formatNumber(locale, row.pages), t.leaders.pages],
-              ]}
-            />
-          </div>
-        </div>
+        )}
         <div className="mt-12 grid gap-10 border-t border-rule pt-8 lg:grid-cols-2">
           <HonorCta />
           <p className="label max-w-md text-ink-soft lg:justify-self-end">{typo(t.leaders.order)}</p>
@@ -355,7 +407,20 @@ export default async function HonorPage() {
           </div>
         ) : (
           <div className="grid items-center gap-10 border-t border-ink pt-6 lg:grid-cols-12">
-            <p className="max-w-xl text-xl leading-snug lg:col-span-7">{typo(t.cases.none)}</p>
+            <div className="lg:col-span-7">
+              <p className="max-w-xl text-xl leading-snug">{typo(t.cases.none)}</p>
+              {nearest && (
+                <div className="mt-8 max-w-xl">
+                  <Plaque label={t.cases.nearest}>
+                    <Link href={`/czy-to-juz-dziaderstwo/${nearest.item.slug}`} className="group block">
+                      <span className="label block text-ink-faint">{docket(nearest.item)}</span>
+                      <span className="block text-2xl font-bold leading-tight group-hover:text-red">{nearest.item.title}</span>
+                      <span className="label mt-2 block text-ink-soft">{t.cases.nearestNote(t.cases.votes(nearest.total))}</span>
+                    </Link>
+                  </Plaque>
+                </div>
+              )}
+            </div>
             <div className="lg:col-span-5">
               <CommissionPlate animated className="ml-auto w-full max-w-xs" />
             </div>
@@ -369,84 +434,90 @@ export default async function HonorPage() {
       </Section>
 
       <Section id="gatunki" title={t.species.title} aside={t.species.aside}>
-        <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-7">
-            <h3 className="label border-b border-ink pb-3 text-ink-soft">{t.species.observed}</h3>
-            {observed.length ? (
-              <ol>
-                {observed.map(([key, n], i) => {
-                  const species = known.get(key)!;
-                  return (
-                    <li key={key}>
-                      <Link href={`/atlas/${species.slug}`} className="group grid grid-cols-[2rem_4.5rem_1fr_auto] items-center gap-4 border-b border-rule py-2.5">
-                        <span className="font-sans text-[0.9rem] font-semibold text-red">{i + 1}</span>
-                        <SpeciesPlate species={key as SpeciesKey} variant="pictogram" className="w-full" />
-                        <span className="text-xl font-bold leading-tight group-hover:text-red">{species.name}</span>
-                        <span className="font-sans font-semibold tabular-nums">{formatNumber(locale, n)}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ol>
-            ) : (
-              <p className="mt-4 leading-snug text-ink-soft">{typo(t.species.observedNone)}</p>
-            )}
-          </div>
-          <div className="space-y-8 lg:col-span-5">
-            <Plaque label={t.species.week}>
-              {weekTop ? (
-                <Link href={`/atlas/${known.get(weekTop[0])!.slug}`} className="group flex items-center gap-4">
-                  <SpeciesPlate species={weekTop[0] as SpeciesKey} animated className="w-28 shrink-0" />
-                  <span>
-                    <span className="block text-2xl font-bold leading-tight group-hover:text-red">{known.get(weekTop[0])!.name}</span>
-                    <span className="label block text-ink-soft">{t.species.weekCount(weekTop[1])}</span>
-                  </span>
-                </Link>
-              ) : (
-                <p className="leading-snug text-ink-soft">{typo(t.species.weekNone)}</p>
-              )}
-            </Plaque>
-            <Plaque label={t.species.region}>
-              {region ? (
-                <Link href="/obserwacje" className="group block">
-                  <span className="block text-2xl font-bold leading-tight group-hover:text-red">{regions[region[0]]?.name}</span>
-                  <span className="label block text-ink-soft">{t.species.regionCount(formatNumber(locale, region[1]), region[1])}</span>
-                </Link>
-              ) : (
-                <p className="leading-snug text-ink-soft">{typo(t.species.regionNone)}</p>
-              )}
-            </Plaque>
-            <Plaque label={t.species.diagnosed}>
-              {diagnosed.length ? (
-                <ol className="space-y-1">
-                  {diagnosed.map(([key, n], i) => (
-                    <li key={key} className="flex justify-between gap-4">
-                      <Link href={`/atlas/${known.get(key)!.slug}`} className="font-bold hover:text-red">
-                        {i + 1}. {known.get(key)!.name}
-                      </Link>
-                      <span className="font-sans tabular-nums">{formatNumber(locale, n)}</span>
-                    </li>
-                  ))}
-                  {hybrid && (
-                    <li className="label pt-2 text-ink-soft">
-                      {t.species.hybrid}{" "}
-                      {hybrid.pair
-                        .split("+")
-                        .map((key) => {
-                          const species = known.get(key);
-                          return species && t.species.short(species);
-                        })
-                        .join(" × ")}{" "}
-                      ({formatNumber(locale, hybrid.n)})
-                    </li>
-                  )}
+        {speciesEmpty ? (
+          <SignLine sign="–" actions={[{ href: "/atlas", label: t.species.action }]}>
+            {typo(t.species.allEmpty)}
+          </SignLine>
+        ) : (
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+            <div className="lg:col-span-7">
+              <h3 className="label border-b border-ink pb-3 text-ink-soft">{t.species.observed}</h3>
+              {observed.length ? (
+                <ol>
+                  {observed.map(([key, n], i) => {
+                    const species = known.get(key)!;
+                    return (
+                      <li key={key}>
+                        <Link href={`/atlas/${species.slug}`} className="group grid grid-cols-[2rem_4.5rem_1fr_auto] items-center gap-4 border-b border-rule py-2.5">
+                          <span className="font-sans text-[0.9rem] font-semibold text-red">{i + 1}</span>
+                          <SpeciesPlate species={key as SpeciesKey} variant="pictogram" className="w-full" />
+                          <span className="text-xl font-bold leading-tight group-hover:text-red">{species.name}</span>
+                          <span className="font-sans font-semibold tabular-nums">{formatNumber(locale, n)}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ol>
               ) : (
-                <p className="leading-snug text-ink-soft">{typo(t.species.diagnosedNone)}</p>
+                <p className="mt-4 leading-snug text-ink-soft">{typo(t.species.observedNone)}</p>
               )}
-            </Plaque>
+            </div>
+            <div className="space-y-8 lg:col-span-5">
+              <Plaque label={t.species.week}>
+                {weekTop ? (
+                  <Link href={`/atlas/${known.get(weekTop[0])!.slug}`} className="group flex items-center gap-4">
+                    <SpeciesPlate species={weekTop[0] as SpeciesKey} animated className="w-28 shrink-0" />
+                    <span>
+                      <span className="block text-2xl font-bold leading-tight group-hover:text-red">{known.get(weekTop[0])!.name}</span>
+                      <span className="label block text-ink-soft">{t.species.weekCount(weekTop[1])}</span>
+                    </span>
+                  </Link>
+                ) : (
+                  <p className="leading-snug text-ink-soft">{typo(t.species.weekNone)}</p>
+                )}
+              </Plaque>
+              <Plaque label={t.species.region}>
+                {region ? (
+                  <Link href="/obserwacje" className="group block">
+                    <span className="block text-2xl font-bold leading-tight group-hover:text-red">{regions[region[0]]?.name}</span>
+                    <span className="label block text-ink-soft">{t.species.regionCount(formatNumber(locale, region[1]), region[1])}</span>
+                  </Link>
+                ) : (
+                  <p className="leading-snug text-ink-soft">{typo(t.species.regionNone)}</p>
+                )}
+              </Plaque>
+              <Plaque label={t.species.diagnosed}>
+                {diagnosed.length ? (
+                  <ol className="space-y-1">
+                    {diagnosed.map(([key, n], i) => (
+                      <li key={key} className="flex justify-between gap-4">
+                        <Link href={`/atlas/${known.get(key)!.slug}`} className="font-bold hover:text-red">
+                          {i + 1}. {known.get(key)!.name}
+                        </Link>
+                        <span className="font-sans tabular-nums">{formatNumber(locale, n)}</span>
+                      </li>
+                    ))}
+                    {hybrid && (
+                      <li className="label pt-2 text-ink-soft">
+                        {t.species.hybrid}{" "}
+                        {hybrid.pair
+                          .split("+")
+                          .map((key) => {
+                            const species = known.get(key);
+                            return species && t.species.short(species);
+                          })
+                          .join(" × ")}{" "}
+                        ({formatNumber(locale, hybrid.n)})
+                      </li>
+                    )}
+                  </ol>
+                ) : (
+                  <p className="leading-snug text-ink-soft">{typo(t.species.diagnosedNone)}</p>
+                )}
+              </Plaque>
+            </div>
           </div>
-        </div>
+        )}
       </Section>
 
       <TestPromo title={t.promo.title} text={typo(t.promo.text)} />

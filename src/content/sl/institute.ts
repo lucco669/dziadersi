@@ -80,7 +80,7 @@ export const UNITS: Record<string, Text<Unit, "href">> = {
   "/statystyki": {
     name: "Služba za statistiko",
     head: "V. d. vodje: kalkulator na sončno celico",
-    text: "Vodi Nacionalni popis dziadersov in izdaja Mali statistični letopis. Šteje vse, kar se da prešteti brez imen: preglede, glasove porotnikov, terenska opazovanja, prečrtana polja v bingu in pritiske na hupo. Zbirnih podatkov iz popisa ne objavi, dokler ne zbere 30 pregledov.",
+    text: "Vodi Nacionalni popis dziadersov in izdaja Mali statistični letopis. Šteje vse, kar se da prešteti brez imen: preglede, glasove porotnikov, terenska opazovanja, prečrtana polja v bingu in pritiske na hupo. Število pregledov navaja od prvega naprej, povprečij, porazdelitev in lestvic iz popisa pa ne objavi, dokler ne zbere 30 pregledov.",
   },
   "/czy-to-juz-dziaderstwo": {
     name: "Razsodna komisija",

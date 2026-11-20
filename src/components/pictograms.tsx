@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import { StaticArtwork } from "./static-artwork";
+import { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED } from "./palette";
+import { SpeciesArtwork } from "./species-artwork";
 import type { SpecimenIndex } from "@/content/specimens";
 import type { SpeciesKey } from "@/content/species";
-import { SPECIES_ART_SIZE, speciesArtPath } from "@/lib/species-art";
 
 /*
  * The Institute's picture statistics: flat pictograms in the Isotype manner.
@@ -10,15 +10,8 @@ import { SPECIES_ART_SIZE, speciesArtPath } from "@/lib/species-art";
  * A figure is drawn on a 40 × 100 grid with its feet on y = 94; a species plate is 120 × 100.
  */
 
-export const INK = "#161513";
-export const PAPER = "#F4F0E7";
-export const RED = "#C4362C";
-export const BLUE = "#3D6696";
-export const OCHRE = "#D49A2A";
-export const GREY = "#CEC6B6";
-
-export const MUSTACHE_PATH =
-  "M50 11C56 4 69 1.5 80 6C89 10 94.5 19 97 31C92.5 29.5 86 26.5 78 25C68 23 58 23.5 50 18C42 23.5 32 23 22 25C14 26.5 7.5 29.5 3 31C5.5 19 11 10 20 6C31 1.5 44 4 50 11Z";
+// Re-exported for the many drawings that import them from here.
+export { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED };
 
 type Point = [number, number];
 export type Pose = "down" | "hip" | "point" | "up" | "phone" | "cross" | "knee";
@@ -1151,17 +1144,7 @@ export function SpeciesPlate({
   sizes?: string;
 }) {
   if (variant === "illustration") {
-    return (
-      <StaticArtwork
-        src={speciesArtPath(species, specimen)}
-        eager={eager}
-        {...SPECIES_ART_SIZE}
-        alt={title ?? ""}
-        aria-hidden={title ? undefined : true}
-        sizes={sizes}
-        className={["species-plate", animated ? "species-plate-enter" : "", className].filter(Boolean).join(" ")}
-      />
-    );
+    return <SpeciesArtwork species={species} specimen={specimen} eager={eager} className={className} title={title} animated={animated} sizes={sizes} />;
   }
   const plate = PLATES[species]();
   return (

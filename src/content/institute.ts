@@ -105,7 +105,7 @@ export const UNITS: Unit[] = [
   {
     name: "Dział Statystyki",
     head: "p.o. kierownika: kalkulator z baterią słoneczną",
-    text: "Prowadzi Narodowy Spis Dziadersów i wydaje Mały Rocznik Statystyczny. Liczy wszystko, co da się policzyć bez imion: badania, głosy ławników, obserwacje terenowe, skreślone pola bingo i użycia klaksonu. Zestawień ze spisu nie publikuje, dopóki nie zbierze 30 badań.",
+    text: "Prowadzi Narodowy Spis Dziadersów i wydaje Mały Rocznik Statystyczny. Liczy wszystko, co da się policzyć bez imion: badania, głosy ławników, obserwacje terenowe, skreślone pola bingo i użycia klaksonu. Liczbę badań podaje od pierwszego, ale średnich, rozkładów i rankingów ze spisu nie publikuje, dopóki nie zbierze 30 badań.",
     href: "/statystyki",
   },
   {
