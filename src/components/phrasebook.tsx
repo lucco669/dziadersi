@@ -15,6 +15,7 @@ import { BookmarkButton } from "./bookmark";
 import { useKeys, useLater, useReducedMotion } from "./hooks";
 import { SituationIcon } from "./occasions";
 import { Figure } from "./pictograms";
+import { StoryShare } from "./story-share";
 
 const COPY = defineCopy({
   pl: {
@@ -330,6 +331,14 @@ export function Phrasebook({ initial, original = false }: { initial: { slug: str
         </button>
         <span className="label ml-auto hidden text-ink-faint md:inline">{t.keys}</span>
       </div>
+      <StoryShare
+        image={`/generator/${current.code}/karta`}
+        file={`${locale === "sl" ? "pogovornik" : "rozmowki"}-${current.code}`}
+        text={quote(current.text, locale)}
+        url={`${site.url}${localizePath(`/generator/${current.code}`, locale)}`}
+        kind="rozmowki"
+        className="mt-4"
+      />
 
       <section aria-labelledby="rozbior" className="mt-16 max-w-4xl">
         <h2 id="rozbior" className="flex flex-wrap items-baseline justify-between gap-x-6 border-b border-ink pb-3">

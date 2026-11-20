@@ -12,6 +12,7 @@ import { tally } from "@/lib/tally";
 import { cx, formatNumber, quote, typo } from "@/lib/typo";
 import { useReducedMotion } from "./hooks";
 import { Figure, INK, PAPER, Sweater } from "./pictograms";
+import { StoryShare } from "./story-share";
 
 const COPY = defineCopy({
   pl: {
@@ -615,6 +616,16 @@ function Stage({
                 ))}
               </span>
             </div>
+            {done && (
+              <StoryShare
+                image={`${answerPath(answer)}/karta`}
+                file={`szwagier-${answer.code}`}
+                text={t.clipping(answer.question, answer.text, "").trim()}
+                url={`${site.url}${localizePath(answerPath(answer), locale)}`}
+                kind="szwagier"
+                className="mt-4"
+              />
+            )}
             {exchange.feedback && (
               <p className="label mt-3 text-right text-red" role="status">
                 {exchange.feedback === "yes" ? t.thanked : t.objected}
