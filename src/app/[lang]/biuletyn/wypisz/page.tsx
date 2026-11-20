@@ -7,9 +7,9 @@ import { defineCopy } from "@/i18n/copy";
 import { localizePath } from "@/i18n/routes";
 import { getLocale } from "@/i18n/server";
 import { formEdition } from "@/lib/account";
-import { verifyUnsubscribe } from "@/lib/newsletter";
+import { unsubscribe as unsubscribeAddress, verifyUnsubscribe } from "@/lib/newsletter-store";
 import { pageMetadata } from "@/lib/seo";
-import { createAdminClient, hasAdmin } from "@/lib/supabase/admin";
+import { hasAdmin } from "@/lib/supabase/admin";
 import { typo } from "@/lib/typo";
 
 const COPY = defineCopy({
@@ -20,7 +20,7 @@ const COPY = defineCopy({
     crumb: "Wypisanie",
     done: "Wypisano. Biuletyn nie przyjdzie więcej. Instytut przyjmuje to ze spokojem i nie będzie dzwonił.",
     invalid: "Ten link nie pasuje do żadnej kartoteki. Wypisać się można też w Profilu Dziaderskim, w ustawieniach.",
-    confirm: "Jedno kliknięcie i Biuletyn tygodniowy przestanie przychodzić. Konto i kartoteka zostają.",
+    confirm: "Jedno kliknięcie i Biuletyn tygodniowy przestanie przychodzić. Profil Dziaderski, jeśli go masz, zostaje z kartoteką. Adres zamówiony bez konta Instytut usuwa.",
     button: "Wypisz mnie z biuletynu",
     checking: "Sekretariat sprawdza link…",
   },
@@ -31,7 +31,7 @@ const COPY = defineCopy({
     crumb: "Odjava",
     done: "Odjavljeno. Bilten ne bo več prihajal. Inštitut to sprejema mirno in ne bo klical.",
     invalid: "Ta povezava se ne ujema z nobeno kartoteko. Odjaviš se lahko tudi v Dziaderskem profilu, v nastavitvah.",
-    confirm: "En klik in Tedenski bilten ne bo več prihajal. Račun in kartoteka ostaneta.",
+    confirm: "En klik in Tedenski bilten ne bo več prihajal. Dziaderski profil, če ga imaš, ostane s kartoteko. Naslov, naročen brez računa, Inštitut izbriše.",
     button: "Odjavi me od biltena",
     checking: "Tajništvo preverja povezavo …",
   },
@@ -49,7 +49,7 @@ async function unsubscribe(formData: FormData) {
   const locale = formEdition(formData);
   const id = formData.get("u");
   if (!verifyUnsubscribe(id, formData.get("t")) || !hasAdmin) redirect(localizePath("/biuletyn/wypisz?blad=1", locale));
-  await createAdminClient().from("profiles").update({ newsletter: false }).eq("id", id);
+  await unsubscribeAddress(id);
   redirect(localizePath("/biuletyn/wypisz?gotowe=1", locale));
 }
 

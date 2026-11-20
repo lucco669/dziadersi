@@ -386,8 +386,12 @@ export function TestRunner() {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ code, attempt, region: region || undefined, previous }),
     })
-      .then(() => refreshAccount())
-      .catch(() => {});
+      .then((response) => {
+        // The visitor never sees this fail, so analytics has to: a broken census shows up as these events.
+        if (!response.ok) track("Spis: zapis odrzucony", { status: response.status });
+        void refreshAccount();
+      })
+      .catch(() => track("Spis: zapis odrzucony", { status: 0 }));
   }
 
   function answer(value: number) {

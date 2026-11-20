@@ -81,7 +81,7 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - **Tablica Honorowa** (`/tablica-honorowa`) ✅: a PRL honour board. Leaders among accounts that opted in (nickname only): observers by species then sightings, jurors by verdicts, calendar tearers by their longest streak, with medals for the top three (Order Złotej Lornetki, Złotego Młotka, Złotej Kartki). Also the most disputed, most unanimous and most clinical cases (from five votes), the best-observed species, the species of the week, the most watchful voivodeship and the most frequent diagnoses (from 30 results).
 - **Legitymacja Obserwatora** (`/profil/legitymacja`) ✅: the member card as a PNG, generated per request from the account (`src/lib/id-card.tsx`): nickname, rank from the observation log (stażysta → honorowy), counts, up to six badges as stamps, the seal and guilloche lines. Shown and downloadable in the profile; `?podglad` renders a sample in development.
 - **Mapa obserwacji** (`/obserwacje`) ✅: the voivodeship tile map shaded by sightings, for all species or one; a region shows its total, share and top three species.
-- **Biuletyn tygodniowy** (`/biuletyn`) ✅: the last seven days composed once (`src/lib/weekly.ts`) for the page and for a Monday email to opted-in accounts. Vercel Cron (`vercel.json`, Mondays 06:00 UTC) calls `/api/cron/biuletyn` with `CRON_SECRET`; one issue per week (`bulletin_issues`), batches of five through Brevo, `List-Unsubscribe` with one-click POST, and a signed unsubscribe page (`/biuletyn/wypisz`). `/api/cron/biuletyn?podglad` shows the letter in development.
+- **Biuletyn tygodniowy** (`/biuletyn`) ✅: the last seven days composed once (`src/lib/weekly.ts`) for the page and for a Monday email to opted-in accounts. A scheduled job on the server (Mondays 06:00 Europe/Warsaw, [deploy/README.md](../deploy/README.md)) calls `/api/cron/biuletyn` with `CRON_SECRET`; one issue per week (`bulletin_issues`), batches of five through Brevo, `List-Unsubscribe` with one-click POST, and a signed unsubscribe page (`/biuletyn/wypisz`). `/api/cron/biuletyn?podglad` shows the letter in development.
 - **Kartka z kalendarza** (`/kalendarz`) ✅: a PRL tear-off calendar. Yesterday's page hangs over today's until the visitor tears it off (the tear is an animation). The front has sunrise and sunset for Warsaw, the moon, the day of the year, days to Christmas Eve and red numbers on Sundays and days off (`src/lib/almanac.ts`, pure arithmetic), plus a seasonal rhymed proverb and the Institute's invented observances; the back has a tip, the Institute's order of the day, the patron species, the word and case of the day (`src/content/calendar.ts`). Signed-in visitors collect pages, streaks and two badges (Zdzierak, Kalendarz ścienny); everyone is counted in the day's tally. The front page carries today's number and proverb.
 - **Wyszukiwarka** ✅: the whole site as one static index (`/szukaj/indeks.json`, built from the content files, Polish letters folded), searched in the browser. A dialog in the header (the magnifier, `/` or Ctrl+K) and a full page at `/szukaj?q=`; the home page declares a SearchAction.
 - Next: rankings as real groups that update for everyone; Google sign-in; a public observer page with the legitymacja.
@@ -165,20 +165,17 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 
 ## 7. Launch checklist
 
-- [ ] Vercel project connected to `main`, `dziader.si` added, `www` redirecting to the apex
+- [x] Hosting on our own server behind Cloudflare (§8), `www` redirecting to the apex
 - [ ] Check the link preview in the Facebook Sharing Debugger, the LinkedIn Post Inspector and a real Messenger chat
 - [ ] Google Search Console with the sitemap submitted
 - [x] Privacy page before adding analytics; terms before any user-generated content
 - [x] Run `supabase/migrations/20261002160000_community.sql` (observations, bookmarks, Komisja, tallies)
 - [ ] Run `supabase/migrations/20261002190000_bulletin_calendar.sql` (opt-ins, calendar, honour board, bulletin)
-- [ ] Add `CRON_SECRET` in Vercel (any long random string) so the Monday bulletin can be sent
+- [ ] Add `CRON_SECRET` to the app's environment (any long random string) and schedule `/api/cron/biuletyn` (Mondays) and `/api/cron/porzadki` (daily): [deploy/README.md](../deploy/README.md)
 - [ ] Fill in `site.controller` (name and email) in `src/lib/site.ts`: the privacy policy, terms and About page point to it
 - [x] Phase 1 shipped before any promotion. The test is what turns visits into shares.
 - [ ] Paste a real result link into Messenger and WhatsApp and check the certificate preview
 
-## 8. Deploying to Vercel with dziader.si
+## 8. Hosting
 
-1. vercel.com → **Add New → Project** → import `lucco669/dziadersi`. The Next.js preset and pnpm are detected automatically, and no environment variables are needed.
-2. **Project → Settings → Domains**: add `dziader.si`, then `www.dziader.si` set to redirect to `dziader.si`.
-3. At the `.si` domain registrar, create exactly the DNS records Vercel shows on that screen (an A record for the apex and a CNAME for `www`), or point the domain's nameservers to Vercel. HTTPS is issued automatically once DNS resolves.
-4. Every push to `main` deploys to production, and other branches get preview URLs.
+Since 25 October 2026 the site runs on our own server: Coolify builds and runs the app, a Cloudflare tunnel publishes it at `dziader.si` (no open port), and Umami at stats.szram.uk counts visits. Environment variables: [supabase/README.md](../supabase/README.md). Scheduled jobs, the write-health check and the production smoke test: [deploy/README.md](../deploy/README.md). The Vercel setup this section used to describe is history; `vercel.json` was removed with its crons.

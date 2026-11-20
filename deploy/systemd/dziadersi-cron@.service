@@ -1,0 +1,26 @@
+# One scheduled job of dziader.si: calls https://dziader.si/api/cron/%i with the cron secret.
+# Started by dziadersi-biuletyn.timer and dziadersi-porzadki.timer; see deploy/README.md.
+#
+# Needs /etc/dziadersi/cron-header (root, mode 600), one line:
+#   Authorization: Bearer <the CRON_SECRET of the running app>
+# The secret never appears on a command line or in the journal.
+
+[Unit]
+Description=dziader.si scheduled job %i
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=SITE=https://dziader.si
+LoadCredential=header:/etc/dziadersi/cron-header
+# --fail-with-body: a 4xx/5xx fails the unit (systemctl --failed) and still prints the answer.
+# Retries only on timeouts and 5xx. Safe for the bulletin: it claims the week before it sends.
+ExecStart=/usr/bin/curl --silent --show-error --fail-with-body --max-time 600 --retry 2 --retry-delay 60 -H @%d/header ${SITE}/api/cron/%i
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX

@@ -73,4 +73,6 @@ The museum has six SVG catalogue drawings, native expandable drawers, exhibit pe
 
 ## Deploy
 
-On Vercel: import the repository, keep the Next.js defaults (pnpm is detected from the lockfile), and add `dziader.si` under Project → Settings → Domains. Environment variables are listed in [supabase/README.md](supabase/README.md); without them the census and accounts show a closed state and the rest of the site works. `NEXT_PUBLIC_SITE_URL` only needs to be set if the canonical domain changes.
+Production runs on our own server (Coolify, behind a Cloudflare tunnel) since 25 October 2026. Environment variables are listed in [supabase/README.md](supabase/README.md); without them the census and accounts show a closed state and the rest of the site works. `NEXT_PUBLIC_SITE_URL` only needs to be set if the canonical domain changes.
+
+The Monday bulletin and the daily cleanup need an outside clock: [deploy/README.md](deploy/README.md) has ready systemd timers, a crontab, Coolify task commands and a Cloudflare Cron Trigger, plus the write-health check (`/api/cron/zdrowie`) and a production smoke test. `vercel.json` is gone: its crons stopped running with the move and only suggested that the jobs were scheduled.

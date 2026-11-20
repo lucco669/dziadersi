@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Stamp } from "@/components/brand";
 import { Certificate } from "@/components/certificate";
 import { LabSheet } from "@/components/lab-sheet";
+import { NewsletterBox } from "@/components/newsletter-box";
 import { Section } from "@/components/page";
 import { Figure, SpeciesPlate, INK, PAPER } from "@/components/pictograms";
 import { ResultProfileNote } from "@/components/profile-notes";
@@ -39,6 +40,9 @@ const COPY = defineCopy({
       `Wynik wyższy niż u ${percentile}% z ${total} zbadanych w Narodowym Spisie. Narodowy Indeks Dziaderstwa wynosi dziś ${nid}%.`,
     model: (percentile: number, nid: string) => `Wynik wyższy niż u ${percentile}% badanych. Narodowy Indeks Dziaderstwa wynosi dziś ${nid}%.`,
     censusLink: "Narodowy Spis",
+    bulletin: "Biuletyn tygodniowy",
+    bulletinAside: "Poniedziałki, rano",
+    bulletinLead: "Wyniki takie jak ten trafiają do Narodowego Spisu. W poniedziałek Dział Statystyki podaje, jak wypadł cały tydzień: ilu zbadano, ile wyników przekroczyło próg, które gatunki rozpoznano najczęściej.",
     notYours: "Nie twój wynik?",
     takeTest: "Wykonaj test",
     scale: "Skala dziaderstwa",
@@ -96,6 +100,9 @@ const COPY = defineCopy({
     model: (percentile: number, nid: string) =>
       `Rezultat je višji kot pri ${percentile} % preiskovanih. Nacionalni indeks dziaderstva danes znaša ${nid} %.`,
     censusLink: "Nacionalni popis",
+    bulletin: "Tedenski bilten",
+    bulletinAside: "Ob ponedeljkih, zjutraj",
+    bulletinLead: "Rezultati, kot je ta, gredo v Nacionalni popis. V ponedeljek Služba za statistiko objavi, kakšen je bil ves teden: koliko pregledov, koliko rezultatov je preseglo prag, katere vrste so bile najpogosteje prepoznane.",
     notYours: "Ni tvoj izvid?",
     takeTest: "Opravi test",
     scale: "Skala dziaderstva",
@@ -197,6 +204,9 @@ export default async function ResultPage({ params }: PageProps<"/[lang]/wynik/[k
       <CaseDescription result={result} locale={locale} />
       <Lab result={result} locale={locale} />
       <Protocol result={result} counts={counts} locale={locale} />
+      <Section id="biuletyn" title={COPY[locale].bulletin} aside={COPY[locale].bulletinAside}>
+        <NewsletterBox variant="inline" lead={COPY[locale].bulletinLead} place="wynik" />
+      </Section>
       <Referral code={result.code} locale={locale} />
     </main>
   );

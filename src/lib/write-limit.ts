@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { createAdminClient, hasAdmin } from "./supabase/admin";
 import { checkWriteRequest } from "./write-policy";
 
-type Scope = "results" | "verdicts" | "tallies" | "family-create" | "family-join" | "sign-in" | "auth-mail";
+type Scope = "results" | "verdicts" | "tallies" | "family-create" | "family-join" | "sign-in" | "auth-mail" | "newsletter" | "newsletter-all";
 /** Per network address and ten-minute window. */
 const LIMITS: Record<Scope, number> = {
   results: 30,
@@ -15,6 +15,10 @@ const LIMITS: Record<Scope, number> = {
   // Supabase sees our servers, not the reader, so its own per-address limits can't tell callers apart.
   "sign-in": 30,
   "auth-mail": 10,
+  // Bulletin sign-ups without an account: each may send a confirm letter, so few per address,
+  // and a cap for everyone together (limitShared) so a botnet can't run up the Brevo bill.
+  newsletter: 5,
+  "newsletter-all": 60,
 };
 
 /**
@@ -29,6 +33,10 @@ export function networkKey(requestHeaders: Pick<Headers, "get">, scope: Scope) {
     || (process.env.VERCEL === "1"
       ? requestHeaders.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "unknown"
       : "local");
+  return budgetKey(scope, address);
+}
+
+function budgetKey(scope: Scope, address: string) {
   const day = new Date().toISOString().slice(0, 10);
   return createHmac("sha256", process.env.SUPABASE_SECRET_KEY || "local-development")
     .update(`${scope}:${day}:${address}`).digest("hex");
@@ -38,10 +46,14 @@ type Budget = "ok" | "spent" | "unavailable";
 
 /** Atomic, shared between instances. */
 async function takeBudget(requestHeaders: Pick<Headers, "get">, scope: Scope): Promise<Budget> {
+  return take(scope, networkKey(requestHeaders, scope));
+}
+
+async function take(scope: Scope, key: string): Promise<Budget> {
   if (!hasAdmin) return "unavailable";
   try {
     const { data, error } = await createAdminClient().rpc("take_write_budget", {
-      p_scope: scope, p_key: networkKey(requestHeaders, scope), p_limit: LIMITS[scope],
+      p_scope: scope, p_key: key, p_limit: LIMITS[scope],
     });
     if (error) return "unavailable";
     return data === true ? "ok" : "spent";
@@ -64,4 +76,9 @@ export async function limitWrite(request: Request, scope: Scope): Promise<Respon
 /** Server Actions (Next checks their origin itself): true when the caller may go on. Fails closed, like limitWrite. */
 export async function limitAction(scope: Scope): Promise<boolean> {
   return (await takeBudget(await headers(), scope)) === "ok";
+}
+
+/** One budget shared by every caller: true when the scope may go on. Fails closed. */
+export async function limitShared(scope: Scope): Promise<boolean> {
+  return (await take(scope, budgetKey(scope, "everyone"))) === "ok";
 }

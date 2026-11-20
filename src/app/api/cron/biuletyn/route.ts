@@ -8,6 +8,7 @@ import { accountEdition } from "@/lib/account";
 import { getBulletin } from "@/lib/bulletin";
 import { warsawTime } from "@/lib/calendar";
 import { getWeekly } from "@/lib/community";
+import { isCron } from "@/lib/cron";
 import { canMail, issueKey, unsubscribeLinks } from "@/lib/newsletter";
 import { site } from "@/lib/site";
 import { createAdminClient, hasAdmin } from "@/lib/supabase/admin";
@@ -36,8 +37,9 @@ async function editionOf(admin: Admin, id: string): Promise<Locale> {
 }
 
 /**
- * The weekly bulletin, sent by a Coolify scheduled task (0 6 * * 1) on Monday morning.
+ * The weekly bulletin, sent on Monday at 06:00 Warsaw time by a scheduled job (deploy/README.md).
  * Authorised with CRON_SECRET; one issue per week (bulletin_issues), so a retry never sends twice.
+ * Recipients are subscribed accounts and confirmed guest addresses (newsletter_recipients()).
  * Each subscriber gets the issue of their edition, with links into it.
  * In development, ?podglad shows the letter in the browser; &jezyk=sl in Slovenian.
  */
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
     return new Response(renderHtml(letter, locale, origin), { headers: { "content-type": "text/html; charset=utf-8" } });
   }
 
-  if (!canMail || request.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!canMail || !isCron(request)) {
     return new Response(null, { status: 401 });
   }
   if (!hasAdmin || !canSendEmail) return Response.json({ sent: 0, reason: "Brak konfiguracji Supabase albo Brevo." });
@@ -70,12 +72,13 @@ export async function GET(request: NextRequest) {
     console.error("Biuletyn:", error.message);
     return new Response(null, { status: 500 });
   }
-  const recipients = ((data ?? []) as (Recipient & { id: string; email: string })[]).map((row) => ({
+  const recipients = ((data ?? []) as (Recipient & { id: string; email: string; edition?: string | null })[]).map((row) => ({
     ...row,
     results: Number(row.results),
     sightings_week: Number(row.sightings_week),
     verdicts: Number(row.verdicts),
     pages_week: Number(row.pages_week),
+    guest: row.guest === true,
   }));
 
   let sent = 0;
@@ -83,7 +86,8 @@ export async function GET(request: NextRequest) {
   for (let i = 0; i < recipients.length; i += BATCH) {
     const results = await Promise.allSettled(
       recipients.slice(i, i + BATCH).map(async (recipient) => {
-        const locale = await editionOf(admin, recipient.id);
+        // A guest's edition is in their row; an account's in its auth metadata.
+        const locale = recipient.guest ? (hasLocale(recipient.edition) ? recipient.edition : DEFAULT_LOCALE) : await editionOf(admin, recipient.id);
         const links = unsubscribeLinks(recipient.id, locale);
         await sendLetter(recipient.email, bulletinLetter(issues[locale], recipient, site.url, links.page, locale), locale, site.url, {
           tags: ["biuletyn"],

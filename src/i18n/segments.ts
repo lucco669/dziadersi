@@ -29,7 +29,7 @@ export const SEGMENTS: SegmentMap = {
   kolejka: { sl: "cakalna-vrsta" },
   "krol-grilla": { sl: "kralj-zara" },
   kalendarz: { sl: "koledar" },
-  biuletyn: { sl: "bilten", children: { wypisz: "odjava" } },
+  biuletyn: { sl: "bilten", children: { wypisz: "odjava", potwierdz: "potrditev" } },
   egzamin: { sl: "izpit" },
   "czy-to-juz-dziaderstwo": { sl: "je-to-ze-dziaderstvo" },
   grupa: { sl: "lestvica" },
