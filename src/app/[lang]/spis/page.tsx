@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SignLine, Threshold } from "@/components/conventional-sign";
 import { Crowd, Tally } from "@/components/crowd";
 import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { Figure, SpeciesPlate } from "@/components/pictograms";
@@ -71,11 +72,30 @@ const COPY = defineCopy({
     lead: "Wyniki wszystkich badań przeprowadzonych w Instytucie. Anonimowo: bez imion, bez adresów i bez zgody rodziny.",
     asOf: (date: string) => `Stan na ${date} · aktualizacja co kilka minut`,
     preparing: "Spis w przygotowaniu",
-    pending: "Spis w toku",
     closed: "Spis chwilowo nieczynny",
-    soFar: (n: string, total: number) =>
-      `Dotąd ${n} ${plural(total, "badanie", "badania", "badań")}. Instytut publikuje wyniki od ${MIN_RESULTS} badań, żeby nikt nie rozpoznał wujka po jednym kafelku.`,
-    away: "Rachmistrzowie są na przerwie. Wyniki wrócą wkrótce.",
+    away: "Brak informacji. Rachmistrzowie są na przerwie, wyniki wrócą wkrótce.",
+    progress: {
+      none: "zjawisko nie wystąpiło",
+      retakes: "powtórki",
+      title: "Do pierwszej publikacji",
+      text: (missing: number) =>
+        `Liczbę badań Instytut podaje od pierwszego, bo sama liczba nikogo nie wskazuje. Średnie, rozkłady, rankingi i województwa publikuje od ${MIN_RESULTS} badań, żeby nikt nie rozpoznał wujka po jednym kafelku. Brakuje jeszcze ${missing} ${plural(missing, "badania", "badań", "badań")}.`,
+      figure: (n: number) => `Rys. 1. Badania do pierwszej publikacji: ${n} z ${MIN_RESULTS}.`,
+      action: "Wykonaj test",
+      note: "Badanie trafia do spisu w ciągu kilku minut. Anonimowo.",
+    },
+    plan: {
+      title: "Plan publikacji",
+      aside: `Od ${MIN_RESULTS} badań`,
+      items: [
+        ["Stopień dziaderstwa", "Odsetek zbadanych w czterech strefach, od śladowej do klinicznej."],
+        ["Gatunki", "Ranking rozpoznań i najczęstsze krzyżówki."],
+        ["Najczęstsze odpowiedzi", "Co odpowiada większość, zadanie po zadaniu. Próg liczy się osobno dla każdego zadania."],
+        ["Pora badania", "Najbardziej dziaderska godzina tygodnia."],
+        ["Województwa", "Średni wynik województwa, od pięciu badań w województwie."],
+        ["Powtórki", "Ile osób wraca na badanie i o ile zmienia się wynik."],
+      ],
+    },
     method: {
       title: "Metodologia",
       text: "Spis obejmuje każde ukończone badanie formularzem IBD-T2: odpowiedzi, wynik, rozpoznanie, porę badania i, jeśli ktoś je podał, województwo. Imię z certyfikatu nie trafia do spisu, podobnie jak adres IP czy jakikolwiek identyfikator. Zestawienia odświeżane są co kilka minut. Dane są prawdziwe, badani nie zawsze.",
@@ -137,11 +157,30 @@ const COPY = defineCopy({
     lead: "Rezultati vseh pregledov, opravljenih na Inštitutu. Anonimno: brez imen, brez naslovov in brez soglasja družine.",
     asOf: (date: string) => `Stanje na ${date} · posodobitev vsakih nekaj minut`,
     preparing: "Popis v pripravi",
-    pending: "Popis poteka",
     closed: "Popis je začasno zaprt",
-    soFar: (n: string, total: number) =>
-      `Doslej ${n} ${pluralSl(total, "pregled", "pregleda", "pregledi", "pregledov")}. Inštitut objavlja rezultate šele od ${MIN_RESULTS} pregledov naprej, da nihče ne bi prepoznal strica po eni sami ploščici.`,
-    away: "Popisovalci so na malici. Rezultati bodo kmalu spet tu.",
+    away: "Ni podatka. Popisovalci so na malici, rezultati bodo kmalu spet tu.",
+    progress: {
+      none: "pojava ni bilo",
+      retakes: "ponovitve",
+      title: "Do prve objave",
+      text: (missing: number) =>
+        `Število pregledov Inštitut navaja od prvega naprej, ker sama številka nikogar ne razkrije. Povprečja, porazdelitve, lestvice in vojvodstva objavi šele od ${MIN_RESULTS} pregledov naprej, da nihče ne bi prepoznal strica po eni sami ploščici. Manjka še ${missing} ${pluralSl(missing, "pregled", "pregleda", "pregledi", "pregledov")}.`,
+      figure: (n: number) => `Slika 1. Pregledi do prve objave: ${n} od ${MIN_RESULTS}.`,
+      action: "Opravi test",
+      note: "Pregled pride v popis v nekaj minutah. Anonimno.",
+    },
+    plan: {
+      title: "Načrt objav",
+      aside: `Od ${MIN_RESULTS} pregledov naprej`,
+      items: [
+        ["Stopnja dziaderstva", "Delež pregledanih v štirih območjih, od slednega do kliničnega."],
+        ["Vrste", "Lestvica diagnoz in najpogostejši križanci."],
+        ["Najpogostejši odgovori", "Kaj odgovori večina, naloga za nalogo. Prag se šteje za vsako nalogo posebej."],
+        ["Čas pregleda", "Najbolj dziaderska ura v tednu."],
+        ["Vojvodstva", "Povprečni rezultat vojvodstva, od petih pregledov v vojvodstvu naprej."],
+        ["Ponovitve", "Koliko ljudi se vrne na pregled in za koliko se spremeni rezultat."],
+      ],
+    },
     method: {
       title: "Metodologija",
       text: "Popis zajema vsak končan pregled z obrazcem IBD-T2: odgovore, rezultat, diagnozo, čas pregleda in, če ga je kdo navedel, vojvodstvo. Ime s certifikata ne pride v popis, prav tako ne naslov IP ali kakršen koli identifikator. Preglednice se osvežujejo vsakih nekaj minut. Podatki so resnični, preiskovanci pa ne vedno.",
@@ -202,6 +241,74 @@ function Figures({ census, locale, t }: { census: Census; locale: Locale; t: Cop
         </figure>
       </div>
     </section>
+  );
+}
+
+/**
+ * Below the threshold: the counts (a number points at nobody), the way to the first publication,
+ * and what it will contain. Averages, shares and everything per region wait for MIN_RESULTS.
+ */
+function Pending({ census, locale, t }: { census: Census; locale: Locale; t: Copy }) {
+  const total = census.total;
+  return (
+    <>
+      <section aria-labelledby="liczby" className="border-t border-ink">
+        <div className="wrap grid items-start gap-12 py-14 md:py-20 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-5">
+            <h2 id="liczby" className="label text-ink-soft">
+              {t.figures.title}
+            </h2>
+            <p className="mt-2 text-[clamp(4.5rem,9vw,7rem)] font-bold leading-[0.85] tracking-[-0.03em] tabular-nums">
+              {total ? formatNumber(locale, total) : "–"}
+            </p>
+            {total ? (
+              <dl className="mt-8 grid grid-cols-3 border-t border-ink">
+                {[
+                  [census.today, t.figures.today],
+                  [census.proxy, t.figures.proxy],
+                  [census.retakes, t.progress.retakes],
+                ].map(([value, label]) => (
+                  <div key={label} className="pt-3">
+                    <dt className="sr-only">{label}</dt>
+                    <dd>
+                      <span className="block text-3xl font-bold leading-none tabular-nums">{value ? formatNumber(locale, Number(value)) : "–"}</span>
+                      <span className="label mt-1 block text-ink-soft">{label}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <p className="label mt-3 text-ink-soft">{t.progress.none}</p>
+            )}
+            <CensusProfileNote />
+          </div>
+          <div className="lg:col-span-7">
+            <h3 className="text-2xl font-bold leading-tight">{t.progress.title}</h3>
+            <p className="mt-3 max-w-xl leading-snug text-ink-soft">{typo(t.progress.text(MIN_RESULTS - total))}</p>
+            <Threshold count={total} of={MIN_RESULTS} label={t.progress.figure(total)} className="mt-6" />
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Link href="/test" className="btn bg-ink text-paper hover:bg-red">
+                {t.progress.action} <span aria-hidden="true">→</span>
+              </Link>
+              <span className="label text-ink-soft">{t.progress.note}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <Section id="plan" title={t.plan.title} aside={t.plan.aside}>
+        <ul className="border-t border-ink">
+          {t.plan.items.map(([title, text]) => (
+            <li key={title} className="grid grid-cols-[1.5rem_1fr] gap-x-4 gap-y-1 border-b border-rule py-4 md:grid-cols-[1.5rem_16rem_1fr]">
+              <span className="font-sans font-semibold" aria-hidden="true">
+                x
+              </span>
+              <span className="font-bold leading-tight">{title}</span>
+              <span className="col-start-2 leading-snug text-ink-soft md:col-start-3">{typo(text)}</span>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    </>
   );
 }
 
@@ -462,11 +569,11 @@ export default async function CensusPage() {
           <Regions census={census} locale={locale} t={t} />
           <Retakes census={census} locale={locale} t={t} />
         </>
+      ) : census ? (
+        <Pending census={census} locale={locale} t={t} />
       ) : (
-        <Section id="w-toku" title={census ? t.pending : t.closed}>
-          <p className="max-w-2xl border-t border-ink pt-6 text-xl leading-snug">
-            {typo(census ? t.soFar(formatNumber(locale, census.total), census.total) : t.away)}
-          </p>
+        <Section id="w-toku" title={t.closed}>
+          <SignLine sign="·">{typo(t.away)}</SignLine>
         </Section>
       )}
 
