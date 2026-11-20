@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { TodayObservance } from "@/components/observance-today";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo, TranslatorNotes } from "@/components/page";
 import { SpeciesPlate } from "@/components/pictograms";
 import { TearOffCalendar } from "@/components/tear-off";
@@ -134,6 +135,7 @@ export default async function CalendarPage() {
           yesterday={pageFor(previousSheet(sheet, locale), locale)}
           tornToday={community ? (community.talliesToday.kartka ?? 0) : null}
         />
+        <TodayObservance today={today} locale={locale} className="mt-14 max-w-2xl" />
         <TranslatorNotes notes={t.notes} className="mt-14 max-w-2xl" />
       </section>
 
@@ -173,7 +175,9 @@ export default async function CalendarPage() {
               {upcoming.map((item) => (
                 <li key={item.date} className="grid grid-cols-[5.5rem_1fr] gap-3 border-b border-rule py-2 last:border-0">
                   <span className="label pt-0.5 text-red">{item.sheet.date.replace(/ \d{4}$/, "")}</span>
-                  <span className="font-bold leading-tight">{item.name}</span>
+                  <Link href={"/kalendarz/" + item.slug} className="font-bold leading-tight hover:text-red">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ol>

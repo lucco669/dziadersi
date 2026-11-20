@@ -10,7 +10,7 @@ import type { Calendar } from "@/lib/profile";
 import { cx, plural, pluralSl, typo } from "@/lib/typo";
 import { patchAccount, signInHref, useAccount } from "./account";
 
-export type Page = Sheet & { proverb: string; observance?: { name: string; note: string } };
+export type Page = Sheet & { proverb: string; observance?: { name: string; note: string; slug: string } };
 
 const COPY = defineCopy({
   pl: {

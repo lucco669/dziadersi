@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getCalendar } from "@/content/calendar";
 import { getCases } from "@/content/cases";
 import { getDictionary } from "@/content/dictionary";
 import { getReports } from "@/content/reports";
@@ -62,6 +63,8 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/obserwacje", "hourly", 0.6),
     page("/tablica-honorowa", "daily", 0.6),
     page("/kalendarz", "daily", 0.7),
+    page("/kalendarz/swieta", "daily", 0.7),
+    ...getCalendar(locale).OBSERVANCES.map((item) => page("/kalendarz/" + item.slug, "monthly", 0.6)),
     page("/biuletyn", "weekly", 0.6),
     page("/rejestracja", "monthly", 0.5),
     page("/o-instytucie", "yearly", 0.4),

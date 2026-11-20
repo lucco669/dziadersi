@@ -15,7 +15,7 @@ import { plural, pluralSl, typo } from "@/lib/typo";
 
 const PATH = "/dziaders/boomer";
 
-/** Two people of one species, forty years apart: the age differs, the habit does not. */
+/** Two people of one species, 35 years apart: the age differs, the habit does not. */
 const PAIR: { species: SpeciesKey; specimen: number }[] = [
   { species: "facebook", specimen: 0 },
   { species: "facebook", specimen: 1 },

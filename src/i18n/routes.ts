@@ -1,3 +1,4 @@
+import { CALENDAR_SLUGS } from "@/content/sl/slugs/calendar";
 import { CASE_SLUGS } from "@/content/sl/slugs/cases";
 import { DICTIONARY_SLUGS } from "@/content/sl/slugs/dictionary";
 import { REPORT_SLUGS } from "@/content/sl/slugs/reports";
@@ -70,6 +71,7 @@ const SLUGS: Record<string, Record<string, string>> = {
   "czy-to-juz-dziaderstwo": CASE_SLUGS,
   okazje: DOSSIER_SLUGS,
   muzeum: MUSEUM_SLUGS,
+  kalendarz: CALENDAR_SLUGS,
 };
 
 const REVERSE: Record<string, Record<string, string>> = Object.fromEntries(
