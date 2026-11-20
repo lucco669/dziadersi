@@ -105,6 +105,7 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 | `/czy-to-juz-dziaderstwo`, `/czy-to-juz-dziaderstwo/[slug]`, `/egzamin`, `/egzamin/[kod]`, `/statystyki` | 4 |
 | `/o-instytucie`, `/regulamin` | 4 |
 | `/tablica-honorowa`, `/obserwacje`, `/biuletyn`, `/biuletyn/wypisz`, `/kalendarz`, `/szukaj`, `/profil/legitymacja` | 4 |
+| `/dla-mediow`, `/indeks/ramka` (iframe widget), `/indeks/plakietka` (PNG badge), `…/karta?format=post\|relacja` (story images of cases, Rozmówki lines, exams and SZWAGIER answers) | growth |
 
 ## 4. Design system
 
