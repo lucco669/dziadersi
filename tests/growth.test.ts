@@ -53,3 +53,9 @@ test("only the Index widget may be framed by other sites, and its images may be 
     assert.equal(value(source, "Cross-Origin-Resource-Policy"), "cross-origin");
   }
 });
+
+test("Organization sameAs lists the social profiles only once there are some", async () => {
+  const { institute } = await import("../src/lib/seo");
+  const { SOCIAL } = await import("../src/lib/site");
+  assert.equal("sameAs" in institute("pl"), Object.values(SOCIAL).some(Boolean));
+});
