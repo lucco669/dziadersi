@@ -72,7 +72,8 @@ const COPY = defineCopy<{
         id: "zgody",
         title: "Biuletyn, Tablica Honorowa i kalendarz",
         paragraphs: [
-          "Biuletyn tygodniowy wysyłamy tylko osobom, które zaznaczyły go w Profilu Dziaderskim (zgoda, art. 6 ust. 1 lit. a RODO). Zgodę można cofnąć w każdej chwili: w Profilu albo jednym kliknięciem w stopce każdego listu. W liście, oprócz liczb ogólnych, są twoje liczby z ostatniego tygodnia: obserwacje, kartki z kalendarza, liczba badań i orzeczeń. Zapamiętujemy, kiedy zgoda została wyrażona.",
+          "Biuletyn tygodniowy wysyłamy tylko osobom, które go zamówiły: w Profilu Dziaderskim albo samym adresem e-mail, bez konta (zgoda, art. 6 ust. 1 lit. a RODO). Zgodę można cofnąć w każdej chwili: w Profilu albo jednym kliknięciem w stopce każdego listu. W liście do posiadaczy Profilu, oprócz liczb ogólnych, są ich liczby z ostatniego tygodnia: obserwacje, kartki z kalendarza, liczba badań i orzeczeń. Zapamiętujemy, kiedy zgoda została wyrażona.",
+          "Zamówienie bez konta przechowuje tylko adres e-mail, wydanie (polskie lub słoweńskie), datę zamówienia, datę wysłania listu z prośbą o potwierdzenie i datę potwierdzenia. Biuletyn zaczyna przychodzić dopiero po kliknięciu linku z tego listu. Niepotwierdzony adres usuwa codzienne zadanie porządkowe po 7 dniach, a wypisanie się usuwa adres od razu. Prośbę o potwierdzenie wysyłamy na jeden adres najwyżej raz na godzinę.",
           "Pseudonim na Tablicy Honorowej pokazujemy tylko wtedy, gdy zaznaczysz to w Profilu (zgoda). Obok pseudonimu widać wyłącznie liczby: zaobserwowane gatunki, zgłoszenia, orzeczenia, kartki i najdłuższą serię. Odznaczenie zgody usuwa pseudonim z Tablicy przy najbliższym odświeżeniu, zwykle w ciągu kilku minut.",
           "Zerwana kartka z kalendarza to data przypisana do konta, potrzebna do serii dni i odznak. Bez konta liczymy ją tylko anonimowo, w dziennej sumie. Legitymacja Obserwatora powstaje na bieżąco z danych konta i nie jest nigdzie zapisywana.",
         ],
@@ -155,7 +156,8 @@ const COPY = defineCopy<{
         id: "zgody",
         title: "Bilten, Častna tabla in koledar",
         paragraphs: [
-          "Tedenski bilten pošiljamo samo osebam, ki so ga označile v Dziaderskem profilu (privolitev, točka (a) prvega odstavka 6. člena GDPR). Privolitev lahko kadar koli prekličeš: v profilu ali z enim klikom v nogi vsakega pisma. V pismu so poleg splošnih številk tudi tvoje številke iz zadnjega tedna: opazovanja, listi koledarja, število pregledov in razsodb. Zapomnimo si, kdaj je bila privolitev dana.",
+          "Tedenski bilten pošiljamo samo osebam, ki so ga naročile: v Dziaderskem profilu ali samo z e-poštnim naslovom, brez računa (privolitev, točka (a) prvega odstavka 6. člena GDPR). Privolitev lahko kadar koli prekličeš: v profilu ali z enim klikom v nogi vsakega pisma. V pismu imetnikom profila so poleg splošnih številk tudi njihove številke iz zadnjega tedna: opazovanja, listi koledarja, število pregledov in razsodb. Zapomnimo si, kdaj je bila privolitev dana.",
+          "Naročilo brez računa hrani samo e-poštni naslov, izdajo (poljsko ali slovensko), datum naročila, datum pisma s prošnjo za potrditev in datum potrditve. Bilten začne prihajati šele po kliku na povezavo iz tega pisma. Nepotrjen naslov po 7 dneh izbriše vsakodnevno čiščenje, odjava pa naslov izbriše takoj. Prošnjo za potrditev na en naslov pošljemo največ enkrat na uro.",
           "Vzdevek na Častni tabli prikažemo samo, če to označiš v profilu (privolitev). Ob vzdevku so vidne samo številke: opažene vrste, prijave, razsodbe, listi in najdaljši niz. Ko soglasje odznačiš, vzdevek izgine s Table ob naslednji osvežitvi, običajno v nekaj minutah.",
           "Odtrgan list koledarja je datum, povezan z računom, ki ga potrebujemo za nize dni in značke. Brez računa ga štejemo samo anonimno, v dnevni vsoti. Opazovalska izkaznica nastane sproti iz podatkov računa in se nikjer ne shranjuje.",
         ],

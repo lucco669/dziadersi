@@ -429,6 +429,14 @@ export const TASKS: Task[] = [
   },
 ];
 
+/**
+ * Formularz IBD-T2S, the short form for "Badanie przy stole": six IBD-T2 tasks, one per room plus a
+ * second from Room II, chosen by simulation so every species can still win (see tests/table.test.ts).
+ * Positions in TASKS, in the order they are asked. Frozen like TASKS: codes starting "3" store answers
+ * in this order, so never change, reorder or extend it; a different subset is a new code version.
+ */
+export const SHORT_FORM = [1, 3, 4, 6, 10, 15] as const;
+
 export type Verdict = {
   from: number;
   label: string;
@@ -523,6 +531,9 @@ export const getStations = (locale: Locale): Station[] => EDITIONS[locale].stati
 
 /** Formularz IBD-T2 in the edition's language: same order, points and weights as TASKS. */
 export const getTasks = (locale: Locale): Task[] => EDITIONS[locale].tasks;
+
+/** Formularz IBD-T2S in the edition's language: the same task objects as getTasks, in SHORT_FORM order. */
+export const getShortTasks = (locale: Locale): Task[] => SHORT_FORM.map((index) => EDITIONS[locale].tasks[index]);
 
 export const getVerdicts = (locale: Locale): Verdict[] => EDITIONS[locale].verdicts;
 

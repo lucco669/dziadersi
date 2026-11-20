@@ -1,0 +1,14 @@
+# The weekly bulletin: Mondays at 06:00 Warsaw time.
+# A missed run (server off) happens at the next boot; the bulletin sends at most one issue a week.
+
+[Unit]
+Description=dziader.si weekly bulletin (Monday 06:00 Europe/Warsaw)
+
+[Timer]
+OnCalendar=Mon *-*-* 06:00:00 Europe/Warsaw
+Persistent=true
+RandomizedDelaySec=120
+Unit=dziadersi-cron@biuletyn.service
+
+[Install]
+WantedBy=timers.target

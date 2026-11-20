@@ -83,6 +83,7 @@ export const SHARE_CARDS = [
   "/superinteligencja/[kod]",
   "/tablica-honorowa",
   "/test",
+  "/test/przy-stole",
   "/wynik/[kod]",
 ];
 

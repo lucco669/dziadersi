@@ -33,6 +33,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
   return [
     page("/", "daily", 1),
     page("/test", "monthly", 0.9),
+    page("/test/przy-stole", "monthly", 0.7),
     page("/dziaders", "monthly", 0.8),
     page("/dziaders/kobieta", "monthly", 0.7),
     page("/dziaders/boomer", "monthly", 0.7),

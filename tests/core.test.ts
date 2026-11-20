@@ -4,6 +4,7 @@ import { TASKS } from "../src/content/test";
 import { decodeGroup, decodeResult, encodeResult, evaluate, GROUP_LIMIT, groupPath, radix, SAMPLE_DRAFT } from "../src/lib/test";
 import { analyticsUrl } from "../src/lib/analytics-url";
 import { checkWriteRequest, readWriteBody } from "../src/lib/write-policy";
+import { judgeWrites } from "../src/lib/health";
 import { readProgress } from "../src/lib/test-progress";
 import { familyMembers, validFamilyCode } from "../src/lib/family";
 
@@ -106,4 +107,26 @@ test("both editions diagnose the same result with their own names", () => {
     polish.diagnosis.species.map((species) => species.key),
   );
   assert.equal(slovenian.diagnosis.name, "Žarno-avtomobilski dziaders");
+});
+
+test("census writes pass the origin check as production delivers them, behind Cloudflare and Coolify", () => {
+  // Production (verified 20 Nov 2026): Next sees its own https://localhost:3000, the browser's Host and Origin.
+  const behindProxy = (headers: Record<string, string>) =>
+    checkWriteRequest(new Request("https://localhost:3000/api/wyniki", { method: "POST", headers: { host: "dziader.si", "sec-fetch-site": "same-origin", "content-type": "application/json", ...headers }, body: "{}" }));
+  assert.equal(behindProxy({ origin: "https://dziader.si" }), null);
+  assert.equal(behindProxy({}), null, "a beacon without Origin");
+  assert.equal(behindProxy({ origin: "https://evil.example" })?.status, 403);
+  // If the proxy ever stops sending X-Forwarded-Proto: https, Next sees http:// and every write is refused.
+  // /api/cron/zdrowie and the "Spis: zapis odrzucony" event exist to notice exactly that.
+  assert.equal(checkWriteRequest(new Request("http://localhost:3000/api/wyniki", { method: "POST", headers: { host: "dziader.si", origin: "https://dziader.si" }, body: "{}" }))?.status, 403);
+});
+
+test("write health tells a quiet census from a broken one", () => {
+  assert.deepEqual(judgeWrites({ attempts: {}, results: 0, tallies: 0 }), { status: "quiet", problems: [] });
+  assert.equal(judgeWrites({ attempts: { results: 4, tallies: 12 }, results: 4, tallies: 30 }).status, "ok");
+  assert.equal(judgeWrites({ attempts: { results: 2 }, results: 0, tallies: 0 }).status, "ok", "a few junk requests are no alarm");
+  const broken = judgeWrites({ attempts: { results: 9, tallies: 40 }, results: 0, tallies: 0 });
+  assert.equal(broken.status, "broken");
+  assert.equal(broken.problems.length, 2);
+  assert.equal(judgeWrites({ attempts: { tallies: 40 }, results: 0, tallies: 3 }).status, "ok");
 });

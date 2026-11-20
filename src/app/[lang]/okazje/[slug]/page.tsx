@@ -47,6 +47,9 @@ const COPY = defineCopy({
     cardNote: "Do przepisania odręcznie. Instytut nie zgłasza praw autorskich do życzeń.",
     promo: "Rozpoznajesz kogoś przy stole?",
     promoText: "Sprawdź najpierw siebie. Test Dziadersa wydaje certyfikat, który można spokojnie pokazać rodzinie.",
+    table: "Badanie przy stole",
+    tablePromo: "Zbadajcie cały stół. Jeden telefon, przed makowcem.",
+    tablePromoText: "Od dwóch do ośmiu osób, sześć zadań na każdą. Telefon idzie dookoła stołu, a wyniki Instytut ogłasza wszystkim naraz: ranking, zgodność dziaderska i certyfikat dla każdego.",
   },
   sl: {
     occasions: "Priložnosti",
@@ -73,6 +76,9 @@ const COPY = defineCopy({
     cardNote: "Za ročni prepis. Inštitut ne uveljavlja avtorskih pravic na voščilih.",
     promo: "Prepoznaš koga pri mizi?",
     promoText: "Najprej preveri sebe. Test dziadersa izda certifikat, ki ga lahko mirno pokažeš družini.",
+    table: "Pregled za mizo",
+    tablePromo: "Preglejte vso mizo. En telefon, pred potico.",
+    tablePromoText: "Od dveh do osmih oseb, šest nalog za vsako. Telefon gre okoli mize, izvide pa Inštitut razglasi vsem hkrati: lestvica, dziaderska združljivost in certifikat za vsakogar.",
   },
 });
 const META_COPY = defineCopy({
@@ -111,6 +117,8 @@ export default async function DossierPage({ params }: Props) {
   const reportPath = dossier.reportSlug ? editorialPath("raporty", dossier.reportSlug, locale) : undefined;
   const report = getReports(locale).find((item) => "/raporty/" + item.slug === reportPath);
   const path = "/okazje/" + dossier.slug;
+  // Keys stay Polish in both editions: the Christmas Eve guide carries the table mode.
+  const christmasEve = dossier.bingo === "wigilia";
   const crumbs = [{ label: t.occasions, href: "/okazje" }, { label: dossier.title }];
   return (
     <main id="tresc">
@@ -149,6 +157,11 @@ export default async function DossierPage({ params }: Props) {
         <Link href={"/bingo/" + card.code + "/druk"} className="btn border border-ink hover:bg-ink hover:text-paper">
           {t.print}
         </Link>
+        {christmasEve && (
+          <Link href="/test/przy-stole" className="btn border border-ink hover:bg-ink hover:text-paper">
+            {t.table} →
+          </Link>
+        )}
       </div>
       <Section id="teren" title={t.terrain}>
         <div className="grid gap-10 lg:grid-cols-2">
@@ -299,7 +312,11 @@ export default async function DossierPage({ params }: Props) {
             ))}
         </ul>
       </Section>
-      <TestPromo title={t.promo} text={t.promoText} />
+      {christmasEve ? (
+        <TestPromo title={t.tablePromo} text={typo(t.tablePromoText)} href="/test/przy-stole" cta={t.table} />
+      ) : (
+        <TestPromo title={t.promo} text={t.promoText} />
+      )}
     </main>
   );
 }

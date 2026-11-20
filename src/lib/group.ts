@@ -51,12 +51,14 @@ export function pairs(members: Member[]) {
   return { best: all[0], worst: all[all.length - 1] };
 }
 
-/** Findings two respondents share: the same answer to the same task. */
+/**
+ * Findings two respondents share: the same answer to the same task. IBD-T2 and its short form
+ * share their tasks, so a task is known by its section; IBD-T1 asked other questions.
+ */
 export function sharedFindings(a: Result, b: Result): Symptom[] {
-  if (a.version !== b.version) return [];
-  return a.findings.filter((finding) =>
-    b.findings.some((other) => other.number === finding.number && other.answer === finding.answer),
-  );
+  if ((a.version === 1) !== (b.version === 1)) return [];
+  const same = (x: Symptom, y: Symptom) => (a.version === b.version ? x.number === y.number : x.section === y.section);
+  return a.findings.filter((finding) => b.findings.some((other) => same(finding, other) && other.answer === finding.answer));
 }
 
 /** The species diagnosed most often in a group, first species of hybrids included, as the members' results name it. */

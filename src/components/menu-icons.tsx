@@ -34,6 +34,20 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       </g>
     </g>
   ),
+  "/test/przy-stole": (
+    <g>
+      <Tiny x={8} y={30} />
+      <Tiny x={40} y={30} />
+      <Tiny x={24} y={30} color={GREY} />
+      <rect x={3} y={30} width={42} height={3} fill={INK} />
+      <line x1={8} y1={33} x2={8} y2={39} stroke={INK} strokeWidth={1.6} />
+      <line x1={40} y1={33} x2={40} y2={39} stroke={INK} strokeWidth={1.6} />
+      <g className="mi-pass">
+        <rect x={11} y={20} width={5} height={8} rx={0.8} fill={INK} />
+        <rect x={12} y={21.2} width={3} height={4.6} fill={RED} />
+      </g>
+    </g>
+  ),
   "/egzamin": (
     <g className="mi-look">
       <rect x={18} y={11} width={12} height={6} fill={INK} />

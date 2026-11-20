@@ -37,7 +37,7 @@ const COPY = defineCopy({
     email: "Biuletyn e-mailem",
     emailAside: "Poniedziałki, rano",
     contents:
-      "W liście: liczby tygodnia, sprawa tygodnia, rozpoznanie i obserwacja tygodnia, komunikat oraz twój własny tydzień: obserwacje, kartki z kalendarza i orzeczenia. Bez reklam, bez przekazywania adresu dalej.",
+      "W liście: liczby tygodnia, sprawa tygodnia, rozpoznanie i obserwacja tygodnia, komunikat, a z Profilem Dziaderskim także twój własny tydzień: obserwacje, kartki z kalendarza i orzeczenia. Bez reklam, bez przekazywania adresu dalej.",
     privacy: "Prywatność",
     promo: {
       title: "W przyszłym tygodniu w statystyce możesz być ty.",
@@ -64,7 +64,7 @@ const COPY = defineCopy({
     email: "Bilten po e-pošti",
     emailAside: "Ob ponedeljkih, zjutraj",
     contents:
-      "V pismu: številke tedna, primer tedna, diagnoza in opazovanje tedna, obvestilo in tvoj lastni teden: opazovanja, listi s koledarja in razsodbe. Brez oglasov, brez posredovanja naslova naprej.",
+      "V pismu: številke tedna, primer tedna, diagnoza in opazovanje tedna, obvestilo, z Dziaderskim profilom pa tudi tvoj lastni teden: opazovanja, listi s koledarja in razsodbe. Brez oglasov, brez posredovanja naslova naprej.",
     privacy: "Zasebnost",
     promo: {
       title: "Prihodnji teden si v statistiki lahko ti.",
@@ -181,11 +181,11 @@ export default async function BulletinPage() {
       <Section id="zapisy" title={t.email} aside={t.emailAside}>
         <div className="grid gap-12 border-t border-ink pt-6 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            <NewsletterBox />
+            <NewsletterBox place="biuletyn" />
           </div>
           <p className="label max-w-sm text-ink-soft lg:col-span-5">
             {typo(t.contents)}{" "}
-            <Link href="/prywatnosc#spolecznosc" className="link text-ink">
+            <Link href="/prywatnosc#zgody" className="link text-ink">
               {t.privacy}
             </Link>
           </p>

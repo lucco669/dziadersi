@@ -17,17 +17,11 @@ import { isFamilyId } from "@/lib/write-policy";
 import { refreshAccount } from "./account";
 import { Seal } from "./brand";
 import { SpeciesPlate } from "./pictograms";
-import { BlotView, ChoiceView, SmsView } from "./test/choice";
-import { InventoryView } from "./test/inventory";
-import { MapView } from "./test/map";
-import { RapidView } from "./test/rapid";
-import { ReflexView } from "./test/reflex";
-import { ScaleView } from "./test/scale";
 import { Check, useKeys } from "./test/shared";
 import { RoutingSlip } from "./test/slip";
+import { TaskBody } from "./test/task-body";
 import { TestIntro as Intro } from "./test/intro";
 import { useReducedMotion } from "./hooks";
-import { WordsView } from "./test/words";
 
 const TOTAL = TASKS.length;
 const PROGRESS_KEY = "ibd-t2";
@@ -175,44 +169,6 @@ function writeProgress(progress: Progress | null) {
     else sessionStorage.removeItem(PROGRESS_KEY);
   } catch {
     // Private mode or blocked storage: the test still works, it just can't resume.
-  }
-}
-
-function TaskBody({
-  task,
-  proxy,
-  value,
-  seed,
-  untimed,
-  onAnswer,
-}: {
-  task: Task;
-  proxy: boolean;
-  value: number | undefined;
-  seed: number;
-  untimed: boolean;
-  onAnswer: (value: number) => void;
-}) {
-  const props = { proxy, value, seed, onAnswer, untimed };
-  switch (task.kind) {
-    case "choice":
-      return <ChoiceView task={task} {...props} />;
-    case "sms":
-      return <SmsView task={task} {...props} />;
-    case "blot":
-      return <BlotView task={task} {...props} />;
-    case "words":
-      return <WordsView task={task} {...props} />;
-    case "reflex":
-      return <ReflexView task={task} {...props} />;
-    case "map":
-      return <MapView task={task} {...props} />;
-    case "inventory":
-      return <InventoryView task={task} {...props} />;
-    case "scale":
-      return <ScaleView task={task} {...props} />;
-    case "rapid":
-      return <RapidView task={task} {...props} />;
   }
 }
 
@@ -386,8 +342,12 @@ export function TestRunner() {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ code, attempt, region: region || undefined, previous }),
     })
-      .then(() => refreshAccount())
-      .catch(() => {});
+      .then((response) => {
+        // The visitor never sees this fail, so analytics has to: a broken census shows up as these events.
+        if (!response.ok) track("Spis: zapis odrzucony", { status: response.status });
+        void refreshAccount();
+      })
+      .catch(() => track("Spis: zapis odrzucony", { status: 0 }));
   }
 
   function answer(value: number) {

@@ -9,7 +9,7 @@
 export type SegmentMap = Record<string, { sl: string; children?: Record<string, string> }>;
 
 export const SEGMENTS: SegmentMap = {
-  test: { sl: "test" },
+  test: { sl: "test", children: { "przy-stole": "za-mizo" } },
   wynik: { sl: "izvid", children: { certyfikat: "certifikat", badania: "preiskave" } },
   atlas: { sl: "atlas", children: { "gatunki-pokrewne": "sorodne-vrste" } },
   slownik: { sl: "slovar" },
@@ -30,10 +30,10 @@ export const SEGMENTS: SegmentMap = {
   kolejka: { sl: "cakalna-vrsta" },
   "krol-grilla": { sl: "kralj-zara" },
   kalendarz: { sl: "koledar", children: { swieta: "prazniki" } },
-  biuletyn: { sl: "bilten", children: { wypisz: "odjava" } },
+  biuletyn: { sl: "bilten", children: { wypisz: "odjava", potwierdz: "potrditev" } },
   egzamin: { sl: "izpit" },
   "czy-to-juz-dziaderstwo": { sl: "je-to-ze-dziaderstvo" },
-  grupa: { sl: "lestvica" },
+  grupa: { sl: "lestvica", children: { karta: "kartica" } },
   grupy: { sl: "skupina" },
   profil: { sl: "profil", children: { zapisz: "shrani", zachowaj: "ohrani", legitymacja: "izkaznica" } },
   konto: { sl: "racun" },

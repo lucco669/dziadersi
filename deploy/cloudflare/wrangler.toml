@@ -1,0 +1,14 @@
+# Alternative scheduler, see deploy/README.md. Deploy from this folder:
+#   npx wrangler deploy
+#   npx wrangler secret put CRON_SECRET
+name = "dziadersi-cron"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = false
+
+[vars]
+SITE = "https://dziader.si"
+
+# UTC. Both offsets of Europe/Warsaw (CET and CEST); worker.js keeps the one that matches.
+[triggers]
+crons = ["0 4,5 * * 1", "0 1,2 * * *"]

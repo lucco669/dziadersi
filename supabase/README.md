@@ -22,9 +22,11 @@ Until a migration runs, the pages that depend on it show "·" (no information) i
 
 5. `20261003100000_groups_and_write_limits.sql`: stable family invitations, atomic membership limits, submission idempotency and database-backed write budgets. **Apply this before deploying the new API handlers.** Their writes return 503 if the budget function is unavailable; result calculation remains independent of the database.
 
-Family invitations are private by possession of an unguessable link, not by account membership. Members explicitly see that signatures and results are shared with link holders. Links expire after 90 days. `/api/cron/porzadki` removes expired groups (with their members) and stale budget rows daily, authorised by `CRON_SECRET`. Configure that secret even if the newsletter is disabled. Existing `/grupa/…` snapshot links still work.
+Family invitations are private by possession of an unguessable link, not by account membership. Members explicitly see that signatures and results are shared with link holders. Links expire after 90 days. `/api/cron/porzadki` removes expired groups (with their members), stale budget rows and unconfirmed guest bulletin addresses daily, authorised by `CRON_SECRET`. Nothing calls it by itself since the move off Vercel: schedule it as described in [deploy/README.md](../deploy/README.md). Configure that secret even if the newsletter is disabled. Existing `/grupa/…` snapshot links still work.
 
-Write budgets use a daily HMAC of Vercel's trusted `x-vercel-forwarded-for` header and retain no raw IP. The existing Supabase secret keys the HMAC. See [Vercel request headers](https://vercel.com/docs/headers/request-headers#x-vercel-forwarded-for). Local and non-Vercel deployments share a conservative fallback bucket; configure a trusted edge identity before moving production to another host. The database limiter is not a substitute for the deployment firewall: verify Vercel's managed DDoS protection and application firewall settings before promotion.
+Write budgets use a daily HMAC of Cloudflare's `cf-connecting-ip` header (the site is reachable only through the Cloudflare tunnel, which overwrites it on every request) and retain no raw IP. The existing Supabase secret keys the HMAC. Without that header (local development) every caller shares one conservative bucket. The database limiter is not a substitute for Cloudflare's own DDoS and WAF protection. Budgets double as the write-health signal: `/api/cron/zdrowie` compares them with stored rows (see [deploy/README.md](../deploy/README.md)).
+
+6. `20261120120000_newsletter_guests.sql`: the bulletin without an account. `newsletter_guests` (address, edition, double opt-in), `request_newsletter_guest()` (one confirm letter an hour per address) and a new `newsletter_recipients()` that adds confirmed guests. Run it before deploying the code with the guest form; until then the form answers that the secretariat is closed.
 
 Never edit a migration that has already run. Changes go into a new file with a later timestamp.
 
@@ -39,7 +41,7 @@ Never edit a migration that has already run. Changes go into a new file with a l
 | `BREVO_API_KEY` | Brevo → SMTP & API → API Keys (`xkeysib-…`) | Sensitive |
 | `EMAIL_FROM` | optional, default `Instytut Badań nad Dziaderstwem <instytut@dziader.si>`; must be a verified Brevo sender | Config |
 | `EMAIL_REPLY_TO` | optional: where replies to the letters go | Config |
-| `CRON_SECRET` | any long random string; Vercel Cron sends it to `/api/cron/biuletyn`, and it signs unsubscribe links | Sensitive |
+| `CRON_SECRET` | any long random string; the scheduled jobs send it to `/api/cron/biuletyn`, `/api/cron/porzadki` and `/api/cron/zdrowie` ([deploy/README.md](../deploy/README.md)), and it signs bulletin confirm and unsubscribe links | Sensitive |
 
 Put the same values in `.env.local` for local development.
 
@@ -119,9 +121,10 @@ Use a test address you control. Both `/konto` and `/sl/racun` offer password log
 - `public.profiles.newsletter` / `honor`: the two opt-ins, off by default; `newsletter_at` records when the bulletin was ordered.
 - `public.calendar_pages`: one row per account per day a calendar page was torn. Owner-only.
 - `public.bulletin_issues`: one row per Monday, with how many letters went out. Server only.
+- `public.newsletter_guests`: bulletin subscriptions without an account: lower-cased address, edition, when it was ordered, when the last confirm letter went out and when it was confirmed. Server only. Unconfirmed rows are deleted after 7 days by the daily cleanup; unsubscribing deletes the row.
 
 ## The weekly bulletin
 
-Vercel Cron calls `/api/cron/biuletyn` on Mondays at 06:00 UTC (`vercel.json`) with `Authorization: Bearer $CRON_SECRET`. The handler claims the week in `bulletin_issues` (a retry finds it taken and stops), reads `newsletter_recipients()`, and sends through Brevo in batches of five, with `List-Unsubscribe` and one-click unsubscribe. To send an issue again, delete that week's row. In development, `http://localhost:3000/api/cron/biuletyn?podglad` shows the letter (`&jezyk=sl` for the Slovenian one). Each subscriber gets the issue in their edition, read from the account's `jezyk` user metadata through the Auth admin API (one call per letter; nothing stored means Polish). `GET /api/biuletyn/wypisz` only redirects to the confirmation page, so mail clients that open the unsubscribe link instead of posting to it land on the button.
+A scheduled job calls `/api/cron/biuletyn` on Mondays at 06:00 Warsaw time with `Authorization: Bearer $CRON_SECRET` (a Coolify scheduled task, a systemd timer or a Cloudflare Cron Trigger: [deploy/README.md](../deploy/README.md)). The handler claims the week in `bulletin_issues` (a retry finds it taken and stops), reads `newsletter_recipients()`, and sends through Brevo in batches of five, with `List-Unsubscribe` and one-click unsubscribe. To send an issue again, delete that week's row. In development, `http://localhost:3000/api/cron/biuletyn?podglad` shows the letter (`&jezyk=sl` for the Slovenian one). Each subscriber gets the issue in their edition, read from the account's `jezyk` user metadata through the Auth admin API (one call per letter; nothing stored means Polish). `GET /api/biuletyn/wypisz` only redirects to the confirmation page, so mail clients that open the unsubscribe link instead of posting to it land on the button.
 
 Deleting an account (button in the profile) removes the auth user, which cascades to the profile, saved results, sightings, bookmarks and case submissions. Anonymous census rows and tallies stay, and verdicts stay without their owner.

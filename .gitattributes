@@ -1,0 +1,2 @@
+# Unit files, crontab and scripts in deploy/ are copied to a Linux server: keep LF on every checkout.
+deploy/** text eol=lf

@@ -1,5 +1,6 @@
 import { SPECIES, speciesByKey, type Species, type SpeciesKey } from "@/content/species";
 import {
+  getShortTasks,
   getTasks,
   getUnspecified,
   getVerdicts,
@@ -28,6 +29,11 @@ import { formatDate } from "./typo";
  * Version 1 (Formularz IBD-T1, retired): "1" + 24 base-4 answers in 10 base36 chars + the date.
  * Still decoded and scored exactly as before, so old links keep their results.
  *
+ * Version 3 (Formularz IBD-T2S, "Badanie przy stole"): six IBD-T2 tasks (SHORT_FORM), packed like
+ * version 2 (family-interview digit first) under "3", with the same date, name and specimen suffixes.
+ * Its score is the percentage of its own maximum, and its species affinity is damped harder and needs
+ * a little more to name a species, because six answers are thinner evidence than sixteen.
+ *
  * Codes and scores are the same in both editions: scoring reads the Polish data, and only the words
  * of a result (diagnosis, verdict, symptoms, date) follow the locale it is evaluated in.
  */
@@ -50,8 +56,11 @@ const DAY_MS = 86_400_000;
 const NAME = "(?:~([A-Za-z0-9_-]{2,100}))?";
 const SPECIMEN = "(?:!([012]))?";
 
+/** 1: IBD-T1 (retired), 2: IBD-T2, 3: IBD-T2S, the short form at the table. */
+export type Version = 1 | 2 | 3;
+
 export type Draft = {
-  version: 1 | 2;
+  version: Version;
   /** One value per task, in the task's own radix. */
   answers: number[];
   day: number;
@@ -280,20 +289,48 @@ const asTasks = (questions: QuestionV1[]): Task[] =>
 
 const TASKS_V1 = asTasks(QUESTIONS_V1);
 
-/** Both forms in the words of each edition, with the same points and weights. */
-const FORMS: Record<Locale, Record<1 | 2, Task[]>> = {
-  pl: { 1: TASKS_V1, 2: TASKS },
-  sl: { 1: asTasks(getQuestionsV1("sl")), 2: getTasks("sl") },
+const TASKS_V3 = getShortTasks("pl");
+
+/** Every form in the words of each edition, with the same points and weights. */
+const FORMS: Record<Locale, Record<Version, Task[]>> = {
+  pl: { 1: TASKS_V1, 2: TASKS, 3: TASKS_V3 },
+  sl: { 1: asTasks(getQuestionsV1("sl")), 2: getTasks("sl"), 3: getShortTasks("sl") },
 };
+
+/** The tasks of a form in an edition's words, in code order. */
+export const formTasks = (version: Version, locale: Locale) => FORMS[locale][version];
 
 /* Scoring per form: maximum points and, per species, the best and the chance score. */
 
-const PROFILES = { 1: TASKS_V1.map(profile), 2: TASKS.map(profile) };
+const PROFILES = { 1: TASKS_V1.map(profile), 2: TASKS.map(profile), 3: TASKS_V3.map(profile) };
 
-const total = (version: 1 | 2) => PROFILES[version].reduce((sum, item) => sum + item.max, 0);
-export const MAX_POINTS = { 1: total(1), 2: total(2) } as const;
+const total = (version: Version) => PROFILES[version].reduce((sum, item) => sum + item.max, 0);
+export const MAX_POINTS = { 1: total(1), 2: total(2), 3: total(3) } as const;
 
-function ranges(version: 1 | 2) {
+/**
+ * How a form names a species. `damping` shrinks the affinity of species that rest on few points
+ * (max / (max + damping)); `named` is the affinity the leading species needs to be named at all.
+ * Versions 1 and 2 keep their published values. Version 3 was set by simulation (tests/table.test.ts):
+ * with these values every species still wins under random answering and hybrids occur about as
+ * often as in IBD-T2, while a respondent leaning to one species is still recognised.
+ */
+export const NAMING: Record<Version, { damping: number; named: number }> = {
+  1: { damping: 3, named: 0.2 },
+  2: { damping: 3, named: 0.2 },
+  3: { damping: 4, named: 0.25 },
+};
+
+/**
+ * The model percentile until the census has enough results: a normal curve per form. The short form
+ * spreads wider: random answers give it a standard deviation about 1.45 times IBD-T2's.
+ */
+const SPREAD: Record<Version, { mean: number; sd: number }> = {
+  1: { mean: 46, sd: 19 },
+  2: { mean: 46, sd: 19 },
+  3: { mean: 49, sd: 27 },
+};
+
+function ranges(version: Version) {
   return Object.fromEntries(
     SPECIES.map((species) => [
       species.key,
@@ -305,7 +342,7 @@ function ranges(version: 1 | 2) {
   ) as Record<SpeciesKey, { max: number; chance: number }>;
 }
 
-const RANGE = { 1: ranges(1), 2: ranges(2) };
+const RANGE = { 1: ranges(1), 2: ranges(2), 3: ranges(3) };
 
 type Diagnosable = Species & { prefix: string; suffix: string };
 
@@ -324,6 +361,16 @@ const V2_SPACE = V2_RADICES.reduce((product, size) => product * BigInt(size), Bi
 const V2_LENGTH = (V2_SPACE - BigInt(1)).toString(36).length;
 const CODE_V1 = new RegExp(`^1([0-9a-z]{10})([0-9a-z]{3})${NAME}${SPECIMEN}$`);
 const CODE_V2 = new RegExp(`^2([0-9a-z]{${V2_LENGTH}})([0-9a-z]{3})${NAME}${SPECIMEN}$`);
+const V3_RADICES = [2, ...TASKS_V3.map(radix)];
+const V3_SPACE = V3_RADICES.reduce((product, size) => product * BigInt(size), BigInt(1));
+const V3_LENGTH = (V3_SPACE - BigInt(1)).toString(36).length;
+const CODE_V3 = new RegExp(`^3([0-9a-z]{${V3_LENGTH}})([0-9a-z]{3})${NAME}${SPECIMEN}$`);
+
+/** Mixed-radix packing for versions 2 and 3: the family-interview digit, then one digit per task. */
+const PACKED = {
+  2: { radices: V2_RADICES, space: V2_SPACE, length: V2_LENGTH, pattern: CODE_V2 },
+  3: { radices: V3_RADICES, space: V3_SPACE, length: V3_LENGTH, pattern: CODE_V3 },
+} as const;
 
 const dayCode = (day: number) => Math.min(Math.max(day, 0), 36 ** 3 - 1).toString(36).padStart(3, "0");
 
@@ -340,29 +387,32 @@ export function encodeResult({ version, answers, day, name = "", proxy, specimen
     const packed = answers.reduce((sum, answer) => sum * 4 + answer, 0);
     return `1${packed.toString(36).padStart(10, "0")}${suffix}`;
   }
+  const { radices, length } = PACKED[version];
   const digits = [proxy ? 1 : 0, ...answers];
-  const packed = digits.reduce((sum, digit, i) => sum * BigInt(V2_RADICES[i]) + BigInt(digit), BigInt(0));
-  return `2${packed.toString(36).padStart(V2_LENGTH, "0")}${suffix}`;
+  const packed = digits.reduce((sum, digit, i) => sum * BigInt(radices[i]) + BigInt(digit), BigInt(0));
+  return `${version}${packed.toString(36).padStart(length, "0")}${suffix}`;
 }
 
 export function decodeResult(code: string): Draft | null {
-  const v2 = CODE_V2.exec(code);
-  if (v2) {
-    let packed = parse36(v2[1]);
-    if (packed >= V2_SPACE) return null;
+  for (const version of [2, 3] as const) {
+    const { radices, space, pattern } = PACKED[version];
+    const match = pattern.exec(code);
+    if (!match) continue;
+    let packed = parse36(match[1]);
+    if (packed >= space) return null;
     const digits: number[] = [];
-    for (let i = V2_RADICES.length - 1; i >= 0; i--) {
-      const size = BigInt(V2_RADICES[i]);
+    for (let i = radices.length - 1; i >= 0; i--) {
+      const size = BigInt(radices[i]);
       digits[i] = Number(packed % size);
       packed /= size;
     }
     return {
-      version: 2,
+      version,
       proxy: digits[0] === 1,
       answers: digits.slice(1),
-      day: parseInt(v2[2], 36),
-      name: v2[3] ? cleanName(fromBase64Url(v2[3])) : "",
-      ...(v2[4] === undefined ? {} : { specimen: Number(v2[4]) as SpecimenIndex }),
+      day: parseInt(match[2], 36),
+      name: match[3] ? cleanName(fromBase64Url(match[3])) : "",
+      ...(match[4] === undefined ? {} : { specimen: Number(match[4]) as SpecimenIndex }),
     };
   }
 
@@ -417,7 +467,7 @@ export type Symptom = {
 export type Result = {
   code: string;
   specimen: SpecimenIndex;
-  version: 1 | 2;
+  version: Version;
   answers: number[];
   name: string;
   proxy: boolean;
@@ -442,19 +492,20 @@ export type Result = {
 
 const epithet = (species: Species) => species.latin.split(" ")[1];
 
-function affinities(version: 1 | 2, earned: Weights) {
+function affinities(version: Version, earned: Weights) {
+  const { damping } = NAMING[version];
   return DIAGNOSABLE.map((species) => {
     const { max, chance } = RANGE[version][species.key];
     const value = earned[species.key] ?? 0;
     // Damped for species that rest on only a few answers.
-    const affinity = max > chance ? ((value - chance) / (max - chance)) * (max / (max + 3)) : 0;
+    const affinity = max > chance ? ((value - chance) / (max - chance)) * (max / (max + damping)) : 0;
     return { species, affinity, earned: value };
   }).sort((a, b) => b.affinity - a.affinity || b.earned - a.earned);
 }
 
-function diagnose(ranked: ReturnType<typeof affinities>, score: number, locale: Locale): Diagnosis {
+function diagnose(ranked: ReturnType<typeof affinities>, score: number, version: Version, locale: Locale): Diagnosis {
   const [first, second] = ranked;
-  if (first.affinity < 0.2) {
+  if (first.affinity < NAMING[version].named) {
     const unspecified = getUnspecified(locale);
     return { ...(score < 25 ? unspecified.latent : unspecified.common), species: [] };
   }
@@ -495,7 +546,7 @@ export function hash(text: string) {
 export function evaluate(draft: Draft, locale: Locale): Result {
   const tasks = FORMS[locale][draft.version];
   const verdicts = getVerdicts(locale);
-  const proxy = draft.version === 2 && !!draft.proxy;
+  const proxy = draft.version !== 1 && !!draft.proxy;
   const readings = draft.answers.map((value, i) => read(tasks[i], value, proxy, locale));
   const points = readings.reduce((sum, reading) => sum + reading.points, 0);
   const max = MAX_POINTS[draft.version];
@@ -527,7 +578,7 @@ export function evaluate(draft: Draft, locale: Locale): Result {
     max,
     score,
     verdict: verdicts.findLast((verdict) => score >= verdict.from) ?? verdicts[0],
-    diagnosis: diagnose(ranked, score, locale),
+    diagnosis: diagnose(ranked, score, draft.version, locale),
     findings,
     symptoms: [...findings].sort((a, b) => b.points - a.points || a.number - b.number).slice(0, 5),
     affinity: Object.fromEntries(ranked.map((item) => [item.species.key, Math.min(1, Math.max(0, item.affinity / 0.8))])) as Record<
@@ -538,7 +589,7 @@ export function evaluate(draft: Draft, locale: Locale): Result {
       DIAGNOSABLE.map((species) => [species.key, (earned[species.key] ?? 0) / RANGE[draft.version][species.key].max]),
     ) as Record<SpeciesKey, number>,
     reflex: reflexIndex >= 0 ? reflexOutcome(draft.answers[reflexIndex]) : undefined,
-    percentile: Math.min(99, Math.max(1, Math.round(normalCdf((score - 46) / 19) * 100))),
+    percentile: Math.min(99, Math.max(1, Math.round(normalCdf((score - SPREAD[draft.version].mean) / SPREAD[draft.version].sd) * 100))),
     certificate: String(hash(resultIdentity(code)) % 1_000_000).padStart(6, "0"),
   };
 }

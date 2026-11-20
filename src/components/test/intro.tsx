@@ -27,6 +27,8 @@ const COPY = defineCopy({
     who: "Kogo badamy?",
     self: "Siebie",
     other: "Kogoś bliskiego",
+    table: "Cały stół",
+    tableNote: "2–8 osób, jeden telefon, wspólny ranking",
     untimed: "Bez pośpiechu — bez limitu na odpowiedź",
     untimedNote: "Próba klaksonowa nadal mierzy czas reakcji. Samodzielnie decydujesz, kiedy ją zakończyć.",
     family: "Dołączasz do rankingu rodzinnego. Podpis i wynik będą widoczne dla osób z linkiem. Podpis podasz na końcu.",
@@ -53,6 +55,8 @@ const COPY = defineCopy({
     who: "Koga pregledujemo?",
     self: "Sebe",
     other: "Nekoga bližnjega",
+    table: "Vso mizo",
+    tableNote: "2–8 oseb, en telefon, skupna lestvica",
     untimed: "Brez naglice – brez časovne omejitve za odgovor",
     untimedNote: "Preizkus s hupo še vedno meri reakcijski čas. Kdaj se konča, določiš ti.",
     family: "Pridružuješ se družinski lestvici. Podpis in izvid bosta vidna vsem s povezavo. Podpis vpišeš na koncu.",
@@ -107,6 +111,15 @@ export function TestIntro({ region, setRegion, proxy, setProxy, invite, saved, o
                     <span className="text-lg font-bold">{option.label}</span><Box checked={proxy === option.value} />
                   </label>
                 ))}
+                {!invite && !family && (
+                  <Link href="/test/przy-stole" className="col-span-2 flex items-center justify-between gap-3 border-t border-rule px-2 py-3.5 hover:bg-paper-deep min-[360px]:px-3">
+                    <span>
+                      <span className="block text-lg font-bold leading-tight">{t.table}</span>
+                      <span className="label text-ink-soft">{t.tableNote}</span>
+                    </span>
+                    <span aria-hidden="true" className="text-xl">→</span>
+                  </Link>
+                )}
               </div>
             </fieldset>
             <label className="label mt-4 flex cursor-pointer items-center gap-3 py-2">

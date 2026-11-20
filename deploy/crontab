@@ -1,0 +1,9 @@
+# dziader.si scheduled jobs, for hosts without systemd (or if you prefer cron).
+# Install as root:  crontab -e  and paste the lines below, after creating /etc/dziadersi/cron-header
+# (mode 600, one line: "Authorization: Bearer <CRON_SECRET>"). Needs a cron that understands
+# CRON_TZ (cronie, busybox crond >= 1.36); otherwise set the hours in the server's own time zone.
+# Output goes to syslog through logger, tagged dziadersi-cron.
+
+CRON_TZ=Europe/Warsaw
+0 6 * * 1  curl -sS --fail-with-body --max-time 600 -H @/etc/dziadersi/cron-header https://dziader.si/api/cron/biuletyn 2>&1 | logger -t dziadersi-cron
+0 3 * * *  curl -sS --fail-with-body --max-time 120 -H @/etc/dziadersi/cron-header https://dziader.si/api/cron/porzadki 2>&1 | logger -t dziadersi-cron

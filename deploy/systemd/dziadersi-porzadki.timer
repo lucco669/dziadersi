@@ -1,0 +1,14 @@
+# Daily cleanup: expired family rankings (the 90 days the site promises), old write budgets,
+# unconfirmed bulletin addresses, and a log line on whether the census still fills up.
+
+[Unit]
+Description=dziader.si daily cleanup (03:00 Europe/Warsaw)
+
+[Timer]
+OnCalendar=*-*-* 03:00:00 Europe/Warsaw
+Persistent=true
+RandomizedDelaySec=300
+Unit=dziadersi-cron@porzadki.service
+
+[Install]
+WantedBy=timers.target

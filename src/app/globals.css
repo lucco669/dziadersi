@@ -611,6 +611,9 @@
     transform-box: fill-box;
     transform-origin: 0% 0%;
   }
+  .mi:is(:hover, :focus-visible) .mi-pass {
+    animation: mi-pass 1.1s ease-in-out;
+  }
   .mi:is(:hover, :focus-visible) .mi-letter {
     animation: pg-bob 500ms ease-in-out 2;
   }
@@ -680,6 +683,14 @@
 @keyframes mi-tear {
   50% {
     transform: rotate(8deg) translateY(2px);
+  }
+}
+
+/* The phone goes round the table: to the middle, to the right, and back. */
+@keyframes mi-pass {
+  40%,
+  60% {
+    transform: translateX(21px);
   }
 }
 
