@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Crowd } from "@/components/crowd";
+import { EmbedSnippet } from "@/components/embed-snippet";
 import { IndexChart } from "@/components/index-chart";
 import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { RegionMap } from "@/components/region-map";
@@ -7,9 +8,11 @@ import { getMapRegions } from "@/content/map";
 import { LOCALE_INFO, type Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
+import { localizePath } from "@/i18n/routes";
 import { getLocale } from "@/i18n/server";
 import { getBulletin } from "@/lib/bulletin";
 import { formatDayMonth } from "@/lib/calendar";
+import { BADGE_DISPLAY, badgeText } from "@/lib/index-badge";
 import { seasons, zones } from "@/lib/indeks";
 import { dataset, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -75,6 +78,15 @@ const COPY = defineCopy({
         text: "Codzienne i cogodzinne wahania pochodzą z obserwacji terenowych. Instytut nie ujawnia ich źródeł, ale zapewnia, że wszyscy obserwatorzy siedzieli na ławkach.",
       },
     ],
+    embed: "Indeks na twojej stronie",
+    embedAside: "Aktualizacja co godzinę",
+    embedIntro: "Stan dziaderstwa dziś dla bloga, redakcji albo strony koła gospodyń. Wystarczy wkleić kod. Plakietka odświeża się co godzinę i prowadzi do tej strony.",
+    embedPreview: "Podgląd plakietki, 400 × 150",
+    frameLabel: "Ramka (iframe)",
+    frameNote: "Dla stron, które pozwalają wkleić HTML. Działa w WordPressie w bloku „Własny HTML”.",
+    frameTitle: "Narodowy Indeks Dziaderstwa",
+    imageLabel: "Obrazek z linkiem",
+    imageNote: "Dla forów, newsletterów i stron, które nie przyjmują ramek. Ten sam obraz, plik PNG.",
     footnote: "Indeks jest przeliczany co godzinę według czasu warszawskiego. Wszystkie dane są zmyślone, a mimo to się zgadzają.",
     promoTitle: "Podnieś indeks osobiście.",
     promoText: "Każdy wynik powyżej średniej krajowej jest wkładem w naukę. Test Dziadersa: pięć gabinetów, około czterech minut.",
@@ -140,6 +152,15 @@ const COPY = defineCopy({
         text: "Dnevna in urna nihanja izhajajo iz terenskih opazovanj. Inštitut ne razkriva njihovih virov, zagotavlja pa, da so vsi opazovalci sedeli na klopeh.",
       },
     ],
+    embed: "Indeks na tvoji strani",
+    embedAside: "Posodobitev vsako uro",
+    embedIntro: "Današnja jakost dziaderstva za blog, uredništvo ali stran društva upokojencev. Dovolj je prilepiti kodo. Značka se osveži vsako uro in vodi na to stran.",
+    embedPreview: "Predogled značke, 400 × 150",
+    frameLabel: "Okvir (iframe)",
+    frameNote: "Za strani, ki dovolijo prilepiti HTML. V WordPressu deluje v bloku »HTML po meri«.",
+    frameTitle: "Nacionalni indeks dziaderstva",
+    imageLabel: "Slika s povezavo",
+    imageNote: "Za forume, novičnike in strani, ki ne sprejemajo okvirjev. Ista slika, datoteka PNG.",
     footnote: "Indeks se preračunava vsako uro po varšavskem času. Vsi podatki so izmišljeni, pa vendar držijo.",
     promoTitle: "Dvigni indeks osebno.",
     promoText: "Vsak izvid nad državnim povprečjem je prispevek k znanosti. Test dziadersa: pet ordinacij, približno štiri minute.",
@@ -168,6 +189,11 @@ export default async function IndexPage() {
   const trend = delta === 0 ? t.unchanged : t.points(`${delta > 0 ? "+" : "−"}${pct(Math.abs(delta))}`);
   const regions = getMapRegions(locale);
   const ranking = Object.values(regions).sort((a, b) => b.value - a.value);
+  const indexUrl = `${site.url}${localizePath("/indeks", locale)}`;
+  const badgeUrl = `${site.url}${localizePath("/indeks/plakietka", locale)}`;
+  const { width, height } = BADGE_DISPLAY;
+  const frameCode = `<iframe src="${site.url}${localizePath("/indeks/ramka", locale)}" width="${width}" height="${height}" title="${t.frameTitle}" loading="lazy" style="border:0;max-width:100%"></iframe>`;
+  const imageCode = `<a href="${indexUrl}"><img src="${badgeUrl}" width="${width}" height="${height}" alt="${t.frameTitle}"></a>`;
 
   return (
     <main id="tresc">
@@ -320,6 +346,28 @@ export default async function IndexPage() {
               </li>
             ))}
           </ol>
+        </div>
+      </Section>
+
+      <Section id="na-strone" title={t.embed} aside={t.embedAside} intro={typo(t.embedIntro)}>
+        <div className="grid gap-10 lg:grid-cols-12">
+          <figure className="lg:col-span-5">
+            {/* The badge itself, as other sites show it; a plain image keeps it identical to theirs. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={localizePath("/indeks/plakietka", locale)}
+              width={width}
+              height={height}
+              alt={badgeText(bulletin, locale)}
+              loading="lazy"
+              className="h-auto w-full max-w-[400px]"
+            />
+            <figcaption className="label mt-3 text-ink-soft">{t.embedPreview}</figcaption>
+          </figure>
+          <div className="space-y-8 lg:col-span-7">
+            <EmbedSnippet label={t.frameLabel} note={typo(t.frameNote)} code={frameCode} kind="ramka" />
+            <EmbedSnippet label={t.imageLabel} note={typo(t.imageNote)} code={imageCode} kind="obrazek" />
+          </div>
         </div>
       </Section>
 

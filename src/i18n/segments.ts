@@ -18,7 +18,7 @@ export const SEGMENTS: SegmentMap = {
   okazje: { sl: "priloznosti" },
   muzeum: { sl: "muzej", children: { karta: "kartica" } },
   "do-druku": { sl: "za-tisk", children: { "karty-gatunkow": "kartice-vrst", przewodnik: "vodnik" } },
-  indeks: { sl: "indeks" },
+  indeks: { sl: "indeks", children: { ramka: "okvir", plakietka: "znacka" } },
   spis: { sl: "popis" },
   statystyki: { sl: "statistika" },
   obserwacje: { sl: "opazovanja" },
