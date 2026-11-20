@@ -51,11 +51,16 @@ const EMBEDDABLE = [
   `/sl/${sl("wynik")}/:kod/certifikat`,
   `/sl/${sl("wynik")}/:kod/preiskave`,
   "/email/:file*",
+  // A team's link preview: Slack and Teams fetch it from their own servers.
+  "/zespol/:id/podglad",
+  `/sl/${sl("zespol")}/:id/predogled`,
 ];
 
 /** Private pages: results, rankings, the save-to-profile links and asked questions are never indexed or leak a referrer. */
 const PRIVATE = ["grupy", "grupa", "wynik"]
   .flatMap((pl) => [`/${pl}/:path*`, `/sl/${sl(pl)}/:path*`])
+  // A team's pages, but not the order form at /zespol.
+  .concat(["/zespol/:id/:rest*", `/sl/${sl("zespol")}/:id/:rest*`])
   .concat(["/auth/:path*", "/profil/zapisz/:path*", "/sl/profil/shrani/:path*", "/profil/zachowaj", "/sl/profil/ohrani", "/superinteligencja/:kod", `/sl/${sl("superinteligencja")}/:kod`]);
 
 /** Account and search pages may lead to public content, but never belong in search results. */
@@ -97,6 +102,7 @@ const nextConfig: NextConfig = {
     "/[lang]/muzeum/**": imageAssets,
     "/[lang]/wynik/**": imageAssets,
     "/[lang]/grupa/**": imageAssets,
+    "/[lang]/zespol/**": imageAssets,
     "/[lang]/generator/**": imageAssets,
     "/[lang]/superinteligencja/**": imageAssets,
     "/[lang]/bingo/**": imageAssets,

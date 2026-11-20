@@ -41,6 +41,9 @@ const COPY = defineCopy({
     related: "Gatunki pokrewne",
     pager: "Sąsiednie gatunki",
     promoTitle: "Rozpoznajesz te objawy?",
+    officeTitle: "Rozpoznajesz te objawy w biurze?",
+    officeText: "Badanie okresowe zespołu: do 50 osób, z podziałem na działy. Orzeczenie Komisji, dział zagrożony „zróbmy calla” i raport dla działu kadr z pieczątką.",
+    officeCta: "Zamów badanie zespołu",
     promoUndiagnosed: (name: string) =>
       `${name} nie jest rozpoznawany w teście, ale jego krewni z Atlasu tak. Pięć gabinetów, około czterech minut, certyfikat.`,
     promoDiagnosed: (name: string) =>
@@ -66,6 +69,9 @@ const COPY = defineCopy({
     related: "Sorodne vrste",
     pager: "Sosednje vrste",
     promoTitle: "Prepoznaš te simptome?",
+    officeTitle: "Prepoznaš te simptome v pisarni?",
+    officeText: "Obdobni pregled kolektiva: do 50 oseb, razdeljenih po oddelkih. Odločba Komisije, oddelek, ogrožen z »dajmo en call«, in poročilo za kadrovsko službo z žigom.",
+    officeCta: "Naroči pregled kolektiva",
     promoUndiagnosed: (name: string) =>
       `${name} v testu ni diagnosticiran, njegovi sorodniki iz Atlasa pa so. Pet ordinacij, približno štiri minute, certifikat.`,
     promoDiagnosed: (name: string) =>
@@ -294,10 +300,14 @@ export default async function SpeciesPage({ params }: PageProps<"/[lang]/atlas/[
         </section>
       </article>
 
-      <TestPromo
-        title={t.promoTitle}
-        text={typo(species.occasion || species.region ? t.promoUndiagnosed(species.name) : t.promoDiagnosed(species.name))}
-      />
+      {species.key === "korpo" ? (
+        <TestPromo title={t.officeTitle} text={typo(t.officeText)} href="/zespol" cta={t.officeCta} />
+      ) : (
+        <TestPromo
+          title={t.promoTitle}
+          text={typo(species.occasion || species.region ? t.promoUndiagnosed(species.name) : t.promoDiagnosed(species.name))}
+        />
+      )}
     </main>
   );
 }

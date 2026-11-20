@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { FamilyRanking } from "@/components/family-group";
 import { defineCopy } from "@/i18n/copy";
+import { localizePath } from "@/i18n/routes";
 import { getLocale } from "@/i18n/server";
-import { getFamily } from "@/lib/family-server";
+import { familyView, getGroup } from "@/lib/family-server";
 
 // Private rankings resolve at request time, like the existing URL-based rankings.
 export const instant = false;
@@ -36,12 +37,14 @@ async function Ranking({ params }: { params: Promise<{ id: string }> }) {
   await connection();
   const { id } = await params;
   let group;
-  try { group = await getFamily(id); } catch {
+  try { group = await getGroup(id); } catch {
     const t = COPY[await getLocale()];
     return <div className="wrap py-16"><h1 className="text-4xl font-bold">{t.unavailable}</h1><p className="mt-4">{t.retry}</p></div>;
   }
   if (!group) notFound();
-  return <FamilyRanking initial={group} />;
+  // An office team's link opened at the family address.
+  if (group.kind === "team") redirect(localizePath(`/zespol/${id}`, await getLocale()));
+  return <FamilyRanking initial={familyView(group)} />;
 }
 
 export default async function FamilyPage({ params }: PageProps<"/[lang]/grupy/[id]">) {

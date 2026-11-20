@@ -32,6 +32,7 @@ const COPY = defineCopy({
     untimed: "Bez pośpiechu — bez limitu na odpowiedź",
     untimedNote: "Próba klaksonowa nadal mierzy czas reakcji. Samodzielnie decydujesz, kiedy ją zakończyć.",
     family: "Dołączasz do rankingu rodzinnego. Podpis i wynik będą widoczne dla osób z linkiem. Podpis podasz na końcu.",
+    team: "Dołączasz do badania okresowego zespołu. Pseudonim, dział i wynik zobaczy każdy, kto ma link zespołu. Podasz je na końcu.",
     full: "Ten ranking jest pełny. Możesz wykonać własne badanie.",
     invited: "Dołączasz do rankingu. Podpis podasz na końcu badania.",
     startProxy: "Rozpocznij wywiad",
@@ -60,6 +61,7 @@ const COPY = defineCopy({
     untimed: "Brez naglice – brez časovne omejitve za odgovor",
     untimedNote: "Preizkus s hupo še vedno meri reakcijski čas. Kdaj se konča, določiš ti.",
     family: "Pridružuješ se družinski lestvici. Podpis in izvid bosta vidna vsem s povezavo. Podpis vpišeš na koncu.",
+    team: "Pridružuješ se obdobnemu pregledu kolektiva. Vzdevek, oddelek in izvid vidi vsak, ki ima povezavo do kolektiva. Vpišeš jih na koncu.",
     full: "Ta lestvica je polna. Lahko opraviš svoj pregled.",
     invited: "Pridružuješ se lestvici. Podpis vpišeš na koncu pregleda.",
     startProxy: "Začni heteroanamnezo",
@@ -78,7 +80,7 @@ const COPY = defineCopy({
   },
 });
 
-export function TestIntro({ region, setRegion, proxy, setProxy, invite, saved, onStart, onResume, untimed, setUntimed, family }: {
+export function TestIntro({ region, setRegion, proxy, setProxy, invite, saved, onStart, onResume, untimed, setUntimed, family, team = false }: {
   region: string;
   setRegion: (region: string) => void;
   proxy: boolean;
@@ -90,6 +92,8 @@ export function TestIntro({ region, setRegion, proxy, setProxy, invite, saved, o
   untimed: boolean;
   setUntimed: (value: boolean) => void;
   family: boolean;
+  /** An office team's invitation (?zespol=); `family` is true for it as well. */
+  team?: boolean;
 }) {
   const locale = useLocale();
   const t = COPY[locale];
@@ -126,7 +130,7 @@ export function TestIntro({ region, setRegion, proxy, setProxy, invite, saved, o
               <input type="checkbox" checked={untimed} onChange={(event) => setUntimed(event.target.checked)} className="size-5 accent-red" />{t.untimed}
             </label>
             {untimed && <p className="label mt-1 text-ink-soft">{t.untimedNote}</p>}
-            {(family || invite) && <p className="label mt-3 border-l-2 border-red pl-3 text-ink-soft">{family ? t.family : full ? t.full : t.invited}</p>}
+            {(family || invite) && <p className="label mt-3 border-l-2 border-red pl-3 text-ink-soft">{team ? t.team : family ? t.family : full ? t.full : t.invited}</p>}
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <button type="submit" className="btn bg-ink text-paper hover:bg-red">{proxy ? t.startProxy : t.start}<span aria-hidden="true">→</span></button>
               {saved && <button type="button" onClick={() => onResume(saved)} className="link py-3 font-sans">{saved.current === TASKS.length ? t.collect : t.resume(saved.current + 1)}</button>}

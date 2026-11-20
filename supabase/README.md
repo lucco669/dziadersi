@@ -28,6 +28,10 @@ Write budgets use a daily HMAC of Cloudflare's `cf-connecting-ip` header (the si
 
 6. `20261120120000_newsletter_guests.sql`: the bulletin without an account. `newsletter_guests` (address, edition, double opt-in), `request_newsletter_guest()` (one confirm letter an hour per address) and a new `newsletter_recipients()` that adds confirmed guests. Run it before deploying the code with the guest form; until then the form answers that the secretariat is closed.
 
+7. `20261121100000_table_edition.sql`: the census accepts the short form IBD-T2S (code version 3) of Badanie przy stole.
+
+8. `20261122100000_team_checkup.sql`: Badanie okresowe zespołu. `family_groups` gets `kind` (`family` or `team`), a team `name` and `departments` (up to 8); `family_members` gets `nickname` (unique in a team, regardless of case) and `department`. New `join_group()` (a team allows 50 members, a family still 12) and `create_team_group()` (a team, optionally with its first member, in one transaction); `join_family_group()` now calls `join_group()`. Run it before deploying the team pages; until then `/zespol` answers that the order failed and families keep working. Teams expire after 90 days and `/api/cron/porzadki` removes them with the families.
+
 Never edit a migration that has already run. Changes go into a new file with a later timestamp.
 
 ## 2. Environment variables
@@ -109,7 +113,7 @@ Use a test address you control. Both `/konto` and `/sl/racun` offer password log
 ## What is stored
 
 - `public.results`: result code **without** the name, version, family-interview flag, score, diagnosed species, answers, optional voivodeship, retake flag with the previous score, time, and a random per-examination submission key for retry deduplication. No names, raw IPs or account/device IDs. Only the server (secret key) can read or write it.
-- `public.family_groups` / `public.family_members`: private invitation IDs, expiry, result codes including optional signatures, per-examination join keys and join times. The API permits access to anyone possessing the invitation link; expired groups are hidden and removed by daily cleanup.
+- `public.family_groups` / `public.family_members`: private invitation IDs, kind (family or office team), expiry, result codes including optional signatures, per-examination join keys and join times; for teams also the team and department names typed when ordering, and each member's nickname and department. The API permits access to anyone possessing the invitation link; expired groups (teams included) are hidden and removed by daily cleanup.
 - `public.write_budgets`: daily-rotating keyed network hashes and per-scope ten-minute counters; raw IPs are never stored here. Rows older than one day are removed on writes and by daily cleanup.
 - `public.profiles`: nickname per account.
 - `public.saved_results`: result codes saved to a profile (with the name part, which is the owner's own data). Readable and deletable only by the owner.

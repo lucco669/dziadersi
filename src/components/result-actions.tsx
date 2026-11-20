@@ -12,6 +12,7 @@ import { tally } from "@/lib/tally";
 import { cleanName, decodeResult, encodeResult } from "@/lib/test";
 import { cx } from "@/lib/typo";
 import { CreateFamilyGroup } from "./family-group";
+import { TeamOffer } from "./team";
 import { ShareOutlet, shareOutlets } from "./share-bar";
 
 const COPY = defineCopy({
@@ -288,6 +289,7 @@ export function ResultActions({
         </dd>
       </dl>
       <CreateFamilyGroup code={code} />
+      <TeamOffer code={code} className="mt-8" />
     </div>
   );
 }

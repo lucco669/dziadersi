@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { createAdminClient, hasAdmin } from "./supabase/admin";
 import { checkWriteRequest } from "./write-policy";
 
-type Scope = "results" | "verdicts" | "tallies" | "family-create" | "family-join" | "sign-in" | "auth-mail" | "newsletter" | "newsletter-all";
+type Scope = "results" | "verdicts" | "tallies" | "family-create" | "family-join" | "team-create" | "team-join" | "sign-in" | "auth-mail" | "newsletter" | "newsletter-all";
 /** Per network address and ten-minute window. */
 const LIMITS: Record<Scope, number> = {
   results: 30,
@@ -12,6 +12,9 @@ const LIMITS: Record<Scope, number> = {
   tallies: 240,
   "family-create": 10,
   "family-join": 30,
+  "team-create": 10,
+  // A whole office may sit behind one address: fifty people joining one team, twice over.
+  "team-join": 100,
   // Supabase sees our servers, not the reader, so its own per-address limits can't tell callers apart.
   "sign-in": 30,
   "auth-mail": 10,

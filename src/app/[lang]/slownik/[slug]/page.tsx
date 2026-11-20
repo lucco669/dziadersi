@@ -19,6 +19,9 @@ export function generateStaticParams({ params }: { params: { lang: string } }) {
   return hasLocale(params.lang) ? getDictionary(params.lang).map((entry) => ({ slug: entry.slug })) : [];
 }
 
+/** Office phrases, by their Polish slug: their pages offer the team check-up instead of the test. */
+const OFFICE_ENTRIES = new Set(["zrobmy-calla", "wyslalem-ci-maila"]);
+
 const COPY = defineCopy({
   pl: {
     dictionary: "Słownik Dziaderski",
@@ -37,6 +40,9 @@ const COPY = defineCopy({
     species: "Typowa wokalizacja gatunku",
     seeAlso: "Zobacz też",
     promoTitle: "Mówisz tak?",
+    officeTitle: "Mówią tak u ciebie w pracy?",
+    officeText: "Badanie okresowe zespołu: jeden link dla całego biura, do 50 osób, z podziałem na działy. Komisja wskaże dział, w którym najszybciej padnie „zróbmy calla”.",
+    officeCta: "Zamów badanie zespołu",
     promoText: "Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Pięć gabinetów, około czterech minut.",
   },
   sl: {
@@ -55,6 +61,9 @@ const COPY = defineCopy({
     species: "Značilno oglašanje vrste",
     seeAlso: "Glej tudi",
     promoTitle: "Tako govoriš?",
+    officeTitle: "Tako govorijo pri tebi v službi?",
+    officeText: "Obdobni pregled kolektiva: ena povezava za vso pisarno, do 50 oseb, razdeljenih po oddelkih. Komisija bo pokazala oddelek, v katerem bo najprej padel »dajmo en call«.",
+    officeCta: "Naroči pregled kolektiva",
     promoText: "Test dziadersa bo preveril, ali je to še citat ali že simptom. Pet ordinacij, približno štiri minute.",
   },
 });
@@ -215,7 +224,11 @@ export default async function EntryPage({ params }: PageProps<"/[lang]/slownik/[
         </div>
       </article>
 
-      <TestPromo title={t.promoTitle} text={typo(t.promoText)} />
+      {OFFICE_ENTRIES.has(getDictionary("pl")[getDictionary(locale).indexOf(entry)]?.slug ?? "") ? (
+        <TestPromo title={t.officeTitle} text={typo(t.officeText)} href="/zespol" cta={t.officeCta} />
+      ) : (
+        <TestPromo title={t.promoTitle} text={typo(t.promoText)} />
+      )}
     </main>
   );
 }

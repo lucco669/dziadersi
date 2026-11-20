@@ -95,6 +95,9 @@ export function cleanName(raw: string) {
   return name && !BLOCKED.test(fold(name)) ? name : "";
 }
 
+/** Whether text would be kept off a certificate: the same list as names. */
+export const vulgar = (text: string) => BLOCKED.test(fold(text));
+
 /* Reflex values: 0 = honked on red, 1 = on red and amber, 2 + ms/10 = reaction time, NO_HONK = never. */
 
 const REFLEX_STEPS = 500;

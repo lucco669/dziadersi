@@ -3,7 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 
 /**
  * Ephemeral Postgres, using the same migrations as production. No external credentials.
- * By default only the census and write-limit migrations; `all` runs every migration in order,
+ * By default only the census, write-limit and team migrations; `all` runs every migration in order,
  * on a minimal stand-in for Supabase's auth schema (auth.users and auth.uid()).
  */
 export async function databaseFixture({ all = false }: { all?: boolean } = {}) {
@@ -18,7 +18,7 @@ export async function databaseFixture({ all = false }: { all?: boolean } = {}) {
   }
   const files = all
     ? (await readdir("supabase/migrations")).filter((file) => file.endsWith(".sql")).sort()
-    : ["20261002130000_results.sql", "20261003100000_groups_and_write_limits.sql"];
+    : ["20261002130000_results.sql", "20261003100000_groups_and_write_limits.sql", "20261122100000_team_checkup.sql"];
   for (const file of files) {
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   }
