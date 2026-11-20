@@ -10,18 +10,18 @@ const COPY = defineCopy({
   pl: {
     title: "Dziaders na każdą okazję",
     description:
-      "Przewodniki na Wigilię, wesele i majówkę: gatunki dziadersów, typowe powiedzenia, sprawy Komisji i bingo do druku.",
+      "Przewodniki na Wigilię, wesele, majówkę i imieniny: gatunki dziadersów, typowe powiedzenia, sprawy Komisji i bingo do druku.",
     lead: "Instrukcje prowadzenia obserwacji tam, gdzie wszyscy się znają. Wybierz teren, poznaj gatunki i przygotuj materiały dla swojego stołu.",
-    meta: "3 przewodniki · obserwacja uczestnicząca",
+    meta: "4 przewodniki · obserwacja uczestnicząca",
     promo: "Przed wyjściem sprawdź obserwatora.",
     promoText: "Test Dziadersa nie wymaga sprzętu terenowego. Wystarczą cztery minuty i gotowość do przyjęcia wyniku.",
   },
   sl: {
     title: "Dziaders za vsako priložnost",
     description:
-      "Vodniki za sveti večer, svatbo in prvomajski vikend: vrste dziadersov, značilne izjave, primeri Komisije in bingo za tisk.",
+      "Vodniki za sveti večer, svatbo, prvomajski vikend in godovanje: vrste dziadersov, značilne izjave, primeri Komisije in bingo za tisk.",
     lead: "Navodila za opazovanje tam, kjer se vsi poznajo. Izberi teren, spoznaj vrste in pripravi gradivo za svojo mizo.",
-    meta: "3 vodniki · opazovanje z udeležbo",
+    meta: "4 vodniki · opazovanje z udeležbo",
     promo: "Pred odhodom preveri opazovalca.",
     promoText: "Test dziadersa ne zahteva terenske opreme. Zadoščajo štiri minute in pripravljenost sprejeti rezultat.",
   },
@@ -55,7 +55,7 @@ export default async function OccasionsPage() {
         ]}
       />
       <PageHeader crumbs={[{ label: t.title }]} title={t.title} lead={t.lead} meta={t.meta} />
-      <div className="wrap grid gap-6 py-14 md:grid-cols-3 md:py-20">
+      <div className="wrap grid gap-6 py-14 md:grid-cols-2 md:py-20 xl:grid-cols-4">
         {dossiers.map((dossier) => (
           <DossierTile key={dossier.code} dossier={dossier} locale={locale} />
         ))}

@@ -6,6 +6,7 @@ import { Figure, SpeciesPlate } from "@/components/pictograms";
 import { OCCASIONS } from "@/content/bingo";
 import { CASES, docket, getCases, getVerdicts, VERDICTS } from "@/content/cases";
 import { getDictionary } from "@/content/dictionary";
+import { getRegions, REGION_GRID } from "@/content/regions";
 import { REPORTS } from "@/content/reports";
 import { ESTIMATED_SPECIES, getSpecies, SPECIES, type SpeciesKey } from "@/content/species";
 import { STATIONS, TASKS } from "@/content/test";
@@ -17,7 +18,7 @@ import { getBulletin } from "@/lib/bulletin";
 import { getCensus, MIN_RESULTS } from "@/lib/census";
 import { getCommunity } from "@/lib/community";
 import { TOTAL_LINES } from "@/lib/phrasebook";
-import { dataset, pageMetadata } from "@/lib/seo";
+import { absoluteUrl, dataset, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { cx, formatDate, formatNumber, pct, plural, pluralSl, typo } from "@/lib/typo";
 
@@ -44,7 +45,8 @@ function countedSl(value: number, one: string, two: string, few: string, other: 
 const COPY = defineCopy({
   pl: {
     title: "Mały Rocznik Statystyczny",
-    metaTitle: (year: number) => `Mały Rocznik Statystyczny Dziaderstwa ${year}`,
+    metaTitle: (year: number) => `Mały Rocznik Statystyczny ${year}: dziaderstwo w Polsce w liczbach`,
+    heading: (year: number) => `Mały Rocznik Statystyczny ${year}`,
     description:
       "Mały Rocznik Statystyczny Dziaderstwa: badania, obserwacje, orzeczenia, bingo, Rozmówki i trąbienia klaksonem. Na żywo, z przeliczeniem na rosoły.",
     shareDescription: "Badania, obserwacje, orzeczenia i trąbienia klaksonem. Z przeliczeniem na rosoły.",
@@ -58,7 +60,7 @@ const COPY = defineCopy({
     },
     metaAfter: " · aktualizacja co kilka minut",
     contents: "Działy Rocznika",
-    chapters: ["Badania", "Obserwacje terenowe", "Komisja Orzekająca", "Pomoce naukowe", "Zbiory Instytutu", "Przeliczenia Instytutu", "Objaśnienia znaków umownych"],
+    chapters: ["Badania", "Obserwacje terenowe", "Komisja Orzekająca", "Pomoce naukowe", "Zbiory Instytutu", "Przeliczenia Instytutu", "Województwa i pory roku", "Pytania o Rocznik", "Objaśnienia znaków umownych"],
     table: (index: number) => `Tabl. ${index}.`,
     chart: (index: number) => `Wykres ${index}.`,
     source: "Źródło: IBD.",
@@ -239,6 +241,46 @@ const COPY = defineCopy({
         method: "Przy obecnym tempie losowania i pod warunkiem, że nikt nie wylosuje dwa razy tej samej. Wujek wylosuje.",
       },
     },
+    territory: {
+      title: "Dział VII. Województwa i pory roku",
+      aside: "Dane stałe",
+      intro: "Dziaderstwo w przekroju terytorialnym i kalendarzowym. Indeks według województw pochodzi z Narodowego Indeksu Dziaderstwa, kalendarz aktywności z kart gatunków w Atlasie.",
+      regions: "Województwa: indeks dziaderstwa i gatunek dominujący",
+      regionsHead: ["Województwo", "Indeks", "Gatunek dominujący", "Uwagi z terenu"],
+      regionsSource: "Źródło: Narodowy Indeks Dziaderstwa (osoby z objawami na 100 mieszkańców, szacunek IBD), Atlas Dziadersów.",
+      months: "Aktywność gatunków według miesięcy",
+      monthsHead: ["Miesiąc", "Gatunki aktywne", "W szczycie", "Gatunki w szczycie aktywności"],
+      monthsSource: "Źródło: karty gatunków w Atlasie Dziadersów. Aktywność w skali 0–3; szczyt to 3.",
+      summary: (peak: string, count: number, quiet: string) =>
+        `Najwięcej gatunków jest w szczycie aktywności w miesiącu: ${peak} (${count}). Najspokojniej jest w miesiącu: ${quiet}. Wujek twierdzi, że w jego czasach było odwrotnie.`,
+      index: "Narodowy Indeks Dziaderstwa",
+    },
+    faq: {
+      title: "Pytania o Rocznik",
+      aside: "Informacja dla czytelników",
+      items: [
+        {
+          question: "Czy to Mały Rocznik Statystyczny Polski 2026 wydawany przez GUS?",
+          answer:
+            "Nie. „Mały Rocznik Statystyczny Polski” wydaje co roku Główny Urząd Statystyczny; aktualne wydanie i tablice do pobrania są na stat.gov.pl. Ten Rocznik liczy wyłącznie dziaderstwo: badania, obserwacje i orzeczenia zebrane w serwisie Instytutu.",
+        },
+        {
+          question: "Skąd pochodzą dane w Roczniku?",
+          answer:
+            "Z Narodowego Spisu Dziadersów (wyniki Testu Dziadersa), Sieci Obserwatorów Terenowych (zgłoszenia na Mapie obserwacji), głosowań Komisji Orzekającej i liczników w pomocach naukowych. Dane są zbiorcze i nie zawierają identyfikatorów osób.",
+        },
+        {
+          question: "Jak często Rocznik jest aktualizowany?",
+          answer:
+            "Działy I–IV i VI odświeżają się co kilka minut. Dział V zmienia się, gdy Instytut opisze nowy gatunek, hasło albo sprawę. Dział VII zawiera dane stałe, aktualizowane razem z Atlasem i Indeksem.",
+        },
+        {
+          question: "Czy mogę wykorzystać dane z Rocznika?",
+          answer:
+            "Tak, na licencji CC BY 4.0, z podaniem źródła: Instytut Badań nad Dziaderstwem, dziader.si. Prezentacja wyników przy rodzinnym stole również wymaga podania źródła.",
+        },
+      ],
+    },
     signs: {
       title: "Objaśnienia znaków umownych",
       aside: "Zgodnie z praktyką statystyki publicznej",
@@ -259,7 +301,8 @@ const COPY = defineCopy({
   },
   sl: {
     title: "Mali statistični letopis",
-    metaTitle: (year: number) => `Mali statistični letopis dziaderstva ${year}`,
+    metaTitle: (year: number) => `Mali statistični letopis ${year}: dziaderstvo na Poljskem v številkah`,
+    heading: (year: number) => `Mali statistični letopis ${year}`,
     description:
       "Mali statistični letopis dziaderstva: pregledi, opazovanja, razsodbe, bingo, Pogovornik in pritiski na hupo. V živo, s preračunom v nedeljske juhe.",
     shareDescription: "Pregledi, opazovanja, razsodbe in pritiski na hupo. S preračunom v nedeljske juhe.",
@@ -273,7 +316,7 @@ const COPY = defineCopy({
     },
     metaAfter: " · posodobitev vsakih nekaj minut",
     contents: "Poglavja Letopisa",
-    chapters: ["Pregledi", "Terenska opazovanja", "Razsodna komisija", "Učni pripomočki", "Zbirke Inštituta", "Preračuni Inštituta", "Pojasnila dogovorjenih znakov"],
+    chapters: ["Pregledi", "Terenska opazovanja", "Razsodna komisija", "Učni pripomočki", "Zbirke Inštituta", "Preračuni Inštituta", "Vojvodstva in letni časi", "Vprašanja o Letopisu", "Pojasnila dogovorjenih znakov"],
     table: (index: number) => `Tabela ${index}.`,
     chart: (index: number) => `Grafikon ${index}.`,
     source: "Vir: IBD.",
@@ -454,6 +497,46 @@ const COPY = defineCopy({
         method: "Pri sedanjem tempu žrebanja in pod pogojem, da nihče dvakrat ne izžreba iste. Stric jo bo izžrebal.",
       },
     },
+    territory: {
+      title: "Poglavje VII. Vojvodstva in letni časi",
+      aside: "Stalni podatki",
+      intro: "Dziaderstvo po ozemlju in po koledarju. Indeks po vojvodstvih izhaja iz Nacionalnega indeksa dziaderstva, koledar aktivnosti iz kartotek vrst v Atlasu.",
+      regions: "Vojvodstva: indeks dziaderstva in prevladujoča vrsta",
+      regionsHead: ["Vojvodstvo", "Indeks", "Prevladujoča vrsta", "Opombe s terena"],
+      regionsSource: "Vir: Nacionalni indeks dziaderstva (osebe s simptomi na 100 prebivalcev, ocena IBD), Atlas dziadersov.",
+      months: "Aktivnost vrst po mesecih",
+      monthsHead: ["Mesec", "Aktivne vrste", "Na vrhuncu", "Vrste na vrhuncu aktivnosti"],
+      monthsSource: "Vir: kartoteke vrst v Atlasu dziadersov. Aktivnost na lestvici 0–3; vrhunec je 3.",
+      summary: (peak: string, count: number, quiet: string) =>
+        `Največ vrst je na vrhuncu aktivnosti v mesecu ${peak} (${count}). Najmirnejši mesec je ${quiet}. Stric trdi, da je bilo v njegovih časih ravno obratno.`,
+      index: "Nacionalni indeks dziaderstva",
+    },
+    faq: {
+      title: "Vprašanja o Letopisu",
+      aside: "Obvestilo bralcem",
+      items: [
+        {
+          question: "Je to Mali statistični letopis Poljske 2026, ki ga izdaja GUS?",
+          answer:
+            "Ne. »Mały Rocznik Statystyczny Polski« vsako leto izda poljski statistični urad GUS; aktualna izdaja in tabele so na stat.gov.pl. Slovenski bralec uradne podatke najde pri SURS na stat.si. Ta Letopis šteje samo dziaderstvo: preglede, opazovanja in razsodbe, zbrane na strani Inštituta.",
+        },
+        {
+          question: "Od kod so podatki v Letopisu?",
+          answer:
+            "Iz Nacionalnega popisa dziadersov (izvidi Testa dziadersa), Mreže terenskih opazovalcev (prijave na Zemljevidu opazovanj), glasovanj Razsodne komisije in števcev v učnih pripomočkih. Podatki so zbirni in ne vsebujejo identifikatorjev oseb.",
+        },
+        {
+          question: "Kako pogosto se Letopis posodablja?",
+          answer:
+            "Poglavja I–IV in VI se osvežijo vsakih nekaj minut. Poglavje V se spremeni, ko Inštitut opiše novo vrsto, geslo ali primer. Poglavje VII vsebuje stalne podatke, ki se posodobijo skupaj z Atlasom in Indeksom.",
+        },
+        {
+          question: "Lahko uporabim podatke iz Letopisa?",
+          answer:
+            "Da, pod licenco CC BY 4.0, z navedbo vira: Inštitut za raziskave dziaderstva, dziader.si. Predstavitev rezultatov za družinsko mizo prav tako zahteva navedbo vira.",
+        },
+      ],
+    },
     signs: {
       title: "Pojasnila dogovorjenih znakov",
       aside: "Po praksi javne statistike",
@@ -629,6 +712,20 @@ export default async function YearbookPage() {
     0,
   );
 
+  /* Dział VII. Województwa i pory roku: fixed content data. */
+  const regions = getRegions(locale);
+  const regionRows = REGION_GRID.flat()
+    .map((code) => regions[code])
+    .sort((a, b) => b.value - a.value);
+  const monthName = new Intl.DateTimeFormat(LOCALE_INFO[locale].intl, { month: "long", timeZone: "UTC" });
+  const monthRows = Array.from({ length: 12 }, (_, month) => {
+    const active = getSpecies(locale).filter((species) => species.calendar[month] > 0);
+    const peak = active.filter((species) => species.calendar[month] === 3);
+    return { name: monthName.format(Date.UTC(2026, month, 15)), active: active.length, peak };
+  });
+  const busiestMonth = monthRows.reduce((best, row) => (row.peak.length > best.peak.length ? row : best));
+  const quietestMonth = monthRows.reduce((best, row) => (row.active < best.active ? row : best));
+
   /* Dział VI. Przeliczenia. */
   const lines = tally("rozmowki");
   const honks = tally("klakson");
@@ -716,12 +813,23 @@ export default async function YearbookPage() {
             dateModified: updated,
             variableMeasured: t.variables,
           }),
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            url: absoluteUrl("/statystyki", locale),
+            inLanguage: LOCALE_INFO[locale].tag,
+            mainEntity: t.faq.items.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+          },
         ]}
       />
 
       <PageHeader
         crumbs={[{ label: t.title }]}
-        title={t.title}
+        title={t.heading(new Date(updated).getFullYear())}
         lead={typo(t.lead)}
         meta={
           <>
@@ -752,6 +860,8 @@ export default async function YearbookPage() {
               ["#pomoce", "IV"],
               ["#zbiory", "V"],
               ["#przeliczenia", "VI"],
+              ["#wojewodztwa", "VII"],
+              ["#pytania", ""],
               ["#znaki", ""],
             ] as const
           ).map(([href, numeral], i) => (
@@ -1060,6 +1170,95 @@ export default async function YearbookPage() {
             </li>
           ))}
         </ol>
+      </Section>
+
+      <Section id="wojewodztwa" title={t.territory.title} aside={t.territory.aside} intro={typo(t.territory.intro)}>
+        <div className="grid gap-12 xl:grid-cols-2">
+          <Table t={t} number={5} title={t.territory.regions} source={t.territory.regionsSource}>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[36rem] text-left">
+                <thead>
+                  <tr className="label text-ink-soft">
+                    {t.territory.regionsHead.map((label, i) => (
+                      <th key={label} scope="col" className={cx("border-b border-rule py-2 pr-4 font-normal", i === 1 && "text-right")}>
+                        {label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {regionRows.map((region) => {
+                    const dominant = known.get(region.species);
+                    return (
+                      <tr key={region.code} className="border-b border-rule align-top">
+                        <th scope="row" className="py-2 pr-4 font-bold">
+                          {region.name}
+                        </th>
+                        <td className="py-2 pr-4 text-right tabular-nums">{decimal(region.value)}</td>
+                        <td className="py-2 pr-4">
+                          {dominant ? (
+                            <Link href={"/atlas/" + dominant.slug} className="link">
+                              {dominant.name}
+                            </Link>
+                          ) : (
+                            "·"
+                          )}
+                        </td>
+                        <td className="py-2 text-ink-soft">{typo(region.note)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 font-sans">
+              <Link href="/indeks" className="link">
+                {t.territory.index} →
+              </Link>
+            </p>
+          </Table>
+          <Table t={t} number={6} title={t.territory.months} source={t.territory.monthsSource}>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[30rem] text-left">
+                <thead>
+                  <tr className="label text-ink-soft">
+                    {t.territory.monthsHead.map((label, i) => (
+                      <th key={label} scope="col" className={cx("border-b border-rule py-2 pr-4 font-normal", (i === 1 || i === 2) && "text-right")}>
+                        {label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {monthRows.map((row) => (
+                    <tr key={row.name} className="border-b border-rule align-top">
+                      <th scope="row" className="py-2 pr-4 font-bold">
+                        {row.name}
+                      </th>
+                      <td className="py-2 pr-4 text-right tabular-nums">{figure(row.active, number)}</td>
+                      <td className="py-2 pr-4 text-right tabular-nums">{figure(row.peak.length, number)}</td>
+                      <td className="py-2 text-ink-soft">{row.peak.length ? row.peak.map((species) => species.name).join(", ") : "–"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 max-w-xl text-[1.1rem] leading-relaxed">
+              {typo(t.territory.summary(busiestMonth.name, busiestMonth.peak.length, quietestMonth.name))}
+            </p>
+          </Table>
+        </div>
+      </Section>
+
+      <Section id="pytania" title={t.faq.title} aside={t.faq.aside}>
+        <div className="max-w-3xl divide-y divide-rule border-t border-ink">
+          {t.faq.items.map((item) => (
+            <details key={item.question} className="py-5">
+              <summary className="cursor-pointer text-xl font-bold hover:text-red">{item.question}</summary>
+              <p className="mt-4 leading-relaxed text-ink-soft">{typo(item.answer)}</p>
+            </details>
+          ))}
+        </div>
       </Section>
 
       <Section id="znaki" title={t.signs.title} aside={t.signs.aside}>
