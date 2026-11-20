@@ -3,13 +3,14 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
 import type { Moon, Sheet } from "@/lib/almanac";
 import { warsawTime } from "@/lib/calendar";
 import type { Calendar } from "@/lib/profile";
 import { cx, plural, pluralSl, typo } from "@/lib/typo";
 import { patchAccount, SignInLink, useAccount } from "./account";
 
-export type Page = Sheet & { proverb: string; observance?: { name: string; note: string; slug: string } };
+export type Page = Sheet & { proverb: string; observance?: { name: string; note: string; slug: string }; wax?: "andrzejki" | "sylwester" | null };
 
 const COPY = defineCopy({
   pl: {
@@ -38,6 +39,7 @@ const COPY = defineCopy({
     next: "Następna kartka za",
     tornToday: "Dziś zerwało",
     people: (n: number) => `${n} ${plural(n, "osoba", "osoby", "osób")}`,
+    wax: { andrzejki: "Andrzejki za pasem: Pracownia Wróżb leje wosk", sylwester: "Przed sylwestrem: Pracownia Wróżb leje wosk" },
   },
   sl: {
     // Red numbers are Poland's days off: the page names the holiday and says where it is one.
@@ -67,6 +69,7 @@ const COPY = defineCopy({
     next: "Naslednji list čez",
     tornToday: "Danes odtrgalo",
     people: (n: number) => `${n} ${pluralSl(n, "oseba", "osebi", "osebe", "oseb")}`,
+    wax: { andrzejki: "Laboratorij za vedeževanje vliva vosek", sylwester: "Pred silvestrovim: Laboratorij za vedeževanje vliva vosek" },
   },
 });
 
@@ -135,6 +138,11 @@ function SheetFace({ page, className }: { page: Page; className?: string }) {
           <p className="font-sans text-[0.85rem] font-semibold text-red">{page.observance.name}</p>
           <p className="label mt-0.5 text-ink-soft">{typo(page.observance.note)}</p>
         </div>
+      )}
+      {page.wax && (
+        <Link href="/lanie-wosku" className="link label mt-3 inline-block text-red">
+          {t.wax[page.wax]} →
+        </Link>
       )}
 
       <p className="mx-auto mt-auto max-w-xs pt-5 text-[1.15rem] italic leading-snug">

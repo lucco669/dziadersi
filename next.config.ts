@@ -123,6 +123,7 @@ const nextConfig: NextConfig = {
     "/[lang]/dziaders/**": imageAssets,
     "/[lang]/okazje/**": imageAssets,
     "/[lang]/do-druku/**": imageAssets,
+    "/[lang]/lanie-wosku/**": [...imageAssets, "./assets/wosk/*.png"],
   },
   async redirects() {
     return [

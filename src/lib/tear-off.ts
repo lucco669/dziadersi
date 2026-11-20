@@ -6,6 +6,7 @@ import { getSpecies } from "@/content/species";
 import type { Locale } from "@/i18n/config";
 import type { Sheet } from "./almanac";
 import { shuffled } from "./random";
+import { waxSeason } from "./wax-code";
 
 /*
  * What the calendar prints for a day, picked by the date so every visitor sees the same page.
@@ -19,7 +20,7 @@ export function pageFor(sheet: Sheet, locale: Locale): Page {
   const { PROVERBS, OBSERVANCES } = getCalendar(locale);
   const proverbs = PROVERBS[sheet.month - 1];
   const observance = OBSERVANCES.find((item) => item.date === `${pad(sheet.month)}-${pad(sheet.day)}`);
-  return { ...sheet, proverb: proverbs[(sheet.day - 1) % proverbs.length], observance };
+  return { ...sheet, proverb: proverbs[(sheet.day - 1) % proverbs.length], observance, wax: waxSeason(sheet.month, sheet.day, locale) };
 }
 
 /** What is on the back of today's page. */

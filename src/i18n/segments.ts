@@ -30,6 +30,7 @@ export const SEGMENTS: SegmentMap = {
   kolejka: { sl: "cakalna-vrsta" },
   "krol-grilla": { sl: "kralj-zara" },
   kalendarz: { sl: "koledar", children: { swieta: "prazniki" } },
+  "lanie-wosku": { sl: "vlivanje-voska", children: { karta: "kartica" } },
   biuletyn: { sl: "bilten", children: { wypisz: "odjava", potwierdz: "potrditev" } },
   egzamin: { sl: "izpit", children: { karta: "kartica" } },
   "czy-to-juz-dziaderstwo": { sl: "je-to-ze-dziaderstvo", children: { karta: "kartica" } },

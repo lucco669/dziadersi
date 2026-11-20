@@ -617,6 +617,20 @@
   .mi:is(:hover, :focus-visible) .mi-letter {
     animation: pg-bob 500ms ease-in-out 2;
   }
+  .mi:is(:hover, :focus-visible) .mi-drop {
+    animation: mi-drop 700ms ease-in 2;
+  }
+}
+
+/* Lanie wosku: the drop of wax falls from the key into the bowl. */
+@keyframes mi-drop {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
 }
 
 @keyframes mi-stamp {

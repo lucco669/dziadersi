@@ -1,0 +1,298 @@
+/*
+ * The Pracownia's wall: the apparatus on the table in front, the shadow of the cast on the wall
+ * behind. Flat paper, ink and the pictogram colours; nothing moves for reduced motion.
+ */
+
+.figure {
+  margin: 0;
+}
+
+.wall {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: var(--color-paper-deep);
+  border-bottom: 2px solid var(--color-ink);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (width >= 48rem) {
+  .wall {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* The shadow: the same drawing as flat ink, enlarged on the wall. */
+.shadow {
+  position: absolute;
+  top: 3%;
+  left: 15%;
+  width: 70%;
+  height: auto;
+  filter: brightness(0) blur(1.2px);
+  opacity: 0;
+  transform: scale(0.9);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 900ms ease,
+    transform 900ms ease;
+}
+
+@media (width >= 48rem) {
+  .shadow {
+    top: 6%;
+    left: auto;
+    right: 5%;
+    width: 46%;
+  }
+}
+
+.wall:is([data-phase="lifting"], [data-phase="reading"]) .shadow {
+  opacity: 0.82;
+  transform: scale(1);
+}
+
+/* The table in front: the drawing and the cast floating in the bowl share one box. */
+.scene {
+  position: absolute;
+  bottom: 0;
+  left: 2%;
+  width: 96%;
+  aspect-ratio: 240 / 200;
+}
+
+@media (width >= 48rem) {
+  .scene {
+    left: 3%;
+    width: 50%;
+  }
+}
+
+.apparatus {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.cast {
+  position: absolute;
+  left: 33%;
+  top: 56%;
+  width: 26%;
+  height: auto;
+  opacity: 0;
+  filter: blur(8px) saturate(0.6);
+  transform: translateY(6%) scale(0.35);
+  transition:
+    opacity 1400ms ease,
+    filter 1600ms ease,
+    transform 1600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.wall[data-phase="setting"] .cast {
+  opacity: 1;
+  filter: none;
+  transform: translateY(0) scale(1);
+}
+
+/* Lifted out of the water and held between the candle and the wall. */
+.wall:is([data-phase="lifting"], [data-phase="reading"]) .cast {
+  opacity: 1;
+  filter: none;
+  transform: translate(169%, -127%) scale(0.6);
+  transition-duration: 700ms;
+}
+
+@media (width >= 48rem) {
+  .wall:is([data-phase="lifting"], [data-phase="reading"]) .cast {
+    transform: translate(200%, -68%) scale(0.8);
+  }
+}
+
+.stream {
+  opacity: 0;
+  stroke-dasharray: 7 4;
+}
+
+.wall[data-pouring] .stream {
+  opacity: 1;
+}
+
+.pan {
+  transform-origin: 100px 46px;
+  transform: rotate(-4deg);
+  transition: transform 300ms ease;
+}
+
+.wall[data-phase="pouring"] .pan {
+  transform: rotate(16deg);
+}
+
+/* Once the cast is out of the water the pan is put away, clear of the shadow. */
+.wall:is([data-phase="lifting"], [data-phase="reading"]) .pan {
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.ripples,
+.drop {
+  transition: opacity 600ms ease;
+}
+
+.ripples {
+  opacity: 0;
+}
+
+.wall[data-pouring] .ripples {
+  opacity: 1;
+}
+
+/* The drop of wax gives way to the cast. */
+.wall:is([data-phase="setting"], [data-phase="lifting"], [data-phase="reading"]) .drop {
+  opacity: 0 !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wall[data-pouring] .stream {
+    animation: wax-flow 380ms linear infinite;
+  }
+
+  .wall[data-pouring] .ripples ellipse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: wax-ripple 1.1s ease-out infinite;
+  }
+
+  .wall[data-pouring] .ripples ellipse:nth-child(2) {
+    animation-delay: 550ms;
+  }
+
+  .wall[data-phase="setting"] .cast {
+    animation: wax-bob 1.6s ease-in-out infinite;
+  }
+
+  .flame {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: wax-flicker 1.7s ease-in-out infinite alternate;
+  }
+
+  /* The shadow sways with the flame. */
+  .wall[data-phase="reading"] .shadow {
+    animation: wax-sway 3.4s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes wax-flow {
+  to {
+    stroke-dashoffset: -11;
+  }
+}
+
+@keyframes wax-ripple {
+  from {
+    opacity: 1;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+@keyframes wax-bob {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  50% {
+    translate: 0 3%;
+    rotate: -2deg;
+  }
+}
+
+@keyframes wax-flicker {
+  0% {
+    transform: scale(1, 1);
+  }
+  40% {
+    transform: scale(0.94, 1.08);
+  }
+  70% {
+    transform: scale(1.04, 0.95);
+  }
+  100% {
+    transform: scale(0.97, 1.05) skewX(-3deg);
+  }
+}
+
+@keyframes wax-sway {
+  from {
+    transform: rotate(-1.1deg) scale(1);
+  }
+  to {
+    transform: rotate(0.9deg) scale(1.015);
+  }
+}
+
+.pour {
+  min-height: 3.25rem;
+  min-width: 15rem;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}
+
+.pour:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.gauge {
+  position: relative;
+  flex: 1;
+  height: 0.5rem;
+  border: 1px solid var(--color-ink);
+  background: var(--color-card);
+}
+
+.gauge i {
+  display: block;
+  height: 100%;
+  background: var(--color-ochre);
+}
+
+.gauge b {
+  position: absolute;
+  top: -0.35rem;
+  bottom: -0.35rem;
+  width: 2px;
+  background: var(--color-red);
+}
+
+.protocol {
+  transition: opacity 600ms ease;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .protocol:not(.hidden) {
+    animation: wax-protocol 700ms ease both;
+  }
+}
+
+@keyframes wax-protocol {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}

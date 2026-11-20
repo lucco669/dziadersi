@@ -65,6 +65,8 @@ export const SHARE_CARDS = [
   "/kalendarz/swieta",
   "/kolejka",
   "/krol-grilla",
+  "/lanie-wosku",
+  "/lanie-wosku/[kod]",
   "/muzeum",
   "/muzeum/[slug]",
   "/o-instytucie",

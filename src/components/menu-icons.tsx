@@ -301,6 +301,7 @@ const FIELD_ICONS: Record<string, ReactNode> = {
   "/dziaders": <g><circle cx={24} cy={17} r={11} fill={INK} /><path d={MUSTACHE_PATH} transform="translate(15 16) scale(.18)" fill={PAPER} /><path d="M8 38Q8 28 24 28Q40 28 40 38" fill={INK} /></g>,
   "/okazje": <g><rect x={6} y={6} width={36} height={31} fill={PAPER} stroke={INK} strokeWidth={2} /><path d="M6 15H42M15 2V10M33 2V10" stroke={INK} strokeWidth={3} /><path d="M13 23H20V30H13ZM28 23H35V30H28Z" fill={RED} /></g>,
   "/muzeum": <g><rect x={5} y={5} width={38} height={32} fill={PAPER} stroke={INK} strokeWidth={2} /><path d="M5 21H43M18 13H30M18 29H30" stroke={INK} strokeWidth={2} /><circle cx={12} cy={13} r={2} fill={RED} /><circle cx={12} cy={29} r={2} fill={RED} /></g>,
+  "/lanie-wosku": <g><circle cx={16} cy={10} r={5.5} fill="none" stroke={INK} strokeWidth={2.6} /><path d="M21.5 10H40M35 10V16H38V13H40" fill="none" stroke={INK} strokeWidth={2.6} /><path className="mi-drop" d="M16 18C18 22 18.6 24 16 26C13.4 24 14 22 16 18Z" fill={OCHRE} /><path d="M5 30H43L39 38H9Z" fill={INK} /><path d="M5 30H43" stroke={RED} strokeWidth={2} /></g>,
   "/do-druku": <g><path d="M13 13V3H35V13M13 28V38H35V28" fill={PAPER} stroke={INK} strokeWidth={2} /><rect x={5} y={13} width={38} height={15} fill={INK} /><circle cx={36} cy={18} r={2} fill={RED} /><path d="M18 31H30M18 34H30" stroke={INK} strokeWidth={1} /></g>,
 };
 

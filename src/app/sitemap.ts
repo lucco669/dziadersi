@@ -70,6 +70,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/kalendarz", "daily", 0.7),
     page("/kalendarz/swieta", "daily", 0.7),
     ...getCalendar(locale).OBSERVANCES.map((item) => page("/kalendarz/" + item.slug, "monthly", 0.6)),
+    page("/lanie-wosku", "monthly", 0.7),
     page("/biuletyn", "weekly", 0.6),
     page("/rejestracja", "monthly", 0.5),
     page("/o-instytucie", "yearly", 0.4),
