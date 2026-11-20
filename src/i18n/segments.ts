@@ -24,7 +24,7 @@ export const SEGMENTS: SegmentMap = {
   obserwacje: { sl: "opazovanja" },
   "tablica-honorowa": { sl: "castna-tabla" },
   generator: { sl: "pogovornik" },
-  zyczenia: { sl: "voscila", children: { kartka: "voscilnica" } },
+  zyczenia: { sl: "voscila", children: { karta: "kartica" } },
   superinteligencja: { sl: "superinteligenca" },
   bingo: { sl: "bingo", children: { druk: "tisk" } },
   kolejka: { sl: "cakalna-vrsta" },

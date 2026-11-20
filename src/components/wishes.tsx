@@ -104,7 +104,7 @@ export function WishMachine({ initial }: { initial: { slug: string; picks: WishP
   const path = `/zyczenia/${card.code}`;
   const url = `${origin}${localizePath(path, locale)}`;
   const image = (format: "post" | "relacja", download = false) =>
-    `${localizePath(`${path}/kartka`, locale)}?format=${format}${download ? "&pobierz" : ""}`;
+    `${localizePath(`${path}/karta`, locale)}?format=${format}${download ? "&pobierz" : ""}`;
 
   function roll(next = chapter) {
     if (busy) return;

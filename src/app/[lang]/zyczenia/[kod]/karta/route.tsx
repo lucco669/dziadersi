@@ -10,7 +10,7 @@ const COPY = defineCopy({
 });
 
 /** The whole letter as a PNG: ?format=post (4:5, default) or ?format=relacja (9:16); ?pobierz forces a download. */
-export async function GET(request: NextRequest, { params }: RouteContext<"/[lang]/zyczenia/[kod]/kartka">) {
+export async function GET(request: NextRequest, { params }: RouteContext<"/[lang]/zyczenia/[kod]/karta">) {
   const { lang, kod } = await params;
   const card = hasLocale(lang) ? decodeWish(kod, lang) : null;
   if (!hasLocale(lang) || !card) return new Response("Nie znaleziono", { status: 404 });

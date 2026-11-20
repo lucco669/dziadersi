@@ -71,7 +71,7 @@ test("seasons wrap the new year, and the URLs translate", () => {
   assert.ok(inSeason(newYear, 1, 3));
   assert.ok(!inSeason(newYear, 1, 7));
   assert.equal(occasionInSeason(7, 1), undefined);
-  assert.equal(localizePath("/zyczenia/swieta-wujek-000/kartka?format=relacja", "sl"), "/sl/voscila/swieta-wujek-000/voscilnica?format=relacja");
+  assert.equal(localizePath("/zyczenia/swieta-wujek-000/karta?format=relacja", "sl"), "/sl/voscila/swieta-wujek-000/kartica?format=relacja");
   assert.equal(alternatePath("/zyczenia/swieta-wujek-000", "pl", "sl"), "/zyczenia/swieta-wujek-000");
   const card = decodeWish("swieta-rodzina-000", "pl")!;
   assert.ok(wishMessage(card, "pl").startsWith("Szanowni Państwo,\n"));
