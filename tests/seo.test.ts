@@ -180,6 +180,12 @@ test("private account and search headers agree with metadata and public registra
   }
 });
 
+test("a guest on the profile is sent to the bare, crawlable account page", () => {
+  assert.equal(signInPath("/profil", "pl"), "/konto");
+  assert.equal(signInPath("/profil", "sl"), "/sl/racun");
+  assert.equal(signInPath("/profil#legitymacja", "pl"), "/konto?dalej=%2Fprofil%23legitymacja");
+});
+
 test("guest bookmarks go directly to sign-in and preserve the localised save destination", () => {
   for (const locale of ["pl", "sl"] as const) {
     const href = signInPath("/profil/zachowaj?rodzaj=rozmowki&kod=komputer-029", locale);

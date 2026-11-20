@@ -1,7 +1,10 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useSyncExternalStore } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useSyncExternalStore, type ComponentProps } from "react";
+import { useLocale } from "@/i18n/client";
+import Link from "@/i18n/link";
+import { localizePath } from "@/i18n/routes";
 import type { AccountState } from "@/lib/profile";
 
 /*
@@ -117,3 +120,26 @@ export function AccountSync() {
  * The profile is where the account page goes anyway, so that link stays the bare, crawlable `/konto`.
  */
 export const signInHref = (next: string) => (next === "/profil" ? "/konto" : `/konto?dalej=${encodeURIComponent(next)}`);
+
+/**
+ * A sign-in link that returns to `next` (an internal path). The page links the bare account page, which is
+ * crawlable and noindex; the way back is added on click. Every page offering an account would otherwise
+ * publish its own `/konto?dalej=…` address: hundreds of noindex variants for search engines to discover.
+ * A click with a modifier (new tab) opens the bare account page, which returns to the profile.
+ */
+export function SignInLink({ next, onClick, ...props }: Omit<ComponentProps<typeof Link>, "href"> & { next: string }) {
+  const router = useRouter();
+  const locale = useLocale();
+  return (
+    <Link
+      href="/konto"
+      onClick={(event) => {
+        onClick?.(event);
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        router.push(localizePath(signInHref(next), locale));
+      }}
+      {...props}
+    />
+  );
+}

@@ -34,9 +34,12 @@ export function emailRedirectTarget(requested: { origin: string; next: string })
   return { origin: requested.origin, next: safeNext(url.searchParams.get("dalej"), localizePath("/profil", locale)) };
 }
 
-/** The account page of an edition, for redirects: `next` is an internal path, passed on as the edition's public one. */
+/**
+ * The account page of an edition, for redirects: `next` is an internal path, passed on as the edition's public one.
+ * The account page returns to the profile anyway, so a guest on /profil lands on the bare, crawlable account page.
+ */
 export const signInPath = (next: string, locale: Locale) =>
-  localizePath(`/konto?dalej=${encodeURIComponent(localizePath(next, locale))}`, locale);
+  localizePath(next === "/profil" ? "/konto" : `/konto?dalej=${encodeURIComponent(localizePath(next, locale))}`, locale);
 
 /** The edition a Server Action was called from: forms carry it in a hidden "jezyk" field. */
 export function formEdition(formData: FormData): Locale {

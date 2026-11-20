@@ -3,12 +3,11 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
-import Link from "@/i18n/link";
 import type { Moon, Sheet } from "@/lib/almanac";
 import { warsawTime } from "@/lib/calendar";
 import type { Calendar } from "@/lib/profile";
 import { cx, plural, pluralSl, typo } from "@/lib/typo";
-import { patchAccount, signInHref, useAccount } from "./account";
+import { patchAccount, SignInLink, useAccount } from "./account";
 
 export type Page = Sheet & { proverb: string; observance?: { name: string; note: string } };
 
@@ -269,9 +268,9 @@ export function TearOffCalendar({ today, yesterday, tornToday }: { today: Page; 
             ) : (
               <p className="mt-3 max-w-md text-lg leading-snug text-ink-soft">
                 {typo(t.guest)}{" "}
-                <Link href={signInHref("/kalendarz")} className="link font-sans text-[0.95rem] text-ink">
+                <SignInLink next="/kalendarz" className="link font-sans text-[0.95rem] text-ink">
                   {t.join}
-                </Link>
+                </SignInLink>
               </p>
             )}
           </div>

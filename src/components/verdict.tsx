@@ -4,12 +4,11 @@ import { useState, useSyncExternalStore } from "react";
 import { caseCategories, caseKey, docket, getCases, getVerdicts, type Case, type Verdict } from "@/content/cases";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
-import Link from "@/i18n/link";
 import { localizePath } from "@/i18n/routes";
 import type { VerdictCounts } from "@/lib/community";
 import { site } from "@/lib/site";
 import { cx, plural, pluralSl, quote, typo } from "@/lib/typo";
-import { patchAccount, signInHref, useAccount } from "./account";
+import { patchAccount, SignInLink, useAccount } from "./account";
 import { Stamp } from "./brand";
 
 /*
@@ -319,9 +318,9 @@ function JurorNote() {
   return (
     <p className="label max-w-sm text-ink-soft">
       {typo(t.profile)}{" "}
-      <Link href={signInHref("/czy-to-juz-dziaderstwo")} className="link text-ink">
+      <SignInLink next="/czy-to-juz-dziaderstwo" className="link text-ink">
         {t.signUp}
-      </Link>
+      </SignInLink>
     </p>
   );
 }

@@ -4,9 +4,8 @@ import { useState, useTransition } from "react";
 import { setNewsletter } from "@/app/[lang]/profil/actions";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
-import Link from "@/i18n/link";
 import { typo } from "@/lib/typo";
-import { patchAccount, signInHref, useAccount } from "./account";
+import { patchAccount, SignInLink, useAccount } from "./account";
 
 const COPY = defineCopy({
   pl: {
@@ -45,9 +44,9 @@ export function NewsletterBox() {
     return (
       <div>
         <p className="max-w-md text-lg leading-snug">{typo(t.guest)}</p>
-        <Link href={signInHref("/biuletyn#zapisy")} className="btn mt-6 bg-ink text-paper hover:bg-red">
+        <SignInLink next="/biuletyn#zapisy" className="btn mt-6 bg-ink text-paper hover:bg-red">
           {t.signIn} <span aria-hidden="true">→</span>
-        </Link>
+        </SignInLink>
       </div>
     );
   }
