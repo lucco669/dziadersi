@@ -360,6 +360,7 @@ export const sections = (locale: Locale) => SECTION_COPY[locale];
 const EXTRA_COPY = defineCopy<Pick<Department, "href" | "label" | "summary">[]>({
   pl: [
     { href: "/dziaders", label: "Dziaders — kto to jest?", summary: "Znaczenie słowa, zachowania i różnica między dziaderstwem a zwykłymi przyzwyczajeniami. Wprowadzenie do Instytutu." },
+    { href: "/dziaders/boomer", label: "Boomer czy dziaders?", summary: "Kto to jest boomer, skąd „OK boomer”, odmiana i porównanie: boomer, dziaders, dziad, zgred. Czy dziaders to ageizm." },
     { href: "/profil", label: "Profil Dziaderski", summary: "Kartoteka badań, kolekcja gatunków, dziennik obserwacji, zakładki, odznaki i legitymacja obserwatora." },
     { href: "/szukaj", label: "Wyszukiwarka", summary: "Gatunki, hasła, sprawy, raporty i działy Instytutu w jednym miejscu." },
     { href: "/o-instytucie", label: "O Instytucie", summary: "Statut, historia, struktura organizacyjna i najczęstsze pytania." },
@@ -368,6 +369,7 @@ const EXTRA_COPY = defineCopy<Pick<Department, "href" | "label" | "summary">[]>(
   ],
   sl: [
     { href: "/dziaders", label: "Dziaders — kdo je to?", summary: "Pomen besede, vedenja in razlika med dziaderstvom in običajnimi navadami. Uvod v Inštitut." },
+    { href: "/dziaders/boomer", label: "Boomer ali dziaders?", summary: "Kdo je boomer, od kod »OK boomer«, sklanjatev in primerjava: boomer, dziaders, dziad, zgred. Je dziaders starizem." },
     { href: "/profil", label: "Dziaderski profil", summary: "Kartoteka pregledov, zbirka vrst, dnevnik opazovanj, zaznamki, značke in opazovalska izkaznica." },
     { href: "/szukaj", label: "Iskalnik", summary: "Vrste, gesla, primeri, poročila in oddelki Inštituta na enem mestu." },
     { href: "/o-instytucie", label: "O Inštitutu", summary: "Statut, zgodovina, organizacijska struktura, pogosta vprašanja in beseda o slovenski izdaji." },

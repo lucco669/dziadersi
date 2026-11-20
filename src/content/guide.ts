@@ -92,6 +92,7 @@ export const GUIDE: Guide = {
         "Powstało od „dziad” z żartobliwą, angielsko brzmiącą końcówką „-ers”. W liczbie mnogiej: dziadersi. Od niego pochodzi „dziaderstwo”, nazwa całego zjawiska.",
     },
     {
+      href: "/dziaders/boomer",
       question: "Czym różni się dziaders od boomera?",
       answer:
         "„Boomer” to określenie pokoleniowe: pochodzi od angielskiego „baby boomer”, czyli osoby z powojennego wyżu demograficznego (urodzonej mniej więcej w latach 1946–1964), i rozpowszechniło się w odzywce „OK boomer”. „Dziaders” nie wskazuje rocznika, tylko postawę: pouczanie, nieomylność i przekonanie, że dawniej było lepiej. Boomer nie musi być dziadersem, a dziadersem można zostać przed trzydziestką.",
