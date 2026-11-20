@@ -14,6 +14,36 @@ export const site = {
   controller: { name: "Łukasz Szramuk", email: "admin@dziader.si" },
 } as const;
 
+export type SocialNetwork = "instagram" | "facebook" | "threads" | "tiktok";
+
+/**
+ * The Institute's accounts. Fill in the handle (without @) once an account exists: the footer, the
+ * press page and Organization `sameAs` pick it up. Empty handles are never shown or linked.
+ */
+export const SOCIAL: Record<SocialNetwork, string> = {
+  instagram: "",
+  facebook: "",
+  threads: "",
+  tiktok: "",
+};
+
+const SOCIAL_NETWORKS: Record<SocialNetwork, { label: string; url: (handle: string) => string }> = {
+  instagram: { label: "Instagram", url: (handle) => `https://www.instagram.com/${handle}/` },
+  facebook: { label: "Facebook", url: (handle) => `https://www.facebook.com/${handle}` },
+  threads: { label: "Threads", url: (handle) => `https://www.threads.com/@${handle}` },
+  tiktok: { label: "TikTok", url: (handle) => `https://www.tiktok.com/@${handle}` },
+};
+
+export type SocialProfile = { network: SocialNetwork; label: string; handle: string; url: string };
+
+/** The accounts that exist, in a fixed order. */
+export function socialProfiles(accounts: Record<SocialNetwork, string> = SOCIAL): SocialProfile[] {
+  return (Object.keys(SOCIAL_NETWORKS) as SocialNetwork[]).flatMap((network) => {
+    const handle = accounts[network].trim().replace(/^@/, "");
+    return handle ? [{ network, label: SOCIAL_NETWORKS[network].label, handle, url: SOCIAL_NETWORKS[network].url(handle) }] : [];
+  });
+}
+
 const SITE_COPY = defineCopy({
   pl: {
     institute: "Instytut Badań nad Dziaderstwem",

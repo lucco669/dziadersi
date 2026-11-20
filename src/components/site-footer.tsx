@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
-import { groups, sections, site, siteCopy } from "@/lib/site";
+import { groups, sections, site, siteCopy, socialProfiles } from "@/lib/site";
 import { typo } from "@/lib/typo";
 import { Mark, Wordmark } from "./brand";
 import { EditionSwitch } from "./language";
@@ -13,12 +13,14 @@ const COPY = defineCopy({
       "Instytut Badań nad Dziaderstwem opisuje i klasyfikuje dziaderstwo w Polsce, od parkingu pod marketem budowlanym po wigilijny stół. Działa niezależnie, bez grantów i bez zgody rodziny.",
     sections: "Działy",
     contact: "Kontakt",
+    social: "Instytut w mediach społecznościowych",
     links: [
       ["/dziaders", "Dziaders — kto to jest?"],
       ["/profil", "Profil Dziaderski"],
       ["/rejestracja", "Załóż konto"],
       ["/o-instytucie", "O Instytucie"],
       ["/kontakt", "Kontakt"],
+      ["/dla-mediow", "Dla mediów"],
       ["/regulamin", "Regulamin"],
       ["/prywatnosc", "Prywatność"],
     ],
@@ -29,12 +31,14 @@ const COPY = defineCopy({
       "Inštitut za raziskave dziaderstva opisuje in razvršča dziaderstvo na Poljskem, od parkirišča pred gradbenim marketom do mize na sveti večer. Deluje neodvisno, brez projektnih sredstev in brez soglasja družine.",
     sections: "Oddelki",
     contact: "Kontakt",
+    social: "Inštitut na družbenih omrežjih",
     links: [
       ["/dziaders", "Dziaders — kdo je to?"],
       ["/profil", "Dziaderski profil"],
       ["/rejestracja", "Ustvari račun"],
       ["/o-instytucie", "O Inštitutu"],
       ["/kontakt", "Kontakt"],
+      ["/dla-mediow", "Za medije"],
       ["/regulamin", "Pogoji uporabe"],
       ["/prywatnosc", "Zasebnost"],
     ],
@@ -44,6 +48,7 @@ const COPY = defineCopy({
 export function SiteFooter({ locale }: { locale: Locale }) {
   const t = COPY[locale];
   const copy = siteCopy(locale);
+  const profiles = socialProfiles();
   return (
     <footer className="border-t border-ink print:hidden">
       <div className="wrap grid grid-cols-1 gap-12 py-14 md:py-20 lg:grid-cols-12">
@@ -58,6 +63,19 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <Link href="/kontakt" className="link">{t.contact}</Link>{" · "}
             <a href={`mailto:${site.controller.email}`} className="link">{site.controller.email}</a>
           </p>
+          {profiles.length > 0 && (
+            <nav aria-label={t.social} className="mt-3">
+              <ul className="flex flex-wrap gap-x-5 font-sans text-sm font-medium">
+                {profiles.map((profile) => (
+                  <li key={profile.network}>
+                    <a href={profile.url} rel="me noopener" target="_blank" className="inline-flex min-h-6 items-center py-1.5 transition-colors hover:text-red">
+                      {profile.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
 
         <div className="lg:col-span-8">

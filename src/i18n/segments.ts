@@ -40,6 +40,7 @@ export const SEGMENTS: SegmentMap = {
   szukaj: { sl: "iskanje" },
   "o-instytucie": { sl: "o-institutu" },
   kontakt: { sl: "kontakt" },
+  "dla-mediow": { sl: "za-medije" },
   regulamin: { sl: "pogoji-uporabe" },
   prywatnosc: { sl: "zasebnost" },
 };
