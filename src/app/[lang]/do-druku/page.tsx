@@ -131,7 +131,7 @@ export default async function PrintHub() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {getOccasions(locale).map((occasion) => {
             const card = sampleCard(occasion);
-            const dossier = dossiers.find((item) => item.bingo === occasion.slug);
+            const dossier = dossiers.find((item) => item.bingo === occasion.slug && !item.date);
             return (
               <article key={occasion.slug} className="border-t border-rule pt-5">
                 <p className="label text-ink-faint">{t.four}</p>

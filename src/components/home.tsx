@@ -61,6 +61,7 @@ const COPY = defineCopy({
     calendar: (weekday: string) => `Kartka z kalendarza · ${weekday}`,
     sun: (sunrise: string, sunset: string) => `Wschód ${sunrise} · zachód ${sunset}`,
     tear: "Zerwij dzisiejszą kartkę",
+    observance: "Dziś obchodzimy",
   },
   sl: {
     heading: "Dziaderstvo ne izbira.",
@@ -105,6 +106,7 @@ const COPY = defineCopy({
     calendar: (weekday: string) => `Trgalni koledar · ${weekday}`,
     sun: (sunrise: string, sunset: string) => `V Varšavi vzhod ${sunrise} · zahod ${sunset}`,
     tear: "Odtrgaj današnji list",
+    observance: "Danes praznujemo",
   },
 });
 
@@ -336,6 +338,14 @@ export function Shelf({ bulletin, locale }: { bulletin: Bulletin; locale: Locale
           )}
         </p>
         <p className="label mt-4 text-ink-soft">{t.sun(page.sunrise, page.sunset)}</p>
+        {page.observance && (
+          <p className="mt-4 font-sans text-[0.95rem]">
+            <span className="label text-red">{t.observance}:</span>{" "}
+            <Link href={"/kalendarz/" + page.observance.slug} className="link font-medium">
+              {page.observance.name}
+            </Link>
+          </p>
+        )}
         <Link href="/kalendarz" className="link mt-7 inline-block font-sans font-medium">
           {t.tear}
         </Link>

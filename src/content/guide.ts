@@ -183,6 +183,7 @@ export const GUIDE: Guide = {
         "Bywa. To potoczny docinek o zabarwieniu krytycznym, łagodniejszy od „dziada”, ale wciąż oceniający. Między znajomymi uchodzi za przytyk; użyty wobec obcej osoby albo w sporze może zostać odebrany jako lekceważenie jej wieku.",
     },
     {
+      href: "/dziaders/boomer",
       question: "Czym różni się dziaders od boomera?",
       answer:
         "„Boomer” to określenie pokoleniowe: pochodzi od angielskiego „baby boomer”, czyli osoby z powojennego wyżu demograficznego (urodzonej mniej więcej w latach 1946–1964), i rozpowszechniło się w odzywce „OK boomer”. „Dziaders” nie wskazuje rocznika, tylko postawę: pouczanie, nieomylność i przekonanie, że dawniej było lepiej. Boomer nie musi być dziadersem, a dziadersem można zostać przed trzydziestką.",

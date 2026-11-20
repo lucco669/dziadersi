@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
+import { getCalendar } from "@/content/calendar";
 import { getCases } from "@/content/cases";
 import { getDictionary } from "@/content/dictionary";
 import { getReports } from "@/content/reports";
+import { getSlang } from "@/content/slang";
 import { getSpecies } from "@/content/species";
 import { getDossiers } from "@/content/dossiers";
 import { getExhibits } from "@/content/museum";
@@ -33,6 +35,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/test", "monthly", 0.9),
     page("/dziaders", "monthly", 0.8),
     page("/dziaders/kobieta", "monthly", 0.7),
+    page("/dziaders/boomer", "monthly", 0.7),
     page("/okazje", "monthly", 0.7),
     ...getDossiers(locale).map((item) => page("/okazje/" + item.slug, "monthly", 0.7)),
     page("/do-druku", "monthly", 0.7),
@@ -40,8 +43,11 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     ...getExhibits(locale).map((item) => page("/muzeum/" + item.slug, "monthly", 0.6)),
     page("/atlas", "weekly", 0.8),
     ...getSpecies(locale).map((species) => page(`/atlas/${species.slug}`, "monthly", 0.7)),
+    page("/atlas/gatunki-pokrewne", "monthly", 0.6),
     page("/slownik", "weekly", 0.7),
     ...getDictionary(locale).map((entry) => page(`/slownik/${entry.slug}`, "monthly", 0.6)),
+    page("/slownik-mlodziezowy", "monthly", 0.7),
+    ...getSlang(locale).map((entry) => ({ ...page(`/slownik-mlodziezowy/${entry.slug}`, "monthly", 0.6), lastModified: entry.checked })),
     page("/raporty", "monthly", 0.7),
     ...getReports(locale).map((report) => ({
       ...page(`/raporty/${report.slug}`, "yearly", 0.6),
@@ -61,6 +67,8 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/obserwacje", "hourly", 0.6),
     page("/tablica-honorowa", "daily", 0.6),
     page("/kalendarz", "daily", 0.7),
+    page("/kalendarz/swieta", "daily", 0.7),
+    ...getCalendar(locale).OBSERVANCES.map((item) => page("/kalendarz/" + item.slug, "monthly", 0.6)),
     page("/biuletyn", "weekly", 0.6),
     page("/rejestracja", "monthly", 0.5),
     page("/o-instytucie", "yearly", 0.4),

@@ -1,5 +1,5 @@
 import type { Text } from "@/i18n/overlay";
-import type { OBSERVANCES as Observances } from "../calendar";
+import type { Observance } from "../calendar";
 
 /*
  * Trgalni koledar. The page is picked by the date, so every list keeps the Polish length and
@@ -263,41 +263,266 @@ export const ORDERS: Text<string[]> = [
   "Ne računati, koliko je stala svatba. Niti ene jedi.",
 ];
 
-/** The Institute's observances, keyed by their date ("MM-DD"). */
-export const OBSERVANCES: Record<string, Text<(typeof Observances)[number], "date">> = {
-  "01-05": { name: "Dan napovedi pospravljanja jelke", note: "Napove se, da bo jelka pospravljena. Rok se določi pozneje." },
-  "01-15": { name: "Dan strganja šip", note: "Obeležuje se s kartico od hladilnika, ker je strgalo v drugem avtu." },
-  "01-28": { name: "Dan ogrevanja motorja", note: "Pol ure v prostem teku, v imenu tradicije in sosedske radovednosti." },
-  "02-09": { name: "Dan razvrščanja vijakov", note: "Po velikosti, v kozarce od kave. Presežek vijakov se preseli v kozarce od kumaric." },
-  "02-15": { name: "Dan znižanega cvetja", note: "Dan po znanem prazniku je vse pol cenejše. Roža je roža." },
-  "02-21": { name: "Dan zagonskih kablov", note: "Kabli se sosedu posodijo skupaj s predavanjem o akumulatorjih." },
-  "03-07": { name: "Dan škatle od televizorja", note: "Škatle se hranijo do konca garancije, potem pa še dlje, ker bodo prišle prav." },
-  "03-22": { name: "Dan prinašanja vetrobrana iz kleti", note: "Do julija so še trije meseci, ampak priprava je temelj vsega." },
-  "04-02": { name: "Dan iste šale", note: "Včerajšnja šala se danes pove še enkrat, za tiste, ki je niso slišali." },
-  "04-09": { name: "Dan prve košnje", note: "Obeležuje se v soboto ob sedmih zjutraj, ne glede na to, kateri dan v tednu je." },
-  "04-18": { name: "Dan svojega kontrolorja", note: "Kontrolor pozna avto že leta in si ga ogleda s spoštovanjem, od daleč." },
-  "05-08": { name: "Dan klešč", note: "Klešče se predajo samo v izjemnih okoliščinah. Danes takih ni." },
-  "05-20": { name: "Dan bele nogavice", note: "V sandalih, seveda. Dolžina nogavice: do sredine meč, brez debate." },
-  "05-29": { name: "Dan spominov na prvi maj", note: "O prvomajskih praznikih se pripoveduje do avgusta. Od avgusta se pripoveduje o dopustu." },
-  "06-05": { name: "Dan bučke", note: "Bučka se izmeri, stehta in razdeli sosedom, ki imajo svoje." },
-  "06-17": { name: "Dan kravate na čelu", note: "Obeležuje se po polnoči, za mizo stricev, na vsaki svatbi v državi." },
-  "07-10": { name: "Dan vetrobrana", note: "Vetrobran se postavi ob 6.30, preden se sonce sploh zave." },
-  "07-19": { name: "Dan ravnanja prikolice", note: "Konča se, ko je mehurček na sredini ali ko zaide sonce." },
-  "07-29": { name: "Dan ribe po sto gramov", note: "Cena ocvrte ribe se prebere na glas, z neverico, dvakrat." },
-  "08-07": { name: "Dan obvoza čez njivo", note: "Obvoz je vedno krajši, tudi če je daljši." },
-  "08-21": { name: "Dan paradižnika z vrtička", note: "Paradižnika z vrtička se ne primerja z ničimer, še posebej ne s tistim iz trgovine." },
-  "08-28": { name: "Dan zadnjega žara pred šolo", note: "Klobase so iste, ampak vsi govorijo o zvezkih." },
-  "09-04": { name: "Dan karirastega zvezka", note: "Karirasti zvezek se kupi na zalogo, za primer računov, ki jih bo treba preveriti." },
-  "09-18": { name: "Dan molčečega gobarja", note: "Rastišč se ne izdaja. Niti na praznik." },
-  "09-26": { name: "Dan vrečke z vrečkami", note: "Danes se preštejejo zaloge. Rezultat se ne objavi." },
-  "10-01": { name: "Dan odprtja Inštituta", note: "1. oktobra 2026 je Inštitut odprl vrata javnosti. Klešče so za en dan predali naprej." },
-  "10-02": { name: "Nacionalni dan popisa", note: "Ta dan se je začel Nacionalni popis dziadersov. Vsak pregled šteje, anonimno." },
-  "10-15": { name: "Dan zimskih gum", note: "Kdor jih je zamenjal septembra, se lahko danes vzvišeno nasmehne." },
-  "10-24": { name: "Svetovni dan kabla neznanega namena", note: "Kabel ostane v predalu. Nekoč se bo izkazalo, čemu je." },
-  "11-07": { name: "Dan tesnjenja oken", note: "Vata, lepilni trak in prepričanje, da toplota uhaja samo skozi sosedova okna." },
-  "11-19": { name: "Dan listka za brisalcem", note: "Piše se z velikimi tiskanimi črkami, vljudno, na hrbtni strani računa." },
-  "11-28": { name: "Dan puloverja namesto radiatorja", note: "Radiator ostane na dvojki. Puloverji se izdajo iz omare, po eden na družinskega člana." },
-  "12-08": { name: "Dan razpletanja lučk", note: "Lanske lučke se razpletajo zbrano. Traja do mraka ali dlje." },
-  "12-15": { name: "Dan krapa v kadi", note: "Kopanje se prestavi na po praznikih. Krap ima prednost." },
-  "12-30": { name: "Dan načrtovanja silvestrovanja doma", note: "Načrt je preprost: televizija, šampanjec opolnoči, spanec ob pol enih." },
+/** The Institute's observances, keyed by their date ("MM-DD"). Slugs live in slugs/calendar.ts. */
+export const OBSERVANCES: Record<string, Text<Observance, "date" | "slug" | "entry">> = {
+  "01-05": {
+    name: "Dan napovedi pospravljanja jelke",
+    note: "Napove se, da bo jelka pospravljena. Rok se določi pozneje.",
+    rite: "Pri zajtrku razglasiti, da jelka ta teden gre ven. Razglas ponavljati vsakih nekaj dni, do februarja.",
+  },
+  "01-09": {
+    name: "Dan daljinca v foliji",
+    note: "Daljinec v plastični vrečki ščiti tipke pred obrabo. Obraba je predvidena za leto 2040.",
+    rite: "Folijo zamenjati z novo, ne da bi snel elastiko. Ob tem ugotoviti, kdo je zadnji videl daljinec.",
+  },
+  "01-15": {
+    name: "Dan strganja šip",
+    note: "Obeležuje se s kartico od hladilnika, ker je strgalo v drugem avtu.",
+    rite: "Zjutraj ven s kartico od hladilnika, zvečer najti strgalo v drugem avtu. Jutri ponoviti.",
+  },
+  "01-20": {
+    name: "Dan odčitavanja števca",
+    note: "Števec elektrike se odčita osebno, s svetilko, v navzočnosti priče.",
+    rite: "Stanje zapisati v karirasti zvezek, poleg lanskega, in družini na glas prebrati razliko.",
+  },
+  "01-28": {
+    name: "Dan ogrevanja motorja",
+    note: "Pol ure v prostem teku, v imenu tradicije in sosedske radovednosti.",
+    rite: "Prižgati motor, se vrniti v hišo po kavo in priti ven, ko se šipe odtajajo same. Sosedom pojasniti, da dizel mora.",
+  },
+  "02-03": {
+    name: "Dan termometra za oknom",
+    note: "Termometer za kuhinjskim oknom je zanesljivejši od napovedi, aplikacije in soseda skupaj.",
+    rite: "Temperaturo odčitati trikrat na dan in rezultat sporočiti domačim, s primerjavo z nekdanjimi zimami.",
+  },
+  "02-09": {
+    name: "Dan razvrščanja vijakov",
+    note: "Po velikosti, v kozarce od kave. Presežek vijakov se preseli v kozarce od kumaric.",
+    rite: "Vijake stresti na časopis, jih razvrstiti po velikosti in nasuti nazaj v en kozarec, ker se tako hitreje išče.",
+  },
+  "02-15": {
+    name: "Dan znižanega cvetja",
+    note: "Dan po znanem prazniku je vse pol cenejše. Roža je roža.",
+    rite: "Kupiti šopek z rumeno nalepko in ga izročiti brez pripombe o ceni. Pripombo o ceni podati v avtu.",
+  },
+  "02-21": {
+    name: "Dan zagonskih kablov",
+    note: "Kabli se sosedu posodijo skupaj s predavanjem o akumulatorjih.",
+    rite: "Preveriti, ali so kabli v prtljažniku. Niso: leta 2019 si jih je sposodil svak.",
+  },
+  "02-27": {
+    name: "Dan zapiranja vrat",
+    note: "Toplota ni za stopnišče. Vprašanje »A si se v štali rodil?« se zastavi enkrat na sezono, zato pa glasno.",
+    rite: "Zapreti vrata za vsakim družinskim članom, tudi za tistim, ki je ravno hotel ven.",
+  },
+  "03-07": {
+    name: "Dan škatle od televizorja",
+    note: "Škatle se hranijo do konca garancije, potem pa še dlje, ker bodo prišle prav.",
+    rite: "Stopiti v klet, se prepričati, da je škatla tam, in je ne zavreči. Televizorja morda ni več.",
+  },
+  "03-14": {
+    name: "Dan prvega obiska na vrtičku",
+    note: "Vrtiček se obhodi, ogleda in ugotovi, da je še prezgodaj. Potem se obhodi sosedov vrtiček.",
+    rite: "Preveriti uto, sod za deževnico in sosedovo ograjo. Domov se vrniti s prvo pripombo sezone.",
+  },
+  "03-22": {
+    name: "Dan prinašanja vetrobrana iz kleti",
+    note: "Do julija so še trije meseci, ampak priprava je temelj vsega.",
+    rite: "Vetrobran razpreti v predsobi, prešteti kole, ga zložiti in do julija pustiti pri vratih.",
+  },
+  "03-29": {
+    name: "Dan ure v avtu",
+    note: "Ura v avtu se prestavi enkrat na nekaj let. V vmesnem času se uro prišteje na pamet.",
+    rite: "Ure se ne dotikati. Sopotnikom pojasniti, da kaže prav, le drugače.",
+  },
+  "04-02": {
+    name: "Dan iste šale",
+    note: "Včerajšnja šala se danes pove še enkrat, za tiste, ki je niso slišali.",
+    rite: "Včerajšnjo šalo povedati od začetka. Poanto ponoviti, za primer, da je kdo prvič ni razumel.",
+  },
+  "04-09": {
+    name: "Dan prve košnje",
+    note: "Obeležuje se v soboto ob sedmih zjutraj, ne glede na to, kateri dan v tednu je.",
+    rite: "Kosilnico zapeljati ven ob sedmih, pokositi, jo očistiti in si sosedovo trato ogledati s sočutnim izrazom.",
+  },
+  "04-18": {
+    name: "Dan svojega kontrolorja",
+    note: "Kontrolor pozna avto že leta in si ga ogleda s spoštovanjem, od daleč.",
+    rite: "Na tehnični pregled iti na isto postajo kot vedno. Pogovor o vremenu traja dlje od pregleda.",
+  },
+  "04-25": {
+    name: "Dan sobotnega pranja avta",
+    note: "Avto se pere ročno, na dovozu, z vedrom, ki se spomni prejšnjega avta. Avtopralnica praska lak.",
+    rite: "Oprati, spolirati in do večera parkirati tako, da nihče ne parkira zraven.",
+  },
+  "05-08": {
+    name: "Dan klešč",
+    note: "Klešče se predajo samo v izjemnih okoliščinah. Danes takih ni.",
+    rite: "Prižgati žar in ne predati klešč. Prosilce za klešče napotiti v vrsto za klobase.",
+  },
+  "05-14": {
+    name: "Dan kurjenja brez podžigača",
+    note: "Podžigač je kemija. Kuri se s časopisom, potrpežljivostjo in nasveti, ki jih ni nihče naročil.",
+    rite: "Žar prižgati z eno vžigalico. Preostale vžigalice porabiti za prikaz, kako se ne kuri.",
+  },
+  "05-20": {
+    name: "Dan bele nogavice",
+    note: "V sandalih, seveda. Dolžina nogavice: do sredine meč, brez debate.",
+    rite: "Obuti nogavice v sandale, iti na sprehod in ne sprejemati pripomb. Pripombe se sprejemajo julija.",
+  },
+  "05-29": {
+    name: "Dan spominov na prvi maj",
+    note: "O prvomajskih praznikih se pripoveduje do avgusta. Od avgusta se pripoveduje o dopustu.",
+    rite: "O prvomajskih praznikih pripovedovati tistim, ki so bili zraven, s popravki njihove različice.",
+  },
+  "06-05": {
+    name: "Dan bučke",
+    note: "Bučka se izmeri, stehta in razdeli sosedom, ki imajo svoje.",
+    rite: "Stehtati bučko, jo fotografirati ob vžigalniku za merilo in razdeliti sosedom, ki imajo tudi bučke.",
+  },
+  "06-11": {
+    name: "Dan vrtne cevi",
+    note: "Cev se navija po metodi, ki jo pozna samo lastnik. Vsaka druga metoda se konča z vozlom in predavanjem.",
+    rite: "Zaliti vrt, naviti cev in nikomur ne dovoliti, da pomaga.",
+  },
+  "06-17": {
+    name: "Dan kravate na čelu",
+    note: "Obeležuje se po polnoči, za mizo stricev, na vsaki svatbi v državi.",
+    rite: "Po polnoči si kravato zavezati okoli čela in pri ansamblu naročiti skladbo, ki je ni na repertoarju.",
+  },
+  "06-26": {
+    name: "Dan termovke",
+    note: "Kava iz termovke ima enak okus od leta 1987, ker je termovka ista.",
+    rite: "Termovko vzeti na izlet, na ribolov in v službo. Kava iz avtomata je predraga in prešibka.",
+  },
+  "07-03": {
+    name: "Dan odprtega okna",
+    note: "Klima v avtu škodi zdravju. Do konca odprto okno je zdravo, zlasti za voznika.",
+    rite: "Voziti z odprtimi okni in sopotnike zadaj spraševati, ali jih piha. Odgovorov se ne sliši.",
+  },
+  "07-10": {
+    name: "Dan vetrobrana",
+    note: "Vetrobran se postavi ob 6.30, preden se sonce sploh zave.",
+    rite: "Ob zori zabiti vetrobran, zasesti teren in ga braniti do sončnega zahoda.",
+  },
+  "07-19": {
+    name: "Dan ravnanja prikolice",
+    note: "Konča se, ko je mehurček na sredini ali ko zaide sonce.",
+    rite: "Postaviti prikolico, preveriti z libelo, popraviti z zagozdo in preveriti še enkrat. Kosilo se ustrezno zamakne.",
+  },
+  "07-29": {
+    name: "Dan ribe po sto gramov",
+    note: "Cena ocvrte ribe se prebere na glas, z neverico, dvakrat.",
+    rite: "Cenik ocvrtih rib prebrati na glas, preračunati v zlote iz leta 2005 in naročiti krompirček.",
+  },
+  "08-07": {
+    name: "Dan obvoza čez njivo",
+    note: "Obvoz je vedno krajši, tudi če je daljši.",
+    rite: "Zapeljati s ceste po lastnem zemljevidu v glavi. Po eni uri ugotoviti, da bi bil zastoj tako ali tako.",
+  },
+  "08-12": {
+    name: "Dan razglednice z dopusta",
+    note: "Razglednica se pošlje zadnji dan dopusta. Prispe septembra, z opisom vremena, ki je že minilo.",
+    rite: "Na razglednico napisati, da je bilo vreme lepo, hrana draga, morje pa ni več tisto, kar je bilo.",
+  },
+  "08-21": {
+    name: "Dan paradižnika z vrtička",
+    note: "Paradižnika z vrtička se ne primerja z ničimer, še posebej ne s tistim iz trgovine.",
+    rite: "Narezati paradižnik z vrtička, ga posoliti in pojesti v tišini. Tišino prekiniti s primerjavo s tistim iz trgovine.",
+  },
+  "08-28": {
+    name: "Dan zadnjega žara pred šolo",
+    note: "Klobase so iste, ampak vsi govorijo o zvezkih.",
+    rite: "Speči klobase in vsakega otroka vprašati, ali že ima zvezke. Zvezki se kupijo 4. septembra.",
+  },
+  "09-04": {
+    name: "Dan karirastega zvezka",
+    note: "Karirasti zvezek se kupi na zalogo, za primer računov, ki jih bo treba preveriti.",
+    rite: "Kupiti tri kariraste zvezke. Enega dati otroku, dva skriti za račune.",
+  },
+  "09-10": {
+    name: "Dan kozarcev",
+    note: "Kozarci se operejo, preštejejo in na polici razvrstijo po prostornini. Pokrovke se hranijo posebej, v vrečki.",
+    rite: "Prešteti kozarce v kleti in družini sporočiti, da jih ne rabimo več. Od sosede sprejeti še dva.",
+  },
+  "09-18": {
+    name: "Dan molčečega gobarja",
+    note: "Rastišč se ne izdaja. Niti na praznik.",
+    rite: "V gozd iti pred zoro, se vrniti s košaro in ne odgovarjati na vprašanje »kje«.",
+  },
+  "09-26": {
+    name: "Dan vrečke z vrečkami",
+    note: "Danes se preštejejo zaloge. Rezultat se ne objavi.",
+    rite: "Prešteti vrečke v vrečki. Najmanjše zložiti v trikotnik, največje pustiti za vsak primer.",
+  },
+  "10-01": {
+    name: "Dan odprtja Inštituta",
+    note: "1. oktobra 2026 je Inštitut odprl vrata javnosti. Klešče so za en dan predali naprej.",
+    rite: "Opraviti Test dziadersa in prevzeti certifikat. Praznovanje traja približno štiri minute.",
+  },
+  "10-02": {
+    name: "Nacionalni dan popisa",
+    note: "Ta dan se je začel Nacionalni popis dziadersov. Vsak pregled šteje, anonimno.",
+    rite: "Sodelovati v Nacionalnem popisu dziadersov. Anonimno, kot se za popis spodobi.",
+  },
+  "10-15": {
+    name: "Dan zimskih gum",
+    note: "Kdor jih je zamenjal septembra, se lahko danes vzvišeno nasmehne.",
+    rite: "Zamenjati gume ali vsaj vprašati soseda, ali jih je že zamenjal, in komentirati odgovor.",
+  },
+  "10-24": {
+    name: "Svetovni dan kabla neznanega namena",
+    note: "Kabel ostane v predalu. Nekoč se bo izkazalo, čemu je.",
+    rite: "Kabel vzeti iz predala, si ogledati oba konca in ga pospraviti nazaj. Danes še ne.",
+  },
+  "10-29": {
+    name: "Dan ure v pečici",
+    note: "Ura v pečici se danes prestavi, po pol leta. Vse poletje je kazala zimski čas in nihče se ni pritoževal.",
+    rite: "Prestaviti uro v pečici, mikrovalovki in radiu. Uro v avtu pustiti do marca.",
+  },
+  "11-07": {
+    name: "Dan tesnjenja oken",
+    note: "Vata, lepilni trak in prepričanje, da toplota uhaja samo skozi sosedova okna.",
+    rite: "Okna zatesniti z vato in lepilnim trakom. S svečo preveriti, ali vleče. Vleče pri sosedih.",
+  },
+  "11-14": {
+    name: "Dan zračenja radiatorja",
+    note: "Radiator se zrači s ključkom, ki že od leta 1994 leži v istem predalu. Skleda se podstavi za vsak primer.",
+    rite: "Odviti ventil, poslušati sikanje in zapreti, ko priteče voda. Razglasiti, da zdaj greje bolje, tudi če ne.",
+  },
+  "11-19": {
+    name: "Dan listka za brisalcem",
+    note: "Piše se z velikimi tiskanimi črkami, vljudno, na hrbtni strani računa.",
+    rite: "Za brisalcem slabo parkiranega avta pustiti listek. Podpisati »Sosed«; vsi tako vedo, kateri.",
+  },
+  "11-28": {
+    name: "Dan puloverja namesto radiatorja",
+    note: "Radiator ostane na dvojki. Puloverji se izdajo iz omare, po eden na družinskega člana.",
+    rite: "Razdeliti puloverje, priviti radiator in spomniti, koliko je stal januarski račun.",
+  },
+  "12-02": {
+    name: "Dan iskanja okraskov",
+    note: "Škatla z okraski stoji v kleti, za škatlo od televizorja, pod vetrobranom.",
+    rite: "Najti škatlo, pregledati bunkice in razbite odložiti v posebno škatlo, ker bodo še prišle prav.",
+  },
+  "12-08": {
+    name: "Dan razpletanja lučk",
+    note: "Lanske lučke se razpletajo zbrano. Traja do mraka ali dlje.",
+    rite: "Razplesti lučke, preveriti, ali svetijo, in najti tisto eno žarnico, zaradi katere ne svetijo.",
+  },
+  "12-15": {
+    name: "Dan krapa v kadi",
+    note: "Kopanje se prestavi na po praznikih. Krap ima prednost.",
+    rite: "Krapa spustiti v kad in določiti razpored kopanja za naslednje dni. Razpored predvideva tuš pri sosedih.",
+  },
+  "12-19": {
+    name: "Dan jelke s treh strani",
+    note: "Jelka se na tržnici ogleda s treh strani. Četrta bo ob steni.",
+    rite: "Trikrat obhoditi stojnico, potresti vsako jelko in kupiti prvo, ker potem ne bo nobene več.",
+  },
+  "12-30": {
+    name: "Dan načrtovanja silvestrovanja doma",
+    note: "Načrt je preprost: televizija, šampanjec opolnoči, spanec ob pol enih.",
+    rite: "Razglasiti načrt za silvestrovo. Po nobenem predlogu ga ne spreminjati.",
+  },
 };

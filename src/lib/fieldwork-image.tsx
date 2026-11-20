@@ -67,8 +67,8 @@ export function fieldworkSectionImage(kind: "guide" | "occasions" | "museum" | "
 }
 export function dossierImage(dossier: Dossier, locale: Locale) {
   return fieldworkCard(locale, {
-    title: dossier.title,
-    subtitle: dossier.season,
+    title: dossier.card ? dossier.card.title : dossier.title,
+    subtitle: dossier.card ? dossier.card.wishes[0] : dossier.season,
     section: COPY[locale].dossier,
     path: "/okazje/" + dossier.slug,
     art: <OgPlate species={dossier.species[0]} width={380} />,

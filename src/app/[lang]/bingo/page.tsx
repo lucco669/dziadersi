@@ -174,7 +174,7 @@ export default async function BingoPage() {
         <ul className="grid gap-x-10 gap-y-14 md:grid-cols-2">
           {occasions.map((occasion) => {
             const sample = sampleCard(occasion);
-            const dossier = getDossiers(locale).find((item) => item.bingo === occasion.slug);
+            const dossier = getDossiers(locale).find((item) => item.bingo === occasion.slug && !item.date);
             return (
               <li key={occasion.slug} className="group grid gap-6 border-t border-ink pt-6 sm:grid-cols-[11rem_1fr]">
                 <OccasionPlate slug={occasion.slug} animated className="w-full max-w-48" />

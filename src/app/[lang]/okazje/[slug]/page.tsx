@@ -43,6 +43,8 @@ const COPY = defineCopy({
     materials: "Wszystkie materiały do druku",
     others: "Inne przewodniki terenowe",
     jump: "Przejdź do bingo",
+    card: "Kartka do wręczenia albo wysłania",
+    cardNote: "Do przepisania odręcznie. Instytut nie zgłasza praw autorskich do życzeń.",
     promo: "Rozpoznajesz kogoś przy stole?",
     promoText: "Sprawdź najpierw siebie. Test Dziadersa wydaje certyfikat, który można spokojnie pokazać rodzinie.",
   },
@@ -67,6 +69,8 @@ const COPY = defineCopy({
     materials: "Vse gradivo za tisk",
     others: "Drugi terenski vodniki",
     jump: "Pojdi na bingo",
+    card: "Voščilnica za izročitev ali pošiljanje",
+    cardNote: "Za ročni prepis. Inštitut ne uveljavlja avtorskih pravic na voščilih.",
     promo: "Prepoznaš koga pri mizi?",
     promoText: "Najprej preveri sebe. Test dziadersa izda certifikat, ki ga lahko mirno pokažeš družini.",
   },
@@ -166,6 +170,22 @@ export default async function DossierPage({ params }: Props) {
           </div>
         </div>
       </Section>
+      {dossier.card && (
+        <Section id="kartka" title={dossier.card.title} intro={t.card}>
+          <div className="grid gap-6 md:grid-cols-3">
+            {dossier.card.wishes.map((wish, i) => (
+              <figure key={wish} className="flex flex-col border border-ink bg-card p-6">
+                <span className="label text-red">{dossier.card!.title + " · " + (i + 1)}</span>
+                <blockquote className="mt-4 flex-1 text-xl italic leading-snug">{typo(wish)}</blockquote>
+              </figure>
+            ))}
+          </div>
+          <p className="label mt-8 text-ink-faint">{t.cardNote}</p>
+          <div className="mt-6">
+            <ShareBar path={path} text={dossier.card.title} kind="kartka" />
+          </div>
+        </Section>
+      )}
       <Section id="protokol" title={t.protocol}>
         <ol className="grid gap-8 md:grid-cols-3">
           {dossier.protocol.map((step, i) => (
