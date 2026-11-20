@@ -10,7 +10,8 @@
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit --incremental false",
     "social-kit": "tsx scripts/social-kit.ts",
-    "record-clips": "tsx scripts/record-clips.ts"
+    "record-clips": "tsx scripts/record-clips.ts",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

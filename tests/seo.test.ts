@@ -4,7 +4,7 @@ import robots from "../src/app/robots";
 import sitemap from "../src/app/sitemap";
 import { GET as securityRecord } from "../src/app/.well-known/security.txt/route";
 import { signInPath } from "../src/lib/account";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { basename, dirname, join, sep } from "node:path";
 import { describe, institute, pageMetadata, SHARE_CARDS, shareImagePath } from "../src/lib/seo";
 import { site } from "../src/lib/site";
@@ -208,4 +208,10 @@ test("organisation contact and security disclosure use the published administrat
   assert.ok(text.includes(`Contact: mailto:${site.controller.email}\n`));
   assert.ok(text.includes(`Canonical: ${site.url}/.well-known/security.txt\n`));
   assert.match(text, /^Expires: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/m);
+});
+
+test("the IndexNow key is one public file that holds its own name", () => {
+  const keys = readdirSync("public").filter((name) => /^[0-9a-f]{32}\.txt$/.test(name));
+  assert.equal(keys.length, 1, "scripts/indexnow.mjs expects exactly one key file in public/");
+  assert.equal(readFileSync(join("public", keys[0]), "utf8").trim(), keys[0].slice(0, -4));
 });

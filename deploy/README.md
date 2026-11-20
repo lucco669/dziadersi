@@ -68,6 +68,22 @@ The daily `porzadki` run includes the same report in its answer, so the timer's 
 
 In the browser, a census write the API refuses is reported to Umami as the event **Spis: zapis odrzucony** with the HTTP status (0 = no answer). Visitors never see this failure, so that event is the other early warning.
 
+## IndexNow
+
+IndexNow tells Bing, Yandex, Seznam, Naver and the other members which pages to crawl again; one submission reaches all of them. (Google doesn't take part: it reads the sitemap.) The key is `public/1b903190aab1af191436d1207b29cff1.txt`, served at `https://dziader.si/1b903190aab1af191436d1207b29cff1.txt`. The key is meant to be public: engines fetch it to check that a submission comes from the site. `tests/seo.test.ts` checks there is exactly one key file.
+
+```sh
+pnpm indexnow                          # every page in the live sitemap, both editions (~520)
+pnpm indexnow /atlas/nowy /sl/atlas/x  # only the pages that are new or changed
+pnpm indexnow --dry-run                # list them, send nothing
+```
+
+The script reads the key file, checks the live site serves it (the key must be deployed first), and posts to `api.indexnow.org`. `202` on the first run means the key is still being verified; that's normal. It runs with plain Node, so it also works in the app container (Coolify → the application → Terminal: `node scripts/indexnow.mjs …`).
+
+Send the whole sitemap once after the key is live and after large releases, otherwise only new or changed pages: engines throttle sites that resend everything on every deploy, so it isn't a post-deploy hook.
+
+For edits between releases, Cloudflare can do the same on its own: **Caching → Configuration → Crawler Hints** sends IndexNow pings when cached pages change. It uses Cloudflare's own key, so it doesn't conflict with this one. Submissions show up in Bing Webmaster Tools → IndexNow.
+
 ## Smoke test after a deploy
 
 1. On a phone, take the test on https://dziader.si/test to the end (about four minutes).
