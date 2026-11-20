@@ -6,10 +6,12 @@ import { getReports } from "@/content/reports";
 import { getSpecies } from "@/content/species";
 import { getDossiers } from "@/content/dossiers";
 import { getExhibits } from "@/content/museum";
+import { getWishChapters } from "@/content/wishes";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { sampleCard } from "./bingo";
 import { seededLine } from "./phrasebook";
+import { seededWish } from "./wishes";
 import { fold, type SearchEntry } from "./search";
 import { extraPages, sections } from "./site";
 import { quote } from "./typo";
@@ -17,8 +19,8 @@ import { quote } from "./typo";
 const join = (...parts: (string | string[] | undefined)[]) => fold(parts.flat().filter(Boolean).join(" "));
 
 const COPY = defineCopy({
-  pl: { phrasebook: (name: string) => `Rozmówki: ${name.toLowerCase()}` },
-  sl: { phrasebook: (name: string) => `Pogovornik: ${name.toLowerCase()}` },
+  pl: { phrasebook: (name: string) => `Rozmówki: ${name.toLowerCase()}`, wishes: (name: string) => `Życzenia ${name.toLowerCase()}` },
+  sl: { phrasebook: (name: string) => `Pogovornik: ${name.toLowerCase()}`, wishes: (name: string) => `Voščila ${name.toLowerCase()}` },
 });
 
 /**
@@ -86,6 +88,13 @@ export function buildSearchIndex(locale: Locale): SearchEntry[] {
       s: quote(situation.claims[0], locale),
       h: `/generator/${seededLine(31 + i, locale, situation).code}`,
       x: join(situation.name, situation.short, situation.claims),
+    })),
+    ...getWishChapters(locale).map((chapter, i) => ({
+      k: "zyczenia" as const,
+      t: COPY[locale].wishes(chapter.name),
+      s: quote(chapter.wishes[chapter.wishes.length - 1], locale),
+      h: `/zyczenia/${seededWish(211 + i * 17, chapter, locale).code}`,
+      x: join(chapter.name, chapter.short, chapter.salutation, chapter.wishes),
     })),
   ];
 }

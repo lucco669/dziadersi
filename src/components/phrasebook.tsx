@@ -1,7 +1,7 @@
 "use client";
 
 import { track } from "@/lib/analytics";
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { getSituations, SITUATIONS } from "@/content/phrasebook";
 import { useLocale } from "@/i18n/client";
 import { DEFAULT_LOCALE, LOCALE_INFO, type Locale } from "@/i18n/config";
@@ -12,9 +12,10 @@ import { site } from "@/lib/site";
 import { tally } from "@/lib/tally";
 import { cx, formatNumber, quote, typo } from "@/lib/typo";
 import { BookmarkButton } from "./bookmark";
-import { useKeys, useLater, useReducedMotion } from "./hooks";
+import { useKeys } from "./hooks";
 import { SituationIcon } from "./occasions";
 import { Figure } from "./pictograms";
+import { useReels } from "./reels";
 
 const COPY = defineCopy({
   pl: {
@@ -81,9 +82,6 @@ const COPY = defineCopy({
 
 const UNDERLINES = ["decoration-dashed", "decoration-double", "decoration-wavy"] as const;
 
-const REEL_MS = [420, 700, 980];
-const TICK_MS = 70;
-
 const noSubscription = () => () => {};
 
 /** Reads a line aloud in the edition's language, with a voice of that language when the system has one. */
@@ -109,15 +107,10 @@ export function Phrasebook({ initial, original = false }: { initial: { slug: str
   const t = COPY[locale];
   const situations = getSituations(locale);
   const [slug, setSlug] = useState(initial.slug);
-  const [picks, setPicks] = useState<Picks>(initial.picks);
-  const [shown, setShown] = useState<Picks>(initial.picks);
-  const [rolling, setRolling] = useState([false, false, false]);
-  const [held, setHeld] = useState([false, false, false]);
+  const reels = useReels<Picks>(initial.picks);
+  const { picks, shown, rolling, busy, held } = reels;
   const [speaking, setSpeaking] = useState(false);
   const [notice, setNotice] = useState("");
-  const timers = useRef<number[]>([]);
-  const later = useLater();
-  const reduced = useReducedMotion();
   const canSpeak = useSyncExternalStore(noSubscription, () => "speechSynthesis" in window, () => false);
   const canShare = useSyncExternalStore(noSubscription, () => typeof navigator.share === "function", () => false);
   const origin = useSyncExternalStore(noSubscription, () => window.location.origin, () => site.url);
@@ -128,62 +121,26 @@ export function Phrasebook({ initial, original = false }: { initial: { slug: str
   // The same code in the Polish lists: the line as it was first said.
   const source = original && locale !== DEFAULT_LOCALE ? compose(SITUATIONS[situations.indexOf(situation)], picks) : null;
   const display = shown.map((pick, i) => lists[i][Math.min(pick, lists[i].length - 1)]);
-  const busy = rolling.some(Boolean);
+  const toggleHold = reels.toggleHold;
 
-  function stopReels() {
-    timers.current.forEach((id) => window.clearInterval(id));
-    timers.current = [];
-  }
-
-  function roll(next = situation, keep = held) {
+  function roll(next = situation) {
     if (busy) return;
-    const nextLists = listsOf(next);
-    const target = nextLists.map((list, i) => (keep[i] && next === situation ? picks[i] : Math.floor(Math.random() * list.length))) as Picks;
-    setPicks(target);
+    const lengths = listsOf(next).map((list) => list.length);
+    // A new chapter spins every reel; holds only keep parts within a chapter.
+    const keep = next === situation ? held : [false, false, false];
+    if (!reels.roll(lengths, keep)) return;
     if (speaking) speechSynthesis.cancel();
     track("Rozmówki", { rozdzial: next.slug });
     tally("rozmowki");
-
-    if (reduced) {
-      setShown(target);
-      return;
-    }
-    const spinning = target.map((_, i) => !(keep[i] && next === situation));
-    setRolling(spinning);
-    spinning.forEach((spin, i) => {
-      if (!spin) return;
-      const id = window.setInterval(() => {
-        setShown((now) => {
-          const copy = [...now] as Picks;
-          copy[i] = Math.floor(Math.random() * nextLists[i].length);
-          return copy;
-        });
-      }, TICK_MS);
-      timers.current.push(id);
-      later(REEL_MS[i], () => {
-        window.clearInterval(id);
-        setShown((now) => {
-          const copy = [...now] as Picks;
-          copy[i] = target[i];
-          return copy;
-        });
-        setRolling((now) => now.map((value, j) => (j === i ? false : value)));
-      });
-    });
   }
 
   function choose(nextSlug: string) {
     if (busy || nextSlug === slug) return;
     const next = situations.find((item) => item.slug === nextSlug);
     if (!next) return;
-    stopReels();
     setSlug(nextSlug);
-    setHeld([false, false, false]);
-    roll(next, [false, false, false]);
-  }
-
-  function toggleHold(i: number) {
-    setHeld((now) => now.map((value, j) => (j === i ? !value : value)));
+    reels.release();
+    roll(next);
   }
 
   function read() {

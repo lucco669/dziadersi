@@ -49,6 +49,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     })),
     page("/indeks", "daily", 0.6),
     page("/generator", "daily", 0.6),
+    page("/zyczenia", "weekly", 0.6),
     page("/superinteligencja", "monthly", 0.7),
     page("/bingo", "monthly", 0.6),
     page("/kolejka", "monthly", 0.7),

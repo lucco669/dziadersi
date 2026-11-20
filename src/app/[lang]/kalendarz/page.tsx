@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo, TranslatorNotes } from "@/components/page";
+import { MenuIcon } from "@/components/menu-icons";
 import { SpeciesPlate } from "@/components/pictograms";
 import { TearOffCalendar } from "@/components/tear-off";
 import { getCalendar } from "@/content/calendar";
@@ -17,6 +18,7 @@ import { site } from "@/lib/site";
 import { backOf, pageFor } from "@/lib/tear-off";
 import { getToday } from "@/lib/today";
 import { pct, plural, pluralSl, quote, typo } from "@/lib/typo";
+import { occasionInSeason } from "@/lib/wishes";
 
 const COPY = defineCopy({
   pl: {
@@ -37,6 +39,7 @@ const COPY = defineCopy({
     case: "Sprawa dnia w Komisji",
     judge: "Czy to już dziaderstwo? Orzeknij →",
     observances: "Najbliższe święta Instytutu",
+    wishes: { label: "Komunikat sezonowy", title: "Życzenia od Instytutu", text: "Dział Korespondencji Okolicznościowej wydaje życzenia w trybie urzędowym, z pieczęcią." },
     promo: {
       title: "Kartka na dziś zerwana. A badanie?",
       text: "Test Dziadersa: pięć gabinetów, około czterech minut. Wynik nie zmienia się o północy.",
@@ -61,6 +64,7 @@ const COPY = defineCopy({
     case: "Primer dneva v Komisiji",
     judge: "Je to že dziaderstvo? Razsodi →",
     observances: "Najbližji prazniki Inštituta",
+    wishes: { label: "Sezonsko obvestilo", title: "Voščila Inštituta", text: "Oddelek za priložnostno korespondenco izdaja voščila po uradni poti, s pečatom." },
     promo: {
       title: "Današnji list je odtrgan. Kaj pa pregled?",
       text: "Test dziadersa: pet ordinacij, približno štiri minute. Izvid se opolnoči ne spremeni.",
@@ -134,6 +138,16 @@ export default async function CalendarPage() {
           yesterday={pageFor(previousSheet(sheet, locale), locale)}
           tornToday={community ? (community.talliesToday.kartka ?? 0) : null}
         />
+        {occasionInSeason(today.month, today.day) && (
+          <Link href="/zyczenia" className="mi group mt-14 flex max-w-2xl items-center gap-5 border-t border-ink pt-5">
+            <MenuIcon href="/zyczenia" className="w-14" />
+            <span>
+              <span className="label block text-red">{t.wishes.label}</span>
+              <span className="mt-1 block text-2xl font-bold leading-tight group-hover:text-red">{t.wishes.title} →</span>
+              <span className="mt-1 block text-ink-soft">{typo(t.wishes.text)}</span>
+            </span>
+          </Link>
+        )}
         <TranslatorNotes notes={t.notes} className="mt-14 max-w-2xl" />
       </section>
 

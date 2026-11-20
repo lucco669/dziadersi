@@ -94,6 +94,7 @@ const KIND_ICON: Record<SearchKind, string> = {
   raport: "/raporty",
   bingo: "/bingo",
   rozmowki: "/generator",
+  zyczenia: "/zyczenia",
 };
 
 function ResultIcon({ entry }: { entry: SearchEntry }) {
