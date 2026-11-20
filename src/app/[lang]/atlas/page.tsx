@@ -63,6 +63,7 @@ const COPY = defineCopy({
       ["Pyta: „Kto panu to tak zrobił?”", "Wyłącza router na noc, żeby odpoczął"],
     ],
     goTo: "przejdź do",
+    related: "Gatunki pokrewne: Janusz, szwagier, wujek dobra rada i inni. Czy to już dziaders?",
     promoTitle: "Nie wiesz, do którego gatunku należysz?",
     promoText: "Test Dziadersa ustali to w pięciu gabinetach. Wynik od 0 do 100%, rozpoznanie gatunku i certyfikat.",
   },
@@ -99,6 +100,7 @@ const COPY = defineCopy({
       ["Sprašuje: »Kdo vam je pa to delal?«", "Ponoči izklopi usmerjevalnik, da se spočije"],
     ],
     goTo: "pojdi na",
+    related: "Sorodne vrste: janusz, svak, stric dober nasvet in drugi. Je to že dziaders?",
     promoTitle: "Ne veš, kateri vrsti pripadaš?",
     promoText: "Test dziadersa to ugotovi v petih ordinacijah. Rezultat od 0 do 100 %, diagnoza vrste in certifikat.",
   },
@@ -210,6 +212,11 @@ export default async function AtlasPage() {
             </li>
           ))}
         </ol>
+        <p className="mt-12 font-sans text-lg">
+          <Link href="/atlas/gatunki-pokrewne" className="link">
+            {t.related} →
+          </Link>
+        </p>
       </Section>
 
       <Sightings community={community} />

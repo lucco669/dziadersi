@@ -108,3 +108,10 @@ test("the youth dictionary: plain meaning first, a review date, both editions an
     assertPaired(polish, slovenian);
   }
 });
+
+test("the related-types hub sits in the Atlas in both editions without clashing with a species", () => {
+  for (const locale of ["pl", "sl"] as const) assert.ok(!getSpecies(locale).some((species) => species.slug === "gatunki-pokrewne" || species.slug === "sorodne-vrste"));
+  assert.equal(localizePath("/atlas/gatunki-pokrewne", "sl"), "/sl/atlas/sorodne-vrste");
+  assertPaired("/atlas/gatunki-pokrewne", "/sl/atlas/sorodne-vrste");
+  assert.equal(alternatePath("/okazje/dzien-tesciowej", "pl", "sl"), "/okazje/dan-tasce");
+});

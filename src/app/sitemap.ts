@@ -43,6 +43,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     ...getExhibits(locale).map((item) => page("/muzeum/" + item.slug, "monthly", 0.6)),
     page("/atlas", "weekly", 0.8),
     ...getSpecies(locale).map((species) => page(`/atlas/${species.slug}`, "monthly", 0.7)),
+    page("/atlas/gatunki-pokrewne", "monthly", 0.6),
     page("/slownik", "weekly", 0.7),
     ...getDictionary(locale).map((entry) => page(`/slownik/${entry.slug}`, "monthly", 0.6)),
     page("/slownik-mlodziezowy", "monthly", 0.7),

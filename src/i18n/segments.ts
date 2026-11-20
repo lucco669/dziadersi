@@ -11,7 +11,7 @@ export type SegmentMap = Record<string, { sl: string; children?: Record<string, 
 export const SEGMENTS: SegmentMap = {
   test: { sl: "test" },
   wynik: { sl: "izvid", children: { certyfikat: "certifikat", badania: "preiskave" } },
-  atlas: { sl: "atlas" },
+  atlas: { sl: "atlas", children: { "gatunki-pokrewne": "sorodne-vrste" } },
   slownik: { sl: "slovar" },
   "slownik-mlodziezowy": { sl: "mladinski-slovar" },
   raporty: { sl: "porocila" },
