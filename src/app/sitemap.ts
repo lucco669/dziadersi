@@ -3,6 +3,7 @@ import { getCalendar } from "@/content/calendar";
 import { getCases } from "@/content/cases";
 import { getDictionary } from "@/content/dictionary";
 import { getReports } from "@/content/reports";
+import { getSlang } from "@/content/slang";
 import { getSpecies } from "@/content/species";
 import { getDossiers } from "@/content/dossiers";
 import { getExhibits } from "@/content/museum";
@@ -44,6 +45,8 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     ...getSpecies(locale).map((species) => page(`/atlas/${species.slug}`, "monthly", 0.7)),
     page("/slownik", "weekly", 0.7),
     ...getDictionary(locale).map((entry) => page(`/slownik/${entry.slug}`, "monthly", 0.6)),
+    page("/slownik-mlodziezowy", "monthly", 0.7),
+    ...getSlang(locale).map((entry) => ({ ...page(`/slownik-mlodziezowy/${entry.slug}`, "monthly", 0.6), lastModified: entry.checked })),
     page("/raporty", "monthly", 0.7),
     ...getReports(locale).map((report) => ({
       ...page(`/raporty/${report.slug}`, "yearly", 0.6),

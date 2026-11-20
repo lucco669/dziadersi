@@ -2,6 +2,7 @@ import { CALENDAR_SLUGS } from "@/content/sl/slugs/calendar";
 import { CASE_SLUGS } from "@/content/sl/slugs/cases";
 import { DICTIONARY_SLUGS } from "@/content/sl/slugs/dictionary";
 import { REPORT_SLUGS } from "@/content/sl/slugs/reports";
+import { SLANG_SLUGS } from "@/content/sl/slugs/slang";
 import { SPECIES_SLUGS } from "@/content/sl/slugs/species";
 import { DOSSIER_SLUGS } from "@/content/sl/slugs/dossiers";
 import { MUSEUM_SLUGS } from "@/content/sl/slugs/museum";
@@ -72,6 +73,7 @@ const SLUGS: Record<string, Record<string, string>> = {
   okazje: DOSSIER_SLUGS,
   muzeum: MUSEUM_SLUGS,
   kalendarz: CALENDAR_SLUGS,
+  "slownik-mlodziezowy": SLANG_SLUGS,
 };
 
 const REVERSE: Record<string, Record<string, string>> = Object.fromEntries(

@@ -3,8 +3,10 @@ import { test } from "node:test";
 import sitemap from "../src/app/sitemap";
 import { getCalendar, observanceBySlug, OBSERVANCES } from "../src/content/calendar";
 import { getDictionary } from "../src/content/dictionary";
+import { getSlang, SLANG, slangBySlug } from "../src/content/slang";
 import { getSpecies } from "../src/content/species";
 import { CALENDAR_SLUGS } from "../src/content/sl/slugs/calendar";
+import { SLANG_SLUGS } from "../src/content/sl/slugs/slang";
 import { alternatePath, localizePath, switchPath } from "../src/i18n/routes";
 import { dayLabel, daysUntil, nextSheet, observancesFrom } from "../src/lib/observances";
 import { site } from "../src/lib/site";
@@ -78,4 +80,31 @@ test("observance dates: labels, the next occurrence and today's observance", () 
 
 test("the boomer guide is published in both editions", () => {
   assertPaired("/dziaders/boomer", "/sl/dziaders/boomer");
+});
+
+test("the youth dictionary: plain meaning first, a review date, both editions and working references", () => {
+  assert.ok(SLANG.length >= 15 && SLANG.length <= 25, String(SLANG.length));
+  assert.equal(new Set(SLANG.map((entry) => entry.slug)).size, SLANG.length);
+  assert.equal(new Set(Object.values(SLANG_SLUGS)).size, SLANG.length);
+  for (const locale of ["pl", "sl"] as const) {
+    for (const entry of getSlang(locale)) {
+      assert.equal(slangBySlug(entry.slug, locale)?.word, entry.word);
+      assert.match(entry.checked, /^\d{4}-\d{2}-\d{2}$/);
+      for (const field of [entry.meaning, entry.origin, entry.example, entry.dziaders, entry.reaction]) assert.ok(field.length > 5, entry.slug);
+      if (entry.phrase) {
+        const path = alternatePath("/slownik/" + entry.phrase, "pl", locale);
+        assert.ok(getDictionary(locale).some((item) => "/slownik/" + item.slug === path), path);
+      }
+    }
+  }
+  // Slovenian text differs from Polish: a missing overlay would leave Polish behind.
+  getSlang("sl").forEach((entry, i) => assert.notEqual(entry.meaning, SLANG[i].meaning, entry.slug));
+  assertPaired("/slownik-mlodziezowy", "/sl/mladinski-slovar");
+  for (const entry of SLANG) {
+    const polish = "/slownik-mlodziezowy/" + entry.slug;
+    const slovenian = localizePath("/slownik-mlodziezowy/" + SLANG_SLUGS[entry.slug], "sl");
+    assert.equal(switchPath(polish, "sl"), slovenian);
+    assert.equal(switchPath(slovenian, "pl"), polish);
+    assertPaired(polish, slovenian);
+  }
 });

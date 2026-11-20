@@ -13,6 +13,7 @@ export const SEGMENTS: SegmentMap = {
   wynik: { sl: "izvid", children: { certyfikat: "certifikat", badania: "preiskave" } },
   atlas: { sl: "atlas" },
   slownik: { sl: "slovar" },
+  "slownik-mlodziezowy": { sl: "mladinski-slovar" },
   raporty: { sl: "porocila" },
   dziaders: { sl: "dziaders", children: { kobieta: "zenska" } },
   okazje: { sl: "priloznosti" },
