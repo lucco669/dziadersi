@@ -37,6 +37,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Zostaw ten karton od telewizora, to się jeszcze przyda.",
     exampleNote: "Telewizor wyrzucono w 2011 roku.",
+    usage:
+      "Zwrot uzasadnia zatrzymanie kartonu, słoika, kabla albo starej kurtki, których nikt właśnie nie używa. Wyraża oszczędność wyniesioną z czasów, gdy wiele rzeczy trudno było kupić, dlatego częściej słychać go u starszych pokoleń. Czasem ma rację; zwykle kończy się piwnicą, w której niczego nie da się znaleźć, kiedy rzecz wreszcie się przydaje.",
     seeAlso: ["za moich czasów", "ja nie potrzebuję instrukcji", "zgaś światło, prąd nie jest za darmo"],
     species: "dzialka",
   },
@@ -92,6 +94,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. pewnie, na chwilę przed zgubieniem śrubki",
     senses: [{ text: "Oświadczenie poprzedzające montaż mebla, po którym jeden element zostaje „zapasowy”." }],
     example: "Ja nie potrzebuję instrukcji. Te dwie śrubki są zapasowe.",
+    usage:
+      "Deklaracja, że mówiący poradzi sobie z montażem albo obsługą urządzenia bez czytania instrukcji, na podstawie doświadczenia i wyczucia. Pada najczęściej przy składaniu mebli, podłączaniu sprzętu i pierwszym uruchomieniu nowego telefonu. Po instrukcję sięga się dopiero wtedy, gdy zostają części, których nie ma gdzie przykręcić.",
     seeAlso: ["to się jeszcze przyda", "kto panu to tak zrobił?", "nie ruszaj, mam to poustawiane"],
     species: "budowa",
   },
@@ -102,6 +106,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z niedowierzaniem przygotowanym zawczasu",
     senses: [{ text: "Otwarcie każdej rozmowy o zakupie. Każda odpowiedź jest za wysoka." }],
     example: "Ile pan za to dał? Ja bym to panu załatwił za połowę.",
+    usage:
+      "Pytanie o cenę, zadawane właścicielowi nowego samochodu, roweru, telewizora albo remontu. Zwykle nie wynika z ciekawości, tylko jest wstępem do oceny, czy kupujący przepłacił. Po odpowiedzi najczęściej pada informacja, gdzie można było kupić taniej albo kto by to załatwił po znajomości.",
     seeAlso: ["panie…", "a ile pali?"],
   },
   {
@@ -124,6 +130,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z niedowierzaniem, przy oględzinach cudzej pracy",
     senses: [{ text: "Formuła otwierająca każdą wizytę na cudzym remoncie. Odpowiedź nie ma znaczenia." }],
     example: "Kto panu to tak zrobił? Pan sam? No to wszystko jasne.",
+    usage:
+      "Retoryczne pytanie fachowca albo samozwańczego eksperta, który ogląda cudzą instalację, remont lub naprawę i ocenia je źle. Znaczy mniej więcej „to zostało zrobione nieprawidłowo”. Słyszy je prawie każdy, kto wezwał hydraulika, elektryka albo mechanika do roboty po poprzedniku; dziaderskie staje się wtedy, gdy pada w gościach, bez zaproszenia do oględzin.",
     seeAlso: ["ja nie potrzebuję instrukcji", "ile pan za to dał?"],
     species: "budowa",
   },
@@ -163,6 +171,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z odległości kilku metrów, w drodze do grilla",
     senses: [{ text: "Komunikat poprzedzający przejęcie szczypiec." }],
     example: "Nie tak się rozpala. Daj, pokażę ci.",
+    usage:
+      "Uwaga do osoby, która rozpala grilla, ognisko albo piec, że robi to źle. W praktyce zapowiada przejęcie czynności przez mówiącego: „daj, pokażę ci”. Spory dotyczą zwykle podpałki, kolejności układania węgla i tego, czy wolno dmuchać.",
     seeAlso: ["karkówka musi swoje odstać"],
     species: "grill",
   },
@@ -176,6 +186,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Uzasadnienie każdego opóźnienia.", figurative: true },
     ],
     example: "Jeszcze nie jemy. Karkówka musi swoje odstać.",
+    usage:
+      "Kulinarna zasada, że mięso na grilla, zwłaszcza karkówka, powinno odpowiednio długo marynować się przed pieczeniem. To, że coś „musi swoje odstać”, znaczy, że potrzebuje czasu i nie warto się spieszyć. Zwrot pada też poza kuchnią: o cieście, nalewce i decyzjach.",
     seeAlso: ["nie tak się rozpala"],
     species: "grill",
   },
@@ -186,6 +198,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. z balkonu, z ręką wskazującą parking",
     senses: [{ text: "Podstawa prawna do zajmowania miejsca parkingowego, które nigdy nie zostało nikomu przydzielone." }],
     example: "Proszę pana, to jest moje miejsce. Od dziewięćdziesiątego siódmego.",
+    usage:
+      "Stwierdzenie prawa do miejsca parkingowego, przy stole, na kanapie albo w kościelnej ławce. Często dotyczy miejsca, które formalnie nikomu nie przysługuje, ale ktoś zajmuje je od lat i uważa to za tytuł prawny. Między sąsiadami bywa początkiem wieloletniego sporu.",
     seeAlso: ["za moich czasów"],
     species: "parking",
   },
@@ -232,6 +246,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. wielkimi literami",
     senses: [{ text: "Instrukcja dołączana do treści, których nikt nie zamierza usuwać." }],
     example: "UDOSTĘPNIJ, ZANIM USUNĄ!!! Lekarze tego nienawidzą.",
+    usage:
+      "Wezwanie do szybkiego udostępnienia posta w mediach społecznościowych, rzekomo zanim ktoś go zablokuje lub usunie. Typowe dla łańcuszków, sensacyjnych „ukrytych prawd” i fałszywych informacji o zdrowiu. Sama formuła jest sygnałem ostrzegawczym: treść, którą ktoś naprawdę chce usunąć, rzadko prosi o udostępnienie wielkimi literami.",
     seeAlso: ["kto pamięta?"],
     species: "facebook",
   },
@@ -244,6 +260,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Podpis pod zdjęciem przedmiotu sprzed czterdziestu lat, wywołujący lawinę komentarzy „Ja pamiętam”." },
     ],
     example: "Syfon do wody sodowej. Kto pamięta?",
+    usage:
+      "Pytanie pod zdjęciem przedmiotu, programu albo produktu sprzed lat, zachęcające do wspomnień i komentarzy. Popularne w grupach nostalgicznych, zwłaszcza o czasach PRL i latach dziewięćdziesiątych. Zwykle nie oczekuje odpowiedzi, tylko lawiny komentarzy „ja pamiętam” i historii z dzieciństwa.",
     seeAlso: ["za moich czasów", "udostępnij, zanim usuną"],
     species: "facebook",
   },
@@ -254,6 +272,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. ściszonym głosem, z koszykiem w ręce",
     senses: [{ text: "Zdanie, które nie zawiera żadnej informacji o miejscach." }],
     example: "Gdzie byłeś? W lesie. Ja te miejsca znam od czterdziestu lat.",
+    usage:
+      "Deklaracja doświadczenia grzybiarza, wędkarza albo turysty: mówiący zna teren od dawna i wie, gdzie warto iść. W praktyce zwykle oznacza, że tych miejsc nie zdradzi. Pada też jako argument w sporze o drogę, gdy nawigacja prowadzi gdzie indziej.",
     seeAlso: ["kiedyś to były zimy"],
     species: "grzybiarz",
   },
@@ -268,6 +288,8 @@ export const DICTIONARY: Entry[] = [
       },
     ],
     example: "Nie bierz roweru. Będzie padać, czuję w kolanie.",
+    usage:
+      "Prognoza pogody oparta na odczuciach w stawach. Ból kolana, krzyża albo starej kontuzji ma zapowiadać deszcz. Wiele osób to zgłasza, ale badania nie dają jednoznacznej odpowiedzi, czy rzeczywiście wywołują go zmiany ciśnienia. W rozmowie zwrot działa jako argument przeciw wyjściu z domu bez parasola.",
     seeAlso: ["kiedyś to były zimy"],
     species: "meteorologiczny",
   },
@@ -280,6 +302,8 @@ export const DICTIONARY: Entry[] = [
       { text: "Opis ryby, której nikt poza mówiącym nie widział. Rozpiętość rąk rośnie z każdym opowiadaniem." },
     ],
     example: "Urwała się przy samym brzegu. Taka była.",
+    usage:
+      "Wędkarskie określenie wielkości ryby, która się urwała albo została wypuszczona, połączone z gestem rozłożonych rąk. Nikt poza mówiącym jej nie widział, a odległość między dłońmi rośnie z każdym opowiadaniem. Zwrot przeszedł do mowy potocznej jako określenie każdej przechwałki, której nie da się sprawdzić.",
     seeAlso: ["dziś nie brały"],
     species: "wedka",
   },
@@ -290,6 +314,8 @@ export const DICTIONARY: Entry[] = [
     pronunciation: "wym. pogodnie",
     senses: [{ text: "Wyjaśnienie powrotu z pustą siatką, które nie dotyczy umiejętności wędkarza." }],
     example: "Ciśnienie skakało. Dziś nie brały.",
+    usage:
+      "Wędkarskie wyjaśnienie, że nic nie złowiono, bo ryby nie brały przynęty. Winne bywają ciśnienie, wiatr, pełnia, woda za ciepła albo za zimna, ale nigdy umiejętności wędkarza. Żartobliwie mówi się tak też o każdym nieudanym dniu w pracy albo w sklepie.",
     seeAlso: ["taka była"],
     species: "wedka",
   },
@@ -342,6 +368,8 @@ export const DICTIONARY: Entry[] = [
       },
     ],
     example: "Ładny. A ile pali?",
+    usage:
+      "Pytanie o spalanie samochodu, czyli o to, ile litrów paliwa zużywa na sto kilometrów. Dla wielu kierowców to pierwsza i najważniejsza informacja o aucie, ważniejsza od wyposażenia i bezpieczeństwa. Po odpowiedzi zwykle następuje porównanie z własnym dieslem, który pali mniej.",
     seeAlso: ["diesel to jest diesel", "ile pan za to dał?"],
     species: "moto",
   },
@@ -379,6 +407,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Przepraszam, ja tu stałem. Za tym panem w kurtce.",
     exampleNote: "Pan w kurtce wyszedł ze sklepu dwadzieścia minut wcześniej.",
+    usage:
+      "Zwrot w kolejce, którym ktoś zgłasza, że zajmował już miejsce, ale na chwilę odszedł. Bywa uczciwy, bo ktoś rzeczywiście poszedł po koszyk, i bywa nadużywany przez osoby, które pojawiają się tuż przed okienkiem. Kolejka przyjmuje go zwykle z westchnieniem i milczącą weryfikacją.",
     seeAlso: ["ja tylko zapytać", "to jest moje miejsce"],
     species: "kolejkowy",
   },
@@ -396,6 +426,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Może by tak drugą kasę otworzyli? Ludzie stoją.",
     exampleNote: "Drugą kasę otwarto. Mówiący przeszedł do niej jako pierwszy.",
+    usage:
+      "Głośno wypowiedziana prośba do obsługi sklepu, żeby uruchomiła kolejną kasę, bo kolejka jest za długa. Częściej kierowana jest do całej kolejki niż do kasjerki i pokazuje, że mówiący nie zamierza czekać w milczeniu. Działa zaskakująco często, zwłaszcza gdy powtórzy ją kilka osób.",
     seeAlso: ["ja tu stałem", "w gazetce było taniej"],
     species: "kolejkowy",
   },
@@ -407,6 +439,8 @@ export const DICTIONARY: Entry[] = [
     senses: [{ text: "Pytanie zadawane przy każdym krzywo zaparkowanym samochodzie, z wyjątkiem własnego." }],
     example: "Kto to tak zaparkował? Przecież stąd nie da się wyjechać.",
     exampleNote: "Mówiący stoi obok, na zakazie, na światłach awaryjnych.",
+    usage:
+      "Pytanie o kierowcę, który zaparkował krzywo, na dwóch miejscach albo zablokował wyjazd. Wyraża złość i pada głośno, choć w pobliżu nikogo nie ma. Bywa wstępem do kartki za wycieraczką, telefonu do straży miejskiej albo zdjęcia w grupie osiedlowej.",
     seeAlso: ["to jest moje miejsce", "a to do kogo?", "kto panu to tak zrobił?"],
     species: "parking",
   },
@@ -423,6 +457,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "W Niemczech to by tę dziurę załatali w jeden dzień.",
     exampleNote: "Dziura znajduje się przed posesją mówiącego od 2009 roku. Mówiący jej nie zgłosił.",
+    usage:
+      "Początek porównania, w którym zagranica, najczęściej Niemcy, wypada lepiej od Polski: drogi, urzędy, porządek, płace. Opiera się zwykle na doświadczeniu z pracy sezonowej, wycieczki albo opowieści szwagra. Zwrot wyraża narzekanie na sprawy krajowe, a nie rzeczywistą wiedzę o Niemczech.",
     seeAlso: ["oryginał, niemiecki", "za moich czasów"],
     species: "przygraniczny",
   },
@@ -460,6 +496,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Stuka od Radomia? To się rozjeździ.",
     exampleNote: "Stukanie ustało pod Kielcami, razem z silnikiem. Dalej na lawecie.",
+    usage:
+      "Motoryzacyjna diagnoza, że niepokojący dźwięk, wibracja albo nowa usterka w samochodzie zniknie sama w czasie jazdy. Przy nowych oponach czy klockach hamulcowych bywa prawdziwa; częściej oznacza odłożenie wizyty u mechanika. Mechanik słyszy ją potem jako wstęp do zdania „stuka od miesiąca”.",
     seeAlso: ["diesel to jest diesel", "a ile pali?", "oryginał, niemiecki"],
     species: "moto",
   },
@@ -479,6 +517,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Z tego serwisu się nie je. Nie po to kupowałem.",
     exampleNote: "Od 1989 roku serwis opuścił meblościankę dwa razy, za każdym razem do przetarcia z kurzu.",
+    usage:
+      "Zastrzeżenie, że rzecz kupiono do oglądania, a nie do używania, jak serwis „dla gości”, nowy dywan, kanapa w folii czy kryształy w meblościance. Wynika z szacunku do drogich przedmiotów, kupionych z wysiłkiem. W efekcie najlepsze rzeczy w domu czekają na okazję, która rzadko przychodzi.",
     seeAlso: ["to się jeszcze przyda", "nie ruszaj, mam to poustawiane"],
   },
   {
@@ -518,6 +558,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Jaki spalony? Gdzie tu jest spalony? Sędzia kalosz.",
     exampleNote: "Powtórka pokazała dwa metry spalonego. Opinia mówiącego pozostała bez zmian.",
+    usage:
+      "Kibicowskie określenie sędziego, który zdaniem mówiącego źle sędziuje; „kalosz” znaczy tu tyle co niezdara. Okrzyk pada na stadionie i przed telewizorem po każdej decyzji niekorzystnej dla „naszych”. Nie dotyczy sędziów, którzy podyktowali karnego dla właściwej drużyny.",
     seeAlso: ["ja bym to strzelił", "kto panu to tak zrobił?"],
     species: "kibicowski",
   },
@@ -566,6 +608,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Jak było na weselu? Dobrze karmili. Cztery ciepłe.",
     exampleNote: "Imienia pana młodego mówiący nie zapamiętał.",
+    usage:
+      "Najkrótsza recenzja przyjęcia, zwłaszcza wesela: jedzenia było dużo i było dobre. Dla wielu gości to podstawowe kryterium udanej uroczystości, obok liczby ciepłych dań i tego, czy czegoś nie zabrakło. Brak tej oceny w relacji z wesela bywa odczytywany jako ostrzeżenie.",
     seeAlso: ["puść pan coś normalnego", "ile pan za to dał?"],
     species: "weselny",
   },
@@ -597,6 +641,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Znowu puszczają Kevina. Co roku to samo.",
     exampleNote: "Mówiący obejrzał do końca. Po raz dwudziesty szósty.",
+    usage:
+      "Komentarz do świątecznej ramówki: od lat telewizja w okolicach Wigilii nadaje komedię „Kevin sam w domu”. Dla jednych to narzekanie na powtórki, dla innych znak, że święta naprawdę się zaczęły. Film oglądają zwykle także ci, którzy narzekają.",
     seeAlso: ["umawialiśmy się, że bez prezentów", "a gdzie jest pilot?"],
     species: "wigilijny",
   },
@@ -610,6 +656,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Przecież umawialiśmy się, że bez prezentów. No dobrze, ja też coś mam.",
     exampleNote: "Zestaw kluczy nasadowych, kupiony w październiku z gazetki.",
+    usage:
+      "Przypomnienie rodzinnej umowy, że na święta, urodziny albo imieniny nikt nie kupuje prezentów. Taka umowa ma oszczędzić pieniądze i stres, ale zwykle łamie ją ktoś, kto ma „tylko drobiazg”, a pozostali czują się zawstydzeni. Dlatego zwrot pada najczęściej w chwili wręczania prezentu.",
     seeAlso: ["znowu puszczają Kevina", "w gazetce było taniej"],
     species: "wigilijny",
   },
@@ -643,6 +691,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Ja tam w oknie nie siedzę, ale ten z czwartego wrócił o 2:17. Taksówką.",
     exampleNote: "Raport sporządzono bez użycia lornetki. Lornetka była w naprawie.",
+    usage:
+      "Zastrzeżenie, że mówiący nie obserwuje sąsiadów, wypowiadane tuż przed dokładną relacją z tego, co sąsiedzi robili. Sąsiad albo sąsiadka w oknie to stały element polskiego osiedla: wie, kto przyjechał, kto wyjechał i o której. Zwrot jest więc zaprzeczeniem, które potwierdza.",
     seeAlso: ["a to do kogo?", "to jest moje miejsce"],
     species: "parapetowy",
   },
@@ -658,6 +708,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Nie rozkładajcie jeszcze krzesełek. Trzeba wypoziomować.",
     exampleNote: "Pobyt trwał trzy dni. Przyczepa stała równo przez ostatni z nich.",
+    usage:
+      "Zalecenie, żeby ustawić przyczepę, kampera, namiot, pralkę albo półkę idealnie w poziomie, zwykle za pomocą poziomicy i podkładek. Na kempingu to pierwszy obowiązek po przyjeździe, bo w krzywo stojącym kamperze źle się śpi, a lodówka gorzej chłodzi. Kłopot zaczyna się, gdy poziomowanie trwa dłużej niż urlop.",
     seeAlso: ["a prąd jest w cenie?", "ja nie potrzebuję instrukcji"],
     species: "kempingowy",
   },
@@ -673,6 +725,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Dzień dobry, na dwa tygodnie. A prąd jest w cenie?",
     exampleNote: "Prąd był w cenie. Pierwszego wieczoru na całym kempingu dwa razy wybiło korki.",
+    usage:
+      "Pytanie, czy opłata za nocleg, miejsce na kempingu albo wynajem obejmuje zużycie energii elektrycznej. Na kempingach przyłącze prądu bywa płatne osobno, więc pytanie ma sens. Dziaderskie staje się wtedy, gdy od odpowiedzi zależy, czy z bagażnika wyjadą czajnik, lodówka i grzejnik olejowy.",
     seeAlso: ["trzeba wypoziomować", "zgaś światło, prąd nie jest za darmo"],
     species: "kempingowy",
   },
@@ -687,6 +741,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Weź pomidory. Swoje, bez chemii.",
     exampleNote: "Od lipca do września mówiący rozdał w ten sposób także 84 kilogramy cukinii.",
+    usage:
+      "Zapewnienie, że warzywa albo owoce pochodzą z własnej działki lub ogródka i nie były pryskane środkami ochrony roślin ani nawożone sztucznymi nawozami. Domowe plony uchodzą za zdrowsze i smaczniejsze od sklepowych. Zwrot nie zawsze uwzględnia czerwcowy oprysk na stonkę.",
     seeAlso: ["to się jeszcze przyda", "będzie padać, czuję w kolanie"],
     species: "dzialka",
   },
@@ -717,6 +773,8 @@ export const DICTIONARY: Entry[] = [
     ],
     example: "Ładowarka w kontakcie ciągnie prąd, nawet jak nic nie ładuje. Mówili w telewizji.",
     exampleNote: "Audycję wyemitowano w 2004 roku. Kanału mówiący nie pamięta.",
+    usage:
+      "Powołanie się na telewizję jako źródło informacji, bez podania stacji, programu ani daty. Dla części starszych widzów telewizja pozostaje bardziej wiarygodna niż internet, bo informacje przechodzą tam przez redakcję. W sporze zwrot ma zakończyć dyskusję, ale trudno go sprawdzić.",
     seeAlso: ["udostępnij, zanim usuną", "zgaś światło, prąd nie jest za darmo"],
   },
   {
@@ -736,6 +794,132 @@ export const DICTIONARY: Entry[] = [
       "„Gazetka” to potoczna nazwa ulotki promocyjnej sklepu z cenami na dany tydzień. Zwrot jest reklamacją przy kasie: cena na paragonie nie zgadza się z tą z promocji. Bywa słuszny, bo różnice się zdarzają, ale często okazuje się, że promocja dotyczyła innej gramatury, karty lojalnościowej albo skończyła się wczoraj.",
     seeAlso: ["ile pan za to dał?", "może by tak drugą kasę otworzyli?", "umawialiśmy się, że bez prezentów"],
     species: "oszczednosciowy",
+  },
+  {
+    slug: "to-jest-na-wczoraj",
+    headword: "to jest na wczoraj",
+    grammar: "termin, przeterminowany",
+    pronunciation: "wym. w drzwiach, w piątek o 16:45",
+    senses: [
+      { text: "Termin wykonania zadania, który upłynął, zanim zadanie zostało zlecone." },
+      { text: "Stopień pilności, po którym zadanie czeka na podpis do wtorku.", figurative: true },
+    ],
+    example: "Potrzebuję tego zestawienia. To jest na wczoraj.",
+    exampleNote: "Zestawienie leżało u przełożonego od poniedziałku.",
+    usage:
+      "„Na wczoraj” znaczy „bardzo pilnie, natychmiast”: sprawa jest tak pilna, że najlepiej byłoby załatwić ją wczoraj. Zwrot należy do żargonu biurowego i podkreśla priorytet zadania. Kiedy wszystkie zadania są „na wczoraj”, przestaje znaczyć cokolwiek poza tym, że zawiodło planowanie.",
+    seeAlso: ["zróbmy calla", "wysłałem ci maila", "kiedyś to się pracowało"],
+    species: "korpo",
+  },
+  {
+    slug: "w-nawiazaniu-do-rozmowy-telefonicznej",
+    headword: "w nawiązaniu do rozmowy telefonicznej",
+    grammar: "formuła wstępna, urzędowa",
+    pronunciation: "wym. pisemnie, dwie minuty po rozmowie",
+    senses: [
+      { text: "Pierwsze zdanie maila, który powtarza rozmowę telefoniczną, żeby była na piśmie." },
+      { text: "Dowód rzeczowy na wypadek, gdyby rozmówca zapomniał, co obiecał.", figurative: true },
+    ],
+    example: "W nawiązaniu do rozmowy telefonicznej przesyłam ustalenia. Proszę o potwierdzenie telefoniczne.",
+    exampleNote: "Ustalenie było jedno: że prześle ustalenia.",
+    usage:
+      "Oficjalna formuła rozpoczynająca list albo e-mail, który odnosi się do wcześniejszej rozmowy przez telefon. Znaczy „piszę w sprawie, o której rozmawialiśmy” i służy potwierdzeniu ustaleń na piśmie. W korespondencji służbowej jest poprawna i przydatna; sztywno brzmi w wiadomości do kogoś, z kim minutę wcześniej rozmawiało się przy sąsiednim biurku.",
+    seeAlso: ["wysłałem ci maila", "pozdrawiam serdecznie", "to jest na wczoraj"],
+    species: "korpo",
+  },
+  {
+    slug: "w-stodole-mieszkasz",
+    headword: "zamykaj drzwi, w stodole mieszkasz?",
+    grammar: "pytanie wychowawcze, retoryczne",
+    pronunciation: "wym. z drugiego pokoju, przy otwartym oknie",
+    senses: [
+      { text: "Przypomnienie o zamknięciu drzwi, sformułowane jako pytanie o miejsce zamieszkania." },
+      { text: "Ochrona ciepła w mieszkaniu, w którym termostat ustawiono na dwójkę.", figurative: true },
+    ],
+    example: "Zamykaj drzwi! W stodole mieszkasz? Ciepło ucieka.",
+    exampleNote: "Drzwi były uchylone na szerokość kota.",
+    usage:
+      "Upomnienie, żeby zamknąć za sobą drzwi do mieszkania, pokoju albo na balkon. Stodoła, budynek gospodarczy z szerokimi wrotami, służy tu za przykład miejsca, w którym drzwi się nie zamyka. Pytanie jest retoryczne i dotyczy najczęściej dzieci, kotów oraz ciepła, które zdaniem rodziców „ucieka na ulicę”.",
+    seeAlso: ["zgaś światło, prąd nie jest za darmo", "dopóki mieszkasz pod moim dachem"],
+    species: "oszczednosciowy",
+  },
+  {
+    slug: "dopoki-mieszkasz-pod-moim-dachem",
+    headword: "dopóki mieszkasz pod moim dachem",
+    grammar: "klauzula najmu, rodzinna",
+    pronunciation: "wym. w progu pokoju, z ręką na framudze",
+    senses: [
+      { text: "Podstawa prawna rodzicielskich decyzji w sprawie godziny powrotu, muzyki i fryzury." },
+      { text: "Umowa najmu bez czynszu, z regulaminem ogłaszanym ustnie w miarę potrzeb.", figurative: true },
+    ],
+    example: "Dopóki mieszkasz pod moim dachem, obowiązują moje zasady.",
+    exampleNote: "Zasad nie spisano. Obowiązywały wstecz.",
+    usage:
+      "Zwrot rodzica do dorastającego albo dorosłego dziecka, które mieszka w domu rodzinnym, że skoro korzysta z mieszkania i utrzymania, ma przestrzegać zasad domu. Pada w sporach o godzinę powrotu, porządek, gości i sposób spędzania czasu. Jest argumentem z pozycji siły i zwykle kończy rozmowę, ale nie spór.",
+    seeAlso: ["ja w twoim wieku", "zamykaj drzwi, w stodole mieszkasz?", "pieniądze nie rosną na drzewach"],
+  },
+  {
+    slug: "ja-w-twoim-wieku",
+    headword: "ja w twoim wieku",
+    grammar: "porównanie biograficzne",
+    pronunciation: "wym. z pauzą na wyliczenie osiągnięć",
+    senses: [
+      { text: "Wstęp do zestawienia, z którego wynika, że mówiący w tym wieku miał już pracę, mieszkanie, dwoje dzieci i własnoręcznie zbudowany garaż." },
+      { text: "Miara opóźnienia rozwojowego młodszego pokolenia, wyrażona w latach.", figurative: true },
+    ],
+    example: "Ja w twoim wieku to już miałem dwoje dzieci i malucha.",
+    exampleNote: "Maluch był na talon. Mieszkanie z przydziału.",
+    usage:
+      "Początek porównania z własną młodością, w którym rozmówca wypada gorzej, bo później się usamodzielnia, mniej pracuje i nie ma jeszcze rodziny albo mieszkania. Zwrot pomija zwykle różnice w czasach, cenach mieszkań i rynku pracy. Bywa życzliwą zachętą, ale częściej brzmi jak wyrzut.",
+    seeAlso: ["za moich czasów", "kiedyś to się pracowało", "dopóki mieszkasz pod moim dachem"],
+  },
+  {
+    slug: "pieniadze-nie-rosna-na-drzewach",
+    headword: "pieniądze nie rosną na drzewach",
+    grammar: "twierdzenie botaniczne",
+    pronunciation: "wym. przy kasie, na widok koszyka dziecka",
+    senses: [
+      { text: "Ustalenie naukowe, że banknoty nie są owocem. Ogłaszane przy każdej prośbie o kieszonkowe." },
+      { text: "Uzasadnienie zakupu najtańszej wersji czegokolwiek, także takiej, która psuje się po tygodniu.", figurative: true },
+    ],
+    example: "Pieniądze nie rosną na drzewach. Weź te za trzy dziewięćdziesiąt.",
+    exampleNote: "Kupiono je dwa razy. Wyszło drożej.",
+    usage:
+      "Przysłowie przypominające, że pieniądze trzeba zarobić, więc nie należy wydawać ich lekkomyślnie. Rodzice mówią tak zwykle do dzieci, które proszą o coś, co dorosłym wydaje się zbędne. To odpowiednik angielskiego „money doesn't grow on trees”.",
+    seeAlso: ["zgaś światło, prąd nie jest za darmo", "w gazetce było taniej", "dopóki mieszkasz pod moim dachem"],
+    species: "oszczednosciowy",
+  },
+  {
+    slug: "co-ludzie-powiedza",
+    headword: "co ludzie powiedzą?",
+    grammar: "pytanie wizerunkowe",
+    pronunciation: "wym. ściszonym głosem, z zerknięciem w okno",
+    senses: [
+      { text: "Główne kryterium decyzji rodzinnych: od koloru elewacji po wybór studiów." },
+      { text: "Odwołanie do opinii osób, które nikogo nie pytały o zdanie i których nikt nie pytał.", figurative: true },
+    ],
+    example: "W dresie do sklepu? A co ludzie powiedzą?",
+    exampleNote: "Sklep był czynny całą dobę. Ludzie byli w dresach.",
+    usage:
+      "Pytanie wyrażające obawę o opinię sąsiadów, rodziny i parafii. Mówiący ocenia czyjś wybór nie według tego, czy jest dobry, tylko według tego, jak zostanie odebrany. Pada przy strojach, ślubach, rozwodach, remontach i wyborach życiowych, a jego siła rośnie z liczbą okien z widokiem na podwórko.",
+    seeAlso: ["ja tam w oknie nie siedzę", "dopóki mieszkasz pod moim dachem"],
+    species: "parapetowy",
+  },
+  {
+    slug: "do-wesela-sie-zagoi",
+    headword: "do wesela się zagoi",
+    grammar: "prognoza medyczna, długoterminowa",
+    pronunciation: "wym. pogodnie, bez oglądania rany",
+    senses: [
+      { text: "Diagnoza każdego otarcia, siniaka i rozbitego kolana. Termin wesela nie musi być wyznaczony." },
+      { text: "Zapewnienie, że problem rozwiąże się sam, jeżeli nikt się nim nie zajmie.", figurative: true },
+    ],
+    example: "Nie płacz, do wesela się zagoi.",
+    exampleNote: "Osoba badana miała sześć lat. Zagoiło się po tygodniu. Wesele odbyło się dwadzieścia lat później.",
+    usage:
+      "Pocieszenie dla dziecka albo kogoś, kto lekko się zranił. Znaczy, że rana jest niegroźna i zagoi się na długo przed jakimś odległym wydarzeniem, na przykład weselem. W przenośni znaczy, że kłopot nie jest poważny i minie. Przy poważniejszym urazie zamiast przysłowia lepiej sięgnąć po apteczkę albo pojechać do lekarza.",
+    seeAlso: ["dobrze karmili", "będzie padać, czuję w kolanie"],
+    species: "weselny",
   },
 ];
 

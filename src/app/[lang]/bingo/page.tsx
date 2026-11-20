@@ -37,6 +37,29 @@ const COPY = defineCopy({
     materials: "Wszystkie materiały do druku",
     rulesTitle: "Zasady",
     rulesAside: "Regulamin gry IBD-B1",
+    faqTitle: "Pytania o bingo",
+    faq: [
+      {
+        question: "Co to jest Dziaders Bingo?",
+        answer:
+          "Gra towarzyska na rodzinne okazje. Każdy gracz dostaje kartę z polami, na których są typowe zdania i sytuacje, na przykład „za moich czasów” albo pytanie o pensję. Skreśla się to, co padło przy stole; pięć skreśleń w linii wygrywa.",
+      },
+      {
+        question: "Czy karty bingo można wydrukować?",
+        answer:
+          "Tak. Każda okazja ma arkusz A4 z czterema różnymi kartami, więc jeden wydruk wystarcza na cztery osoby. Kartę można też wylosować na telefonie i skreślać palcem.",
+      },
+      {
+        question: "Na jakie okazje jest bingo?",
+        answer:
+          "Na wesele, Wigilię, imieniny, długi weekend, podróż autem i wyjazd nad morze. Do Wigilii, wesela, majówki i imienin Instytut przygotował też przewodniki terenowe z opisem gatunków.",
+      },
+      {
+        question: "Czy to nie jest gra przeciwko komuś?",
+        answer:
+          "Nie. Skreśla się zdania, nie ludzi. Najlepiej grać z osobami, które chcą uczestniczyć, i nie podpowiadać haseł osobom, które nie grają.",
+      },
+    ],
     promoTitle: "Bingo to obserwacja. Test to diagnoza.",
     promoText: "Zanim skreślisz wujka, sprawdź siebie. Pięć gabinetów, cztery minuty, certyfikat.",
   },
@@ -63,6 +86,29 @@ const COPY = defineCopy({
     materials: "Vse gradivo za tisk",
     rulesTitle: "Pravila",
     rulesAside: "Pravilnik igre IBD-B1",
+    faqTitle: "Vprašanja o bingu",
+    faq: [
+      {
+        question: "Kaj je dziaders bingo?",
+        answer:
+          "Družabna igra za družinske priložnosti. Vsak igralec dobi listek s polji, na katerih so značilni stavki in situacije, na primer »v mojih časih« ali vprašanje o plači. Prečrta se, kar je padlo za mizo; pet prečrtanih polj v vrsti zmaga.",
+      },
+      {
+        question: "Ali lahko bingo listke natisnem?",
+        answer:
+          "Da. Vsaka priložnost ima stran A4 s štirimi različnimi listki, zato en izpis zadošča za štiri osebe. Listek lahko izžrebaš tudi na telefonu in prečrtuješ s prstom.",
+      },
+      {
+        question: "Za katere priložnosti je bingo?",
+        answer:
+          "Za svatbo, sveti večer, godovanje, podaljšani vikend, pot z avtom in odhod na morje. Za sveti večer, svatbo, prvomajski vikend in godovanje je Inštitut pripravil tudi terenske vodnike z opisom vrst.",
+      },
+      {
+        question: "Ni to igra proti komu?",
+        answer:
+          "Ne. Prečrtujejo se stavki, ne ljudje. Najbolje je igrati s tistimi, ki želijo sodelovati, in ne namigovati gesel tistim, ki ne igrajo.",
+      },
+    ],
     promoTitle: "Bingo je opazovanje. Test je diagnoza.",
     promoText: "Preden prečrtaš strica, preveri sebe. Pet ordinacij, štiri minute, certifikat.",
   },
@@ -100,6 +146,17 @@ export default async function BingoPage() {
             inLanguage: LOCALE_INFO[locale].tag,
             isAccessibleForFree: true,
             publisher: institute(locale),
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            url: absoluteUrl("/bingo", locale),
+            inLanguage: LOCALE_INFO[locale].tag,
+            mainEntity: t.faq.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
           },
         ]}
       />
@@ -164,6 +221,17 @@ export default async function BingoPage() {
             </li>
           ))}
         </ol>
+      </Section>
+
+      <Section id="pytania" title={t.faqTitle}>
+        <div className="max-w-3xl divide-y divide-rule border-t border-ink">
+          {t.faq.map((item) => (
+            <details key={item.question} className="py-5">
+              <summary className="cursor-pointer text-xl font-bold hover:text-red">{item.question}</summary>
+              <p className="mt-4 leading-relaxed text-ink-soft">{typo(item.answer)}</p>
+            </details>
+          ))}
+        </div>
       </Section>
 
       <TestPromo title={t.promoTitle} text={typo(t.promoText)} />

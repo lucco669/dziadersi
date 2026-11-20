@@ -15,8 +15,13 @@ import { typo } from "@/lib/typo";
 const COPY = defineCopy({
   pl: {
     definition: "Co znaczy „dziaders”?",
-    signs: "Cztery zachowania do obserwacji",
+    origin: "Skąd się wziął dziaders? Pochodzenie i historia słowa",
+    signs: "Jak rozpoznać dziadersa: cztery zachowania",
     difference: "Co odróżnia dziaderstwo od zwykłych przyzwyczajeń?",
+    relatives: "Dziaders, dziad, dziadostwo, boomer: słowa pokrewne i mylone",
+    relativesHead: ["Słowo", "Co znaczy", "Czym różni się od dziadersa"],
+    settings: "Dziaders w pracy, w domu i w internecie",
+    species: "Gatunek w Atlasie:",
     usage: "Odmiana i przykłady użycia",
     usageHead: ["Przypadek", "Liczba pojedyncza", "Liczba mnoga"],
     examples: "W zdaniu",
@@ -34,8 +39,13 @@ const COPY = defineCopy({
   },
   sl: {
     definition: "Kaj pomeni »dziaders«?",
-    signs: "Štiri vedenja za opazovanje",
+    origin: "Od kod dziaders? Izvor in zgodovina besede",
+    signs: "Kako prepoznati dziadersa: štiri vedenja",
     difference: "Kaj loči dziaderstvo od običajnih navad?",
+    relatives: "Dziaders, dziad, dziadostwo, boomer: sorodne in zamenljive besede",
+    relativesHead: ["Beseda", "Kaj pomeni", "Razlika od dziadersa"],
+    settings: "Dziaders v službi, doma in na spletu",
+    species: "Vrsta v Atlasu:",
     usage: "Sklanjatev in primeri rabe",
     usageHead: ["Sklon", "Ednina", "Množina"],
     examples: "V stavku",
@@ -61,7 +71,9 @@ export default async function GuidePage() {
   const locale = await getLocale();
   const t = COPY[locale];
   const guide = getGuide(locale);
-  const species = getSpecies(locale).filter((item) => ["grill", "budowa", "korpo"].includes(item.key));
+  const all = getSpecies(locale);
+  const species = all.filter((item) => ["grill", "budowa", "korpo"].includes(item.key));
+  const byKey = new Map(all.map((item) => [item.key, item]));
   return (
     <main id="tresc">
       <JsonLd
@@ -96,6 +108,13 @@ export default async function GuidePage() {
           <p className="text-ink-soft">{typo(guide.context)}</p>
         </div>
       </Section>
+      <Section id="pochodzenie" title={t.origin}>
+        <div className="max-w-3xl space-y-5 text-lg leading-relaxed">
+          {guide.origin.map((text) => (
+            <p key={text}>{typo(text)}</p>
+          ))}
+        </div>
+      </Section>
       <Section id="zachowania" title={t.signs}>
         <ol className="grid gap-8 md:grid-cols-2">
           {guide.signs.map((item, i) => (
@@ -115,6 +134,32 @@ export default async function GuidePage() {
               <p className="mt-3 text-ink-soft">{typo(item.text)}</p>
             </article>
           ))}
+        </div>
+      </Section>
+      <Section id="slowa" title={t.relatives}>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[40rem] border-t border-ink text-left">
+            <thead>
+              <tr className="label text-ink-soft">
+                {t.relativesHead.map((label) => (
+                  <th key={label} scope="col" className="border-b border-rule py-3 pr-6 font-normal">
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {guide.relatives.map((row) => (
+                <tr key={row.word} className="border-b border-rule align-top">
+                  <th scope="row" className="py-4 pr-6 text-xl font-bold">
+                    {row.word}
+                  </th>
+                  <td className="py-4 pr-6">{typo(row.meaning)}</td>
+                  <td className="py-4 text-ink-soft">{typo(row.difference)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </Section>
       <Section id="odmiana" title={t.usage} intro={typo(guide.usage.intro)}>
@@ -152,6 +197,25 @@ export default async function GuidePage() {
             </ul>
             <p className="label mt-6 text-ink-soft">{typo(guide.usage.note)}</p>
           </div>
+        </div>
+      </Section>
+      <Section id="gdzie" title={t.settings}>
+        <div className="grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+          {guide.settings.map((item) => {
+            const kind = byKey.get(item.species)!;
+            return (
+              <article key={item.title} className="border-t border-rule pt-5">
+                <h3 className="text-2xl font-bold">{item.title}</h3>
+                <p className="mt-3 text-ink-soft">{typo(item.text)}</p>
+                <p className="label mt-4 text-ink-soft">
+                  {t.species}{" "}
+                  <Link href={"/atlas/" + kind.slug} className="link text-ink">
+                    {kind.name}
+                  </Link>
+                </p>
+              </article>
+            );
+          })}
         </div>
       </Section>
       <Section id="gatunki" title={t.atlas}>

@@ -25,6 +25,7 @@ const COPY = defineCopy({
     letter: (letter: string) => `Litera ${letter}`,
     /** Before the Polish headword; the Polish edition has none to show. */
     original: "oryg.",
+    meaning: "Co znaczy samo słowo „dziaders”?",
     promoTitle: "Używasz tych zwrotów?",
     promoText: "Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Pięć gabinetów, około czterech minut.",
   },
@@ -40,6 +41,7 @@ const COPY = defineCopy({
     letters: "Črke",
     letter: (letter: string) => `Črka ${letter}`,
     original: "polj.",
+    meaning: "Kaj pomeni beseda »dziaders«?",
     promoTitle: "Uporabljaš te reke?",
     promoText: "Test dziadersa bo preveril, ali je to še citat ali že simptom. Pet ordinacij, približno štiri minute.",
   },
@@ -98,7 +100,19 @@ export default async function DictionaryPage() {
         ]}
       />
 
-      <PageHeader crumbs={[{ label: t.title }]} title={t.title} lead={typo(t.lead)} meta={t.meta(entries.length)} />
+      <PageHeader
+        crumbs={[{ label: t.title }]}
+        title={t.title}
+        lead={
+          <>
+            {typo(t.lead)}{" "}
+            <Link href="/dziaders" className="link text-ink">
+              {t.meaning}
+            </Link>
+          </>
+        }
+        meta={t.meta(entries.length)}
+      />
 
       <Section id="haslo-dnia" title={t.today} aside={bulletin.date}>
         <div className="grid items-end gap-10 lg:grid-cols-12">

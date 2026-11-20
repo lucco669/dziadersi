@@ -20,6 +20,8 @@ export type Dossier = {
   dictionary: string[];
   caseSlug: string;
   reportSlug?: string;
+  /** Questions readers search for around the occasion; shown with FAQPage data. */
+  questions?: { question: string; answer: string }[];
   notes?: string[];
 };
 
@@ -67,6 +69,33 @@ export const DOSSIERS: Dossier[] = [
     dictionary: ["znowu-puszczaja-kevina", "umawialismy-sie-ze-bez-prezentow", "za-moich-czasow"],
     caseSlug: "prasowany-papier",
     reportSlug: "sezon-grzewczy",
+    questions: [
+      {
+        question: "Ile potraw powinno być na Wigilię?",
+        answer:
+          "Tradycyjnie dwanaście, bezmięsnych: między innymi barszcz z uszkami, karp, pierogi, kapusta z grochem, kutia i kompot z suszu. W wielu domach liczy się je umownie. Dziaders Wigilijny liczy dwa razy i zawsze wychodzi mu jedenaście.",
+      },
+      {
+        question: "Kiedy zaczyna się wieczerza wigilijna?",
+        answer:
+          "Według zwyczaju, gdy na niebie pojawi się pierwsza gwiazdka. W praktyce o godzinie ustalonej przez osobę, która pilnuje karpia, i niezależnie od zachmurzenia.",
+      },
+      {
+        question: "Co to jest opłatek?",
+        answer:
+          "Cienki wafel z mąki i wody, którym przed kolacją dzielą się wszyscy przy stole, składając sobie życzenia. To moment, w którym Dziaders Wigilijny życzy wszystkim zdrowia, a potem przez dwie minuty wyjaśnia, co jest zdrowe.",
+      },
+      {
+        question: "Po co wolne nakrycie przy wigilijnym stole?",
+        answer:
+          "Dodatkowe nakrycie zostawia się dla niespodziewanego gościa, a w wielu rodzinach także na pamiątkę bliskich, których przy stole już nie ma. W obserwacjach Instytutu to jedyne krzesło, którego nikt nie przesuwa.",
+      },
+      {
+        question: "Jak przetrwać Wigilię z dziadersem?",
+        answer:
+          "Ustal wcześniej bezpieczne tematy, usiądź z dala od termostatu i rozdaj bingo. Skreślanie zdań zamiast odpowiadania na nie obniża temperaturę rozmowy o kilka stopni. Sporne wypowiedzi zostaw Komisji.",
+      },
+    ],
   },
   {
     slug: "wesele",
@@ -152,6 +181,66 @@ export const DOSSIERS: Dossier[] = [
     dictionary: ["nie-tak-sie-rozpala", "karkowka-musi-swoje-odstac", "swoje-bez-chemii"],
     caseSlug: "mycie-w-sobote",
     reportSlug: "sandal-a-skarpeta",
+  },
+  {
+    slug: "imieniny",
+    code: "IBD-O 04",
+    bingo: "imieniny",
+    title: "Imieniny z dziadersem",
+    short: "Imieniny",
+    season: "Cały rok · duży pokój i wersalka",
+    lead: "Przewodnik po przyjęciu w dużym pokoju, od kapci w przedpokoju po pożegnanie w przedpokoju. Rodzinne objawy dziaderstwa, typowe pytania i bingo imieninowe do druku.",
+    introduction: [
+      "Imieniny to rodzinne święto, które w wielu polskich domach wciąż wygrywa z urodzinami. Odbywają się w dużym pokoju, przy rozłożonym stole i meblościance, która wie więcej niż goście. Dziaders przychodzi z bukietem i od progu sprawdza, czy można nie zdejmować butów.",
+      "Obserwację prowadź z wersalki, najlepiej z miejsca środkowego. Stamtąd słychać zarówno rozmowę o pensjach, jak i naradę na balkonie. Zapisuj pytania o pracę i mieszkanie, ale nie odpowiadaj na nie wyczerpująco: dokładna odpowiedź wydłuża czas trwania objawu.",
+    ],
+    signals: [
+      "Kapcie dla gości czekają w przedpokoju, zanim ktokolwiek przyjdzie.",
+      "Pierwsze pytanie dotyczy pracy, drugie pensji.",
+      "Telewizor chodzi cały wieczór bez głosu.",
+      "Pożegnanie w przedpokoju trwa dłużej niż deser.",
+    ],
+    protocol: [
+      {
+        title: "Po pierwszym „Sto lat”",
+        text: "Rozdaj karty bingo osobom, które chcą grać. Solenizanta zwolnij z obserwacji: ma dość obowiązków przy krojeniu tortu.",
+      },
+      {
+        title: "Przy stole",
+        text: "Notuj pytania, nie odpowiedzi. „A ile ci tam płacą?” skreśl raz, nawet jeśli padło przy każdym daniu. Cudzej pensji nie licz na serwetce; to zadanie wujka.",
+      },
+      {
+        title: "W przedpokoju",
+        text: "Protokół zamknij przed pożegnaniem, bo pożegnanie może potrwać godzinę. Wyniki porównaj na klatce schodowej, ściszonym głosem.",
+      },
+    ],
+    packing: [
+      "Karty bingo imieninowego",
+      "Własne kapcie, na wszelki wypadek",
+      "Długopis schowany przed wujkiem z krzyżówką",
+      "Gotowa odpowiedź na pytanie o pensję",
+    ],
+    species: ["parapetowy", "oszczednosciowy", "budowa"],
+    dictionary: ["ja-w-twoim-wieku", "co-ludzie-powiedza", "umawialismy-sie-ze-bez-prezentow"],
+    caseSlug: "folia-na-fotelach",
+    reportSlug: "pilot-od-telewizora",
+    questions: [
+      {
+        question: "Czym są imieniny?",
+        answer:
+          "To święto obchodzone w dniu patrona, którego imię nosi solenizant, według kalendarza imion. W Polsce, zwłaszcza w starszych pokoleniach, bywały ważniejsze od urodzin: wiadomo, kiedy wypadają, i nikt nie pyta o wiek.",
+      },
+      {
+        question: "Jak wyglądają imieniny w polskim domu?",
+        answer:
+          "Goście przychodzą z kwiatami, składają życzenia i śpiewają „Sto lat”. Potem są sałatka jarzynowa, ciepłe danie i tort. Instytut odnotowuje też pytania o pracę, pensję, mieszkanie i plany ślubne, zadawane w tej kolejności.",
+      },
+      {
+        question: "Imieniny czy urodziny?",
+        answer:
+          "Zależy od rodziny. Młodsze pokolenia częściej obchodzą urodziny, starsze imieniny. Dziaders obchodzi jedno i drugie, ale przy każdym przypomina, że kiedyś obchodziło się tylko imieniny.",
+      },
+    ],
   },
 ];
 

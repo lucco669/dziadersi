@@ -36,6 +36,7 @@ const COPY = defineCopy({
     next: "Następne hasło",
     species: "Typowa wokalizacja gatunku",
     seeAlso: "Zobacz też",
+    meaning: "Dziaders — co to znaczy?",
     promoTitle: "Mówisz tak?",
     promoText: "Test Dziadersa sprawdzi, czy to jeszcze cytat, czy już objaw. Pięć gabinetów, około czterech minut.",
   },
@@ -54,6 +55,7 @@ const COPY = defineCopy({
     next: "Naslednje geslo",
     species: "Značilno oglašanje vrste",
     seeAlso: "Glej tudi",
+    meaning: "Dziaders — kaj pomeni?",
     promoTitle: "Tako govoriš?",
     promoText: "Test dziadersa bo preveril, ali je to še citat ali že simptom. Pet ordinacij, približno štiri minute.",
   },
@@ -211,6 +213,12 @@ export default async function EntryPage({ params }: PageProps<"/[lang]/slownik/[
                 </ul>
               </div>
             )}
+
+            <p className="border-t border-ink pt-5 font-sans">
+              <Link href="/dziaders" className="link">
+                {t.meaning} →
+              </Link>
+            </p>
           </aside>
         </div>
       </article>

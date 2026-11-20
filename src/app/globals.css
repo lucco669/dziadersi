@@ -24,6 +24,7 @@
 
 /* Keep the examination focused; navigating back to the introduction restores the site. */
 .test-active .test-navigation,
+.test-active .test-about,
 .test-active footer {
   display: none;
 }

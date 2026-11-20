@@ -50,4 +50,12 @@ export const DICTIONARY_SLUGS: Record<string, string> = {
   "wyslalem-ci-maila": "poslal-sem-ti-mejl",
   "mowili-w-telewizji": "rekli-so-na-televiziji",
   "w-gazetce-bylo-taniej": "v-letaku-je-bilo-ceneje",
+  "to-jest-na-wczoraj": "to-rabim-za-vceraj",
+  "w-nawiazaniu-do-rozmowy-telefonicznej": "v-zvezi-z-najinim-telefonskim-pogovorom",
+  "w-stodole-mieszkasz": "a-si-se-v-stali-rodil",
+  "dopoki-mieszkasz-pod-moim-dachem": "dokler-zivis-pod-mojo-streho",
+  "ja-w-twoim-wieku": "ko-sem-bil-jaz-tvojih-let",
+  "pieniadze-nie-rosna-na-drzewach": "denar-ne-raste-na-drevesu",
+  "co-ludzie-powiedza": "kaj-bodo-pa-ljudje-rekli",
+  "do-wesela-sie-zagoi": "do-poroke-se-bo-zacelilo",
 };

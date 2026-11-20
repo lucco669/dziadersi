@@ -12,12 +12,12 @@ import { getDictionary } from "@/content/dictionary";
 import { dossierBySlug, getDossiers } from "@/content/dossiers";
 import { getReports } from "@/content/reports";
 import { getSpecies } from "@/content/species";
-import { DEFAULT_LOCALE, hasLocale } from "@/i18n/config";
+import { DEFAULT_LOCALE, hasLocale, LOCALE_INFO } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { getLocale } from "@/i18n/server";
 import { sampleCard } from "@/lib/bingo";
-import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl, pageMetadata } from "@/lib/seo";
 import { quote, typo } from "@/lib/typo";
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
@@ -39,6 +39,7 @@ const COPY = defineCopy({
     case: "Sprawa do rozstrzygnięcia",
     vote: "Przeczytaj sprawę i zagłosuj",
     report: "Z dokumentacji Instytutu",
+    questions: "Pytania i odpowiedzi",
     materials: "Wszystkie materiały do druku",
     others: "Inne przewodniki terenowe",
     jump: "Przejdź do bingo",
@@ -62,6 +63,7 @@ const COPY = defineCopy({
     case: "Primer za razsojo",
     vote: "Preberi primer in glasuj",
     report: "Iz dokumentacije Inštituta",
+    questions: "Vprašanja in odgovori",
     materials: "Vse gradivo za tisk",
     others: "Drugi terenski vodniki",
     jump: "Pojdi na bingo",
@@ -109,7 +111,25 @@ export default async function DossierPage({ params }: Props) {
   return (
     <main id="tresc">
       <JsonLd
-        data={[breadcrumbList(locale, crumbs), publicationSchema(locale, path, dossier.title, dossier.lead, "Article")]}
+        data={[
+          breadcrumbList(locale, crumbs),
+          publicationSchema(locale, path, dossier.title, dossier.lead, "Article"),
+          ...(dossier.questions
+            ? [
+                {
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  url: absoluteUrl(path, locale),
+                  inLanguage: LOCALE_INFO[locale].tag,
+                  mainEntity: dossier.questions.map((item) => ({
+                    "@type": "Question",
+                    name: item.question,
+                    acceptedAnswer: { "@type": "Answer", text: item.answer },
+                  })),
+                },
+              ]
+            : []),
+        ]}
       />
       <PageHeader
         crumbs={crumbs}
@@ -232,6 +252,18 @@ export default async function DossierPage({ params }: Props) {
           </div>
         </div>
       </Section>
+      {dossier.questions && (
+        <Section id="pytania" title={t.questions}>
+          <div className="max-w-3xl divide-y divide-rule border-t border-ink">
+            {dossier.questions.map((item) => (
+              <details key={item.question} className="py-5">
+                <summary className="cursor-pointer text-xl font-bold hover:text-red">{item.question}</summary>
+                <p className="mt-4 leading-relaxed text-ink-soft">{typo(item.answer)}</p>
+              </details>
+            ))}
+          </div>
+        </Section>
+      )}
       <Section id="inne" title={t.others}>
         <ul className="grid gap-5 md:grid-cols-2">
           {getDossiers(locale)

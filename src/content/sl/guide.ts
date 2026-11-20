@@ -3,7 +3,7 @@ import type { Text } from "@/i18n/overlay";
 
 export const GUIDE_TEXT: Text<Guide> = {
   title: "Dziaders — kdo je to?",
-  metaTitle: "Dziaders in dziaderstvo — kaj pomeni? Definicija",
+  metaTitle: "Dziaders — kaj pomeni in kdo je to? Dziaderstvo: definicija",
   lead: "Kaj pomeni »dziaders«, kako prepoznati dziaderstvo in zakaj sama starost ne zadošča. Uvod v zbirke Inštituta.",
   definition:
     "Dziaders je poljski pogovorni, navadno kritični izraz za osebo, ki drugim pridiga, lastne izkušnje obravnava kot dokončen argument in težko sprejme, da se je svet morda spremenil. Dziaderstvo je ta drža sama, skupek takšnih navad; ni odvisno od starosti ali spola. V našem Atlasu ima različne podobe: od varuha žara do izvedenca za vsako prenovo.",
@@ -41,6 +41,69 @@ export const GUIDE_TEXT: Text<Guide> = {
       text: "Vprašanje, ali koga zebe, je skrb. Odločitev namesto njega, da ga ne zebe, ker termostat kaže dvojko, pa že zahteva terensko opazovanje.",
     },
   ],
+  origin: [
+    "»Dziaders« je nastal iz poljskega samostalnika »dziad« (dedec, starec) s šaljivo, angleško zvenečo končnico »-ers«. Končnica iz žaljivke naredi vzdevek: »dziad« preprosto žali, »dziaders« zveni kot vzdevek z dvorišča in imenuje vrsto vedenja, ne starosti.",
+    "V širšo rabo je beseda prišla okoli leta 2020, v medgeneracijskih sporih na družbenih omrežjih in v publicistiki. Takrat je označevala predvsem moške z ugledom, ki mlajšim pridigajo in jih ne pustijo do besede. Raziskovalci novega besedja, med drugim z Jezikovnega observatorija Varšavske univerze, jo uvrščajo v obsežno besedno družino »dziada«.",
+    "Sčasoma se je pomen razširil. Danes je dziaders lahko tudi stric ob žaru, svak, ki prisega na dizel, in sodelavec, ki tiska elektronsko pošto. Inštitut sprejema ta širši pomen: dziaderstvo je skupek navad, ne letnik in ne spol.",
+  ],
+  relatives: [
+    {
+      word: "dziad",
+      meaning: "Pogovorno in žaljivo: starejši moški, zlasti zanemarjen, skop ali zaostal. Nekoč tudi berač. Slovensko blizu »dedec«.",
+      difference: "Ostrejša in bolj žaljiva beseda. Dziad je psovka, dziaders opisuje držo.",
+    },
+    {
+      word: "dziadek",
+      meaning: "Dedek: oče očeta ali matere; pogovorno vsak starejši gospod.",
+      difference: "Sorodstvo, ne vedenje. Dedek v sebi ne nosi nujno ničesar od dziadersa.",
+    },
+    {
+      word: "dziadostwo",
+      meaning: "Pogovorno: šund, površnost, stvar, narejena kakor koli ali iz najcenejšega materiala; tudi revščina. »Ale dziadostwo« rečejo Poljaki slabo narejeni stvari.",
+      difference: "Nanaša se na stvari in kakovost, ne na ljudi. Drža dziadersa je dziaderstvo (polj. dziaderstwo), ne dziadostwo.",
+    },
+    {
+      word: "boomer",
+      meaning: "Oseba iz povojnega demografskega razcveta (rojena približno med letoma 1946 in 1964); pogovorno vsak, ki ne dohaja novosti, kot v »OK boomer«.",
+      difference: "Kaže na letnik. Dziaders kaže na način pogovora.",
+    },
+    {
+      word: "zgred",
+      meaning: "Pogovorno: godrnjav, siten starejši moški. Slovensko blizu »godrnjač«.",
+      difference: "Zgred godrnja. Dziaders godrnja in poleg tega ve, kako se stvari delajo.",
+    },
+    {
+      word: "Janusz",
+      meaning: "Pogovorna podoba Poljaka srednjih let: sandali z nogavicami, torbica okoli pasu, barantanje za vse.",
+      difference: "Janusz je podoba stranke in turista. Dziaders je odnos do tujega mnenja. Množici se delno prekrivata.",
+    },
+  ],
+  settings: [
+    {
+      title: "Dziaders v službi",
+      text: "Tiska elektronsko pošto, skliče sestanek o sestanku in ve, da v njegovih časih nihče ni delal od doma. Nova orodja sprejme po treh izobraževanjih in eni okvari.",
+    },
+    {
+      title: "Dziaders doma",
+      text: "Pazi na daljinec, termostat in nastavitve televizorja. Nastavitve pozna vnuk; dziaders pozna prepoved, da se jih dotikaš.",
+    },
+    {
+      title: "Dziaders za družinsko mizo",
+      text: "Pojavi se na svetem večeru, svatbi in godovanju. Komentira cene, jedi in življenjske načrte mlajših, najraje vse v enem stavku.",
+    },
+    {
+      title: "Dziaders na spletu",
+      text: "Deli, preden izbrišejo, sprašuje, kdo se še spomni, in komentarje podpisuje z imenom in priimkom. Splet ima za televizijo, ki ji lahko odgovarjaš.",
+    },
+    {
+      title: "Dziaders za volanom",
+      text: "Ocenjuje tuje parkiranje, porabo goriva in izbiro pasu. Dizel je zanj moralna kategorija.",
+    },
+    {
+      title: "Dziaders v vrsti",
+      text: "Pazi, kdo je stal v vrsti in kdo ne, in zahteva, naj odprejo drugo blagajno. Na uradu vpraša samo eno stvar, brez čakanja.",
+    },
+  ],
   usage: {
     intro:
       "»Dziaders« je v slovenski izdaji samostalnik moškega spola, ki se sklanja kot druge izposojenke na soglasnik: dziaders, dziadersa. Iz njega izhajata pridevnik »dziaderski« in samostalnik »dziaderstvo«, ime za celoten pojav.",
@@ -72,6 +135,21 @@ export const GUIDE_TEXT: Text<Guide> = {
         "Nastala je iz poljske besede »dziad« (starec, dedec) s šaljivo, angleško zvenečo končnico »-ers«. Množina je dziadersi. Iz nje izhaja dziaderstvo (polj. dziaderstwo), ime za celoten pojav.",
     },
     {
+      question: "Kdaj se je pojavila beseda »dziaders«?",
+      answer:
+        "V širšo rabo je prišla okoli leta 2020, v medgeneracijskih sporih na družbenih omrežjih in v poljski publicistiki. Sprva je označevala predvsem moške z ugledom, ki pridigajo mlajšim; danes se nanaša na vsakogar, ki pogovor zaključi z lastnimi izkušnjami.",
+    },
+    {
+      question: "Kaj pomeni »dziadostwo«?",
+      answer:
+        "To je druga poljska beseda. »Dziadostwo« pogovorno pomeni šund, površnost ali revščino: stvar, narejeno kakor koli ali iz najcenejšega materiala. Z dziadersom jo povezuje le koren. Drža dziadersa se imenuje dziaderstvo.",
+    },
+    {
+      question: "Je »dziaders« žaljiva beseda?",
+      answer:
+        "Lahko je. Gre za pogovorno zbadljivko s kritičnim prizvokom, blažjo od »dziada«, a še vedno vrednotenjsko. Med znanci velja za zbadanje; uporabljena do neznanca ali v sporu je lahko razumljena kot omalovaževanje njegove starosti.",
+    },
+    {
       question: "V čem se dziaders razlikuje od boomerja?",
       answer:
         "»Boomer« označuje generacijo: izhaja iz angleškega »baby boomer«, torej osebe iz povojnega demografskega razcveta (rojene približno med letoma 1946 in 1964), razširil pa se je z odzivom »OK boomer«. »Dziaders« ne kaže na letnik, temveč na držo: pridiganje, nezmotljivost in prepričanje, da je bilo nekoč bolje. Boomer ni nujno dziaders, dziaders pa lahko postaneš že pred tridesetim.",
@@ -90,6 +168,11 @@ export const GUIDE_TEXT: Text<Guide> = {
       question: "So dziadersi generacija?",
       answer:
         "Ne. Za razliko od generacij X, Y (milenijcev) ali Z dziadersov ne določa leto rojstva. Beseda najpogosteje leti na starejše, a opisuje način pogovora, tega pa lahko človek prevzame pri kateri koli starosti.",
+    },
+    {
+      question: "Kako prepoznati dziadersa?",
+      answer:
+        "Po vedenju, ne po starosti: nasvet brez vprašanja, izkušnje kot dokončen argument, primerjave s preteklimi časi in lastne navade, razglašene za pravila. Atlas dziadersov opisuje vrste s simptomi in določevalnim ključem, na Terenskem izpitu pa lahko prepoznavanje vadiš.",
     },
     {
       question: "Je vsak oče ali dedek dziaders?",
