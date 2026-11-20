@@ -48,6 +48,20 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       </g>
     </g>
   ),
+  "/zespol": (
+    <g>
+      <Tiny x={9} y={27} color={GREY} />
+      <Tiny x={24} y={27} />
+      <Tiny x={39} y={27} color={GREY} />
+      <rect x={2} y={27} width={44} height={3} fill={INK} />
+      <line x1={6} y1={30} x2={6} y2={39} stroke={INK} strokeWidth={1.6} />
+      <line x1={42} y1={30} x2={42} y2={39} stroke={INK} strokeWidth={1.6} />
+      <g className="mi-stamp">
+        <path d="M17 27Q17 25 21 24.6L23 24.2Q24 22.6 25 24.2L27 24.6Q31 25 31 27Z" fill={INK} />
+        <circle cx={24} cy={25.6} r={0.9} fill={RED} />
+      </g>
+    </g>
+  ),
   "/egzamin": (
     <g className="mi-look">
       <rect x={18} y={11} width={12} height={6} fill={INK} />

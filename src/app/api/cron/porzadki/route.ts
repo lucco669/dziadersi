@@ -4,7 +4,8 @@ import { GUEST_PENDING_DAYS } from "@/lib/newsletter";
 import { createAdminClient, hasAdmin } from "@/lib/supabase/admin";
 
 /**
- * Daily cleanup (deploy/: 03:00 Europe/Warsaw): expired family rankings with their members, write
+ * Daily cleanup (deploy/: 03:00 Europe/Warsaw): expired family rankings and office teams (one table)
+ * with their members, write
  * budgets older than a day, and bulletin addresses nobody confirmed within GUEST_PENDING_DAYS.
  * It also logs whether the write loop is alive (src/lib/health.ts), so the timer's journal shows
  * a broken census the next morning. 503 only when the cleanup itself failed.

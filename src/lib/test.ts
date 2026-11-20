@@ -16,7 +16,7 @@ import type { SpecimenIndex } from "@/content/specimens";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { fromBase64Url, toBase64Url } from "./base64url";
-import { cleanName } from "./names";
+import { cleanName, vulgar } from "./names";
 import { formatDate } from "./typo";
 
 /*
@@ -72,7 +72,7 @@ export type Draft = {
   specimen?: SpecimenIndex;
 };
 
-export { cleanName };
+export { cleanName, vulgar };
 
 /* Reflex values: 0 = honked on red, 1 = on red and amber, 2 + ms/10 = reaction time, NO_HONK = never. */
 

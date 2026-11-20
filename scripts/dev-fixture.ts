@@ -16,12 +16,14 @@ async function main() {
         take_write_budget: ["p_scope", "p_key", "p_limit"],
         create_family_group: ["p_group", "p_attempt", "p_code"],
         join_family_group: ["p_group", "p_attempt", "p_code"],
+        join_group: ["p_group", "p_attempt", "p_code", "p_nickname", "p_department"],
+        create_team_group: ["p_group", "p_name", "p_departments", "p_attempt", "p_code", "p_nickname", "p_department"],
       };
       if (resource.startsWith("rpc/")) {
         const fn = resource.slice(4);
         const keys = rpcs[fn];
         if (!keys) { response.writeHead(404).end(JSON.stringify({ message: "Fixture: optional community service unavailable" })); return; }
-        const { rows } = await db.query<{ result: unknown }>(`select public.${fn}(${keys.map((_, i) => `$${i + 1}`).join(",")}) as result`, keys.map((key) => body[key]));
+        const { rows } = await db.query<{ result: unknown }>(`select public.${fn}(${keys.map((_, i) => `$${i + 1}`).join(",")}) as result`, keys.map((key) => body[key] ?? null));
         response.end(JSON.stringify(rows[0].result)); return;
       }
       if (request.method === "POST" && resource === "results") {

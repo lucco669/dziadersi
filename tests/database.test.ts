@@ -101,3 +101,90 @@ test("word of the year votes are server-only", async () => {
     } finally { await db.exec("reset role"); }
   }
 });
+
+/* Badanie okresowe zespołu: teams are family groups of kind 'team'. */
+
+const team = (id: string, name = "Biuro Rachunkowe Kaczmarek", departments: string[] = ["Księgowość", "IT", "Zarząd"]) =>
+  db.query<{ status: string }>("select public.create_team_group($1, $2, $3, null, null, null, null) as status", [id, name, departments]);
+const joinTeam = (id: string, nickname: string | null, department: number | null, attempt = randomUUID()) =>
+  db.query<{ status: string }>("select public.join_group($1, $2, $3, $4, $5::smallint) as status", [id, attempt, code, nickname, department]).then((r) => r.rows[0].status);
+
+test("teams take fifty members, families still twelve, and old family rows stay families", async () => {
+  const id = "d".repeat(32);
+  assert.equal((await team(id)).rows[0].status, "created");
+  const responses = await Promise.all(Array.from({ length: 60 }, (_, i) => joinTeam(id, `Osoba ${i}`, i % 3)));
+  assert.equal(responses.filter((status) => status === "joined").length, 50);
+  assert.equal(responses.filter((status) => status === "full").length, 10);
+  assert.equal((await db.query("select * from public.family_members where group_id = $1", [id])).rows.length, 50);
+  const family = (await db.query<{ kind: string; name: string | null }>("select kind, name from public.family_groups where id = $1", ["a".repeat(32)])).rows[0];
+  assert.deepEqual(family, { kind: "family", name: null });
+  // The family join path ignores nicknames and departments.
+  const familyId = "e".repeat(32);
+  await db.query("select public.create_family_group($1, $2, $3)", [familyId, randomUUID(), code]);
+  assert.equal(await joinTeam(familyId, "Zenek", 2), "joined");
+  assert.deepEqual((await db.query("select nickname, department from public.family_members where group_id = $1 and nickname is not null", [familyId])).rows, []);
+});
+
+test("team members need a free nickname and one of the team's departments", async () => {
+  const id = "f".repeat(32);
+  await team(id);
+  assert.equal(await joinTeam(id, null, 0), "invalid");
+  assert.equal(await joinTeam(id, "   ", 0), "invalid");
+  assert.equal(await joinTeam(id, "Marek", null), "invalid");
+  assert.equal(await joinTeam(id, "Marek", 3), "invalid");
+  assert.equal(await joinTeam(id, "Marek", -1), "invalid");
+  const attempt = randomUUID();
+  assert.equal(await joinTeam(id, " Marek ", 1, attempt), "joined");
+  assert.equal(await joinTeam(id, "Marek", 1, attempt), "repeated");
+  assert.equal(await joinTeam(id, "MAREK", 0), "taken");
+  assert.deepEqual((await db.query("select nickname, department from public.family_members where group_id = $1", [id])).rows, [{ nickname: "Marek", department: 1 }]);
+  // Without departments, nobody names one.
+  const flat = "1".repeat(32);
+  await team(flat, "Zespół bez działów", []);
+  assert.equal(await joinTeam(flat, "Ala", 0), "invalid");
+  assert.equal(await joinTeam(flat, "Ala", null), "joined");
+});
+
+test("team names and departments are checked by the database", async () => {
+  await assert.rejects(team("2".repeat(32), ""));
+  await assert.rejects(team("3".repeat(32), "x".repeat(61)));
+  await assert.rejects(team("4".repeat(32), "Zespół", Array.from({ length: 9 }, (_, i) => `Dział ${i}`)));
+  await assert.rejects(team("5".repeat(32), "Zespół", ["IT", "it"]));
+  await assert.rejects(team("6".repeat(32), "Zespół", ["x".repeat(33)]));
+  await assert.rejects(db.query("insert into public.family_groups(id, name) values ($1, 'Rodzina z nazwą')", ["7".repeat(32)]));
+  assert.equal((await db.query("select * from public.family_groups where id in ($1, $2, $3, $4, $5, $6)", ["2", "3", "4", "5", "6", "7"].map((c) => c.repeat(32)))).rows.length, 0);
+});
+
+test("a team with its first member is created atomically", async () => {
+  const id = "8".repeat(32);
+  const create = (nickname: string | null, department: number | null) =>
+    db.query("select public.create_team_group($1, 'Dział Kadr', $2, $3, $4, $5, $6::smallint)", [id, ["Kadry", "Płace"], randomUUID(), code, nickname, department]);
+  await assert.rejects(create("Halina", 5));
+  await assert.rejects(create(null, 0));
+  assert.equal((await db.query("select * from public.family_groups where id = $1", [id])).rows.length, 0);
+  await create("Halina", 1);
+  assert.deepEqual((await db.query("select nickname, department from public.family_members where group_id = $1", [id])).rows, [{ nickname: "Halina", department: 1 }]);
+});
+
+test("expired teams refuse joins and the daily cleanup removes them with their members", async () => {
+  const id = "9".repeat(32);
+  await team(id);
+  assert.equal(await joinTeam(id, "Ola", 0), "joined");
+  const expires = (await db.query<{ days: number }>("select extract(day from expires_at - created_at)::int as days from public.family_groups where id = $1", [id])).rows[0].days;
+  assert.equal(expires, 90);
+  await db.query("update public.family_groups set expires_at = now() - interval '1 second' where id = $1", [id]);
+  assert.equal(await joinTeam(id, "Iza", 0), "missing");
+  // The statement /api/cron/porzadki runs: every expired group, whatever its kind.
+  await db.query("delete from public.family_groups where expires_at <= now()");
+  assert.equal((await db.query("select * from public.family_members where group_id = $1", [id])).rows.length, 0);
+});
+
+test("public roles cannot create or join teams", async () => {
+  for (const role of ["anon", "authenticated"]) {
+    await db.exec(`set role ${role}`);
+    try {
+      await assert.rejects(db.query("select public.create_team_group($1, 'X', '{}', null, null, null, null)", ["0".repeat(32)]));
+      await assert.rejects(db.query("select public.join_group($1, $2, $3, 'X', null)", ["d".repeat(32), randomUUID(), code]));
+    } finally { await db.exec("reset role"); }
+  }
+});

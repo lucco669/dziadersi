@@ -175,6 +175,11 @@
   body {
     background: #fff;
   }
+
+  /* Paper gets the finished picture: an entrance animation would print its first frame. */
+  :root .crowd-on {
+    animation: none;
+  }
 }
 
 /* SVG pieces scale and move around their own centre. */

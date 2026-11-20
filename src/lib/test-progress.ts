@@ -13,6 +13,8 @@ export type Progress = {
   untimed?: boolean;
   attempt?: string;
   family?: string;
+  /** `family` is an office team's id: the end asks for a nickname and a department. */
+  team?: boolean;
   rooms?: number[];
 };
 
@@ -26,7 +28,7 @@ export function readProgress(raw: string | null): Progress | null {
       typeof p.name !== "string" || typeof p.proxy !== "boolean" || !Number.isInteger(p.seed) ||
       typeof p.group !== "string" || (p.group && !decodeGroup(p.group)) ||
       (p.attempt !== undefined && !isAttemptId(p.attempt)) || (p.family !== undefined && (typeof p.family !== "string" || (p.family !== "" && !isFamilyId(p.family)))) ||
-      (p.untimed !== undefined && typeof p.untimed !== "boolean") ||
+      (p.untimed !== undefined && typeof p.untimed !== "boolean") || (p.team !== undefined && typeof p.team !== "boolean") ||
       (p.rooms !== undefined && (!Array.isArray(p.rooms) || !p.rooms.every((room) => Number.isInteger(room) && room >= 0 && room < 5)))) return null;
     return { ...p, region: typeof p.region === "string" ? p.region : "" };
   } catch { return null; }

@@ -120,6 +120,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       isNew: true,
     },
     {
+      href: "/zespol",
+      label: "Badanie okresowe zespołu",
+      short: "Zespół",
+      group: "badania",
+      summary: "Test dla całego biura: do 50 osób w działach, orzeczenie Komisji, dział zagrożony „zróbmy calla” i raport dla działu kadr.",
+      isNew: true,
+    },
+    {
       href: "/egzamin",
       label: "Egzamin terenowy",
       short: "Egzamin",
@@ -290,6 +298,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Za mizo",
       group: "badania",
       summary: "Test za vso mizo na enem telefonu: od dveh do osmih oseb, šest nalog na osebo, skupna lestvica in certifikat za vsakogar.",
+      isNew: true,
+    },
+    {
+      href: "/zespol",
+      label: "Obdobni pregled kolektiva",
+      short: "Kolektiv",
+      group: "badania",
+      summary: "Test za vso pisarno: do 50 oseb po oddelkih, odločba Komisije, oddelek, ogrožen z »dajmo en call«, in poročilo za kadrovsko službo.",
       isNew: true,
     },
     {

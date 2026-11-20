@@ -90,6 +90,7 @@ export const SHARE_CARDS = [
   "/test",
   "/test/przy-stole",
   "/wynik/[kod]",
+  "/zespol",
   "/zyczenia",
   "/zyczenia/[kod]",
 ];

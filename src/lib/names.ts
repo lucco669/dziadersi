@@ -23,3 +23,6 @@ export function cleanName(raw: string) {
     .trim();
   return name && !BLOCKED.test(fold(name)) ? name : "";
 }
+
+/** Whether text would be kept off a certificate: the same list as names. */
+export const vulgar = (text: string) => BLOCKED.test(fold(text));

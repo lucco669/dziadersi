@@ -39,6 +39,7 @@ export const SEGMENTS: SegmentMap = {
   "slowo-roku": { sl: "beseda-leta", children: { certyfikat: "certifikat" } },
   grupa: { sl: "lestvica", children: { karta: "kartica" } },
   grupy: { sl: "skupina" },
+  zespol: { sl: "kolektiv", children: { raport: "porocilo", podglad: "predogled" } },
   profil: { sl: "profil", children: { zapisz: "shrani", zachowaj: "ohrani", legitymacja: "izkaznica" } },
   konto: { sl: "racun" },
   rejestracja: { sl: "registracija" },

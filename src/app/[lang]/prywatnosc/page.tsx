@@ -40,9 +40,10 @@ const COPY = defineCopy<{
       },
       {
         id: "rankingi",
-        title: "Rankingi rodzinne i ochrona przed nadużyciami",
+        title: "Rankingi rodzinne, badania zespołów i ochrona przed nadużyciami",
         paragraphs: [
           "Ranking rodzinny przechowuje wyniki, podpisy i daty dołączenia. Każdy, kto zna losowy link zaproszenia, może zobaczyć listę i dołączyć. Ranking nie wymaga konta. Po 90 dniach przestaje być dostępny, a jego dane usuwa codzienne zadanie porządkowe. W sprawie wcześniejszego usunięcia napisz na adres administratora i podaj link rankingu.",
+          "Badanie okresowe zespołu działa tak samo: przechowuje nazwę zespołu i działów podaną przy zamówieniu, a dla każdej osoby pseudonim, wybrany dział, wynik i datę dołączenia. Każdy, kto zna link zespołu, widzi pseudonimy, działy i wyniki, raport dla działu kadr i podgląd linku, który pokazują komunikatory, takie jak Slack czy Microsoft Teams, oraz może dołączyć. Nie podawaj w pseudonimie imienia i nazwiska, jeśli nie chcesz, żeby zespół je zobaczył. Badanie nie wymaga konta. Po 90 dniach przestaje być dostępne, a jego dane usuwa codzienne zadanie porządkowe.",
           "Każde badanie otrzymuje losowy identyfikator zgłoszenia, aby ponowne wysłanie nie zwiększało spisu. Nie identyfikuje on osoby ani urządzenia. Aby ograniczyć automatyczne nadużycia, serwer wylicza codziennie zmieniany skrót adresu sieciowego. W licznikach ochronnych zapisujemy ten skrót zamiast adresu IP; stare liczniki są usuwane przy kolejnych zapisach i w codziennym zadaniu porządkowym.",
           "Do analityki odsłon i zdarzeń nie przekazujemy kodów wyników, podpisów, tokenów zaproszeń ani parametrów zapytania. Zdarzenia ukończenia gabinetu obejmują numer gabinetu, tryb badania i wybrane tempo, bez odpowiedzi ani podpisu.",
         ],
@@ -124,9 +125,10 @@ const COPY = defineCopy<{
       },
       {
         id: "rankingi",
-        title: "Družinske lestvice in zaščita pred zlorabami",
+        title: "Družinske lestvice, pregledi kolektivov in zaščita pred zlorabami",
         paragraphs: [
           "Družinska lestvica hrani rezultate, podpise in datume pridružitve. Vsak, ki pozna naključno povezavo vabila, lahko vidi seznam in se pridruži. Lestvica ne potrebuje računa. Po 90 dneh ni več dostopna, njene podatke pa izbriše vsakodnevno čiščenje. Če želiš, da jo izbrišemo prej, piši na naslov upravljavca in priloži povezavo do lestvice.",
+          "Obdobni pregled kolektiva deluje enako: hrani ime kolektiva in oddelkov, ki sta bila vpisana ob naročilu, za vsako osebo pa vzdevek, izbrani oddelek, izvid in datum pridružitve. Vsak, ki pozna povezavo do kolektiva, vidi vzdevke, oddelke in izvide, poročilo za kadrovsko službo in predogled povezave, ki ga prikažejo aplikacije za sporočanje, kot sta Slack ali Microsoft Teams, ter se lahko pridruži. V vzdevek ne vpisuj imena in priimka, če nočeš, da ju kolektiv vidi. Pregled ne potrebuje računa. Po 90 dneh ni več dostopen, njegove podatke pa izbriše vsakodnevno čiščenje.",
           "Vsak pregled dobi naključni identifikator prijave, da ponovno pošiljanje ne poveča popisa. Ta ne identificira osebe ali naprave. Da omejimo samodejne zlorabe, strežnik izračuna izvleček omrežnega naslova, ki se vsak dan spremeni. V zaščitnih števcih hranimo ta izvleček namesto naslova IP; stare števce brišemo ob novih zapisih in pri vsakodnevnem čiščenju.",
           "V analitiko ogledov in dogodkov ne pošiljamo kod rezultatov, podpisov, žetonov vabil ali parametrov poizvedbe. Dogodki ob koncu ordinacije vsebujejo številko ordinacije, način pregleda in izbrani tempo, brez odgovorov ali podpisa.",
         ],

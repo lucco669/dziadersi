@@ -10,7 +10,7 @@ import { defineCopy } from "@/i18n/copy";
 import { localizePath } from "@/i18n/routes";
 import { sameAnswer } from "@/lib/answer-stats";
 import type { AnswerCounts } from "@/lib/census";
-import { DIAGNOSABLE, dayNumber, decodeGroup, encodeResult, evaluate, GROUP_LIMIT, groupPath, suspect } from "@/lib/test";
+import { cleanName, DIAGNOSABLE, dayNumber, decodeGroup, encodeResult, evaluate, GROUP_LIMIT, groupPath, suspect } from "@/lib/test";
 import { cx, pluralSl, typo } from "@/lib/typo";
 import { readProgress, type Progress } from "@/lib/test-progress";
 import { isFamilyId } from "@/lib/write-policy";
@@ -50,6 +50,11 @@ const COPY = defineCopy({
       expired: "Zaproszenie wygasło. Twój wynik jest gotowy.",
       failed: "Nie udało się dopisać do rankingu. Spróbuj ponownie lub odbierz wynik bez dołączania.",
       offline: "Brak połączenia z rankingiem. Spróbuj ponownie lub odbierz wynik bez dołączania.",
+      teamFull: "Zespół ma już komplet 50 osób. Twój wynik jest gotowy.",
+      teamExpired: "Badanie zespołu wygasło. Twój wynik jest gotowy.",
+      taken: "Ten pseudonim jest już zajęty w zespole. Wybierz inny.",
+      nickname: "Podaj pseudonim: litery i spacje, do 24 znaków.",
+      department: "Wybierz swój dział.",
     },
     details: {
       label: "Wszystkie gabinety zaliczone",
@@ -63,6 +68,14 @@ const COPY = defineCopy({
       collectAndJoin: "Odbierz wynik i dołącz do rankingu",
       collect: "Odbierz wynik",
       withoutJoining: "Pokaż wynik bez dołączania",
+      teamTitle: (team: string) => `Pod jakim pseudonimem występujesz w zespole ${team}?`,
+      teamTitlePlain: "Pod jakim pseudonimem występujesz w zespole?",
+      nickname: "Pseudonim (trafi też na certyfikat)",
+      nicknamePlaceholder: "np. Marek z IT",
+      department: "Twój dział",
+      choose: "Wybierz dział",
+      teamShared: "Pseudonim, dział i wynik zobaczy każdy, kto ma link zespołu.",
+      collectAndJoinTeam: "Odbierz wynik i dopisz się do zespołu",
     },
     processing: {
       label: "Formularz IBD-T2 · Opracowanie wyników",
@@ -108,6 +121,11 @@ const COPY = defineCopy({
       expired: "Vabilo je poteklo. Tvoj izvid je pripravljen.",
       failed: "Vpis na lestvico ni uspel. Poskusi znova ali prevzemi izvid brez pridružitve.",
       offline: "Z lestvico ni povezave. Poskusi znova ali prevzemi izvid brez pridružitve.",
+      teamFull: "Kolektiv je že poln, v njem je 50 oseb. Tvoj izvid je pripravljen.",
+      teamExpired: "Pregled kolektiva je potekel. Tvoj izvid je pripravljen.",
+      taken: "Ta vzdevek je v kolektivu že zaseden. Izberi drugega.",
+      nickname: "Vpiši vzdevek: črke in presledki, do 24 znakov.",
+      department: "Izberi svoj oddelek.",
     },
     details: {
       label: "Vse ordinacije opravljene",
@@ -121,6 +139,14 @@ const COPY = defineCopy({
       collectAndJoin: "Prevzemi izvid in se pridruži lestvici",
       collect: "Prevzemi izvid",
       withoutJoining: "Pokaži izvid brez pridružitve",
+      teamTitle: (team: string) => `Pod katerim vzdevkom nastopaš v kolektivu ${team}?`,
+      teamTitlePlain: "Pod katerim vzdevkom nastopaš v kolektivu?",
+      nickname: "Vzdevek (bo tudi na certifikatu)",
+      nicknamePlaceholder: "npr. Marko iz IT",
+      department: "Tvoj oddelek",
+      choose: "Izberi oddelek",
+      teamShared: "Vzdevek, oddelek in izvid vidi vsak, ki ima povezavo do kolektiva.",
+      collectAndJoinTeam: "Prevzemi izvid in se vpiši v kolektiv",
     },
     processing: {
       label: "Obrazec IBD-T2 · Obdelava izvidov",
@@ -190,6 +216,10 @@ export function TestRunner() {
   const reducedMotion = useReducedMotion();
   const [attempt, setAttempt] = useState("");
   const [family, setFamily] = useState("");
+  /** `family` holds an office team's id: then a nickname and department are asked at the end. */
+  const [team, setTeam] = useState(false);
+  const [teamInfo, setTeamInfo] = useState<{ name: string; departments: string[] } | null>(null);
+  const [department, setDepartment] = useState("");
   const [finishing, setFinishing] = useState(false);
   const [finishError, setFinishError] = useState("");
   const completedRooms = useRef<number[]>([]);
@@ -203,6 +233,7 @@ export function TestRunner() {
   const params = useMemo(() => new URLSearchParams(search), [search]);
   const groupParam = params.get("grupa") ?? "";
   const familyParam = params.get("rodzina") ?? "";
+  const teamParam = params.get("zespol") ?? "";
   const invite = useMemo(() => decodeGroup(groupParam), [groupParam]);
   const proxy = (mode ?? (params.get("tryb") === "wywiad" ? "proxy" : "self")) === "proxy";
 
@@ -237,12 +268,25 @@ export function TestRunner() {
     if (rect && rect.top < 0) top.current?.scrollIntoView({ block: "start", behavior: reducedMotion ? "instant" : "smooth" });
   }, [phase, current, reducedMotion]);
 
+  // The team's name and departments for the last screen; the join works without them (no departments).
+  useEffect(() => {
+    if (!team || !family || teamInfo || phase === "intro") return;
+    let cancelled = false;
+    fetch(`/api/grupy/${family}`, { cache: "no-store" })
+      .then((response) => (response.ok ? (response.json() as Promise<{ kind?: string; name?: string; departments?: string[] }>) : null))
+      .then((data) => {
+        if (!cancelled && data?.kind === "team") setTeamInfo({ name: data.name ?? "", departments: data.departments ?? [] });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [team, family, teamInfo, phase]);
+
   const steps = [
     { label: t.steps.count, detail: t.steps.countDetail(TOTAL) },
     { label: t.steps.plates, detail: t.steps.platesDetail },
     { label: t.steps.atlas, detail: t.steps.atlasDetail(DIAGNOSABLE.length) },
     { label: t.steps.lab, detail: t.steps.labDetail },
-    ...(group ? [{ label: t.steps.ranking, detail: t.steps.ready }] : []),
+    ...(group || team ? [{ label: t.steps.ranking, detail: t.steps.ready }] : []),
     { label: t.steps.stamp, detail: t.steps.ready },
   ];
 
@@ -263,14 +307,18 @@ export function TestRunner() {
     setCurrent(0);
     setSeed(nextSeed);
     setGroup(joined);
-    setFamily(isFamilyId(familyParam) ? familyParam : "");
+    const teamId = isFamilyId(teamParam) ? teamParam : "";
+    setFamily(isFamilyId(familyParam) ? familyParam : teamId);
+    setTeam(!isFamilyId(familyParam) && Boolean(teamId));
+    setTeamInfo(null);
+    setDepartment("");
     setAttempt(crypto.randomUUID());
     completedRooms.current = [];
     setMode(proxy ? "proxy" : "self");
     setPhase("task");
     writeProgress(null);
     loadCounts();
-    track("Test rozpoczęty", { tryb: proxy ? "wywiad" : "osobiście", ranking: joined || isFamilyId(familyParam) ? "tak" : "nie", tempo: untimed || reducedMotion ? "spokojne" : "standardowe" });
+    track("Test rozpoczęty", { tryb: proxy ? "wywiad" : "osobiście", ranking: joined || isFamilyId(familyParam) ? "tak" : isFamilyId(teamParam) ? "zespół" : "nie", tempo: untimed || reducedMotion ? "spokojne" : "standardowe" });
   }
 
   function resume(progress: Progress) {
@@ -284,6 +332,7 @@ export function TestRunner() {
     setUntimed(progress.untimed ?? false);
     setAttempt(progress.attempt || crypto.randomUUID());
     setFamily(progress.family ?? "");
+    setTeam(Boolean(progress.family && progress.team));
     completedRooms.current = progress.rooms ?? [];
     setPhase(progress.current === TOTAL ? "details" : "task");
     loadCounts();
@@ -297,14 +346,26 @@ export function TestRunner() {
     const code = encodeResult(draft);
     let href = group ? groupPath([...group.split("."), code]) : `/wynik/${code}`;
     if (family && !skipFamily) {
+      const departments = teamInfo?.departments ?? [];
+      if (team && !cleanName(name)) { setFinishError(t.errors.nickname); setFinishing(false); return; }
+      if (team && departments.length > 0 && department === "") { setFinishError(t.errors.department); setFinishing(false); return; }
+      const body = team
+        ? { code, attempt, nickname: cleanName(name), department: departments.length > 0 ? Number(department) : null }
+        : { code, attempt };
       try {
-        const response = await fetch(`/api/grupy/${family}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ code, attempt }) });
+        const response = await fetch(`/api/grupy/${family}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
         if (!response.ok) {
-          setFinishError(response.status === 409 ? t.errors.full : response.status === 404 ? t.errors.expired : t.errors.failed);
+          const reason = response.status === 409 ? ((await response.json().catch(() => null)) as { status?: string } | null)?.status : undefined;
+          setFinishError(
+            reason === "taken" ? t.errors.taken
+              : response.status === 409 ? (team ? t.errors.teamFull : t.errors.full)
+                : response.status === 404 ? (team ? t.errors.teamExpired : t.errors.expired)
+                  : t.errors.failed,
+          );
           setFinishing(false);
           return;
         }
-        href = `/grupy/${family}`;
+        href = team ? `/zespol/${family}` : `/grupy/${family}`;
       } catch {
         setFinishError(t.errors.offline);
         setFinishing(false);
@@ -359,7 +420,7 @@ export function TestRunner() {
       completedRooms.current.push(station);
       track("Gabinet ukończony", { gabinet: station + 1, tryb: proxy ? "wywiad" : "osobiście", tempo: untimed || reducedMotion ? "spokojne" : "standardowe" });
     }
-    writeProgress({ answers: next, current: current + 1, name, proxy, seed, group, region, untimed, attempt, family, rooms: completedRooms.current });
+    writeProgress({ answers: next, current: current + 1, name, proxy, seed, group, region, untimed, attempt, family, team, rooms: completedRooms.current });
     if (current + 1 >= TOTAL) {
       setCurrent(TOTAL);
       setPhase("details");
@@ -403,7 +464,8 @@ export function TestRunner() {
         onResume={resume}
         untimed={untimed}
         setUntimed={setUntimed}
-        family={isFamilyId(familyParam)}
+        family={isFamilyId(familyParam) || isFamilyId(teamParam)}
+        team={!isFamilyId(familyParam) && isFamilyId(teamParam)}
       />
     );
   }
@@ -413,12 +475,23 @@ export function TestRunner() {
       <section ref={top} className="wrap py-10 md:py-16">
         <form className="mx-auto max-w-xl" onSubmit={(event) => { event.preventDefault(); void finish(answers as number[]); }}>
           <p className="label text-red">{t.details.label}</p>
-          <h1 ref={heading} tabIndex={-1} className="mt-4 text-4xl font-bold leading-tight focus:outline-none">{t.details.title}</h1>
-          <label htmlFor="podpis" className="label mt-7 block">{t.details.name}</label>
-          <input id="podpis" value={name} onChange={(event) => setName(event.target.value)} maxLength={24} autoComplete="off" placeholder={proxy ? t.details.placeholderProxy : t.details.placeholder} className="mt-2 w-full border-b-2 border-ink bg-transparent py-3 text-3xl focus:border-red focus-visible:outline-none" />
-          <p className="label mt-4 text-ink-soft">{family || group ? t.details.shared : t.details.private}</p>
+          <h1 ref={heading} tabIndex={-1} className="mt-4 break-words text-4xl font-bold leading-tight focus:outline-none">
+            {team ? (teamInfo?.name ? t.details.teamTitle(teamInfo.name) : t.details.teamTitlePlain) : t.details.title}
+          </h1>
+          <label htmlFor="podpis" className="label mt-7 block">{team ? t.details.nickname : t.details.name}</label>
+          <input id="podpis" value={name} onChange={(event) => setName(event.target.value)} maxLength={24} autoComplete={team ? "nickname" : "off"} required={team} placeholder={team ? t.details.nicknamePlaceholder : proxy ? t.details.placeholderProxy : t.details.placeholder} className="mt-2 w-full border-b-2 border-ink bg-transparent py-3 text-3xl focus:border-red focus-visible:outline-none" />
+          {team && teamInfo && teamInfo.departments.length > 0 && (
+            <>
+              <label htmlFor="dzial" className="label mt-7 block">{t.details.department}</label>
+              <select id="dzial" value={department} onChange={(event) => setDepartment(event.target.value)} required className="mt-2 w-full border-b-2 border-ink bg-transparent py-3 text-2xl focus:border-red focus-visible:outline-none">
+                <option value="">{t.details.choose}</option>
+                {teamInfo.departments.map((item, i) => <option key={item} value={i}>{item}</option>)}
+              </select>
+            </>
+          )}
+          <p className="label mt-4 text-ink-soft">{team ? t.details.teamShared : family || group ? t.details.shared : t.details.private}</p>
           {finishError && <p role="alert" className="mt-5 border-l-2 border-red pl-4">{finishError}</p>}
-          <button disabled={finishing} className="btn mt-7 bg-ink text-paper hover:bg-red disabled:opacity-50">{finishing ? t.details.wait : family ? t.details.collectAndJoin : t.details.collect}</button>
+          <button disabled={finishing} className="btn mt-7 bg-ink text-paper hover:bg-red disabled:opacity-50">{finishing ? t.details.wait : team ? t.details.collectAndJoinTeam : family ? t.details.collectAndJoin : t.details.collect}</button>
           {finishError && <button type="button" disabled={finishing} onClick={() => void finish(answers as number[], true)} className="link mt-5 block font-sans">{t.details.withoutJoining}</button>}
         </form>
       </section>

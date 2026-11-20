@@ -40,7 +40,7 @@ export function loadGroup(segment: string, locale: Locale) {
 }
 
 /** Highest score first; ties go to whoever joined earlier. */
-export const ranked = (members: Member[]) =>
+export const ranked = <T extends Member>(members: T[]): T[] =>
   [...members].sort((a, b) => b.result.score - a.result.score || a.order - b.order);
 
 export function pairs(members: Member[]) {
