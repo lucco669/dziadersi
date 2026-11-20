@@ -12,17 +12,25 @@ const COPY = defineCopy({
   sl: { skip: "Skoči na vsebino", home: "DZIADER.SI, domača stran", test: "Opravi test", testShort: "Test", sections: "Oddelki", main: "Glavni meni" },
 });
 
+/**
+ * The first stop for the keyboard: "Przejdź do treści", hidden above the page until focused.
+ * Every page's <main> has id="tresc".
+ */
+export function SkipLink({ locale }: { locale: Locale }) {
+  return (
+    <a
+      href="#tresc"
+      className="label fixed left-4 top-4 z-[60] -translate-y-[calc(100%+2rem)] bg-ink px-4 py-3 text-paper focus:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red print:hidden"
+    >
+      {COPY[locale].skip}
+    </a>
+  );
+}
+
 export function SiteHeader({ locale }: { locale: Locale }) {
   const t = COPY[locale];
   return (
     <>
-      <a
-        href="#tresc"
-        className="label sr-only z-50 bg-ink px-4 py-3 text-paper focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-      >
-        {t.skip}
-      </a>
-
       <header className="relative z-40 border-b border-ink print:hidden">
         <div className="wrap flex items-center justify-between gap-4 py-4 md:py-5">
           <Link href="/" className="group flex items-center gap-2.5 md:gap-4" aria-label={t.home}>

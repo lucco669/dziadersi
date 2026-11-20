@@ -96,7 +96,7 @@ export function LanguageSwitch({ className }: { className?: string }) {
                 title={current ? OWN[target].current : OWN[target].switchTo}
                 onClick={() => remember(target)}
                 className={cx(
-                  "relative px-1.5 py-2 transition-colors",
+                  "relative inline-flex min-h-6 min-w-6 items-center justify-center px-1.5 py-2 transition-colors",
                   current ? "text-ink" : "text-ink-soft hover:text-red",
                   // Below xl (with the sheet menu) the other edition is a small bordered tab next to the test button.
                   !current && "max-xl:border max-xl:border-ink max-xl:px-2 max-xl:py-1 max-xl:text-ink",
@@ -166,7 +166,8 @@ export function EditionSwitch() {
 }
 
 /**
- * A slip in the corner when the browser prefers the other edition and the reader has not chosen yet.
+ * A strip under the header when the browser prefers the other edition and the reader has not chosen yet.
+ * It sits in the page, so it never covers the hero or its button on a phone.
  * Nothing redirects automatically (search engines and shared links see the page they asked for);
  * a choice made here or in a switcher is remembered.
  */
@@ -188,27 +189,33 @@ export function LanguageSuggestion() {
     <aside
       lang={LOCALE_INFO[suggested].tag}
       aria-label={LOCALE_INFO[suggested].edition}
-      className="test-navigation fixed inset-x-4 bottom-4 z-50 max-w-sm motion-safe:animate-question-in sm:inset-x-auto sm:right-6 sm:bottom-6 print:hidden"
+      className="test-navigation border-b border-ink bg-card motion-safe:animate-question-in print:hidden"
     >
-      <div className="relative border border-ink bg-card p-5 shadow-[6px_6px_0_var(--color-ink)]">
-        <p className="label flex items-center gap-2 text-red">
-          <span aria-hidden="true" className="grid size-7 place-items-center rounded-full border-2 border-red text-[0.7rem] font-bold">
+      <div className="wrap relative flex flex-wrap items-center gap-x-6 gap-y-1 py-2.5 pr-12 font-sans text-[0.95rem]">
+        <p className="flex min-w-0 flex-1 basis-72 items-start gap-3 leading-snug">
+          <span aria-hidden="true" className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border-2 border-red font-sans text-[0.7rem] font-bold text-red">
             {LOCALE_INFO[suggested].short}
           </span>
-          {LOCALE_INFO[suggested].edition}
+          <span>
+            <span className="label mr-2 font-semibold text-red">{LOCALE_INFO[suggested].edition}</span>
+            {own.suggestion}
+          </span>
         </p>
-        <p className="mt-3 leading-snug">{own.suggestion}</p>
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <div className="flex flex-wrap items-center gap-x-5 pl-10 sm:pl-0">
           <NextLink
             href={targets[suggested]}
             hrefLang={LOCALE_INFO[suggested].tag}
             prefetch={false}
             onClick={() => remember(suggested)}
-            className="btn bg-ink px-4 text-paper hover:bg-red"
+            className="inline-flex min-h-6 items-center py-1.5 font-semibold text-ink underline decoration-red decoration-2 underline-offset-4 hover:text-red"
           >
-            {own.accept} <span aria-hidden="true">→</span>
+            {own.accept}&nbsp;<span aria-hidden="true">→</span>
           </NextLink>
-          <button type="button" onClick={dismiss} className="font-sans text-[0.95rem] font-medium text-ink-soft underline-offset-4 hover:text-red hover:underline">
+          <button
+            type="button"
+            onClick={dismiss}
+            className="min-h-6 py-1.5 font-medium text-ink-soft underline-offset-4 hover:text-red hover:underline"
+          >
             {own.decline}
           </button>
         </div>
@@ -216,7 +223,7 @@ export function LanguageSuggestion() {
           type="button"
           onClick={dismiss}
           aria-label={COPY[suggested].close}
-          className="absolute right-2 top-2 grid size-9 place-items-center text-ink-soft hover:text-red"
+          className="absolute right-2 top-1 grid size-10 place-items-center text-ink-soft hover:text-red sm:right-4"
         >
           <svg viewBox="0 0 12 12" className="w-3" aria-hidden="true">
             <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" strokeWidth={1.8} />
@@ -226,4 +233,3 @@ export function LanguageSuggestion() {
     </aside>
   );
 }
-

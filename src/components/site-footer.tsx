@@ -60,8 +60,8 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <p className="mt-6 max-w-md text-ink-soft">{typo(t.about)}</p>
           <p className="mt-6 max-w-md font-sans text-[0.9rem] leading-relaxed text-ink-soft">{typo(copy.disclaimer)}</p>
           <p className="mt-6 font-sans text-sm">
-            <Link href="/kontakt" className="link">{t.contact}</Link>{" · "}
-            <a href={`mailto:${site.controller.email}`} className="link">{site.controller.email}</a>
+            <Link href="/kontakt" className="link inline-flex min-h-6 items-center">{t.contact}</Link>{" · "}
+            <a href={`mailto:${site.controller.email}`} className="link inline-flex min-h-6 items-center">{site.controller.email}</a>
           </p>
           {profiles.length > 0 && (
             <nav aria-label={t.social} className="mt-3">
@@ -83,12 +83,12 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             {groups(locale).map((group) => (
               <div key={group.key}>
                 <p className="label text-ink-faint">{group.label}</p>
-                <ul className="mt-4 space-y-2 font-sans font-medium leading-snug">
+                <ul className="mt-3 space-y-0.5 font-sans font-medium leading-snug">
                   {sections(locale)
                     .filter((item) => item.group === group.key)
                     .map((item) => (
                       <li key={item.href}>
-                        <Link href={item.href} className="transition-colors hover:text-red">
+                        <Link href={item.href} className="inline-block py-1 transition-colors hover:text-red">
                           {item.label}
                         </Link>
                       </li>
@@ -108,10 +108,10 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <span>
             © {site.founded} {copy.institute}
           </span>
-          <ul className="flex flex-wrap gap-x-5 gap-y-1">
+          <ul className="flex flex-wrap gap-x-5">
             {t.links.map(([href, label]) => (
               <li key={href}>
-                <Link href={href} className="transition-colors hover:text-red">
+                <Link href={href} className="inline-flex min-h-6 items-center py-1 transition-colors hover:text-red">
                   {label}
                 </Link>
               </li>

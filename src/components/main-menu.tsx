@@ -137,10 +137,10 @@ function Panel({ active, pathname, onNavigate }: { active: GroupKey | null; path
       <div className="mt-6 flex items-end justify-between gap-8 border-t border-rule pt-5">
         <AccountLine onNavigate={onNavigate} />
         <div className="flex items-end gap-6">
-          <ul className="label flex gap-5 pb-1 text-ink-soft">
+          <ul className="label flex gap-5 text-ink-soft">
             {t.extra.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} onClick={onNavigate} className="transition-colors hover:text-red">
+                <Link href={item.href} onClick={onNavigate} className="inline-flex min-h-6 items-center py-1 transition-colors hover:text-red">
                   {item.label}
                 </Link>
               </li>
@@ -306,16 +306,17 @@ export function MobileMenu() {
           {t.sheetButton}
         </button>
         <SearchButton className="flex shrink-0 items-center border-r border-rule px-4" />
-        <ul className="flex min-w-0 flex-1 gap-6 overflow-x-auto px-5 py-3 font-sans text-[1rem] font-medium [scrollbar-width:none]">
+        {/* Each link fills the row's height, so the tap target is the whole 3 rem strip (WCAG 2.5.8). */}
+        <ul className="flex min-w-0 flex-1 gap-6 overflow-x-auto px-5 font-sans text-[1rem] font-medium [scrollbar-width:none]">
           {sections(locale).filter((section) => section.href !== "/test").map((item) => (
-            <li key={item.href} className="shrink-0">
-              <Link href={item.href} className={cx(isCurrent(pathname, item.href) && "text-red")}>
+            <li key={item.href} className="flex shrink-0">
+              <Link href={item.href} className={cx("flex min-w-6 items-center justify-center py-3", isCurrent(pathname, item.href) && "text-red")}>
                 {item.short}
               </Link>
             </li>
           ))}
-          <li className="shrink-0 pr-5">
-            <Link href="/profil" className={cx(isCurrent(pathname, "/profil") && "text-red")}>
+          <li className="flex shrink-0 pr-5">
+            <Link href="/profil" className={cx("flex items-center py-3", isCurrent(pathname, "/profil") && "text-red")}>
               {t.profileShort}
             </Link>
           </li>
@@ -359,10 +360,10 @@ export function MobileMenu() {
                 </ul>
               </section>
             ))}
-            <ul className="label mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-rule pt-5 text-ink-soft">
+            <ul className="label mt-10 flex flex-wrap gap-x-6 gap-y-1 border-t border-rule pt-4 text-ink-soft">
               {t.extra.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} onClick={close}>
+                  <Link href={item.href} onClick={close} className="inline-flex min-h-6 items-center py-1.5">
                     {item.label}
                   </Link>
                 </li>
