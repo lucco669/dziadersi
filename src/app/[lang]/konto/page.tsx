@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * `dalej` is an internal path from a sign-in link (signInHref) or a public one from a redirect;
+ * `dalej` is an internal path from a sign-in link (SignInLink) or a public one from a redirect;
  * the form gets the public path of this edition, which is what the email link returns to.
  */
 async function SignIn({ searchParams }: { searchParams: PageProps<"/[lang]/konto">["searchParams"] }) {

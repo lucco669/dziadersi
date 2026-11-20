@@ -5,7 +5,7 @@ import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { cx, plural, pluralSl, typo } from "@/lib/typo";
-import { signInHref, useAccount } from "./account";
+import { SignInLink, useAccount } from "./account";
 
 /*
  * One-line mentions of the Profil Dziaderski, placed where it actually helps: before the test,
@@ -78,9 +78,9 @@ export function TestProfileNote() {
   return (
     <p className="label mt-4 max-w-md text-ink-soft">
       {typo(t.testGuest)}{" "}
-      <Link href={signInHref("/test")} className="link text-ink">
+      <SignInLink next="/test" className="link text-ink">
         {t.testSignIn}
-      </Link>
+      </SignInLink>
     </p>
   );
 }
@@ -139,9 +139,9 @@ export function CollectionLine({ species }: { species: SpeciesKey[] }) {
       ) : (
         <>
           {typo(t.collectionGuest)}{" "}
-          <Link href={signInHref("/profil")} className="link text-ink">
+          <SignInLink next="/profil" className="link text-ink">
             {t.open}
-          </Link>
+          </SignInLink>
         </>
       )}
     </p>
@@ -166,9 +166,9 @@ export function CensusProfileNote() {
       ) : (
         <>
           {typo(t.censusGuest)}{" "}
-          <Link href={signInHref("/profil")} className="link text-ink">
+          <SignInLink next="/profil" className="link text-ink">
             {t.open}
-          </Link>
+          </SignInLink>
         </>
       )}
     </p>

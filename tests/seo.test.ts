@@ -4,7 +4,9 @@ import robots from "../src/app/robots";
 import sitemap from "../src/app/sitemap";
 import { GET as securityRecord } from "../src/app/.well-known/security.txt/route";
 import { signInPath } from "../src/lib/account";
-import { describe, institute, pageMetadata } from "../src/lib/seo";
+import { readdirSync } from "node:fs";
+import { basename, dirname, join, sep } from "node:path";
+import { describe, institute, pageMetadata, SHARE_CARDS, shareImagePath } from "../src/lib/seo";
 import { site } from "../src/lib/site";
 import { legacyContentRedirects } from "../src/i18n/legacy-redirects";
 
@@ -22,15 +24,46 @@ test("legal previews have an edition-specific fallback without replacing dedicat
   for (const locale of ["pl", "sl"] as const) {
     const metadata = pageMetadata(locale, { title: "Legal", description: "a".repeat(180), path: "/regulamin", defaultImage: true });
     assert.equal(metadata.description?.length, 160);
-    assert.deepEqual(metadata.openGraph?.images, [{ url: `/${locale}/opengraph-image`, width: 1200, height: 630, alt: institute(locale).name }]);
-    // Let Next inherit the final OG image, including the file-based card on other pages.
+    const front = locale === "pl" ? "/opengraph-image" : "/sl/opengraph-image";
+    assert.deepEqual(metadata.openGraph?.images, [{ url: front, width: 1200, height: 630, type: "image/png", alt: institute(locale).name }]);
+    // Twitter inherits the Open Graph image.
     assert.equal(metadata.twitter?.images, undefined);
     const dedicated = pageMetadata(locale, { title: "Atlas", description: "An atlas", path: "/atlas" });
-    assert.equal(dedicated.openGraph?.images, undefined);
+    assert.deepEqual(dedicated.openGraph?.images, [{ url: locale === "pl" ? "/atlas/opengraph-image" : "/sl/atlas/opengraph-image", width: 1200, height: 630, type: "image/png", alt: "Atlas · DZIADER.SI" }]);
     const privateResult = pageMetadata(locale, { title: "Result", description: "Private", path: "/wynik/code", noindex: true, nofollow: true });
     assert.deepEqual(privateResult.robots, { index: false, follow: false });
     const account = pageMetadata(locale, { title: "Account", description: "Sign in", path: "/konto", noindex: true });
     assert.deepEqual(account.robots, { index: false, follow: true });
+  }
+});
+
+test("share cards are linked by their public address, never by the routed /pl or /sl/<Polish> path", () => {
+  // The list in seo.ts names every opengraph-image route folder.
+  const root = join(import.meta.dirname, "../src/app/[lang]");
+  const files = readdirSync(root, { recursive: true, encoding: "utf8" })
+    .filter((file) => basename(file) === "opengraph-image.tsx")
+    .map((file) => (dirname(file) === "." ? "/" : `/${dirname(file).split(sep).join("/")}`))
+    .sort();
+  assert.deepEqual([...SHARE_CARDS].sort(), files);
+
+  const cases: [string, string, string][] = [
+    ["/", "/opengraph-image", "/sl/opengraph-image"],
+    ["/kontakt", "/opengraph-image", "/sl/opengraph-image"],
+    ["/atlas/dziaders-parkingowy", "/atlas/dziaders-parkingowy/opengraph-image", "/sl/atlas/dziaders-parkingowy/opengraph-image"],
+    ["/slownik/x", "/slownik/x/opengraph-image", "/sl/slovar/x/opengraph-image"],
+    ["/statystyki", "/statystyki/opengraph-image", "/sl/statistika/opengraph-image"],
+    ["/dziaders/kobieta", "/dziaders/kobieta/opengraph-image", "/sl/dziaders/zenska/opengraph-image"],
+    ["/wynik/2abc", "/wynik/2abc/opengraph-image", "/sl/izvid/2abc/opengraph-image"],
+    // Pages without a card of their own inherit the nearest one above them, as in Next.js.
+    ["/wynik/2abc/certyfikat?format=post", "/wynik/2abc/opengraph-image", "/sl/izvid/2abc/opengraph-image"],
+    ["/bingo/wigilia-0nof0/druk", "/bingo/wigilia-0nof0/opengraph-image", "/sl/bingo/wigilia-0nof0/opengraph-image"],
+    ["/muzeum/x/karta", "/muzeum/x/opengraph-image", "/sl/muzej/x/opengraph-image"],
+    ["/do-druku/przewodnik", "/do-druku/opengraph-image", "/sl/za-tisk/opengraph-image"],
+    ["/grupy/abc", "/opengraph-image", "/sl/opengraph-image"],
+  ];
+  for (const [path, pl, sl] of cases) {
+    assert.equal(shareImagePath(path, "pl"), pl, path);
+    assert.equal(shareImagePath(path, "sl"), sl, path);
   }
 });
 
@@ -137,9 +170,20 @@ test("private account and search headers agree with metadata and public registra
   for (const path of ["/wynik/code", "/sl/izvid/code", "/profil/zapisz/code", "/sl/profil/shrani/code"]) {
     assert.equal(headers(path)["x-robots-tag"], "noindex, nofollow", path);
   }
-  for (const path of ["/rejestracja", "/sl/registracija", "/sl", "/atlas/dziaders-grillowy", "/sl/atlas/zarni-dziaders", "/sl/slownik/v-mojih-casih/opengraph-image"]) {
+  for (const path of ["/rejestracja", "/sl/registracija", "/sl", "/atlas/dziaders-grillowy", "/sl/atlas/zarni-dziaders"]) {
     assert.equal(headers(path)["x-robots-tag"], undefined, path);
   }
+  // Share cards stay out of search results but open to link previews and other sites.
+  for (const path of ["/opengraph-image", "/sl/opengraph-image", "/atlas/dziaders-grillowy/opengraph-image", "/sl/slovar/v-mojih-casih/opengraph-image"]) {
+    assert.equal(headers(path)["x-robots-tag"], "noindex", path);
+    assert.equal(headers(path)["cross-origin-resource-policy"], "cross-origin", path);
+  }
+});
+
+test("a guest on the profile is sent to the bare, crawlable account page", () => {
+  assert.equal(signInPath("/profil", "pl"), "/konto");
+  assert.equal(signInPath("/profil", "sl"), "/sl/racun");
+  assert.equal(signInPath("/profil#legitymacja", "pl"), "/konto?dalej=%2Fprofil%23legitymacja");
 });
 
 test("guest bookmarks go directly to sign-in and preserve the localised save destination", () => {

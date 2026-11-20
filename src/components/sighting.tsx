@@ -8,7 +8,7 @@ import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { cx, formatNumber, plural, pluralSl, typo } from "@/lib/typo";
-import { patchAccount, signInHref, useAccount } from "./account";
+import { patchAccount, SignInLink, useAccount } from "./account";
 import { Stamp } from "./brand";
 
 const REGION_KEY = "ibd-wojewodztwo";
@@ -190,9 +190,9 @@ export function SightingPanel({
         </div>
       ) : (
         <div className="mt-4">
-          <Link href={signInHref(here)} className="btn border border-ink hover:bg-ink hover:text-paper">
+          <SignInLink next={here} className="btn border border-ink hover:bg-ink hover:text-paper">
             {t.report}
-          </Link>
+          </SignInLink>
           <p className="label mt-3 max-w-sm text-ink-soft">{typo(t.pitch)}</p>
         </div>
       )}
@@ -205,9 +205,9 @@ export function SightingPanel({
       {state === "expired" && (
         <p className="mt-3 font-sans text-sm text-red" role="alert">
           {t.expired}{" "}
-          <Link href={signInHref(here)} className="link">
+          <SignInLink next={here} className="link">
             {t.signInAgain}
-          </Link>
+          </SignInLink>
         </p>
       )}
 
@@ -246,9 +246,9 @@ export function ObserverCta({ species }: { species: number }) {
   }
   return (
     <div>
-      <Link href={signInHref("/atlas#obserwacje")} className="btn bg-ink text-paper hover:bg-red">
+      <SignInLink next="/atlas#obserwacje" className="btn bg-ink text-paper hover:bg-red">
         {t.join} <span aria-hidden="true">→</span>
-      </Link>
+      </SignInLink>
       <p className="label mt-3 max-w-sm text-ink-soft">{typo(t.joinText)}</p>
     </div>
   );

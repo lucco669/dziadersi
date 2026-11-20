@@ -4,10 +4,9 @@ import { useState } from "react";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
-import { signInPath } from "@/lib/account";
 import type { BookmarkKind } from "@/lib/profile";
 import { cx } from "@/lib/typo";
-import { patchAccount, useAccount } from "./account";
+import { patchAccount, SignInLink, useAccount } from "./account";
 
 const COPY = defineCopy({
   pl: { keep: "Zachowaj w Profilu", kept: "W zakładkach ✓", failed: "Nie zapisano. Jeszcze raz?", saving: "Zapisuję…" },
@@ -31,13 +30,13 @@ export function BookmarkButton({ kind, code, className, label }: { kind: Bookmar
 
   if (!member) {
     return (
-      <Link
-        href={signInPath(`/profil/zachowaj?rodzaj=${kind}&kod=${encodeURIComponent(code)}`, locale)}
+      <SignInLink
+        next={`/profil/zachowaj?rodzaj=${kind}&kod=${encodeURIComponent(code)}`}
         prefetch={false}
         className={className}
       >
         {text}
-      </Link>
+      </SignInLink>
     );
   }
 

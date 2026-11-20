@@ -6,7 +6,7 @@ import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { typo } from "@/lib/typo";
-import { signInHref, useAccount } from "./account";
+import { SignInLink, useAccount } from "./account";
 
 const COPY = defineCopy({
   pl: {
@@ -45,15 +45,14 @@ export function CaseSubmission() {
   const locale = useLocale();
   const t = COPY[locale];
   const [state, action, pending] = useActionState(submitCase, { status: "idle" } as SubmissionState);
-  const back = signInHref("/czy-to-juz-dziaderstwo#zglos");
 
   if (account.status !== "member" || state.status === "signin") {
     return (
       <div className="border-t border-ink pt-5">
         <p className="max-w-xl text-xl leading-snug">{typo(t.members)}</p>
-        <Link href={back} className="btn mt-6 bg-ink text-paper hover:bg-red">
+        <SignInLink next="/czy-to-juz-dziaderstwo#zglos" className="btn mt-6 bg-ink text-paper hover:bg-red">
           {t.signIn} <span aria-hidden="true">→</span>
-        </Link>
+        </SignInLink>
       </div>
     );
   }

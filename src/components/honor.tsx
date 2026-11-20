@@ -3,7 +3,7 @@
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
-import { signInHref, useAccount } from "./account";
+import { SignInLink, useAccount } from "./account";
 import { typo } from "@/lib/typo";
 
 const COPY = defineCopy({
@@ -54,9 +54,9 @@ export function HonorCta() {
   return (
     <div>
       <p className="max-w-md leading-snug">{typo(t.invite)}</p>
-      <Link href={signInHref("/profil#ustawienia")} className="btn mt-5 bg-ink text-paper hover:bg-red">
+      <SignInLink next="/profil#ustawienia" className="btn mt-5 bg-ink text-paper hover:bg-red">
         {t.join} <span aria-hidden="true">→</span>
-      </Link>
+      </SignInLink>
     </div>
   );
 }
