@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "@/lib/typo";
-import { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED } from "./pictograms";
+import { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED } from "./palette";
 
 /*
  * Picture statistics for the Mały Rocznik Statystyczny: one symbol stands for a round number

@@ -2,7 +2,7 @@ import { useId, type ReactNode } from "react";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { cx } from "@/lib/typo";
-import { MUSTACHE_PATH, PAPER } from "./pictograms";
+import { MUSTACHE_PATH, PAPER } from "./palette";
 
 /** The Institute's mark: the pictogram head. */
 export function Mark({ className, cutout = PAPER }: { className?: string; cutout?: string }) {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/page";
-import { SearchPage } from "@/components/search";
+import { SearchPage } from "@/components/search-panel";
 import { defineCopy } from "@/i18n/copy";
 import { getLocale } from "@/i18n/server";
 import { pageMetadata } from "@/lib/seo";

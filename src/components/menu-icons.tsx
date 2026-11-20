@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "@/lib/typo";
-import { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED } from "./pictograms";
+import { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED } from "./palette";
 
 /*
  * Pictograms for the departments in the menu, 48 × 40, in the same flat language as the plates.
