@@ -35,6 +35,7 @@ const COPY = defineCopy({
     sample: "Przykładowa karta",
     dossier: "Przewodnik na tę okazję",
     materials: "Wszystkie materiały do druku",
+    seating: "Najpierw plan stołu: kto z kim usiądzie",
     rulesTitle: "Zasady",
     rulesAside: "Regulamin gry IBD-B1",
     promoTitle: "Bingo to obserwacja. Test to diagnoza.",
@@ -61,6 +62,7 @@ const COPY = defineCopy({
     sample: "Vzorčni listek",
     dossier: "Vodnik za to priložnost",
     materials: "Vse gradivo za tisk",
+    seating: "Najprej sedežni red: kdo bo sedel s kom",
     rulesTitle: "Pravila",
     rulesAside: "Pravilnik igre IBD-B1",
     promoTitle: "Bingo je opazovanje. Test je diagnoza.",
@@ -155,7 +157,10 @@ export default async function BingoPage() {
       </Section>
 
       <Section id="zasady" title={t.rulesTitle} aside={t.rulesAside}>
-        <p className="mb-6"><Link href="/do-druku" className="link font-sans">{t.materials} →</Link></p>
+        <p className="mb-6 flex flex-wrap gap-x-8 gap-y-2">
+          <Link href="/do-druku" className="link font-sans">{t.materials} →</Link>
+          <Link href="/plan-stolu" className="link font-sans">{t.seating} →</Link>
+        </p>
         <ol className="max-w-2xl border-t border-ink">
           {t.rules.map((rule, i) => (
             <li key={rule} className="grid grid-cols-[2.5rem_1fr] border-b border-rule py-4 text-lg leading-snug">

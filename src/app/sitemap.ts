@@ -51,6 +51,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/generator", "daily", 0.6),
     page("/superinteligencja", "monthly", 0.7),
     page("/bingo", "monthly", 0.6),
+    page("/plan-stolu", "monthly", 0.7),
     page("/kolejka", "monthly", 0.7),
     page("/krol-grilla", "monthly", 0.7),
     page("/spis", "hourly", 0.7),

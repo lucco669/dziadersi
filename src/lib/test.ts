@@ -15,6 +15,7 @@ import type { SpecimenIndex } from "@/content/specimens";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
 import { fromBase64Url, toBase64Url } from "./base64url";
+import { cleanName } from "./names";
 import { formatDate } from "./typo";
 
 /*
@@ -62,29 +63,7 @@ export type Draft = {
   specimen?: SpecimenIndex;
 };
 
-// Kept off certificates served from our domain: Polish, Slovenian and English.
-const BLOCKED =
-  /kurw|chuj|huj|pierd|jeb|pizd|cipa|cipe|cipk|kutas|dziwk|szmat|pedal|cwel|fiut|zjeb|kurac|kurba|picka|fukat|hitler|nazi|fuck|shit|cunt|nigg|fagg/;
-
-const fold = (text: string) =>
-  text
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .replace(/ł/gi, "l")
-    .toLowerCase()
-    .replace(/[^a-z]/g, "");
-
-/** Letters, spaces and a little punctuation, at most 24 characters, nothing vulgar. */
-export function cleanName(raw: string) {
-  const name = raw
-    .normalize("NFC")
-    .replace(/[^\p{L}\p{M} .'’-]/gu, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 24)
-    .trim();
-  return name && !BLOCKED.test(fold(name)) ? name : "";
-}
+export { cleanName };
 
 /* Reflex values: 0 = honked on red, 1 = on red and amber, 2 + ms/10 = reaction time, NO_HONK = never. */
 

@@ -42,6 +42,7 @@ const COPY = defineCopy({
     materials: "Wszystkie materiały do druku",
     others: "Inne przewodniki terenowe",
     jump: "Przejdź do bingo",
+    seating: "Plan stołu: kto z kim usiądzie",
     promo: "Rozpoznajesz kogoś przy stole?",
     promoText: "Sprawdź najpierw siebie. Test Dziadersa wydaje certyfikat, który można spokojnie pokazać rodzinie.",
   },
@@ -65,6 +66,7 @@ const COPY = defineCopy({
     materials: "Vse gradivo za tisk",
     others: "Drugi terenski vodniki",
     jump: "Pojdi na bingo",
+    seating: "Sedežni red: kdo bo sedel s kom",
     promo: "Prepoznaš koga pri mizi?",
     promoText: "Najprej preveri sebe. Test dziadersa izda certifikat, ki ga lahko mirno pokažeš družini.",
   },
@@ -125,6 +127,11 @@ export default async function DossierPage({ params }: Props) {
         <Link href={"/bingo/" + card.code + "/druk"} className="btn border border-ink hover:bg-ink hover:text-paper">
           {t.print}
         </Link>
+        {(dossier.bingo === "wigilia" || dossier.bingo === "wesele") && (
+          <Link href="/plan-stolu" className="btn border border-ink hover:bg-ink hover:text-paper">
+            {t.seating} →
+          </Link>
+        )}
       </div>
       <Section id="teren" title={t.terrain}>
         <div className="grid gap-10 lg:grid-cols-2">

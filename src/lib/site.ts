@@ -187,6 +187,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       summary: "Karty bingo na wesele, Wigilię, imieniny, majówkę, podróż autem i plażę, do skreślania na telefonie albo do druku.",
     },
     {
+      href: "/plan-stolu",
+      label: "Plan stołu",
+      short: "Plan stołu",
+      group: "pomoce",
+      summary: "Urzędowe rozsadzanie gości przy Wigilii i na weselu. Instytut wskazuje punkty zapalne i wydaje protokół z pieczęcią.",
+      isNew: true,
+    },
+    {
       href: "/kolejka",
       label: "Pan tu nie stał!",
       short: "Kolejka",
@@ -326,6 +334,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Bingo",
       group: "pomoce",
       summary: "Bingo listki za svatbo, sveti večer, godovanje, prvomajski vikend, vožnjo z avtom in plažo, za prečrtavanje na telefonu ali za tisk.",
+    },
+    {
+      href: "/plan-stolu",
+      label: "Sedežni red",
+      short: "Sedežni red",
+      group: "pomoce",
+      summary: "Uradno posedanje gostov za sveti večer in na svatbi. Inštitut pokaže žarišča in izda zapisnik z žigom.",
+      isNew: true,
     },
     {
       href: "/kolejka",

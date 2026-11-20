@@ -1,5 +1,5 @@
-/** Path segments followed by something personal: a result with a name, an invitation, a question. Both editions. */
-const PRIVATE_SEGMENTS = ["wynik", "izvid", "grupa", "lestvica", "grupy", "skupina", "zapisz", "shrani", "superinteligencja", "superinteligenca"];
+/** Path segments followed by something personal: a result with a name, an invitation, a question, a seating plan with labels. Both editions. */
+const PRIVATE_SEGMENTS = ["wynik", "izvid", "grupa", "lestvica", "grupy", "skupina", "zapisz", "shrani", "superinteligencja", "superinteligenca", "plan-stolu", "sedezni-red"];
 
 /** Analytics needs the kind of page, never a person's result, invitation, question or search. */
 export function analyticsUrl(input: string): string {

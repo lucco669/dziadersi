@@ -76,6 +76,7 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Dziaders Bingo · Bingo | Dziaders bingo · Bingo |
 | Pan tu nie stał! · Kolejka · /kolejka | Vi pa niste bili v vrsti! · Vrsta · /sl/cakalna-vrsta |
 | Król grilla · Grill · /krol-grilla | Kralj žara · Žar · /sl/kralj-zara |
+| Plan stołu · /plan-stolu · protokół rozsadzenia · puste nakrycie dla wędrowca | Sedežni red · /sl/sedezni-red · zapisnik o sedežnem redu · prazen pogrinjek za popotnika |
 | Kartka z kalendarza · Kalendarz · /kalendarz | Trgalni koledar · Koledar · /sl/koledar |
 | Profil Dziaderski · Profil | Dziaderski profil · Profil |
 | Legitymacja Obserwatora | Opazovalska izkaznica |
