@@ -29,6 +29,29 @@ The test now asks for a signature after the last task, offers “Bez pośpiechu�
 
 Browser QA on 3 October 2026 covered a complete 16-task examination at the mobile breakpoint, resuming saved untimed progress, optional final signature, the result and downloaded 4:5 certificate, family creation, invitation disclosure and automatic ranking updates. HTTP checks against the isolated fixture covered duplicate submissions/joins, invalid and oversized bodies, cross-origin rejection, missing groups, private response headers and cron authentication. Desktop checks covered the homepage, three featured species and an illustrated report. Local screenshots are kept in ignored `artifacts/qa/`.
 
+## Social media kit
+
+Two scripts make the Institute's daily posts from what the site already rotates. Both write into `out/`, which git ignores.
+
+```bash
+pnpm social-kit                     # today in Warsaw, both editions
+pnpm social-kit --date 2026-12-24   # any day
+pnpm social-kit --lang sl --out DIR # one edition, another folder
+```
+
+`scripts/social-kit.ts` renders four posts per edition into `out/social-kit/<date>/`, each as a 1080 × 1350 post and a 1080 × 1920 story: **sprawa** (the Komisja's case of the day as a three-stamp poll), **kartka** (the tear-off calendar page), **haslo** (the word of the day) and **indeks** (the Narodowy Indeks bulletin with the last thirty days). The picks are the front page's for that date. `captions.md` and `captions.json` hold a caption, the link, a story link and hashtags for each post in both languages. It runs in-process with `next/og`, no server needed; the cards are in `src/lib/daily-cards.tsx` and `src/lib/story-cards.tsx`.
+
+```bash
+pnpm build && pnpm start            # in another terminal (or pnpm dev)
+pnpm record-clips                   # all clips, both editions, from http://localhost:3000
+pnpm record-clips komisja kalendarz # some clips
+pnpm record-clips --lang pl --url http://localhost:3200 --out DIR
+```
+
+`scripts/record-clips.ts` records the site's own animations as 6–10 s vertical MP4s (1080 × 1920, 30 fps) into `out/clips/`: **komisja** (the gavel comes down), **kalendarz** (yesterday's page is torn off), **klakson** (the horn test, from red to the honk) and **szwagier** (SZWAGIER reads a question at arm's length and answers). It drives a phone-sized browser with `playwright-core` (Playwright's own Chromium if `npx playwright install chromium` was run, otherwise Chrome or Edge), captures full-resolution frames through the DevTools screencast and encodes them with ffmpeg. Without ffmpeg on the PATH it keeps the JPEG frames. Recordings block `/api/*` and `sendBeacon`, so they never add tallies, votes or results.
+
+Share images for single results come from the toys themselves: `…/karta?format=post|relacja` for Komisja cases, Rozmówki lines, exams and SZWAGIER answers, `/wynik/[kod]/certyfikat?format=post|relacja` for the test, and the canvas reports of Król grilla and Kolejka. `src/components/story-share.tsx` (`StoryShare`) offers both downloads and, on phones, sends the story to the share sheet as a file. The Narodowy Indeks badge for other sites is `/indeks/plakietka` (PNG) and `/indeks/ramka` (iframe); the snippets are on `/indeks`.
+
 ## Where things live
 
 `/krol-grilla` (Slovenian: `/sl/kralj-zara`) is **Król grilla**, a 90-second barbecue arcade game. Six grill positions, independently cooking sausage sides, perfect-serving streaks, three heat phases, wasps and a relative reaching for the tongs. Mouse, touch and keyboard controls, automatic pause on blur or hidden tabs, optional procedural sound, a local best score and a downloadable PNG report. Both editions use the same Warsaw-date seed and text-free artwork. The pure game model is in `src/lib/grill.ts`, the translated interface in `src/components/grill-game.tsx`, and the local report in `src/lib/grill-report.ts`. ImageGen sources and exact prompts are saved in `assets/illustrations/grill/`; `python scripts/prepare-grill-art.py` regenerates the alpha-preserving WebPs and embedded share-card PNG. The portrait grill is selected on phones, with larger touch controls.
@@ -45,7 +68,7 @@ The museum has six SVG catalogue drawings, native expandable drawers, exhibit pe
 | `src/app/` | Root-level routes shared by the editions: API, auth callback, favicon set and manifest, robots, sitemap (both editions with hreflang), llms.txt |
 | `src/i18n/` | Editions: locale config, Slovenian URL segments (`segments.ts`, also used by `next.config.ts`), path helpers (`routes.ts`), `getLocale()` / `useLocale()`, the localising `Link`, `defineCopy()` for interface text and `overlay()` for content translations |
 | `src/content/sl/` | Slovenian content overlays (text only, keyed to the Polish entries) and Slovenian slugs (`slugs/`) |
-| `src/components/language.tsx` | Language switcher in the header and footer, and the slip that offers the other edition to readers whose browser prefers it |
+| `src/components/language.tsx` | Language switcher in the header and footer, and the strip under the header that offers the other edition to readers whose browser prefers it |
 | `src/components/` | Page template (`page.tsx`: header, sections, test band, pager), brand (`brand.tsx`: head mark, wordmark, seal, stamp), pictograms (`pictograms.tsx`, `specimen.tsx`, `crowd.tsx`) |
 | `src/content/` | All copy: 22 species, 26 dictionary entries, 5 reports, regions, the 16 test tasks in five rooms (`test.ts`), the retired 24 questions kept for old links (`test-v1.ts`) and the lab parameters (`lab.ts`) |
 | `src/lib/test.ts` | Test scoring, species diagnosis, and stateless result codes (answers, date and name in the URL), both editions |
@@ -65,6 +88,8 @@ The museum has six SVG catalogue drawings, native expandable drawers, exhibit pe
 | `src/app/test`, `src/app/wynik/[kod]` | The test page and the shareable result pages, with certificate and lab images |
 | `src/app/atlas`, `src/app/slownik`, `src/app/raporty`, `src/app/indeks` | Content sections; each `[slug]` page is prerendered from `src/content/` |
 | `src/lib/og-cards.tsx`, `src/lib/og.tsx` | Share cards for species, dictionary entries, reports and section pages |
+| `src/lib/story-cards.tsx`, `src/lib/daily-cards.tsx`, `src/components/story-share.tsx` | Portrait share images (4:5 post, 9:16 story) for the toys and the daily kit, and the share-as-file buttons |
+| `src/lib/site.ts` | Site facts, the data controller, the departments and `SOCIAL` (Instagram, Facebook, Threads, TikTok handles: fill one in and it appears in the footer, on `/dla-mediow` and in Organization `sameAs`) |
 | `src/lib/seo.ts` | `pageMetadata()`: canonical, Open Graph and Twitter for every page |
 | `src/lib/indeks.ts` | The Narodowy Indeks Dziaderstwa model: seasons, calendar peaks, deterministic noise |
 | `src/lib/bulletin.ts` | Everything date-dependent, computed in Europe/Warsaw time and cached for an hour (`"use cache"`) |

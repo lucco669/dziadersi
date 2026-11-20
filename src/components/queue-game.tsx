@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import Image from "next/image";
 import { getQueueEvents, type QueueEffect } from "@/content/queue";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
@@ -12,6 +11,9 @@ import { plural, pluralSl, typo } from "@/lib/typo";
 import { NewsletterBox } from "./newsletter-box";
 import { QueueScene } from "./queue-scene";
 import styles from "./queue-game.module.css";
+import { storyBlob } from "@/lib/story-canvas";
+import type { StoryFormat } from "@/lib/share-file";
+import { StoryShare } from "./story-share";
 
 const STORAGE = "ibd-queue-v1";
 const BEST = "ibd-queue-best-v1";
@@ -29,7 +31,7 @@ const COPY = defineCopy({
     bulletinLead: "Urząd przyjmuje także korespondencyjnie. W poniedziałek Biuletyn Instytutu: tydzień w liczbach, bez stania w kolejce.",
     result: "Protokół z oczekiwania", served: "Sprawa załatwiona.", closed: "Prosimy przyjść jutro.", walked: "Obywatel opuścił urząd.", servedText: "Pieczątka przybita. Wniosek o wydanie potwierdzenia złożenia wniosku został przyjęty. Potwierdzenie do odbioru w osobnej kolejce.", closedText: "Zegar wykazał brak dalszych godzin przyjęć. Twoją determinację odnotowano. Miejsca na jutro nie odnotowano.", walkedText: "Próg cierpliwości został przekroczony. Drzwi zamknięto z naciskiem. Sprawa pozostaje otwarta.",
     stampWin: "Rozpatrzono", stampLose: "Do ponowienia", score: "Wynik urzędowy", best: "Twój rekord", completed: "Spraw załatwionych", spent: "Czas oczekiwania", decisions: "Podjęte decyzje", remaining: "Osób przed tobą", scoreNote: "500 pkt za załatwienie sprawy + 25 za każde zdobyte miejsce + 5 za każdą pozostałą minutę + 2 za każdy punkt spokoju + autorytet.",
-    replay: "Ta sama kolejka jeszcze raz", newGame: "Pobierz nowy numerek", share: "Kopiuj wynik i wyzwanie", copied: "Wynik i link skopiowane.", copyFallback: "Zaznacz tekst poniżej i skopiuj go ręcznie.", shareLabel: "Wynik z linkiem do tej samej kolejki", download: "Przygotuj protokół PNG", saveImage: "Zapisz plik PNG", preview: "Podgląd protokołu do pobrania", downloading: "Przygotowywanie protokołu…", downloadFail: "Nie udało się pobrać protokołu. Spróbuj ponownie lub skopiuj wynik.", challenge: "Sprawdź, czy załatwisz to szybciej.", shareTitle: "Pan tu nie stał!", source: "Źródło: IBD. Symulacja, nie zalecenie urzędowe.", back: "Wróć do Instytutu", hotkeys: "Klawiatura: 1, 2, 3 — wybór; Enter — dalej.",
+    replay: "Ta sama kolejka jeszcze raz", newGame: "Pobierz nowy numerek", share: "Kopiuj wynik i wyzwanie", copied: "Wynik i link skopiowane.", copyFallback: "Zaznacz tekst poniżej i skopiuj go ręcznie.", shareLabel: "Wynik z linkiem do tej samej kolejki", download: "Przygotuj protokół PNG", saveImage: "Zapisz plik PNG", preview: "Podgląd protokołu do pobrania", downloading: "Przygotowywanie protokołu…", downloadFail: "Nie udało się pobrać protokołu. Spróbuj ponownie lub skopiuj wynik.", challenge: "Sprawdź, czy załatwisz to szybciej.", storyAsk: "A ty? Stań w kolejce na", shareTitle: "Pan tu nie stał!", source: "Źródło: IBD. Symulacja, nie zalecenie urzędowe.", back: "Wróć do Instytutu", hotkeys: "Klawiatura: 1, 2, 3 — wybór; Enter — dalej.",
   },
   sl: {
     office: "Oddelek za zadeve, ki jih je treba urediti", hours: "Odprto do 16.00", simulation: "Simulacija IBD-K1", ticket: "Tvoja številka", goal: "Ena zadeva. Ves državni aparat.",
@@ -43,7 +45,7 @@ const COPY = defineCopy({
     bulletinLead: "Urad sprejema tudi po pošti. V ponedeljek Bilten Inštituta: teden v številkah, brez čakanja v vrsti.",
     result: "Zapisnik o čakanju", served: "Zadeva urejena.", closed: "Pridite jutri, prosim.", walked: "Občan je zapustil urad.", servedText: "Žig je odtisnjen. Vloga za izdajo potrdila o oddaji vloge je sprejeta. Potrdilo prevzameš v drugi vrsti.", closedText: "Ura je pokazala, da uradnih ur ni več. Tvoja odločnost je zabeležena. Mesto za jutri ni.", walkedText: "Prag potrpežljivosti je presežen. Vrata so se odločno zaprla. Zadeva ostaja odprta.",
     stampWin: "Obravnavano", stampLose: "Ponoviti", score: "Uradni rezultat", best: "Tvoj rekord", completed: "Urejene zadeve", spent: "Čas čakanja", decisions: "Sprejete odločitve", remaining: "Oseb pred tabo", scoreNote: "500 točk za urejeno zadevo + 25 za vsako pridobljeno mesto + 5 za vsako preostalo minuto + 2 za vsako točko mirnosti + avtoriteta.",
-    replay: "Še enkrat ista vrsta", newGame: "Vzemi novo številko", share: "Kopiraj rezultat in izziv", copied: "Rezultat in povezava sta kopirana.", copyFallback: "Označi spodnje besedilo in ga kopiraj ročno.", shareLabel: "Rezultat s povezavo do iste vrste", download: "Pripravi zapisnik PNG", saveImage: "Shrani datoteko PNG", preview: "Predogled zapisnika za prenos", downloading: "Priprava zapisnika …", downloadFail: "Zapisnika ni bilo mogoče prenesti. Poskusi znova ali kopiraj rezultat.", challenge: "Preveri, ali lahko to urediš hitreje.", shareTitle: "Vi pa niste bili v vrsti!", source: "Vir: IBD. Simulacija, ne uradno priporočilo.", back: "Nazaj na Inštitut", hotkeys: "Tipkovnica: 1, 2, 3 — izbira; Enter — naprej.",
+    replay: "Še enkrat ista vrsta", newGame: "Vzemi novo številko", share: "Kopiraj rezultat in izziv", copied: "Rezultat in povezava sta kopirana.", copyFallback: "Označi spodnje besedilo in ga kopiraj ročno.", shareLabel: "Rezultat s povezavo do iste vrste", download: "Pripravi zapisnik PNG", saveImage: "Shrani datoteko PNG", preview: "Predogled zapisnika za prenos", downloading: "Priprava zapisnika …", downloadFail: "Zapisnika ni bilo mogoče prenesti. Poskusi znova ali kopiraj rezultat.", challenge: "Preveri, ali lahko to urediš hitreje.", storyAsk: "Pa ti? Postavi se v vrsto na", shareTitle: "Vi pa niste bili v vrsti!", source: "Vir: IBD. Simulacija, ne uradno priporočilo.", back: "Nazaj na Inštitut", hotkeys: "Tipkovnica: 1, 2, 3 — izbira; Enter — naprej.",
   },
 });
 
@@ -71,9 +73,6 @@ function Game({ locale, ready }: { locale: Locale; ready: boolean }) {
   const [storageFailed, setStorageFailed] = useState(false);
   const [message, setMessage] = useState("");
   const [shareText, setShareText] = useState("");
-  const [downloading, setDownloading] = useState(false);
-  const [reportUrl, setReportUrl] = useState("");
-  const reportRequest = useRef(0);
   const [invitation] = useState(() => ready ? new URLSearchParams(window.location.search).get("kolejka") : null);
   const focusRef = useRef<HTMLHeadingElement>(null);
   const seed = parseQueueCode(invitation);
@@ -83,8 +82,6 @@ function Game({ locale, ready }: { locale: Locale; ready: boolean }) {
   const lastEvent = before ? events[queueEventIndex(before)] : null;
   const reply = before && lastAction !== undefined ? lastAction === "manager" ? t.managerReplies[managerOutcome(before)] : lastEvent!.choices[lastAction].reply : "";
 
-  useEffect(() => () => { if (reportUrl) URL.revokeObjectURL(reportUrl); }, [reportUrl]);
-  useEffect(() => () => { reportRequest.current++; }, []);
 
   useEffect(() => {
     if (mode === "lobby") return;
@@ -97,10 +94,8 @@ function Game({ locale, ready }: { locale: Locale; ready: boolean }) {
     try { localStorage.setItem(STORAGE, saveQueue(next)); } catch { setStorageFailed(true); }
   }
   function start(nextSeed: number) {
-    reportRequest.current++;
-    setDownloading(false);
     const next = newQueue(nextSeed);
-    setState(next); setReceipt(false); setMode("play"); setMessage(""); setShareText(""); setReportUrl(""); persist(next);
+    setState(next); setReceipt(false); setMode("play"); setMessage(""); setShareText(""); persist(next);
     const url = new URL(window.location.href);
     url.searchParams.set("kolejka", queueCode(nextSeed));
     window.history.replaceState(null, "", url);
@@ -139,18 +134,15 @@ function Game({ locale, ready }: { locale: Locale; ready: boolean }) {
     setShareText(text); setMessage(t.copyFallback);
     try { await navigator.clipboard.writeText(text); setMessage(t.copied); } catch { setMessage(t.copyFallback); }
   }
-  async function download() {
-    if (!state || downloading) return;
-    const request = ++reportRequest.current;
-    setDownloading(true); setMessage("");
-    try {
-      const { createQueueReport } = await import("@/lib/queue-report");
-      const url = await createQueueReport({ title: t.shareTitle, heading: t.result, outcome: outcomeTitle, stamp: state.status === "served" ? t.stampWin : t.stampLose, code: queueCode(state.seed), score: queueScore(state), scoreLabel: t.score, rows: [[t.completed, state.status === "served" ? "1" : "0"], [t.spent, `${OFFICE_MINUTES - state.minutes} ${t.minutes}`], [t.irritation, `${state.irritation}/100`], [t.authority, `${state.authority}/100`]], footer: t.source, url: `dziader.si${localizePath("/kolejka", locale)}`, serif: getComputedStyle(focusRef.current!).fontFamily, sans: getComputedStyle(document.querySelector(".label")!).fontFamily });
-      if (request === reportRequest.current) setReportUrl(url);
-      else URL.revokeObjectURL(url);
-    } catch { if (request === reportRequest.current) setMessage(t.downloadFail); }
-    finally { if (request === reportRequest.current) setDownloading(false); }
+  /** The protocol as a post or a story; StoryShare downloads it or hands it to the share sheet. */
+  async function createImage(format: StoryFormat) {
+    if (!state) throw new Error("No queue");
+    const serif = getComputedStyle(focusRef.current!).fontFamily, sans = getComputedStyle(document.querySelector(".label")!).fontFamily;
+    const { createQueueReport } = await import("@/lib/queue-report");
+    const canvas = await createQueueReport({ title: t.shareTitle, heading: t.result, outcome: outcomeTitle, stamp: state.status === "served" ? t.stampWin : t.stampLose, code: queueCode(state.seed), score: queueScore(state), scoreLabel: t.score, rows: [[t.completed, state.status === "served" ? "1" : "0"], [t.spent, `${OFFICE_MINUTES - state.minutes} ${t.minutes}`], [t.irritation, `${state.irritation}/100`], [t.authority, `${state.authority}/100`]], footer: t.source, url: `dziader.si${localizePath("/kolejka", locale)}`, serif, sans });
+    return storyBlob(canvas, format, { ask: t.storyAsk, url: `dziader.si${localizePath("/kolejka", locale)}`, serif, sans });
   }
+
 
   return <section id="queue-game" className={`${styles.game} wrap my-10 md:my-14`} aria-label={t.simulation}>
     <div className={styles.office}><span>{t.office}</span><span>{t.hours}</span></div>
@@ -186,8 +178,9 @@ function Game({ locale, ready }: { locale: Locale; ready: boolean }) {
           <div className={styles.resultGrid}><div><p className="label">{t.score}</p><p className={styles.score}>{queueScore(state)}</p><p className="label text-ink-soft">{t.best}: {best}</p></div><dl className={styles.rows}>{[[t.completed, state.status === "served" ? "1" : "0"], [t.spent, `${OFFICE_MINUTES - state.minutes} ${t.minutes}`], [t.decisions, state.actions.length], [t.remaining, state.ahead], [t.irritation, `${state.irritation}/100`], [t.authority, `${state.authority}/100`]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div>
           <p className={styles.note}>{t.scoreNote}</p><p className="label mt-6 text-ink-soft">{t.source}</p>
         </div>
-        <div className={styles.resultActions}><button className="btn btn-ink" onClick={share}>{t.share}</button>{reportUrl ? <a className="btn btn-outline" href={reportUrl} download={`IBD-K1-${queueCode(state.seed)}.png`}>{t.saveImage} ↓</a> : <button className="btn btn-outline" onClick={download} disabled={downloading}>{downloading ? t.downloading : t.download}</button>}</div>
-        {reportUrl && <a href={reportUrl} download={`IBD-K1-${queueCode(state.seed)}.png`} className="mx-auto block w-fit"><Image unoptimized src={reportUrl} alt={t.preview} width={270} height={338} /></a>}<p role="status" className="label mt-3">{message}</p>{shareText && <textarea readOnly aria-label={t.shareLabel} className={styles.shareText} value={shareText} rows={5} onFocus={(e) => e.currentTarget.select()} />}
+        <div className={styles.resultActions}><button className="btn btn-ink" onClick={share}>{t.share}</button></div>
+        <StoryShare create={createImage} file={`IBD-K1-${queueCode(state.seed)}-${queueScore(state)}`} text={`${t.shareTitle} ${outcomeTitle}. ${t.score}: ${queueScore(state)}. ${t.challenge}`} url={`https://dziader.si${localizePath("/kolejka", locale)}?kolejka=${queueCode(state.seed)}`} kind="kolejka" className="mt-4 justify-center" />
+        <p role="status" className="label mt-3">{message}</p>{shareText && <textarea readOnly aria-label={t.shareLabel} className={styles.shareText} value={shareText} rows={5} onFocus={(e) => e.currentTarget.select()} />}
         <div className={styles.resultActions}><button className={styles.textButton} onClick={() => start(state.seed)}>{t.replay} →</button><button className={styles.textButton} onClick={() => start(randomSeed())}>{t.newGame} →</button><Link className={styles.textButton} href="/">{t.back}</Link></div>
         <div className="mt-12 border-t border-ink pt-6"><NewsletterBox variant="inline" lead={t.bulletinLead} place="kolejka" /></div>
       </> : <div className={styles.play}>

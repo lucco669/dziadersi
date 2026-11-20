@@ -6,7 +6,9 @@ import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { localizePath } from "@/i18n/routes";
 import { tally } from "@/lib/tally";
+import { site } from "@/lib/site";
 import { BookmarkButton } from "./bookmark";
+import { StoryShare } from "./story-share";
 
 const COPY = defineCopy({
   pl: {
@@ -55,7 +57,8 @@ export function ExamActions({ code, points, title }: { code: string; points: num
   }
 
   return (
-    <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-ink pt-6">
+    <div className="mt-10 border-t border-ink pt-6">
+    <div className="flex flex-wrap items-center gap-3">
       <button type="button" onClick={share} className="btn bg-ink text-paper hover:bg-red">
         {copied ? t.copied : t.send} <span aria-hidden="true">→</span>
       </button>
@@ -63,6 +66,15 @@ export function ExamActions({ code, points, title }: { code: string; points: num
       <Link href="/egzamin" className="link ml-2 font-sans font-medium">
         {t.retake}
       </Link>
+    </div>
+    <StoryShare
+      image={`/egzamin/${code}/karta`}
+      file={`${locale === "sl" ? "izpit" : "egzamin"}-${points}`}
+      text={t.text(points, title)}
+      url={`${site.url}${localizePath(`/egzamin/${code}`, locale)}`}
+      kind="egzamin"
+      className="mt-4"
+    />
     </div>
   );
 }

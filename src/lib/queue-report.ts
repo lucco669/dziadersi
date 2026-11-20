@@ -1,12 +1,11 @@
-type Report = { title: string; heading: string; outcome: string; stamp: string; code: string; score: number; scoreLabel: string; rows: string[][]; footer: string; url: string; serif: string; sans: string };
+import { postCanvas } from "./story-canvas";
+
+export type QueueReport = { title: string; heading: string; outcome: string; stamp: string; code: string; score: number; scoreLabel: string; rows: string[][]; footer: string; url: string; serif: string; sans: string };
 
 /** A local, downloadable portrait document; fonts come from the already loaded page. */
-export async function createQueueReport(report: Report) {
+export async function createQueueReport(report: QueueReport) {
   await document.fonts.ready;
-  const canvas = document.createElement("canvas");
-  canvas.width = 1080; canvas.height = 1350;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas unavailable");
+  const { canvas, ctx } = postCanvas();
   const ink = "#161513", red = "#c4362c";
   ctx.fillStyle = "#f4f0e7"; ctx.fillRect(0, 0, 1080, 1350);
   ctx.fillStyle = red; ctx.fillRect(55, 55, 970, 10);
@@ -42,6 +41,5 @@ export async function createQueueReport(report: Report) {
   wrap(report.title, 1170, 30, 870);
   text(report.url, 105, 1221, 22, true);
   text(report.footer, 105, 1260, 17, true);
-  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Export failed")), "image/png"));
-  return URL.createObjectURL(blob);
+  return canvas;
 }

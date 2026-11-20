@@ -41,6 +41,11 @@ const securityHeaders = [
 ];
 
 const sl = (pl: string) => SEGMENTS[pl].sl;
+const slChild = (pl: string, child: string) => `/sl/${SEGMENTS[pl].sl}/${SEGMENTS[pl].children![child]}`;
+
+/** The Narodowy Indeks widget: the one page any site may put in an iframe. */
+const FRAMEABLE = ["/indeks/ramka", slChild("indeks", "ramka")];
+const frameablePolicy = contentSecurityPolicy.replace("frame-ancestors 'none'", "frame-ancestors *");
 
 /** Share cards: link previews fetch them, search engines need not index them as images. */
 const SHARE_CARDS = ["/opengraph-image", "/:path*/opengraph-image"];
@@ -53,6 +58,9 @@ const EMBEDDABLE = [
   `/sl/${sl("wynik")}/:kod/certifikat`,
   `/sl/${sl("wynik")}/:kod/preiskave`,
   "/email/:file*",
+  "/indeks/plakietka",
+  slChild("indeks", "plakietka"),
+  ...FRAMEABLE,
 ];
 
 /** Private pages: results, rankings, the save-to-profile links and asked questions are never indexed or leak a referrer. */
@@ -157,6 +165,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // Browsers that know frame-ancestors (all current ones) ignore X-Frame-Options when it is set.
+      ...FRAMEABLE.map((source) => ({ source, headers: [{ key: "Content-Security-Policy", value: frameablePolicy }] })),
       ...NOINDEX.map((source) => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }] })),
       ...["/konto", "/sl/racun", "/rejestracja", "/sl/registracija", "/profil/:path*", "/sl/profil/:path*"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }] })),
       ...PRIVATE.map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }] })),

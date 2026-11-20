@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Analytics } from "@/components/analytics";
 import { LanguageSuggestion } from "@/components/language";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader, SkipLink } from "@/components/site-header";
 import { LocaleProvider } from "@/i18n/client";
 import { hasLocale, LOCALE_INFO, LOCALES } from "@/i18n/config";
 import { localizePath } from "@/i18n/routes";
@@ -79,10 +79,11 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     <html lang={LOCALE_INFO[lang].tag} data-scroll-behavior="smooth" className={`${poltawski.variable} ${poltawskiItalic.variable} ${schibsted.variable}`}>
       <body>
         <LocaleProvider locale={lang}>
+          <SkipLink locale={lang} />
           <SiteHeader locale={lang} />
+          <LanguageSuggestion />
           {children}
           <SiteFooter locale={lang} />
-          <LanguageSuggestion />
         </LocaleProvider>
         <Analytics />
       </body>

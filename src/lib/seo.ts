@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DEFAULT_LOCALE, LOCALE_INFO, LOCALES, type Locale } from "@/i18n/config";
 import { alternatePath, localizePath } from "@/i18n/routes";
-import { site, siteCopy } from "./site";
+import { site, siteCopy, socialProfiles } from "./site";
 
 /** Editorial budgets for concise snippets; search engines truncate by display width. */
 const MAX_TITLE = 70;
@@ -172,6 +172,8 @@ export const institute = (locale: Locale) =>
     alternateName: locale === "pl" ? undefined : siteCopy("pl").institute,
     url: site.url,
     logo: `${site.url}/icon-512.png`,
+    // The Institute's accounts, once their handles are filled in (SOCIAL in site.ts).
+    ...(socialProfiles().length ? { sameAs: socialProfiles().map((profile) => profile.url) } : {}),
     email: site.controller.email,
     contactPoint: {
       "@type": "ContactPoint",

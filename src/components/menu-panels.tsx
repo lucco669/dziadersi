@@ -92,10 +92,10 @@ export function Panel({ active, pathname, onNavigate }: { active: GroupKey | nul
       <div className="mt-6 flex items-end justify-between gap-8 border-t border-rule pt-5">
         <AccountLine onNavigate={onNavigate} />
         <div className="flex items-end gap-6">
-          <ul className="label flex gap-5 pb-1 text-ink-soft">
+          <ul className="label flex gap-5 text-ink-soft">
             {t.extra.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} onClick={onNavigate} className="transition-colors hover:text-red">
+                <Link href={item.href} onClick={onNavigate} className="inline-flex min-h-6 items-center py-1 transition-colors hover:text-red">
                   {item.label}
                 </Link>
               </li>
@@ -137,10 +137,10 @@ export function SheetBody({ pathname, onNavigate: close }: { pathname: string; o
           </ul>
         </section>
       ))}
-      <ul className="label mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-rule pt-5 text-ink-soft">
+      <ul className="label mt-10 flex flex-wrap gap-x-6 gap-y-1 border-t border-rule pt-4 text-ink-soft">
         {t.extra.map((item) => (
           <li key={item.href}>
-            <Link href={item.href} onClick={close}>
+            <Link href={item.href} onClick={close} className="inline-flex min-h-6 items-center py-1.5">
               {item.label}
             </Link>
           </li>

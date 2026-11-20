@@ -81,6 +81,9 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Legitymacja Obserwatora | Opazovalska izkaznica |
 | Wyszukiwarka · /szukaj | Iskalnik · /sl/iskanje |
 | O Instytucie · Regulamin · Polityka prywatności | O Inštitutu · Pogoji uporabe · Politika zasebnosti |
+| Dla mediów · /dla-mediow | Za medije · /sl/za-medije |
+| Indeks widget: ramka (iframe) · plakietka (PNG badge) | okvir · značka (/sl/indeks/okvir, /sl/indeks/znacka) |
+| Story images: …/karta?format=post\|relacja | …/kartica (the query words stay Polish) |
 | Dziaders — kto to jest? · /dziaders | Dziaders — kdo je to? · /sl/dziaders |
 | Przewodniki na okazje · /okazje | Vodniki za priložnosti · /sl/priloznosti |
 | Muzeum rzeczy · /muzeum | Muzej stvari · /sl/muzej |

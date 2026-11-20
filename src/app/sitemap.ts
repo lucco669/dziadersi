@@ -74,6 +74,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/rejestracja", "monthly", 0.5),
     page("/o-instytucie", "yearly", 0.4),
     page("/kontakt", "yearly", 0.3),
+    page("/dla-mediow", "monthly", 0.4),
     page("/regulamin", "yearly", 0.2),
     page("/prywatnosc", "yearly", 0.2),
   ];

@@ -7,7 +7,10 @@ import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { localizePath } from "@/i18n/routes";
 import { advanceGrill, dailyGrillSeed, dismissGrillHazard, GRILL_SECONDS, grillPhase, grillRank, newGrill, PERFECT_WINDOW, readGrillBest, sausageBurnt, sidePerfect, sideReady, tapGrill, type GrillState } from "@/lib/grill";
+import { storyBlob } from "@/lib/story-canvas";
+import type { StoryFormat } from "@/lib/share-file";
 import styles from "./grill-game.module.css";
+import { StoryShare } from "./story-share";
 import { NewsletterBox } from "./newsletter-box";
 
 const COPY = defineCopy({
@@ -20,7 +23,7 @@ const COPY = defineCopy({
     notices: { loaded: "Kiełbasa na ruszcie.", flip: "Obrócona. Teraz druga strona.", perfectFlip: "Idealny obrót. Utrzymaj poziom.", served: "Porcja przyjęta bez zastrzeżeń.", perfect: "Dwie idealne strony. Autorytet rośnie.", raw: "Środek jeszcze niegotowy. Rodzina odnotowała.", burnt: "Eksponat węglowy usunięty.", wasp: "Osa zmieniła lokal gastronomiczny.", defended: "Szczypce pozostają w jednych rękach.", stung: "Osa przerwała serię.", stolen: "Szwagier przejął stanowisko na chwilę." },
     bulletinLead: "Następna próba za tydzień? W poniedziałek Biuletyn Instytutu: tydzień w liczbach, prosto z rusztu Działu Statystyki.",
     result: "Protokół z grillowania", finished: "Próba zakończona.", ranks: { king: "Król grilla", master: "Mistrz rusztu", apprentice: "Praktykant przy szczypcach", smoke: "Specjalista od zadymienia" }, verdicts: { king: "Kiełbasy podane. Szczypce obronione. Rodzina nadal twierdzi, że zrobiłaby to lepiej.", master: "Większość porcji przeszła kontrolę jakości. Dalsze rady rodziny uznano za zbędne.", apprentice: "Potencjał stwierdzono. Na razie dopuszczono do podawania musztardy.", smoke: "Widoczność spadła do zera. Badanie przeniesiono pod wiatr." },
-    stamp: "Zbadano przy ruszcie", burned: "Zwęglone", rawCount: "Podane za wcześnie", swatted: "Osy odpędzone", defendedCount: "Szczypce obronione", longest: "Najdłuższa seria", replay: "Jeszcze jedna partia", share: "Kopiuj wynik", copied: "Wynik i link skopiowane.", copyLabel: "Wynik do skopiowania", copyFallback: "Skopiuj przygotowany wynik poniżej.", download: "Pobierz protokół PNG", downloading: "Przygotowywanie protokołu…", downloadFail: "Nie udało się przygotować protokołu. Spróbuj ponownie.", reportFooter: "Źródło: IBD. Próba sprawności przy ruszcie.", scoreNote: "Idealna porcja: 100 pkt + do 100 za serię. Zwykła: 65. Osa lub obrona szczypiec: 25. Surowa: −25. Spalona: −30.", shareChallenge: "Przejmij szczypce i pobij mój wynik.", back: "Poznaj Dziadersa Grillowego", illustration: "Samozwańczy ekspert przy grillu, do którego szczypiec sięgają doradcy", practice: "Możesz zatrzymać grę w każdej chwili. Zmiana karty automatycznie włącza przerwę.",
+    stamp: "Zbadano przy ruszcie", burned: "Zwęglone", rawCount: "Podane za wcześnie", swatted: "Osy odpędzone", defendedCount: "Szczypce obronione", longest: "Najdłuższa seria", replay: "Jeszcze jedna partia", share: "Kopiuj wynik", copied: "Wynik i link skopiowane.", copyLabel: "Wynik do skopiowania", copyFallback: "Skopiuj przygotowany wynik poniżej.", download: "Pobierz protokół PNG", downloading: "Przygotowywanie protokołu…", downloadFail: "Nie udało się przygotować protokołu. Spróbuj ponownie.", reportFooter: "Źródło: IBD. Próba sprawności przy ruszcie.", storyAsk: "A ty? Przejmij szczypce na",  scoreNote: "Idealna porcja: 100 pkt + do 100 za serię. Zwykła: 65. Osa lub obrona szczypiec: 25. Surowa: −25. Spalona: −30.", shareChallenge: "Przejmij szczypce i pobij mój wynik.", back: "Poznaj Dziadersa Grillowego", illustration: "Samozwańczy ekspert przy grillu, do którego szczypiec sięgają doradcy", practice: "Możesz zatrzymać grę w każdej chwili. Zmiana karty automatycznie włącza przerwę.",
   },
   sl: {
     title: "Kralj žara", lab: "Laboratorij za toplotno obdelavo", protocol: "Preizkus spretnosti IBD-G1", intro: "Klešče so samo ene.",
@@ -31,7 +34,7 @@ const COPY = defineCopy({
     notices: { loaded: "Klobasa je na rešetki.", flip: "Obrnjena. Zdaj druga stran.", perfectFlip: "Popoln obrat. Ohrani raven.", served: "Porcija sprejeta brez pripomb.", perfect: "Dve popolni strani. Avtoriteta raste.", raw: "Sredica še ni pripravljena. Družina je zabeležila.", burnt: "Ogljeni eksponat odstranjen.", wasp: "Osa je zamenjala gostinski lokal.", defended: "Klešče ostajajo v enih rokah.", stung: "Osa je prekinila niz.", stolen: "Svak je za trenutek prevzel delovno mesto." },
     bulletinLead: "Naslednji preizkus čez teden dni? V ponedeljek Bilten Inštituta: teden v številkah, naravnost z rešetke Službe za statistiko.",
     result: "Zapisnik peke na žaru", finished: "Preizkus je končan.", ranks: { king: "Kralj žara", master: "Mojster rešetke", apprentice: "Vajenec s kleščami", smoke: "Strokovnjak za zadimljenost" }, verdicts: { king: "Klobase postrežene. Klešče obranjene. Družina še vedno trdi, da bi to opravila bolje.", master: "Večina porcij je prestala nadzor kakovosti. Nadaljnji nasveti družine so odveč.", apprentice: "Potencial ugotovljen. Za zdaj je dovoljeno podajanje gorčice.", smoke: "Vidljivost je padla na nič. Preizkus smo prestavili proti vetru." },
-    stamp: "Preizkušeno pri žaru", burned: "Pooglenele", rawCount: "Postrežene prezgodaj", swatted: "Odgnane ose", defendedCount: "Obranjene klešče", longest: "Najdaljši niz", replay: "Še ena runda", share: "Kopiraj rezultat", copied: "Rezultat in povezava sta kopirana.", copyLabel: "Rezultat za kopiranje", copyFallback: "Kopiraj pripravljeni rezultat spodaj.", download: "Prenesi zapisnik PNG", downloading: "Priprava zapisnika …", downloadFail: "Zapisnika ni bilo mogoče pripraviti. Poskusi znova.", reportFooter: "Vir: IBD. Preizkus spretnosti pri žaru.", scoreNote: "Popolna porcija: 100 točk + do 100 za niz. Navadna: 65. Osa ali obramba klešč: 25. Surova: −25. Zažgana: −30.", shareChallenge: "Prevzemi klešče in presezi moj rezultat.", back: "Spoznaj Žarnega dziadersa", illustration: "Samooklicani strokovnjak pri žaru, po čigar kleščah segajo svetovalci", practice: "Igro lahko kadarkoli ustaviš. Menjava zavihka samodejno vključi premor.",
+    stamp: "Preizkušeno pri žaru", burned: "Pooglenele", rawCount: "Postrežene prezgodaj", swatted: "Odgnane ose", defendedCount: "Obranjene klešče", longest: "Najdaljši niz", replay: "Še ena runda", share: "Kopiraj rezultat", copied: "Rezultat in povezava sta kopirana.", copyLabel: "Rezultat za kopiranje", copyFallback: "Kopiraj pripravljeni rezultat spodaj.", download: "Prenesi zapisnik PNG", downloading: "Priprava zapisnika …", downloadFail: "Zapisnika ni bilo mogoče pripraviti. Poskusi znova.", reportFooter: "Vir: IBD. Preizkus spretnosti pri žaru.", storyAsk: "Pa ti? Prevzemi klešče na",  scoreNote: "Popolna porcija: 100 točk + do 100 za niz. Navadna: 65. Osa ali obramba klešč: 25. Surova: −25. Zažgana: −30.", shareChallenge: "Prevzemi klešče in presezi moj rezultat.", back: "Spoznaj Žarnega dziadersa", illustration: "Samooklicani strokovnjak pri žaru, po čigar kleščah segajo svetovalci", practice: "Igro lahko kadarkoli ustaviš. Menjava zavihka samodejno vključi premor.",
   },
 });
 
@@ -54,7 +57,6 @@ export function GrillGame({ locale }: { locale: Locale }) {
   const [sound, setSound] = useState(false);
   const [message, setMessage] = useState("");
   const [shareText, setShareText] = useState("");
-  const [downloading, setDownloading] = useState(false);
   const gameRef = useRef<GrillState | null>(null);
   const stationRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
@@ -146,15 +148,13 @@ export function GrillGame({ locale }: { locale: Locale }) {
     try { await navigator.clipboard.writeText(text); setMessage(t.copied); }
     catch { setShareText(text); setMessage(t.copyFallback); }
   }
-  async function download() {
-    if (!game || downloading) return;
-    setDownloading(true); setMessage("");
-    try {
-      const { createGrillReport } = await import("@/lib/grill-report");
-      const url = await createGrillReport({ title: t.title, heading: t.result, rank: t.ranks[grillRank(game)], stamp: t.stamp, score: game.score, scoreLabel: t.points, rows: [[t.served, String(game.served)], [t.perfect, String(game.perfect)], [t.longest, String(game.bestCombo)], [t.burned, String(game.burnt)]], footer: t.reportFooter, url: `dziader.si${localizePath("/krol-grilla", locale)}`, serif: getComputedStyle(resultRef.current!).fontFamily, sans: getComputedStyle(document.querySelector(".label")!).fontFamily });
-      const anchor = document.createElement("a"); anchor.href = url; anchor.download = `IBD-G1-${game.score}.png`; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 60000);
-    } catch { setMessage(t.downloadFail); }
-    finally { setDownloading(false); }
+  /** The protocol as a post or a story; StoryShare downloads it or hands it to the share sheet. */
+  async function createImage(format: StoryFormat) {
+    if (!game) throw new Error("No game");
+    const serif = getComputedStyle(resultRef.current!).fontFamily, sans = getComputedStyle(document.querySelector(".label")!).fontFamily;
+    const { createGrillReport } = await import("@/lib/grill-report");
+    const canvas = await createGrillReport({ title: t.title, heading: t.result, rank: t.ranks[grillRank(game)], stamp: t.stamp, score: game.score, scoreLabel: t.points, rows: [[t.served, String(game.served)], [t.perfect, String(game.perfect)], [t.longest, String(game.bestCombo)], [t.burned, String(game.burnt)]], footer: t.reportFooter, url: `dziader.si${localizePath("/krol-grilla", locale)}`, serif, sans });
+    return storyBlob(canvas, format, { ask: t.storyAsk, url: `dziader.si${localizePath("/krol-grilla", locale)}`, serif, sans });
   }
 
   const phase = game ? grillPhase(game) : 0;
@@ -169,7 +169,7 @@ export function GrillGame({ locale }: { locale: Locale }) {
     </div> : game.status === "finished" ? <div ref={resultRef} tabIndex={-1} className={styles.result}>
       <div className={styles.resultTop}><span className="label">{t.result} / IBD-G1</span><span className={styles.stamp}>{t.stamp}</span></div>
       <div className={styles.resultGrid}><div><p className="label">{t.finished}</p><h2>{t.ranks[grillRank(game)]}</h2><p className={styles.verdict}>{t.verdicts[grillRank(game)]}</p><div className={styles.resultScore}><span>{game.score}</span><p className="label">{t.points}<br />{t.best}: {best}</p></div><dl className={styles.resultRows}>{rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div><Image src="/illustrations/grill/hero.webp" width={600} height={400} alt="" sizes="(max-width: 700px) 90vw, 40vw" className={styles.resultArt} /></div>
-      <div className={styles.resultActions}><button className="btn btn-ink" onClick={start}>{t.replay} ↻</button><button className="btn btn-outline" onClick={share}>{t.share} ↗</button><button className="btn btn-outline" onClick={download} disabled={downloading}>{downloading ? t.downloading : t.download} ↓</button></div><p role="status" className={styles.message}>{message}</p>{shareText && <textarea aria-label={t.copyLabel} value={shareText} readOnly rows={5} onFocus={(event) => event.currentTarget.select()} className={styles.shareText} />}<p className={styles.scoreNote}>{t.scoreNote}</p><Link href={`/atlas/${locale === "pl" ? "dziaders-grillowy" : "zarni-dziaders"}`} className="link">{t.back} →</Link>
+      <div className={styles.resultActions}><button className="btn btn-ink" onClick={start}>{t.replay} ↻</button><button className="btn btn-outline" onClick={share}>{t.share} ↗</button></div><StoryShare create={createImage} file={`IBD-G1-${game.score}-${game.served}-${game.bestCombo}`} text={`${t.title} · ${t.ranks[grillRank(game)]} · ${t.points}: ${game.score}. ${t.shareChallenge}`} url={`https://dziader.si${localizePath("/krol-grilla", locale)}`} kind="krol-grilla" className="mt-4" /><p role="status" className={styles.message}>{message}</p>{shareText && <textarea aria-label={t.copyLabel} value={shareText} readOnly rows={5} onFocus={(event) => event.currentTarget.select()} className={styles.shareText} />}<p className={styles.scoreNote}>{t.scoreNote}</p><Link href={`/atlas/${locale === "pl" ? "dziaders-grillowy" : "zarni-dziaders"}`} className="link">{t.back} →</Link>
       <div className="mt-12 border-t border-ink pt-6 text-left"><NewsletterBox variant="inline" lead={t.bulletinLead} place="krol-grilla" /></div>
     </div> : <>
       <div className={styles.scoreboard}><div><span className="label">{t.seconds}</span><strong className={GRILL_SECONDS - game.elapsed <= 15 ? styles.urgent : ""}>{Math.ceil(GRILL_SECONDS - game.elapsed)}<small>s</small></strong></div><div><span className="label">{t.points}</span><strong>{game.score}</strong></div><div><span className="label">{t.served}</span><strong>{game.served}</strong></div><div><span className="label">{t.combo}</span><strong className={game.combo > 1 ? styles.combo : ""}>{game.combo || "—"}</strong></div><button className={styles.pauseButton} onClick={() => setPaused(true)} aria-label={t.pause}><span aria-hidden="true">Ⅱ</span><span>{t.pause}</span></button></div>

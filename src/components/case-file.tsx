@@ -10,6 +10,7 @@ import { site } from "@/lib/site";
 import { cx, plural, pluralSl, quote, typo } from "@/lib/typo";
 import { patchAccount, SignInLink, useAccount } from "./account";
 import { Stamp } from "./brand";
+import { StoryShare } from "./story-share";
 
 /*
  * Komisja Orzekająca in the browser. A guest's verdicts live in localStorage, a signed-in
@@ -302,6 +303,14 @@ export function CaseFile({
                 {copied ? t.copied : t.send}
               </button>
             </div>
+            <StoryShare
+              image={`/czy-to-juz-dziaderstwo/${item.slug}/karta`}
+              file={`${locale === "sl" ? "primer" : "sprawa"}-${item.number}`}
+              text={t.shareText(meta.docket, item.title)}
+              url={`${site.url}${localizePath(`/czy-to-juz-dziaderstwo/${item.slug}`, locale)}`}
+              kind="sprawa"
+              className="-mt-6"
+            />
             <JurorNote />
           </div>
         )}
