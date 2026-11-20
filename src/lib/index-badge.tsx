@@ -45,11 +45,12 @@ export function badgeText(bulletin: Bulletin, locale: Locale) {
 }
 
 /** The last thirty days as a line: ink, today a red dot. */
-function Sparkline({ values, width, height }: { values: number[]; width: number; height: number }) {
+export function Sparkline({ values, width, height }: { values: number[]; width: number; height: number }) {
   const low = Math.floor(Math.min(...values) - 1);
   const high = Math.ceil(Math.max(...values) + 1);
-  const x = (i: number) => (i / (values.length - 1)) * (width - 16) + 8;
-  const y = (value: number) => height - 8 - ((value - low) / (high - low)) * (height - 16);
+  // Inset by the dot's radius, so today's dot is never cut off.
+  const x = (i: number) => (i / (values.length - 1)) * (width - 32) + 16;
+  const y = (value: number) => height - 16 - ((value - low) / (high - low)) * (height - 32);
   const points = values.map((value, i) => `${x(i).toFixed(1)},${y(value).toFixed(1)}`).join(" ");
   const last = values.length - 1;
   return (

@@ -14,8 +14,11 @@ const pad = (value: number) => String(value).padStart(2, "0");
 export async function getBulletin(locale: Locale) {
   "use cache";
   cacheLife("hours");
+  return bulletinAt(locale, new Date());
+}
 
-  const now = new Date();
+/** The same figures for any moment, uncached: for scripts (scripts/social-kit.ts) and tests. */
+export function bulletinAt(locale: Locale, now: Date) {
   const local = warsawTime(now);
   const { year } = local;
   const today = dayOfYear(year, local.month, local.day);
@@ -57,4 +60,4 @@ export async function getBulletin(locale: Locale) {
   };
 }
 
-export type Bulletin = Awaited<ReturnType<typeof getBulletin>>;
+export type Bulletin = ReturnType<typeof bulletinAt>;

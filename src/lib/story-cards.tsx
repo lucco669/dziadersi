@@ -250,7 +250,7 @@ export function caseStory(item: Case, locale: Locale, format: StoryFormat) {
           letterSpacing: -1.6,
         }}
       >
-        {item.title}
+        {typo(item.title)}
       </div>
       {facts && (
         <div style={{ display: "flex", flexDirection: "column" }}>
