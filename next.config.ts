@@ -42,10 +42,12 @@ const securityHeaders = [
 
 const sl = (pl: string) => SEGMENTS[pl].sl;
 
+/** Share cards: link previews fetch them, search engines need not index them as images. */
+const SHARE_CARDS = ["/opengraph-image", "/:path*/opengraph-image"];
+
 /** Images other sites may embed: share cards, certificates, lab results, and the letterhead in emails. */
 const EMBEDDABLE = [
-  "/opengraph-image",
-  "/:path*/opengraph-image",
+  ...SHARE_CARDS,
   "/wynik/:kod/certyfikat",
   "/wynik/:kod/badania",
   `/sl/${sl("wynik")}/:kod/certifikat`,
@@ -118,10 +120,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/security.txt", destination: "/.well-known/security.txt", permanent: true },
       ...legacyContentRedirects(),
-      // The routed form of either edition is never a public address (share images excepted:
-      // Next.js links them by the routed path).
+      // The routed form of either edition is never a public address, share images included:
+      // pages link the public address of their card (shareImagePath in src/lib/seo.ts).
       { source: "/pl", destination: "/", permanent: true },
-      { source: "/pl/:path((?!.*opengraph-image).*)", destination: "/:path", permanent: true },
+      { source: "/pl/:path+", destination: "/:path+", permanent: true },
       ...slovenianRedirects(),
       // dziader.si/si reads well, but the language code is sl.
       { source: "/si", destination: "/sl", permanent: true },
@@ -158,6 +160,8 @@ const nextConfig: NextConfig = {
       ...NOINDEX.map((source) => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }] })),
       ...["/konto", "/sl/racun", "/rejestracja", "/sl/registracija", "/profil/:path*", "/sl/profil/:path*"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }] })),
       ...PRIVATE.map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }, { key: "X-Robots-Tag", value: "noindex, nofollow" }] })),
+      // Link previews ignore robots headers; Google lists the cards as crawled pages otherwise.
+      ...SHARE_CARDS.map((source) => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex" }] })),
       ...["/test", "/sl/test"].map((source) => ({ source, headers: [{ key: "Referrer-Policy", value: "no-referrer" }] })),
       ...EMBEDDABLE.map((source) => ({
         source,

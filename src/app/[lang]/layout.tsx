@@ -7,7 +7,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { LocaleProvider } from "@/i18n/client";
 import { hasLocale, LOCALE_INFO, LOCALES } from "@/i18n/config";
+import { localizePath } from "@/i18n/routes";
 import { getLocale } from "@/i18n/server";
+import { shareImage } from "@/lib/seo";
 import { site, siteCopy } from "@/lib/site";
 import "../globals.css";
 
@@ -58,7 +60,8 @@ export async function generateMetadata(): Promise<Metadata> {
     creator: copy.institute,
     publisher: copy.institute,
     category: "humor",
-    openGraph: { type: "website", locale: LOCALE_INFO[locale].og, siteName: site.name },
+    // The edition's front-page card by its public address, for pages without pageMetadata (Next.js would link /pl/opengraph-image).
+    openGraph: { type: "website", locale: LOCALE_INFO[locale].og, siteName: site.name, images: shareImage(localizePath("/opengraph-image", locale), copy.institute) },
     twitter: { card: "summary_large_image" },
     formatDetection: { telephone: false, address: false, email: false },
   };

@@ -33,6 +33,73 @@ export function languageAlternates(path: string, locale: Locale) {
   return { ...languages, "x-default": languages[LOCALE_INFO[DEFAULT_LOCALE].tag] };
 }
 
+/**
+ * Route folders under app/[lang] with their own opengraph-image file, as internal path patterns.
+ * Next.js links a file-based card by its routed path ("/pl/atlas/x/opengraph-image?hash",
+ * "/sl/slownik/x/…"), which is not a public address and gave search engines hundreds of image URLs
+ * under /pl, so pages link the public address of the same card instead. tests/seo.test.ts keeps
+ * this list in step with the files.
+ */
+export const SHARE_CARDS = [
+  "/",
+  "/atlas",
+  "/atlas/[slug]",
+  "/bingo",
+  "/bingo/[karta]",
+  "/biuletyn",
+  "/czy-to-juz-dziaderstwo",
+  "/czy-to-juz-dziaderstwo/[slug]",
+  "/do-druku",
+  "/dziaders",
+  "/dziaders/kobieta",
+  "/egzamin",
+  "/egzamin/[kod]",
+  "/generator",
+  "/generator/[kod]",
+  "/grupa/[lista]",
+  "/indeks",
+  "/kalendarz",
+  "/kolejka",
+  "/krol-grilla",
+  "/muzeum",
+  "/muzeum/[slug]",
+  "/o-instytucie",
+  "/obserwacje",
+  "/okazje",
+  "/okazje/[slug]",
+  "/raporty",
+  "/raporty/[slug]",
+  "/slownik",
+  "/slownik/[slug]",
+  "/spis",
+  "/statystyki",
+  "/superinteligencja",
+  "/superinteligencja/[kod]",
+  "/tablica-honorowa",
+  "/test",
+  "/wynik/[kod]",
+];
+
+const CARD_PATTERNS = SHARE_CARDS.map((card) => card.split("/").filter(Boolean));
+
+/**
+ * The public address of the share card for an internal path: the card of the nearest folder above it
+ * that has one, as Next.js inherits them ("/sl/slovar/x/opengraph-image", "/opengraph-image").
+ * Without the content hash: one stable address per card.
+ */
+export function shareImagePath(path: string, locale: Locale) {
+  const segments = path.replace(/[?#].*$/, "").split("/").filter(Boolean);
+  for (let depth = segments.length; depth > 0; depth--) {
+    const prefix = segments.slice(0, depth);
+    const match = CARD_PATTERNS.some((pattern) => pattern.length === depth && pattern.every((part, i) => part.startsWith("[") || part === prefix[i]));
+    if (match) return localizePath(`/${prefix.join("/")}/opengraph-image`, locale);
+  }
+  return localizePath("/opengraph-image", locale);
+}
+
+/** Open Graph image fields for a card; every card is 1200 × 630. */
+export const shareImage = (url: string, alt: string) => [{ url, width: 1200, height: 630, type: "image/png", alt }];
+
 type PageMeta = {
   /** Browser title; the layout appends " · DZIADER.SI" when the whole stays within 70 characters. */
   title: string;
@@ -53,7 +120,7 @@ type PageMeta = {
 
 /**
  * The same canonical, hreflang, Open Graph and Twitter fields for every page.
- * Share images come from opengraph-image files.
+ * Share images are drawn by opengraph-image files and linked by their public address (shareImagePath).
  */
 export function pageMetadata(
   locale: Locale,
@@ -77,9 +144,11 @@ export function pageMetadata(
       url,
       title: ogTitle,
       description: ogDescription,
-      // Explicit images override file-based metadata in Next.js. Only opt in on pages
-      // without a dedicated card; Twitter inherits the resolved Open Graph image.
-      ...(defaultImage ? { images: [{ url: `/${locale}/opengraph-image`, width: 1200, height: 630, alt: siteCopy(locale).institute }] } : {}),
+      // Explicit images override file-based metadata in Next.js, which would link the routed path.
+      // Pages without a dedicated card use the edition's front-page card; Twitter inherits the Open Graph image.
+      images: defaultImage
+        ? shareImage(localizePath("/opengraph-image", locale), siteCopy(locale).institute)
+        : shareImage(shareImagePath(path, locale), ogTitle),
       ...(publishedTime ? { publishedTime } : {}),
     },
     twitter: { card: "summary_large_image", title: ogTitle, description: ogDescription },

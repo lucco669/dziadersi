@@ -77,7 +77,7 @@ test("rewrites reach the route folders, also from the RSC paths of client naviga
   }
 });
 
-test("the routed form of the Slovenian edition redirects to its public address, share images excepted", async () => {
+test("the routed form of either edition redirects to its public address, share images included", async () => {
   const { getPathMatch } = await import("next/dist/shared/lib/router/utils/path-match.js");
   const { prepareDestination } = await import("next/dist/shared/lib/router/utils/prepare-destination.js");
   const { default: config } = await import("../next.config");
@@ -95,9 +95,16 @@ test("the routed form of the Slovenian edition redirects to its public address, 
   assert.equal(redirect("/sl/slownik/ja-ves"), "/sl/slovar/ja-ves");
   assert.equal(redirect("/sl/czy-to-juz-dziaderstwo/klucze-w-zamku"), "/sl/je-to-ze-dziaderstvo/klucze-w-zamku");
   assert.equal(redirect("/sl/wynik/2abc/certyfikat"), "/sl/izvid/2abc/certyfikat");
-  assert.equal(redirect("/sl/slownik/ja-ves/opengraph-image"), null);
+  assert.equal(redirect("/sl/slownik/ja-ves/opengraph-image"), "/sl/slovar/ja-ves/opengraph-image");
   assert.equal(redirect("/sl/dziaders/kobieta"), "/sl/dziaders/zenska");
-  assert.equal(redirect("/sl/dziaders/kobieta/opengraph-image"), null);
+  assert.equal(redirect("/sl/dziaders/kobieta/opengraph-image"), "/sl/dziaders/zenska/opengraph-image");
+  // Search engines found the Polish cards by their routed path.
+  assert.equal(redirect("/pl"), "/");
+  assert.equal(redirect("/pl/atlas"), "/atlas");
+  assert.equal(redirect("/pl/opengraph-image"), "/opengraph-image");
+  assert.equal(redirect("/pl/atlas/dziaders-parkingowy/opengraph-image"), "/atlas/dziaders-parkingowy/opengraph-image");
+  assert.equal(redirect("/sl/opengraph-image"), null);
+  assert.equal(redirect("/sl/atlas/zarni-dziaders/opengraph-image"), null);
   assert.equal(redirect("/sl/dziaders/zenska"), null);
   // Public addresses and sections with the same word in both editions stay where they are.
   assert.equal(redirect("/sl/slovar/ja-ves"), null);
