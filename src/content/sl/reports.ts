@@ -10,6 +10,77 @@ import type { Text } from "@/i18n/overlay";
 type ReportText = Text<Report, "slug" | "number" | "date" | "species">;
 
 export const REPORTS: Record<string, ReportText> = {
+  "stan-dziaderstwa-2026": {
+    category: "Letno poročilo",
+    title: "Stanje dziaderstva na Poljskem 2026",
+    lede: "Nacionalni indeks dziaderstva je leta 2026 v povprečju znašal 66,8 točke in vse leto ni padel pod povišano raven. Po napovedi bo 7 dni, od 22. do 28. decembra, minilo v klinični coni.",
+    sample: "365 dni Nacionalnega indeksa dziaderstva (od tega 31 dni napovedi), Mali statistični letopis, 30 primerov Razsodne komisije, izbor Dziaderska beseda leta",
+    abstract:
+      "Letno poročilo povzema leto 2026 v poljskem dziaderstvu. Nacionalni indeks dziaderstva je v povprečju znašal 66,8 točke, leta 2025 pa 66,7 točke. Najvišje mesečno povprečje je bilo izmerjeno julija (71,9 točke), na vrhuncu sezone vetrobranov, najnižje marca (63,4 točke). Leto sklene praznična sezona z napovedanim maksimumom 78,7 točke na božič. Dodatek vsebuje podatke Malega statističnega letopisa, najbolj sporni primer Razsodne komisije in dziadersko besedo leta, izbrano na decembrskem glasovanju.",
+    findings: [
+      { value: "66,8", label: "točke je znašalo letno povprečje Nacionalnega indeksa dziaderstva" },
+      { value: "358", label: "dni na povišani ravni; preostalih 7 v klinični coni" },
+      { value: "78,7", label: "točke znaša napovedani letni maksimum, na božič" },
+    ],
+    chart: {
+      title: "Mesečno povprečje Nacionalnega indeksa dziaderstva v letu 2026",
+      unit: "točke",
+      bars: [
+        { label: "Januar" },
+        { label: "Februar" },
+        { label: "Marec" },
+        { label: "April" },
+        { label: "Maj" },
+        { label: "Junij" },
+        { label: "Julij" },
+        { label: "Avgust" },
+        { label: "September" },
+        { label: "Oktober" },
+        { label: "November" },
+        { label: "December (napoved)" },
+      ],
+    },
+    sections: [
+      {
+        heading: "Uvod",
+        paragraphs: [
+          "Letno poročilo na enem mestu zbira, kar je Inštitut v letu 2026 izmeril, preštel in razsodil. Po praksi statističnih uradov predhodna izdaja izide 1. decembra, dodatek pa se sproti dopolnjuje, do razglasitve dziaderske besede leta vključno. Vrednosti indeksa za december so napoved. Inštitut ne pričakuje, da bi jo sveti večer izneveril.",
+        ],
+      },
+      {
+        heading: "Nacionalni indeks dziaderstva",
+        paragraphs: [
+          "Indeks je vse leto ostal na povišani ravni, med 50 in 75 točkami. Najnižja vrednost, 62,3 točke, je bila izmerjena 27. novembra, v premoru med menjavo pnevmatik in praznično sezono. Tega dne v nobenem od opazovanih domov ni padel stavek o zimah iz osemdesetih let.",
+          "Najvišje mesečno povprečje je imel julij (71,9 točke), z vrhuncem vetrobranov 20. julija. Na drugo mesto sta se ex aequo uvrstila oktober, zaradi vrst pri vulkanizerjih, in december, po napovedi (po 68,5 točke). Najmirnejši je bil marec (63,4 točke): vrtičkarska sezona se še ni začela, zimska pa ni več vzbujala čustev.",
+          "Klinično cono, torej 75 točk in več, bo indeks po napovedi dosegel za sedem dni, od 22. do 28. decembra. Letni maksimum, 78,7 točke, bo na božič, ko družina drugič v enem dnevu¹ sede za mizo.",
+        ],
+      },
+      {
+        heading: "Mali statistični letopis in Razsodna komisija",
+        paragraphs: [
+          "Za razliko od indeksa številke Malega statističnega letopisa in Razsodne komisije niso model: kažejo, kar so obiskovalci na strani zares naredili. Dodatek jih navaja po stanju na dan odčitka. Inštitut jih ne zaokrožuje navzgor. Leto 2026 je bilo za Letopis prvo, vzorec pa je tak, kakršen je.",
+          "Najbolj sporni primer leta je tisti, pri katerem so se glasovi porotnikov razdelili najbolj enakomerno, pri vsaj petih glasovih. Dodatek navaja njegovo opravilno številko in razdelitev glasov.",
+        ],
+      },
+      {
+        heading: "Dziaderska beseda leta",
+        paragraphs: [
+          "Decembra je Razsodna komisija dala na glasovanje dvanajst izrazov iz Dziaderskega slovarja. Glasovanje traja od 1. do 8. decembra, izid pa Komisija razglasi 10. decembra. Izraz, izbran na glasovanju, in zapisnik glasovanja sta v dodatku. Če bo glasov manj kot trideset, bo besedo leta določila Komisija, o čemer bo dodatek obvestil.",
+        ],
+      },
+    ],
+    conclusions: [
+      "Dziaderstvo na Poljskem ostaja vse leto na povišani ravni, ne glede na letni čas.",
+      "Vrhunec leta je med prazniki, kar je Inštitut napovedoval od januarja.",
+      "Najmirnejši mesec je marec. Inštitut priporoča, da se težki družinski pogovori odložijo na marec.",
+      "Besedo leta izberejo glasovalci, kadar jih je premalo, pa Komisija.",
+    ],
+    methodology:
+      "Vrednosti indeksa izhajajo iz modela NID: sezonske osnovne črte, koledarja tveganj in dnevnega šuma; december je napoved. Številke Letopisa in Komisije so dejanska dejanja obiskovalcev, šteta brez identifikatorjev. Pri izboru velja en glas na brskalnik in račun ter sklepčnost 30 glasov. Grafe in tabele poročila je dovoljeno ponatisniti pod licenco CC BY 4.0.",
+    notes: [
+      "¹ Drugič v enem dnevu: na Poljskem je glavni praznični obrok večerja na sveti večer (wigilia), na božič pa se družina k mizi vrne opoldne.",
+    ],
+  },
   "sezon-grzewczy": {
     category: "Sezonsko poročilo",
     title: "»Obleci se bolj toplo«. Ogrevalna politika poljskega doma",

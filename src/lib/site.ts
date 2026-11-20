@@ -360,6 +360,7 @@ export const sections = (locale: Locale) => SECTION_COPY[locale];
 const EXTRA_COPY = defineCopy<Pick<Department, "href" | "label" | "summary">[]>({
   pl: [
     { href: "/dziaders", label: "Dziaders — kto to jest?", summary: "Znaczenie słowa, zachowania i różnica między dziaderstwem a zwykłymi przyzwyczajeniami. Wprowadzenie do Instytutu." },
+    { href: "/slowo-roku", label: "Dziaderskie Słowo Roku 2026", summary: "Plebiscyt Komisji Orzekającej: dwanaście zwrotów ze Słownika, głosowanie w grudniu i uchwała Komisji." },
     { href: "/profil", label: "Profil Dziaderski", summary: "Kartoteka badań, kolekcja gatunków, dziennik obserwacji, zakładki, odznaki i legitymacja obserwatora." },
     { href: "/szukaj", label: "Wyszukiwarka", summary: "Gatunki, hasła, sprawy, raporty i działy Instytutu w jednym miejscu." },
     { href: "/o-instytucie", label: "O Instytucie", summary: "Statut, historia, struktura organizacyjna i najczęstsze pytania." },
@@ -368,6 +369,7 @@ const EXTRA_COPY = defineCopy<Pick<Department, "href" | "label" | "summary">[]>(
   ],
   sl: [
     { href: "/dziaders", label: "Dziaders — kdo je to?", summary: "Pomen besede, vedenja in razlika med dziaderstvom in običajnimi navadami. Uvod v Inštitut." },
+    { href: "/slowo-roku", label: "Dziaderska beseda leta 2026", summary: "Izbor Razsodne komisije: dvanajst izrazov iz Slovarja, glasovanje decembra in sklep Komisije." },
     { href: "/profil", label: "Dziaderski profil", summary: "Kartoteka pregledov, zbirka vrst, dnevnik opazovanj, zaznamki, značke in opazovalska izkaznica." },
     { href: "/szukaj", label: "Iskalnik", summary: "Vrste, gesla, primeri, poročila in oddelki Inštituta na enem mestu." },
     { href: "/o-instytucie", label: "O Inštitutu", summary: "Statut, zgodovina, organizacijska struktura, pogosta vprašanja in beseda o slovenski izdaji." },

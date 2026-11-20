@@ -26,9 +26,87 @@ export type Report = {
   species: SpeciesKey[];
   /** Translator's notes (op. prev.), Slovenian edition only. */
   notes?: string[];
+  /**
+   * A year-end report: the year it sums up. Its page adds the annex with the live figures of the
+   * yearbook, the Komisja and the Dziaderskie Słowo Roku, and its charts are published under CC BY 4.0.
+   */
+  yearEnd?: number;
 };
 
 export const REPORTS: Report[] = [
+  {
+    slug: "stan-dziaderstwa-2026",
+    number: "IBD/2026/09",
+    date: "2026-12-01",
+    category: "Raport roczny",
+    title: "Stan dziaderstwa w Polsce 2026",
+    lede: "Narodowy Indeks Dziaderstwa wyniósł w 2026 roku średnio 66,8 pkt i przez cały rok nie spadł poniżej poziomu podwyższonego. Według prognozy 7 dni, od 22 do 28 grudnia, upłynie w strefie klinicznej.",
+    sample: "365 dni Narodowego Indeksu Dziaderstwa (w tym 31 dni prognozy), Mały Rocznik Statystyczny, 30 spraw Komisji Orzekającej, plebiscyt Dziaderskie Słowo Roku",
+    abstract:
+      "Raport roczny podsumowuje rok 2026 w dziaderstwie polskim. Narodowy Indeks Dziaderstwa wyniósł średnio 66,8 pkt wobec 66,7 pkt w 2025 roku. Najwyższą średnią miesięczną odnotowano w lipcu (71,9 pkt), w szczycie sezonu parawanowego, najniższą w marcu (63,4 pkt). Rok zamyka sezon świąteczny z prognozowanym maksimum 78,7 pkt w pierwszy dzień świąt. Aneks zawiera dane Małego Rocznika Statystycznego, najbardziej sporną sprawę Komisji Orzekającej i Dziaderskie Słowo Roku, wybrane w grudniowym plebiscycie.",
+    findings: [
+      { value: "66,8", label: "pkt wyniosła średnia roczna Narodowego Indeksu Dziaderstwa" },
+      { value: "358", label: "dni roku na poziomie podwyższonym; pozostałe 7 w strefie klinicznej" },
+      { value: "78,7", label: "pkt prognozowanego maksimum roku, w pierwszy dzień świąt" },
+    ],
+    chart: {
+      title: "Średnia miesięczna Narodowego Indeksu Dziaderstwa w 2026 roku",
+      unit: "pkt",
+      bars: [
+        { label: "Styczeń", value: 65.3 },
+        { label: "Luty", value: 63.5 },
+        { label: "Marzec", value: 63.4 },
+        { label: "Kwiecień", value: 66.7 },
+        { label: "Maj", value: 67 },
+        { label: "Czerwiec", value: 67.4 },
+        { label: "Lipiec", value: 71.9 },
+        { label: "Sierpień", value: 68.1 },
+        { label: "Wrzesień", value: 66.4 },
+        { label: "Październik", value: 68.5 },
+        { label: "Listopad", value: 64.6 },
+        { label: "Grudzień (prognoza)", value: 68.5 },
+      ],
+    },
+    sections: [
+      {
+        heading: "Wprowadzenie",
+        paragraphs: [
+          "Raport roczny zbiera w jednym miejscu to, co Instytut w 2026 roku zmierzył, policzył i rozstrzygnął. Zgodnie z praktyką urzędów statystycznych wydanie wstępne ukazuje się 1 grudnia, a aneks uzupełnia się na bieżąco, do ogłoszenia Dziaderskiego Słowa Roku włącznie. Wartości Indeksu za grudzień są prognozą. Instytut nie przewiduje, by Wigilia ją zawiodła.",
+        ],
+      },
+      {
+        heading: "Narodowy Indeks Dziaderstwa",
+        paragraphs: [
+          "Indeks przez cały rok utrzymywał się na poziomie podwyższonym, od 50 do 75 pkt. Najniższą wartość, 62,3 pkt, odnotowano 27 listopada, w przerwie między wymianą opon a sezonem świątecznym. Był to dzień, w którym w żadnym z obserwowanych domów nie padło zdanie o zimach z lat osiemdziesiątych.",
+          "Najwyższą średnią miesięczną miał lipiec (71,9 pkt), ze szczytem parawanowym 20 lipca. Na drugim miejscu znalazły się ex aequo październik, za sprawą kolejek do wulkanizacji, i grudzień, według prognozy (po 68,5 pkt). Najspokojniejszy był marzec (63,4 pkt): sezon działkowy jeszcze się nie zaczął, a zimowy przestał budzić emocje.",
+          "Strefę kliniczną, czyli 75 pkt i więcej, Indeks osiągnie według prognozy na siedem dni, od 22 do 28 grudnia. Maksimum roku, 78,7 pkt, przypadnie na pierwszy dzień świąt, kiedy rodzina zasiada przy stole drugi raz w ciągu doby.",
+        ],
+      },
+      {
+        heading: "Mały Rocznik Statystyczny i Komisja Orzekająca",
+        paragraphs: [
+          "W przeciwieństwie do Indeksu liczby Małego Rocznika Statystycznego i Komisji Orzekającej nie są modelem: pokazują to, co odwiedzający naprawdę zrobili w serwisie. Aneks podaje je według stanu na dzień odczytu. Instytut nie zaokrągla ich w górę. Rok 2026 był dla Rocznika rokiem pierwszym, a próba jest taka, jaka jest.",
+          "Najbardziej sporną sprawą roku jest ta, w której głosy ławników rozłożyły się najrówniej, przy co najmniej pięciu głosach. Aneks podaje jej sygnaturę i rozkład głosów.",
+        ],
+      },
+      {
+        heading: "Dziaderskie Słowo Roku",
+        paragraphs: [
+          "W grudniu Komisja Orzekająca poddała pod głosowanie dwanaście zwrotów ze Słownika Dziaderskiego. Głosowanie trwa od 1 do 8 grudnia, a wynik Komisja ogłasza 10 grudnia. Zwrot wybrany w plebiscycie i protokół głosowania zamieszcza aneks. Jeśli głosów będzie mniej niż trzydzieści, słowo roku wskaże Komisja, o czym aneks poinformuje.",
+        ],
+      },
+    ],
+    conclusions: [
+      "Dziaderstwo w Polsce utrzymuje się na poziomie podwyższonym przez cały rok, niezależnie od pory roku.",
+      "Szczyt roku przypada na święta, co Instytut prognozował od stycznia.",
+      "Najspokojniejszym miesiącem jest marzec. Instytut zaleca odkładanie trudnych rozmów rodzinnych na marzec.",
+      "Słowo roku wybierają głosujący, a gdy jest ich za mało, Komisja.",
+    ],
+    methodology:
+      "Wartości Indeksu pochodzą z modelu NID: sezonowej linii bazowej, kalendarza zagrożeń i szumu dziennego; grudzień jest prognozą. Liczby Rocznika i Komisji to rzeczywiste działania odwiedzających, liczone bez identyfikatorów. W plebiscycie obowiązuje jeden głos z przeglądarki i z konta oraz kworum 30 głosów. Wykresy i tabele raportu można przedrukować na licencji CC BY 4.0.",
+    species: ["wigilijny", "wakacje", "meteorologiczny"],
+    yearEnd: 2026,
+  },
   {
     slug: "sezon-grzewczy",
     number: "IBD/2026/08",

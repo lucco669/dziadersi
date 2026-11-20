@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { IsoKey, IsoRow, isoUnit, type IsoKind } from "@/components/isotype";
 import { breadcrumbList, DataLicense, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
+import { WordOfYearNote } from "@/components/word-promo";
 import { Figure, SpeciesPlate } from "@/components/pictograms";
 import { OCCASIONS } from "@/content/bingo";
 import { CASES, docket, getCases, getVerdicts, VERDICTS } from "@/content/cases";
@@ -741,6 +742,8 @@ export default async function YearbookPage() {
         </a>
         {typo(t.notGus.after)}
       </p>
+
+      <WordOfYearNote locale={locale} className="wrap mt-10" />
 
       <nav aria-label={t.contents} className="wrap mt-12">
         <ol className="grid border-t border-ink sm:grid-cols-2 lg:grid-cols-4">

@@ -6,6 +6,7 @@ import { Tally } from "@/components/crowd";
 import { breadcrumbList, JsonLd, PageHeader, Pager, TestPromo, TranslatorNotes } from "@/components/page";
 import { SpeciesPlate } from "@/components/pictograms";
 import { ShareBar } from "@/components/share-bar";
+import { YearAnnex } from "@/components/year-annex";
 import { REPORTS, formatReportDate, getReports, reportBySlug, type Report } from "@/content/reports";
 import { speciesByKey } from "@/content/species";
 import { hasLocale, LOCALE_INFO, type Locale } from "@/i18n/config";
@@ -14,7 +15,7 @@ import Link from "@/i18n/link";
 import { localizePath } from "@/i18n/routes";
 import { getLocale } from "@/i18n/server";
 import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
-import { siteCopy } from "@/lib/site";
+import { site, siteCopy } from "@/lib/site";
 import { cx, formatNumber, typo } from "@/lib/typo";
 
 // Every report is prerendered; unknown slugs 404.
@@ -41,6 +42,7 @@ const COPY = defineCopy({
     chart: (title: string, unit: string) => `Wykres 1. ${title} (${unit})`,
     unit: (unit: string) => (unit === "%" ? "%" : ` ${unit}`),
     source: (number: string) => `Źródło: IBD, ${number}.`,
+    license: "Wykres można przedrukować na licencji",
     promoTitle: "Chcesz trafić do statystyk?",
     promoText: "Test Dziadersa to pięć gabinetów i około czterech minut. Wynik z imieniem zostaje w linku, do Spisu trafia anonimowo.",
   },
@@ -61,6 +63,7 @@ const COPY = defineCopy({
     // A no-break space before every unit, the percent sign included: "61 %".
     unit: (unit: string) => ` ${unit}`,
     source: (number: string) => `Vir: IBD, ${number}.`,
+    license: "Graf je dovoljeno ponatisniti pod licenco",
     promoTitle: "Želiš v statistiko?",
     promoText: "Test dziadersa je pet ordinacij in približno štiri minute. Izvid z imenom ostane v povezavi, v Popis gre anonimno.",
   },
@@ -204,6 +207,8 @@ export default async function ReportPage({ params }: PageProps<"/[lang]/raporty/
                 </ol>
               </section>
 
+              {report.yearEnd && <YearAnnex locale={locale} />}
+
               <TranslatorNotes notes={report.notes} className="mt-14" />
 
               <div className="mt-12 border-t border-ink pt-5">
@@ -291,7 +296,19 @@ function BarChart({ report, locale, t }: { report: Report; locale: Locale; t: Co
           </li>
         ))}
       </ol>
-      <p className="label mt-5 text-ink-soft">{t.source(report.number)}</p>
+      <p className="label mt-5 text-ink-soft">
+        {t.source(report.number)}
+        {report.yearEnd && (
+          <>
+            {" "}
+            {t.license}{" "}
+            <a href={`${site.dataLicense}deed.${locale}`} rel="license" className="link text-ink">
+              CC BY 4.0
+            </a>
+            .
+          </>
+        )}
+      </p>
     </figure>
   );
 }

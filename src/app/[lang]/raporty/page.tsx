@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WordOfYearNote } from "@/components/word-promo";
 import { Tally } from "@/components/crowd";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { formatReportDate, getReports } from "@/content/reports";
@@ -86,6 +87,10 @@ export default async function ReportsPage() {
       />
 
       <PageHeader crumbs={[{ label: t.title }]} title={t.title} lead={typo(t.lead)} meta={t.meta(reports.length)} />
+
+      <div className="wrap mt-10">
+        <WordOfYearNote locale={locale} />
+      </div>
 
       <Section id="lista" title={t.all}>
         <ol className="border-t border-ink">
