@@ -54,6 +54,8 @@ const SHARE_CARDS = ["/opengraph-image", "/:path*/opengraph-image"];
 const EMBEDDABLE = [
   ...SHARE_CARDS,
   "/wynik/:kod/certyfikat",
+  "/slowo-roku/certyfikat",
+  `/sl/${sl("slowo-roku")}/certifikat`,
   "/wynik/:kod/badania",
   `/sl/${sl("wynik")}/:kod/certifikat`,
   `/sl/${sl("wynik")}/:kod/preiskave`,
@@ -116,6 +118,7 @@ const nextConfig: NextConfig = {
     "/[lang]/profil/**": imageAssets,
     "/[lang]/egzamin/**": imageAssets,
     "/[lang]/czy-to-juz-dziaderstwo/**": imageAssets,
+    "/[lang]/slowo-roku/**": imageAssets,
     "/[lang]/kalendarz/**": imageAssets,
     "/[lang]/opengraph-image": imageAssets,
     "/[lang]/kolejka/**": imageAssets,

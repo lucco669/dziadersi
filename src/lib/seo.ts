@@ -79,6 +79,7 @@ export const SHARE_CARDS = [
   "/slownik-mlodziezowy",
   "/slownik-mlodziezowy/[slug]",
   "/slownik/[slug]",
+  "/slowo-roku",
   "/spis",
   "/statystyki",
   "/superinteligencja",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AtlasPlates, CaseOfTheDay, Hero, IndexBand, Shelf, TestBand } from "@/components/home";
 import { FieldworkHome } from "@/components/fieldwork-home";
 import { GrillPromo } from "@/components/grill-promo";
+import { WordOfYearBand } from "@/components/word-promo";
 import { JsonLd } from "@/components/page";
 import { LOCALE_INFO } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
@@ -112,6 +113,7 @@ export default async function Home() {
         ]}
       />
       <Hero locale={locale} />
+      <WordOfYearBand locale={locale} />
       <TestBand locale={locale} />
       <AtlasPlates locale={locale} />
       <FieldworkHome locale={locale} updated={bulletin.updated} />

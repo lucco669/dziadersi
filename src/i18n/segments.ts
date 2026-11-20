@@ -35,6 +35,7 @@ export const SEGMENTS: SegmentMap = {
   biuletyn: { sl: "bilten", children: { wypisz: "odjava", potwierdz: "potrditev" } },
   egzamin: { sl: "izpit", children: { karta: "kartica" } },
   "czy-to-juz-dziaderstwo": { sl: "je-to-ze-dziaderstvo", children: { karta: "kartica" } },
+  "slowo-roku": { sl: "beseda-leta", children: { certyfikat: "certifikat" } },
   grupa: { sl: "lestvica", children: { karta: "kartica" } },
   grupy: { sl: "skupina" },
   profil: { sl: "profil", children: { zapisz: "shrani", zachowaj: "ohrani", legitymacja: "izkaznica" } },

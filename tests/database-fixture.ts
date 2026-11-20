@@ -9,16 +9,15 @@ import { readdir, readFile } from "node:fs/promises";
 export async function databaseFixture({ all = false }: { all?: boolean } = {}) {
   const db = new PGlite();
   await db.exec("create role anon; create role authenticated; create role service_role bypassrls;");
-  if (all) {
-    await db.exec(`
-      create schema auth;
-      create table auth.users (id uuid primary key, email text, email_confirmed_at timestamptz, raw_user_meta_data jsonb, created_at timestamptz not null default now());
-      create function auth.uid() returns uuid language sql stable as $$ select null::uuid $$;
-    `);
-  }
+  // Every run needs auth.users (the word-of-year votes reference it); `all` needs auth.uid() too.
+  await db.exec(`
+    create schema auth;
+    create table auth.users (id uuid primary key, email text, email_confirmed_at timestamptz, raw_user_meta_data jsonb, created_at timestamptz not null default now());
+    create function auth.uid() returns uuid language sql stable as $$ select null::uuid $$;
+  `);
   const files = all
     ? (await readdir("supabase/migrations")).filter((file) => file.endsWith(".sql")).sort()
-    : ["20261002130000_results.sql", "20261003100000_groups_and_write_limits.sql"];
+    : ["20261002130000_results.sql", "20261003100000_groups_and_write_limits.sql", "20261120130000_word_of_year.sql"];
   for (const file of files) {
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   }

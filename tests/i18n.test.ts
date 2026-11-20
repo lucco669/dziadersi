@@ -150,8 +150,9 @@ test("every content module has a complete Slovenian translation", async () => {
     import("../src/content/dossiers"),
     import("../src/content/guide"),
     import("../src/content/museum"),
+    import("../src/content/word-of-year"),
   ]);
-  assert.equal(modules.length, 17);
+  assert.equal(modules.length, 18);
   const [species, dictionary, reports, , test2, , , cases, bingo, phrasebook, , , szwagier] = modules;
   assert.equal(szwagier.getSzwagier("sl").topics.length, szwagier.SZWAGIER.topics.length);
   assert.equal(species.getSpecies("sl").length, species.SPECIES.length);

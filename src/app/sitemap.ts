@@ -65,6 +65,7 @@ function pages(locale: Locale): MetadataRoute.Sitemap {
     page("/statystyki", "hourly", 0.6),
     page("/egzamin", "monthly", 0.7),
     page("/czy-to-juz-dziaderstwo", "weekly", 0.8),
+    page("/slowo-roku", "daily", 0.8),
     ...getCases(locale).map((item) => page(`/czy-to-juz-dziaderstwo/${item.slug}`, "monthly", 0.6)),
     page("/obserwacje", "hourly", 0.6),
     page("/tablica-honorowa", "daily", 0.6),

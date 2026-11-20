@@ -4,11 +4,13 @@ import { headers } from "next/headers";
 import { createAdminClient, hasAdmin } from "./supabase/admin";
 import { checkWriteRequest } from "./write-policy";
 
-type Scope = "results" | "verdicts" | "tallies" | "family-create" | "family-join" | "sign-in" | "auth-mail" | "newsletter" | "newsletter-all";
+type Scope = "results" | "verdicts" | "words" | "tallies" | "family-create" | "family-join" | "sign-in" | "auth-mail" | "newsletter" | "newsletter-all";
 /** Per network address and ten-minute window. */
 const LIMITS: Record<Scope, number> = {
   results: 30,
   verdicts: 60,
+  // Słowo Roku: one vote per browser, so a household behind one address needs a few, not dozens.
+  words: 20,
   tallies: 240,
   "family-create": 10,
   "family-join": 30,
