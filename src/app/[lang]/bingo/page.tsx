@@ -12,6 +12,7 @@ import { sampleCard } from "@/lib/bingo";
 import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { formatNumber, plural, pluralSl, typo } from "@/lib/typo";
+import { occasionForDossier } from "@/lib/wishes";
 
 const COPY = defineCopy({
   pl: {
@@ -34,6 +35,7 @@ const COPY = defineCopy({
     draw: "Losuj kartę",
     sample: "Przykładowa karta",
     dossier: "Przewodnik na tę okazję",
+    wishes: "Życzenia od Instytutu na tę okazję",
     materials: "Wszystkie materiały do druku",
     rulesTitle: "Zasady",
     rulesAside: "Regulamin gry IBD-B1",
@@ -83,6 +85,7 @@ const COPY = defineCopy({
     draw: "Izžrebaj listek",
     sample: "Vzorčni listek",
     dossier: "Vodnik za to priložnost",
+    wishes: "Voščila Inštituta za to priložnost",
     materials: "Vse gradivo za tisk",
     rulesTitle: "Pravila",
     rulesAside: "Pravilnik igre IBD-B1",
@@ -204,6 +207,7 @@ export default async function BingoPage() {
                   </div>
                   <TranslatorNotes notes={occasion.notes} className="mt-6 max-w-md" />
                   {dossier && <p className="mt-5"><Link href={"/okazje/" + dossier.slug} className="link font-sans">{t.dossier} →</Link></p>}
+                  {occasionForDossier(occasion.slug) && <p className="mt-2"><Link href="/zyczenia" className="link font-sans">{t.wishes} →</Link></p>}
                 </div>
               </li>
             );

@@ -122,6 +122,7 @@ const nextConfig: NextConfig = {
     "/[lang]/krol-grilla/**": [...imageAssets, "./assets/illustrations/grill/hero-600.png"],
     "/[lang]/dziaders/**": imageAssets,
     "/[lang]/okazje/**": imageAssets,
+    "/[lang]/zyczenia/**": imageAssets,
     "/[lang]/do-druku/**": imageAssets,
     "/[lang]/lanie-wosku/**": [...imageAssets, "./assets/wosk/*.png"],
   },

@@ -87,6 +87,8 @@ export const SHARE_CARDS = [
   "/test",
   "/test/przy-stole",
   "/wynik/[kod]",
+  "/zyczenia",
+  "/zyczenia/[kod]",
 ];
 
 const CARD_PATTERNS = SHARE_CARDS.map((card) => card.split("/").filter(Boolean));

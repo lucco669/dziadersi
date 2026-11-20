@@ -225,6 +225,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       summary: "Karty bingo na wesele, Wigilię, imieniny, majówkę, podróż autem i plażę, do skreślania na telefonie albo do druku.",
     },
     {
+      href: "/zyczenia",
+      label: "Życzenia od Instytutu",
+      short: "Życzenia",
+      group: "pomoce",
+      summary: "Życzenia świąteczne i noworoczne w formie pisma urzędowego, z pieczęcią. Dla wujka, szwagra, szefa i od całej rodziny.",
+      isNew: true,
+    },
+    {
       href: "/kolejka",
       label: "Pan tu nie stał!",
       short: "Kolejka",
@@ -380,6 +388,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Bingo",
       group: "pomoce",
       summary: "Bingo listki za svatbo, sveti večer, godovanje, prvomajski vikend, vožnjo z avtom in plažo, za prečrtavanje na telefonu ali za tisk.",
+    },
+    {
+      href: "/zyczenia",
+      label: "Voščila Inštituta",
+      short: "Voščila",
+      group: "pomoce",
+      summary: "Praznična in novoletna voščila v obliki uradnega dopisa, s pečatom. Za strica, svaka, šefa in od vse družine.",
+      isNew: true,
     },
     {
       href: "/kolejka",

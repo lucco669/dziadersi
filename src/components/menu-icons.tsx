@@ -158,6 +158,16 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       </g>
     </g>
   ),
+  "/zyczenia": (
+    <g>
+      <rect x={5} y={9} width={38} height={25} fill={PAPER} stroke={INK} strokeWidth={2} strokeLinejoin="round" />
+      <path d="M5 9L24 24L43 9" fill="none" stroke={INK} strokeWidth={2} strokeLinejoin="round" />
+      <g className="mi-stamp">
+        <circle cx={34} cy={28} r={7} fill={PAPER} stroke={RED} strokeWidth={2} />
+        <circle cx={34} cy={28} r={3.2} fill={RED} />
+      </g>
+    </g>
+  ),
   "/superinteligencja": (
     <g>
       <rect x={6} y={3} width={36} height={27} rx={2.4} fill={PAPER} stroke={INK} strokeWidth={2} />
