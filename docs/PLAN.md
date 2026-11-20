@@ -30,6 +30,10 @@ The Atlas, Słownik and Raporty bring search traffic (a long tail of pages). The
 - Result codes are stateless: "2" + every answer packed as one mixed-radix number (14 base36 chars, the family-interview flag included) + the date, then the name after `~`. **Codes starting with "1" are the retired 24-question IBD-T1**: they decode and score exactly as before (`src/content/test-v1.ts`, never edit). Tasks in IBD-T2 must never be reordered or resized; a new edition gets a new code version.
 - `/wynik/[kod]`: score, verdict stamp, diagnosis, scale against today's NID, certificate (marked "na podstawie wywiadu rodzinnego" for family interviews), case description, species notes, **lab results** ("Wyniki badań laboratoryjnych": 12 parameters on real blood-test abbreviations such as OB, CRP, PLT and ALT, plus the horn reaction time, driven by the score and species shares and flagged ↑/↓; `src/content/lab.ts`), the examination protocol, and a band for the next person: ranking, family interview, test again.
 - **Rankings** (`/grupa/[lista]`): result codes joined with dots, at most 12. A result links to its own ranking; anyone opening it can join through `/test?grupa=…` and lands on the updated list, which they share on. Two people get a duel (scores, "zgodność dziaderska", shared symptoms); three or more get the list with Isotype tallies, the dominant species and the most and least compatible pair. Still no database: the URL is the ranking.
+- **Badanie przy stole** (`/test/przy-stole`, SL `/sl/test/za-mizo`): one phone, 2–8 people (a single latecomer may join an existing ranking with `?grupa=`). The intro is an attendance list ("Lista obecności"): names stay on the device (sessionStorage while the table is examined) and in the ranking URL. Each person answers **Formularz IBD-T2S**, six IBD-T2 tasks (`SHORT_FORM` in `src/content/test.ts`: the UDOSTĘPNIJ message, Plansza I, Skojarzenia, the horn, the boot, the rapid series), with a handover screen ("Następna osoba badana") between people that hides the previous answers. At the end everyone lands on one `/grupa/[lista]`. Entry points: a "Cały stół" row on `/test`'s intro, the menu, the Wigilia guide, and the calendar's band from 1 to 26 December.
+  - Codes: **version "3"**, packed like version 2 (family-interview digit, then six answers) with the same date, name and specimen suffixes. `SHORT_FORM` is frozen like `TASKS`. The score is the percentage of its own 18 points; species affinity is damped harder (`max / (max + 4)`) and the leading species needs 0.25 to be named (`NAMING` in `src/lib/test.ts`). Calibrated by simulation and pinned in `tests/table.test.ts`: under random answering every species wins 6–10% of the time, hybrids 14% (IBD-T2: 14%), Pospolity 12%; a respondent leaning to one species is recognised 61–79% of the time (IBD-T2 under the same simulation: 65–76%).
+  - Census: `/api/wyniki` accepts versions 2 and 3. `census_summary()` counts both; `answer_counts()` stays IBD-T2 only (it always filtered `version = 2`), and `score_histogram()` becomes IBD-T2 only (`supabase/migrations/20261121100000_table_edition.sql`).
+- Every ranking also has a portrait card for a chat, `/grupa/[lista]/karta` (1080×1350, `?pobierz`), shown on the ranking page with a send button where the phone's share sheet takes files, and a certificate link per person.
 - Images: `/wynik/[kod]/opengraph-image` (1200×630), `/wynik/[kod]/certyfikat?format=post|relacja` (1080×1350, 1080×1920), `/wynik/[kod]/badania` (the lab printout, 1080×1350) and `/grupa/[lista]/opengraph-image`. All are CDN-cached for a year. `/test` has its own card with Plansza IV.
 - Result and ranking pages are `noindex`. One sample of each is prerendered; other codes render on first visit and are then served from cache.
 
@@ -95,7 +99,7 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 | URL | Phase |
 | --- | --- |
 | `/` | 0 |
-| `/test`, `/wynik/[kod]`, `/wynik/[kod]/badania`, `/grupa/[lista]` | 1 |
+| `/test`, `/test/przy-stole`, `/wynik/[kod]`, `/wynik/[kod]/badania`, `/grupa/[lista]`, `/grupa/[lista]/karta` | 1 |
 | `/atlas`, `/atlas/[slug]` | 2 |
 | `/slownik`, `/slownik/[slug]` | 2 |
 | `/raporty`, `/raporty/[slug]` | 2 |
@@ -171,6 +175,7 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - [x] Privacy page before adding analytics; terms before any user-generated content
 - [x] Run `supabase/migrations/20261002160000_community.sql` (observations, bookmarks, Komisja, tallies)
 - [ ] Run `supabase/migrations/20261002190000_bulletin_calendar.sql` (opt-ins, calendar, honour board, bulletin)
+- [ ] Run `supabase/migrations/20261121100000_table_edition.sql` before deploying Badanie przy stole (until then its results are refused by the census)
 - [ ] Add `CRON_SECRET` to the app's environment (any long random string) and schedule `/api/cron/biuletyn` (Mondays) and `/api/cron/porzadki` (daily): [deploy/README.md](../deploy/README.md)
 - [ ] Fill in `site.controller` (name and email) in `src/lib/site.ts`: the privacy policy, terms and About page point to it
 - [x] Phase 1 shipped before any promotion. The test is what turns visits into shares.

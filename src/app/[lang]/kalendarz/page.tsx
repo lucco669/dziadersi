@@ -41,6 +41,16 @@ const COPY = defineCopy({
       title: "Kartka na dziś zerwana. A badanie?",
       text: "Test Dziadersa: pięć gabinetów, około czterech minut. Wynik nie zmienia się o północy.",
     },
+    december: {
+      title: (day: number, days: number) =>
+        day > 24
+          ? "Święta. Rodzina jeszcze przy stole?"
+          : days
+            ? `Do Wigilii ${days} ${plural(days, "dzień", "dni", "dni")}. Stół już rozłożony?`
+            : "Wigilia. Telefon idzie dookoła stołu.",
+      text: "Badanie przy stole: od dwóch do ośmiu osób na jednym telefonie, sześć zadań na każdą, wyniki ogłaszane wszystkim naraz.",
+      cta: "Badanie przy stole",
+    },
     notes: [] as string[],
   },
   sl: {
@@ -64,6 +74,16 @@ const COPY = defineCopy({
     promo: {
       title: "Današnji list je odtrgan. Kaj pa pregled?",
       text: "Test dziadersa: pet ordinacij, približno štiri minute. Izvid se opolnoči ne spremeni.",
+    },
+    december: {
+      title: (day: number, days: number) =>
+        day > 24
+          ? "Prazniki. Je družina še za mizo?"
+          : days
+            ? `Do svetega večera ${days} ${pluralSl(days, "dan", "dneva", "dnevi", "dni")}. Je miza že raztegnjena?`
+            : "Sveti večer. Telefon gre okoli mize.",
+      text: "Pregled za mizo: od dveh do osmih oseb na enem telefonu, šest nalog za vsako, izvidi razglašeni vsem hkrati.",
+      cta: "Pregled za mizo",
     },
     notes: [
       "Vzhod in zahod: časi veljajo za Varšavo, kot v izvirniku. V Ljubljani so lahko drugačni tudi za skoraj eno uro.",
@@ -181,7 +201,11 @@ export default async function CalendarPage() {
         </div>
       </Section>
 
-      <TestPromo title={t.promo.title} text={typo(t.promo.text)} />
+      {sheet.month === 12 && sheet.day <= 26 ? (
+        <TestPromo title={typo(t.december.title(sheet.day, sheet.toChristmasEve))} text={typo(t.december.text)} href="/test/przy-stole" cta={t.december.cta} />
+      ) : (
+        <TestPromo title={t.promo.title} text={typo(t.promo.text)} />
+      )}
     </main>
   );
 }

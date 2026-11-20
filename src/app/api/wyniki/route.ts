@@ -17,8 +17,9 @@ export async function POST(request: Request) {
   if (!body || !isAttemptId(body.attempt)) return new Response(null, { status: 400 });
 
   const draft = typeof body.code === "string" ? decodeResult(body.code) : null;
-  // Only fresh results of the current edition: a code from last month is a shared link, not a test.
-  if (!draft || draft.version !== 2 || Math.abs(draft.day - dayNumber(new Date())) > 1) {
+  // Only fresh results of the current forms (IBD-T2 and the short IBD-T2S from the table):
+  // a code from last month is a shared link, not a test. Per-task census statistics read version 2 only.
+  if (!draft || draft.version === 1 || Math.abs(draft.day - dayNumber(new Date())) > 1) {
     return new Response(null, { status: 400 });
   }
 

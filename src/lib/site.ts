@@ -82,6 +82,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       summary: "Badanie okresowe w pięciu gabinetach. Wynik w procentach, rozpoznanie gatunku, wyniki laboratoryjne i certyfikat.",
     },
     {
+      href: "/test/przy-stole",
+      label: "Badanie przy stole",
+      short: "Przy stole",
+      group: "badania",
+      summary: "Test dla całego stołu na jednym telefonie: od dwóch do ośmiu osób, sześć zadań na osobę, wspólny ranking i certyfikat dla każdego.",
+      isNew: true,
+    },
+    {
       href: "/egzamin",
       label: "Egzamin terenowy",
       short: "Egzamin",
@@ -221,6 +229,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Test",
       group: "badania",
       summary: "Obdobni pregled v petih ordinacijah. Rezultat v odstotkih, diagnoza vrste, laboratorijski izvidi in certifikat.",
+    },
+    {
+      href: "/test/przy-stole",
+      label: "Pregled za mizo",
+      short: "Za mizo",
+      group: "badania",
+      summary: "Test za vso mizo na enem telefonu: od dveh do osmih oseb, šest nalog na osebo, skupna lestvica in certifikat za vsakogar.",
+      isNew: true,
     },
     {
       href: "/egzamin",

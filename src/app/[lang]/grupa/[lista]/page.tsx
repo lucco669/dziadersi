@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Stamp } from "@/components/brand";
 import { Tally } from "@/components/crowd";
 import { PageHeader, Section } from "@/components/page";
+import { GroupCardShare } from "@/components/group-card-share";
 import { Figure, INK, PAPER, SpeciesPlate } from "@/components/pictograms";
 import { ShareBar } from "@/components/share-bar";
 import { getVerdicts } from "@/content/test";
@@ -64,6 +65,18 @@ const COPY = defineCopy({
     pair: (a: string, b: string) => `${a} i ${b}`,
     percent: (value: number) => `${value}%`,
     apart: "Nie sadzać obok siebie.",
+    send: "Do wysłania",
+    sendAside: "Karta i certyfikaty",
+    card: "Karta rankingu",
+    cardFile: "ranking-dziaderstwa",
+    certificates: "Certyfikaty",
+    certificatesIntro: "Każdy odbiera swój. Wynik ze szczegółami albo sam certyfikat jako obraz.",
+    certificate: (number: string) => `Certyfikat nr ${number}`,
+    result: "Wynik",
+    image: "Obraz",
+    table: "Ktoś się dosiadł?",
+    tableLink: "Badanie przy stole",
+    tableText: "Krótsze badanie na jednym telefonie: sześć zadań na osobę, po kolei. Nowe osoby dopisują się do tej listy.",
   },
   sl: {
     duel: (a: string, b: string) => `${a} – ${b}`,
@@ -103,6 +116,18 @@ const COPY = defineCopy({
     pair: (a: string, b: string) => `${a} in ${b}`,
     percent: (value: number) => `${value} %`,
     apart: "Pri mizi ne posaditi skupaj.",
+    send: "Za pošiljanje",
+    sendAside: "Kartica in certifikati",
+    card: "Kartica lestvice",
+    cardFile: "lestvica-dziaderstva",
+    certificates: "Certifikati",
+    certificatesIntro: "Vsak prevzame svojega. Izvid s podrobnostmi ali samo certifikat kot sliko.",
+    certificate: (number: string) => `Certifikat št. ${number}`,
+    result: "Izvid",
+    image: "Slika",
+    table: "Je kdo prisedel?",
+    tableLink: "Pregled za mizo",
+    tableText: "Krajši pregled na enem telefonu: šest nalog na osebo, po vrsti. Nove osebe se vpišejo na ta seznam.",
   },
 });
 
@@ -208,6 +233,37 @@ export default async function GroupPage({ params }: PageProps<"/[lang]/grupa/[li
         {members.length >= 3 && <GroupFacts members={members} locale={locale} />}
       </Section>
 
+      <Section id="karta" title={t.send} aside={t.sendAside}>
+        <div className="grid gap-12 md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] md:gap-14">
+          <div>
+            <h3 className="label mb-4 text-ink-soft">{t.card}</h3>
+            <GroupCardShare path={`${path}/karta`} file={`${t.cardFile}-${members.length}`} text={t.share(top(members, locale))} />
+          </div>
+          <div>
+            <h3 className="label text-ink-soft">{t.certificates}</h3>
+            <p className="mt-2 max-w-md leading-snug text-ink-soft">{typo(t.certificatesIntro)}</p>
+            <ul className="mt-5 border-t border-ink">
+              {members.map((member) => (
+                <li key={member.result.code} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-rule py-3.5">
+                  <span>
+                    <span className="block text-xl font-bold leading-tight">{member.label}</span>
+                    <span className="label text-ink-soft">{t.certificate(member.result.certificate)}</span>
+                  </span>
+                  <span className="label flex gap-5">
+                    <Link href={`/wynik/${member.result.code}`} className="link py-1.5 text-ink">
+                      {t.result} →
+                    </Link>
+                    <a href={`${localizePath(`/wynik/${member.result.code}/certyfikat`, locale)}?pobierz`} className="link py-1.5 text-ink">
+                      {t.image} ↓
+                    </a>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+
       <section aria-labelledby="dolacz" className="bg-ink text-paper">
         <div className="wrap flex flex-col gap-10 py-16 md:flex-row md:items-center md:py-20">
           <svg viewBox="-2 -1 56 97" className="hidden h-40 shrink-0 md:block" aria-hidden="true">
@@ -221,6 +277,14 @@ export default async function GroupPage({ params }: PageProps<"/[lang]/grupa/[li
             <div className="mt-6">
               <ShareBar path={path} text={t.share(top(members, locale))} kind="ranking" tone="paper" />
             </div>
+            {!full && (
+              <p className="mt-8 max-w-xl border-t border-paper/25 pt-4 text-paper/75">
+                <span className="font-bold text-paper">{t.table}</span> {typo(t.tableText)}{" "}
+                <Link href={`/test/przy-stole?grupa=${normalized}`} className="link font-sans text-paper">
+                  {t.tableLink} →
+                </Link>
+              </p>
+            )}
           </div>
           <Link
             href={full ? "/test" : `/test?grupa=${normalized}`}

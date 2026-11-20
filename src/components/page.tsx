@@ -144,7 +144,8 @@ export function Section({
 }
 
 /** Closes every page: one line about the test and the button. */
-export async function TestPromo({ title, text }: { title: ReactNode; text: ReactNode }) {
+/** The ink band before the footer. `href` and `cta` send it somewhere other than the test, e.g. the table mode. */
+export async function TestPromo({ title, text, href = "/test", cta }: { title: ReactNode; text: ReactNode; href?: string; cta?: string }) {
   const t = COPY[await getLocale()];
   return (
     <section aria-label={t.test} className="bg-ink text-paper">
@@ -156,8 +157,8 @@ export async function TestPromo({ title, text }: { title: ReactNode; text: React
           <p className="text-[clamp(1.9rem,3.6vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.015em]">{title}</p>
           <p className="mt-3 max-w-xl text-paper/75">{text}</p>
         </div>
-        <Link href="/test" className="btn self-start bg-paper text-ink hover:bg-red hover:text-paper md:self-center">
-          {t.cta} <span aria-hidden="true">→</span>
+        <Link href={href} className="btn self-start bg-paper text-ink hover:bg-red hover:text-paper md:self-center">
+          {cta ?? t.cta} <span aria-hidden="true">→</span>
         </Link>
       </div>
     </section>

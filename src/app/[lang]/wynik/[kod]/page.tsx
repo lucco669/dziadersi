@@ -10,7 +10,7 @@ import { Figure, SpeciesPlate, INK, PAPER } from "@/components/pictograms";
 import { ResultProfileNote } from "@/components/profile-notes";
 import { ResultActions } from "@/components/result-actions";
 import type { Species } from "@/content/species";
-import { getVerdicts, TASKS } from "@/content/test";
+import { getVerdicts, SHORT_FORM, TASKS } from "@/content/test";
 import { QUESTIONS_V1 } from "@/content/test-v1";
 import type { Locale } from "@/i18n/config";
 import { defineCopy } from "@/i18n/copy";
@@ -62,6 +62,7 @@ const COPY = defineCopy({
     protocol: "Protokół badania",
     form2: (count: number) => `Formularz IBD-T2 · ${count} zadań`,
     form1: (count: number) => `Formularz IBD-T1 · ${count} pytania`,
+    form3: (count: number) => `Formularz IBD-T2S · ${count} zadań, badanie przy stole`,
     protocolIntro: "Odpowiedzi, które w największym stopniu wpłynęły na rozpoznanie.",
     task: "Zad.",
     question: "Pyt.",
@@ -122,6 +123,7 @@ const COPY = defineCopy({
     protocol: "Zapisnik pregleda",
     form2: (count: number) => `Obrazec IBD-T2 · ${count} ${pluralSl(count, "naloga", "nalogi", "naloge", "nalog")}`,
     form1: (count: number) => `Obrazec IBD-T1 · ${count} ${pluralSl(count, "vprašanje", "vprašanji", "vprašanja", "vprašanj")}`,
+    form3: (count: number) => `Obrazec IBD-T2S · ${count} ${pluralSl(count, "naloga", "nalogi", "naloge", "nalog")}, pregled za mizo`,
     protocolIntro: "Odgovori, ki so najbolj vplivali na diagnozo.",
     task: "Nal.",
     question: "Vpr.",
@@ -456,7 +458,7 @@ function Protocol({ result, counts, locale }: { result: Result; counts: AnswerCo
     <Section
       id="protokol"
       title={t.protocol}
-      aside={result.version === 2 ? t.form2(TASKS.length) : t.form1(QUESTIONS_V1.length)}
+      aside={result.version === 2 ? t.form2(TASKS.length) : result.version === 3 ? t.form3(SHORT_FORM.length) : t.form1(QUESTIONS_V1.length)}
       intro={typo(t.protocolIntro)}
     >
       {result.symptoms.length > 0 ? (
@@ -467,7 +469,7 @@ function Protocol({ result, counts, locale }: { result: Result; counts: AnswerCo
               className="grid gap-x-8 gap-y-2 border-b border-rule py-5 md:grid-cols-[4.5rem_minmax(0,1.25fr)_minmax(0,1fr)_4.5rem] md:items-baseline"
             >
               <span className="label text-ink-soft">
-                {result.version === 2 ? t.task : t.question} {pad(symptom.number)}
+                {result.version === 1 ? t.question : t.task} {pad(symptom.number)}
               </span>
               <span className="leading-snug">
                 {typo(symptom.question)}
