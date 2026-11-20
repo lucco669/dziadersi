@@ -70,6 +70,8 @@ export const SHARE_CARDS = [
   "/muzeum",
   "/muzeum/[slug]",
   "/o-instytucie",
+  "/plan-stolu",
+  "/plan-stolu/[kod]",
   "/obserwacje",
   "/okazje",
   "/okazje/[slug]",

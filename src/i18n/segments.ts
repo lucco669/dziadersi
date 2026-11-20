@@ -30,6 +30,7 @@ export const SEGMENTS: SegmentMap = {
   bingo: { sl: "bingo", children: { druk: "tisk" } },
   kolejka: { sl: "cakalna-vrsta" },
   "krol-grilla": { sl: "kralj-zara" },
+  "plan-stolu": { sl: "sedezni-red", children: { karta: "kartica" } },
   kalendarz: { sl: "koledar", children: { swieta: "prazniki" } },
   "lanie-wosku": { sl: "vlivanje-voska", children: { karta: "kartica" } },
   biuletyn: { sl: "bilten", children: { wypisz: "odjava", potwierdz: "potrditev" } },

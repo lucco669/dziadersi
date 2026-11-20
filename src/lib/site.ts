@@ -233,6 +233,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       isNew: true,
     },
     {
+      href: "/plan-stolu",
+      label: "Plan stołu",
+      short: "Plan stołu",
+      group: "pomoce",
+      summary: "Urzędowe rozsadzanie gości przy Wigilii i na weselu. Instytut wskazuje punkty zapalne i wydaje protokół z pieczęcią.",
+      isNew: true,
+    },
+    {
       href: "/kolejka",
       label: "Pan tu nie stał!",
       short: "Kolejka",
@@ -395,6 +403,14 @@ const SECTION_COPY = defineCopy<Department[]>({
       short: "Voščila",
       group: "pomoce",
       summary: "Praznična in novoletna voščila v obliki uradnega dopisa, s pečatom. Za strica, svaka, šefa in od vse družine.",
+      isNew: true,
+    },
+    {
+      href: "/plan-stolu",
+      label: "Sedežni red",
+      short: "Sedežni red",
+      group: "pomoce",
+      summary: "Uradno posedanje gostov za sveti večer in na svatbi. Inštitut pokaže žarišča in izda zapisnik z žigom.",
       isNew: true,
     },
     {

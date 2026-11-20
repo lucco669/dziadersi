@@ -76,6 +76,7 @@ Everything is translated: pages, menus, content, share images, certificates, ema
 | Dziaders Bingo · Bingo | Dziaders bingo · Bingo |
 | Pan tu nie stał! · Kolejka · /kolejka | Vi pa niste bili v vrsti! · Vrsta · /sl/cakalna-vrsta |
 | Król grilla · Grill · /krol-grilla | Kralj žara · Žar · /sl/kralj-zara |
+| Plan stołu · /plan-stolu · protokół rozsadzenia · puste nakrycie dla wędrowca | Sedežni red · /sl/sedezni-red · zapisnik o sedežnem redu · prazen pogrinjek za popotnika |
 | Kartka z kalendarza · Kalendarz · /kalendarz | Trgalni koledar · Koledar · /sl/koledar |
 | Lanie wosku · Wosk · /lanie-wosku | Vlivanje voska · Vosek · /sl/vlivanje-voska (framed as a New Year's Eve custom; a translator's note explains Andrzejki) |
 | Pracownia Wróżb · odlew · odczyt · protokół odczytu | Laboratorij za vedeževanje · odlitek · branje · zapisnik branja |

@@ -182,6 +182,16 @@ export const MENU_ICONS: Record<string, ReactNode> = {
       <line x1={12} y1={37} x2={36} y2={37} stroke={INK} strokeWidth={1.8} strokeLinecap="round" />
     </g>
   ),
+  "/plan-stolu": (
+    <g>
+      <circle cx={24} cy={20} r={10.5} fill={PAPER} stroke={INK} strokeWidth={2} />
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const angle = -Math.PI / 2 + (i * Math.PI) / 3;
+        return <circle key={i} cx={24 + Math.cos(angle) * 16.5} cy={20 + Math.sin(angle) * 16.5} r={3.2} fill={i === 1 || i === 2 ? RED : INK} />;
+      })}
+      <path className="mi-cross" d="M38.3 15.2V24.8" stroke={RED} strokeWidth={2} strokeLinecap="round" pathLength={1} />
+    </g>
+  ),
   "/kolejka": (
     <g><path d="M3 5H15V32H3Z" fill="none" stroke={INK} strokeWidth={1.5} /><path d="M1 23H18" stroke={INK} strokeWidth={2} /><Tiny x={23} y={33} color={RED} /><Tiny x={32} y={33} /><Tiny x={41} y={33} /><path d="M2 36H46" stroke={INK} strokeWidth={1.4} /></g>
   ),

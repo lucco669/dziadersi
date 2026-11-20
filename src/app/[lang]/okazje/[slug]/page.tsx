@@ -47,6 +47,7 @@ const COPY = defineCopy({
     card: "Kartka do wręczenia albo wysłania",
     cardNote: "Do przepisania odręcznie. Instytut nie zgłasza praw autorskich do życzeń.",
     wishes: "Życzenia od Instytutu",
+    seating: "Plan stołu: kto z kim usiądzie",
     promo: "Rozpoznajesz kogoś przy stole?",
     promoText: "Sprawdź najpierw siebie. Test Dziadersa wydaje certyfikat, który można spokojnie pokazać rodzinie.",
     table: "Badanie przy stole",
@@ -77,6 +78,7 @@ const COPY = defineCopy({
     card: "Voščilnica za izročitev ali pošiljanje",
     cardNote: "Za ročni prepis. Inštitut ne uveljavlja avtorskih pravic na voščilih.",
     wishes: "Voščila Inštituta",
+    seating: "Sedežni red: kdo bo sedel s kom",
     promo: "Prepoznaš koga pri mizi?",
     promoText: "Najprej preveri sebe. Test dziadersa izda certifikat, ki ga lahko mirno pokažeš družini.",
     table: "Pregled za mizo",
@@ -168,6 +170,11 @@ export default async function DossierPage({ params }: Props) {
         {occasionForDossier(dossier.bingo) && (
           <Link href="/zyczenia" className="btn border border-ink hover:bg-ink hover:text-paper">
             {t.wishes} <span aria-hidden="true">→</span>
+          </Link>
+        )}
+        {(dossier.bingo === "wigilia" || dossier.bingo === "wesele") && (
+          <Link href="/plan-stolu" className="btn border border-ink hover:bg-ink hover:text-paper">
+            {t.seating} →
           </Link>
         )}
       </div>
