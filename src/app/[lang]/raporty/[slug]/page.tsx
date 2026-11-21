@@ -236,7 +236,7 @@ export default async function ReportPage({ params }: PageProps<"/[lang]/raporty/
                     return (
                       <li key={key}>
                         <Link href={`/atlas/${species.slug}`} className="group block">
-                          <SpeciesPlate species={key} className="w-full" />
+                          <SpeciesPlate locale={locale} species={key} className="w-full" />
                           <span className="mt-1 block font-sans text-[0.85rem] font-semibold leading-tight transition-colors group-hover:text-red">
                             {species.name}
                           </span>

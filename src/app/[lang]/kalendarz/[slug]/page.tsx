@@ -155,7 +155,7 @@ export default async function ObservancePage({ params }: Props) {
       <Section id="patron" title={t.patron}>
         <div className="grid gap-10 md:grid-cols-2">
           <Link href={"/atlas/" + species.slug} className="group flex items-center gap-6">
-            <SpeciesPlate species={species.key} className="w-40 shrink-0" />
+            <SpeciesPlate locale={locale} species={species.key} className="w-40 shrink-0" />
             <span>
               <span className="block text-2xl font-bold leading-tight group-hover:text-red">{species.name}</span>
               <span className="mt-2 block text-ink-soft">{typo(species.teaser)}</span>

@@ -17,6 +17,7 @@ import { yearFor } from "@/lib/wax-code";
 const COPY = defineCopy({
   pl: {
     catalogue: "Katalog odlewów",
+    castAlt: (shape: string) => `Odlew z wosku. Cień przypomina: ${shape}.`,
     catalogueAside: "Wzorce cieni w zbiorach Pracowni",
     catalogueIntro: "Pracownia odczytuje tylko cienie, które zna. Odlew, którego cień nie pasuje do żadnego wzorca, topi się i leje ponownie.",
     method: "Metodyka",
@@ -34,6 +35,7 @@ const COPY = defineCopy({
   },
   sl: {
     catalogue: "Katalog odlitkov",
+    castAlt: (shape: string) => `Voščeni odlitek. Senca spominja na: ${shape}.`,
     catalogueAside: "Vzorci senc v zbirkah Laboratorija",
     catalogueIntro: "Laboratorij bere samo sence, ki jih pozna. Odlitek, katerega senca ne ustreza nobenemu vzorcu, se stopi in vlije znova.",
     method: "Metodika",
@@ -105,7 +107,7 @@ export default async function WaxPage() {
                     src={`/wosk/${cast.slug}-360.webp`}
                     width={360}
                     height={360}
-                    alt=""
+                    alt={t.castAlt(sample.cast.shape)}
                     loading="lazy"
                     decoding="async"
                     className="aspect-square h-auto w-full transition-[filter,opacity] duration-300 group-hover:opacity-80 group-hover:brightness-0"

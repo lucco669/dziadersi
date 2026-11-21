@@ -3,6 +3,7 @@ import { BLUE, GREY, INK, MUSTACHE_PATH, OCHRE, PAPER, RED } from "./palette";
 import { SpeciesArtwork } from "./species-artwork";
 import type { SpecimenIndex } from "@/content/specimens";
 import type { SpeciesKey } from "@/content/species";
+import type { Locale } from "@/i18n/config";
 
 /*
  * The Institute's picture statistics: flat pictograms in the Isotype manner.
@@ -1123,10 +1124,14 @@ const PLATES: Record<SpeciesKey, () => Plate> = {
   }),
 };
 
-/** Field-guide illustrations by default; compact Isotype plates for data and small markers. */
+/**
+ * Field-guide illustrations by default; compact Isotype plates for data and small markers.
+ * An illustration needs the edition's locale for its alt text; a pictogram is decorative unless it has a title.
+ */
 export function SpeciesPlate({
   species,
   specimen,
+  locale,
   eager,
   className,
   title,
@@ -1140,11 +1145,10 @@ export function SpeciesPlate({
   className?: string;
   title?: string;
   animated?: boolean;
-  variant?: "illustration" | "pictogram";
   sizes?: string;
-}) {
+} & ({ variant?: "illustration"; locale: Locale } | { variant: "pictogram"; locale?: Locale })) {
   if (variant === "illustration") {
-    return <SpeciesArtwork species={species} specimen={specimen} eager={eager} className={className} title={title} animated={animated} sizes={sizes} />;
+    return <SpeciesArtwork species={species} specimen={specimen} locale={locale!} eager={eager} className={className} title={title} animated={animated} sizes={sizes} />;
   }
   const plate = PLATES[species]();
   return (

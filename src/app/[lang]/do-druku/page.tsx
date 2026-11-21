@@ -116,7 +116,7 @@ export default async function PrintHub() {
             <article key={item.href} className="border border-rule bg-card p-6 md:p-8">
               <div className="flex items-center justify-between gap-5">
                 <span className="label text-red">{item.facts}</span>
-                <SpeciesPlate species={item.species} className="h-28 w-32 shrink-0" />
+                <SpeciesPlate locale={locale} species={item.species} className="h-28 w-32 shrink-0" />
               </div>
               <h3 className="mt-5 text-3xl font-bold">{item.title}</h3>
               <p className="mt-4 text-ink-soft">{typo(item.text)}</p>

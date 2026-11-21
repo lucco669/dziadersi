@@ -243,7 +243,7 @@ export default async function WomanGuidePage() {
         crumbs={crumbs}
         title={t.title}
         lead={typo(t.lead)}
-        aside={<SpeciesPlate species="weselny" specimen={2} eager className="mx-auto w-64 max-w-full" />}
+        aside={<SpeciesPlate locale={locale} species="weselny" specimen={2} eager className="mx-auto w-64 max-w-full" />}
       />
       <Section id="odpowiedz" title={t.answerTitle}>
         <div className="max-w-3xl space-y-5">
@@ -263,7 +263,7 @@ export default async function WomanGuidePage() {
           {featured.map(({ item, person }) => (
             <li key={item.key}>
               <Link href={"/atlas/" + item.slug} className="group block">
-                <SpeciesPlate species={item.key} specimen={person.index} className="mx-auto h-40 w-52 max-w-full" />
+                <SpeciesPlate locale={locale} species={item.key} specimen={person.index} className="mx-auto h-40 w-52 max-w-full" />
                 <h3 className="mt-4 text-2xl font-bold group-hover:text-red">{item.name}</h3>
               </Link>
               <p className="label mt-2 text-ink-faint">{t.age(person.age)}</p>

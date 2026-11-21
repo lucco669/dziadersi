@@ -439,7 +439,7 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/[lan
             return (
               <li key={key}>
                 <Link href={`/atlas/${item.slug}`} className="group block">
-                  <SpeciesPlate species={key} className={cx("w-full transition", !has && "opacity-15 grayscale")} />
+                  <SpeciesPlate locale={locale} species={key} className={cx("w-full transition", !has && "opacity-15 grayscale")} />
                   <span className={cx("mt-2 block font-bold leading-tight", has ? "group-hover:text-red" : "text-ink-faint")}>
                     {has ? item.name : t.collection.unknown}
                   </span>
@@ -457,7 +457,7 @@ async function ProfileContent({ searchParams }: { searchParams: PageProps<"/[lan
             return (
               <li key={item.key}>
                 <Link href={`/atlas/${item.slug}#obserwacja`} className="group block" title={item.name}>
-                  <SpeciesPlate species={item.key} className={cx("w-full transition", !entry && "opacity-15 grayscale")} />
+                  <SpeciesPlate locale={locale} species={item.key} className={cx("w-full transition", !entry && "opacity-15 grayscale")} />
                   <span className={cx("label mt-1 block text-[0.72rem] leading-tight", entry ? "text-ink" : "text-ink-faint")}>
                     {entry ? t.log.plate(item.name, entry.count) : item.code}
                   </span>

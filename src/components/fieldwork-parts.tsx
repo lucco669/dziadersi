@@ -49,7 +49,7 @@ export function DossierTile({ dossier, locale }: { dossier: Dossier; locale: Loc
         <span className="label text-ink-soft">{dossier.code}</span>
         <span className="label text-red">{t.field}</span>
       </div>
-      <SpeciesPlate
+      <SpeciesPlate locale={locale}
         species={species.key}
         className="mx-auto my-5 h-44 w-56 max-w-full transition-transform duration-300 group-hover:-translate-y-1 motion-reduce:transform-none"
       />

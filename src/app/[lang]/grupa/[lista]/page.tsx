@@ -207,7 +207,7 @@ export default async function GroupPage({ params }: PageProps<"/[lang]/grupa/[li
               >
                 <span className="font-sans text-[0.95rem] font-semibold text-red">{pad(i + 1)}</span>
                 {member.result.diagnosis.species[0] ? (
-                  <SpeciesPlate species={member.result.diagnosis.species[0].key} className="w-full" />
+                  <SpeciesPlate locale={locale} species={member.result.diagnosis.species[0].key} className="w-full" />
                 ) : (
                   <svg viewBox="-40 0 120 100" className="w-full" aria-hidden="true">
                     <Figure />
@@ -311,7 +311,7 @@ function Duel({ a, b, locale }: { a: Member; b: Member; locale: Locale }) {
         {[a, b].map((member, i) => (
           <div key={member.result.code} className={i === 0 ? "md:order-1" : "md:order-3 md:text-right"}>
             {member.result.diagnosis.species[0] ? (
-              <SpeciesPlate
+              <SpeciesPlate locale={locale}
                 species={member.result.diagnosis.species[0].key}
                 animated={member === leader}
                 className={cx("w-full max-w-64", i === 1 && "md:ml-auto md:-scale-x-100")}

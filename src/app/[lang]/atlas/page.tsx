@@ -169,7 +169,7 @@ export default async function AtlasPage() {
         aside={
           <Link href={`/atlas/${featured.slug}`} className="group block border-t border-ink pt-4">
             <span className="label text-red">{t.featured}</span>
-            <SpeciesPlate species={featured.key} animated className="mt-2 w-full" />
+            <SpeciesPlate locale={locale} species={featured.key} animated className="mt-2 w-full" />
             <span className="mt-2 block text-xl font-bold transition-colors group-hover:text-red">{featured.name}</span>
             <span className="block font-sans text-[0.9rem] text-ink-soft">{typo(featured.teaser)}</span>
           </Link>

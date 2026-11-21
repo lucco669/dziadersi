@@ -338,7 +338,7 @@ export default async function BoomerGuidePage() {
         title={t.title}
         lead={typo(t.lead)}
         meta={t.meta}
-        aside={<SpeciesPlate species="facebook" specimen={0} eager className="mx-auto w-64 max-w-full" />}
+        aside={<SpeciesPlate locale={locale} species="facebook" specimen={0} eager className="mx-auto w-64 max-w-full" />}
       />
       <Section id="odpowiedz" title={t.answerTitle}>
         <p className="max-w-3xl text-2xl leading-snug">{typo(t.answer)}</p>
@@ -419,7 +419,7 @@ export default async function BoomerGuidePage() {
           {pair.map(({ item, person }, i) => (
             <li key={person.index}>
               <Link href={"/atlas/" + item.slug} className="group block">
-                <SpeciesPlate species={item.key} specimen={person.index} className="mx-auto h-44 w-56 max-w-full" />
+                <SpeciesPlate locale={locale} species={item.key} specimen={person.index} className="mx-auto h-44 w-56 max-w-full" />
                 <p className="label mt-4 text-red">{t.pairLabels[i]}</p>
                 <h3 className="mt-2 text-2xl font-bold group-hover:text-red">{item.name}</h3>
               </Link>

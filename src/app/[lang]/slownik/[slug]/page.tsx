@@ -193,7 +193,7 @@ export default async function EntryPage({ params }: PageProps<"/[lang]/slownik/[
             {species && (
               <Link href={`/atlas/${species.slug}`} className="group block border-t border-ink pt-5">
                 <span className="label text-ink-soft">{t.species}</span>
-                <SpeciesPlate species={species.key} className="mt-3 w-full max-w-sm" />
+                <SpeciesPlate locale={locale} species={species.key} className="mt-3 w-full max-w-sm" />
                 <span className="mt-2 block text-2xl font-bold leading-tight transition-colors group-hover:text-red">
                   {species.name} <span aria-hidden="true">→</span>
                 </span>

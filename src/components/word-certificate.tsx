@@ -57,7 +57,7 @@ export function WordCertificate({
         <p className="mx-auto mt-4 max-w-sm leading-snug">{typo(entry.senses[0].text)}</p>
         {entry.species && (
           <div className="mt-4 flex justify-center">
-            <SpeciesPlate species={entry.species} sizes="160px" className="h-24 md:h-28" />
+            <SpeciesPlate locale={locale} species={entry.species} sizes="160px" className="h-24 md:h-28" />
           </div>
         )}
         <p className="label mt-4 text-red">{verdict}</p>

@@ -143,3 +143,62 @@ export const SL_SPECIMEN_OBSERVATIONS = {
     "Nočni mir velja po njeni uri."
   ]
 } as const satisfies Record<SpeciesKey, readonly [string, string, string]>;
+
+/** The plates' scenes for alt text, in the order and shape of SPECIMEN_SCENES in ../specimens.ts. */
+export const SL_SPECIMEN_SCENES = {
+  grill: "v modrem predpasniku stoji ob okroglem žaru na oglje s kleščami v roki",
+  parking: "s prekrižanimi rokami straži parkirno mesto, zasedeno z modrim vedrom; ob strani se vidi prednji del modrega avtomobila",
+  budowa: "s prstom kaže na nedokončan zidec iz opeke, v drugi roki drži libelo; pri nogah leži vrtalnik",
+  moto: "z nogo se opira na pnevmatiko modrega avtomobila in kaže na blatnik; v roki ima ključe",
+  wakacje: "z rokami v bok stoji ob modro-belem vetrobranu za plažo; zraven leži zvita brisača",
+  facebook: "sedi na stolu s pametnim telefonom v roki in popravlja vse v sosedski skupini",
+  smart: "se sklanja nad mizico z usmerjevalnikom wi-fi in vleče vtikač iz vtičnice; v drugi roki drži pametni telefon",
+  dzialka: "zaliva paradižnik iz modre zalivalke ob žični ograji; zraven stoji star radio",
+  wedka: "sedi na zložljivem stolčku z ribiško palico; zraven stojita termovka in prazno vedro",
+  korpo: "v suknjiču, s kupom natisnjenih papirjev, stoji ob majhnem pisarniškem tiskalniku; pri nogah leži aktovka",
+  zeglarz: "preverja vozel na vrvi; pri nogah ležita zvitek vrvi in lesen privezni steber",
+  grzybiarz: "v gumijastih škornjih, s pletenim košem gob in nožkom v roki, sumničavo pogleduje vstran",
+  przygraniczny: "primerja dva dolga računa; pri nogah stojita dva kanistra, zraven je odprt prtljažnik avtomobila",
+  oszczednosciowy: "tlači nakupovalne vrečke za večkratno uporabo v modro torbo; zraven stojijo prazni kozarci",
+  uzdrowiskowy: "s plesnim korakom stoji ob parkovni klopi, s skodelico zdravilne vode in kartico terapij",
+  gorski: "stoji na sivi skali z nahrbtnikom in palico ter poučuje ostale izletnike",
+  festiwalowy: "sedi v modrem naslanjaču z daljincem v roki in dviga drugo roko ter popravlja pevca na televiziji",
+  golebiarz: "v rokah drži sivega pismonoškega goloba; zraven stojita lesena prenosna kletka in stara golobarska ura",
+  jurajski: "z dvignjenim prstom stoji ob velikem okamnelem amonitu",
+  meteorologiczny: "dviga okrogel barometer, z drugo roko pa se drži za koleno",
+  krupowkowy: "v debelem volnenem puloverju, z gorjansko sekirico v eni roki in prekajenim ovčjim sirom v drugi",
+  bieszczadzki: "z velikim nahrbtnikom in podlogo za spanje zamišljeno gleda vstran, z razgrnjenim zemljevidom v rokah",
+  weselny: [
+    "s kravato, zavezano okoli čela, z dvignjeno roko nazdravlja; zraven je stol s suknjičem",
+    "z dvignjeno roko in listom papirja v drugi ima poročni govor; zraven je stol s suknjičem",
+    "z dvignjeno roko in listom papirja v drugi ima poročni govor; zraven je stol s suknjičem",
+  ],
+  wigilijny: [
+    "v prazničnem puloverju dremlje v okrastem naslanjaču; zraven je stolček s krožnikom in prtičkom",
+    "sedi v okrastem naslanjaču in s prstom kaže na razpored sedežev za mizo; zraven je stolček s krožnikom",
+    "sedi v okrastem naslanjaču in s prstom kaže na razpored sedežev za mizo; zraven je stolček s krožnikom",
+  ],
+  parapetowy: "z rokami, prekrižanimi na modri blazini, gleda skozi okno med zavesami",
+  kolejkowy: [
+    "z mapo pod pazduho s prstom kaže na konec vrste",
+    "z dvignjeno dlanjo ustavlja nekoga, ki se vriva v vrsto, v drugi roki drži številko; zraven je stebriček s trakom",
+    "z dvignjeno dlanjo ustavlja nekoga, ki se vriva v vrsto, v drugi roki drži številko; zraven je stebriček s trakom",
+  ],
+  kibicowski: [
+    "z belo-rdečim šalom sedi v modrem naslanjaču z daljincem in s prstom kaže predse; pri nogah leži žoga",
+    "z navijaškim šalom in daljincem v roki poučuje sodnika na tekmi v majhnem televizorju",
+    "z navijaškim šalom in daljincem v roki poučuje sodnika na tekmi v majhnem televizorju",
+  ],
+  kempingowy: [
+    "s prekrižanimi rokami sedi na zložljivem stolu ob počitniški prikolici",
+    "drži libelo ob majhni počitniški prikolici",
+    "drži libelo ob majhni počitniški prikolici",
+  ],
+} as const satisfies Record<SpeciesKey, string | readonly [string, string, string]>;
+
+/** The general portraits, in the order of COMMON_SPECIMENS. */
+export const SL_COMMON_SCENES = [
+  "v kratkih hlačah, z nogavicami v sandalih, očali na čelu in torbico za pasom",
+  "z roko v bok dviga prst, da bi dal nezaželen nasvet",
+  "z roko v bok dviga prst, da bi dala nezaželen nasvet",
+] as const;

@@ -113,7 +113,7 @@ export async function PrintMaterial({ kind }: { kind: Material }) {
                   <p className="label text-red print:text-[8pt]">{item.code}</p>
                   <h2 className="mt-2 text-2xl font-bold">{item.name}</h2>
                   <p className="text-sm italic text-ink-soft print:text-[8pt]">{item.latin}</p>
-                  <SpeciesPlate species={item.key} className="mx-auto my-4 h-36 w-48 max-w-full" />
+                  <SpeciesPlate locale={locale} species={item.key} className="mx-auto my-4 h-36 w-48 max-w-full" />
                   <p>
                     <strong>{t.call}: </strong>
                     {quote(item.calls[0], locale)}
@@ -140,7 +140,7 @@ export async function PrintMaterial({ kind }: { kind: Material }) {
             <div className={styles.panel}>
               <p className="label text-red">DZIADER.SI · IBD-P 02</p>
               <h2 className="mt-4 text-3xl font-bold leading-tight">{t.title}</h2>
-              <SpeciesPlate species="grill" className="mx-auto my-5 h-28 w-40" />
+              <SpeciesPlate locale={locale} species="grill" className="mx-auto my-5 h-28 w-40" />
               <p>{typo(t.instructions)}</p>
               <p className="mt-5 text-sm text-ink-soft">{t.disclaimer}</p>
               <p className="mt-5 font-sans text-sm">

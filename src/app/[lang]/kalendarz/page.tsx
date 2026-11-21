@@ -184,7 +184,7 @@ export default async function CalendarPage() {
           </Back>
           <Back label={t.patron}>
             <Link href={`/atlas/${back.patron.slug}`} className="group flex items-center gap-4">
-              <SpeciesPlate species={back.patron.key} animated className="w-28 shrink-0" />
+              <SpeciesPlate locale={locale} species={back.patron.key} animated className="w-28 shrink-0" />
               <span>
                 <span className="block text-xl font-bold leading-tight group-hover:text-red">{back.patron.name}</span>
                 <span className="mt-1 block font-sans text-[0.9rem] leading-snug text-ink-soft">{typo(back.patron.teaser)}</span>

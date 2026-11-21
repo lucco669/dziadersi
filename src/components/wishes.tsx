@@ -211,7 +211,7 @@ export function WishMachine({ initial }: { initial: { slug: string; picks: WishP
                       )}
                     >
                       <span className={cx("shrink-0", active && "bg-paper")}>
-                        <SpeciesPlate species={item.plate.species} specimen={item.plate.specimen} sizes="60px" className="h-11 w-[3.3rem] object-contain" />
+                        <SpeciesPlate locale={locale} species={item.plate.species} specimen={item.plate.specimen} sizes="60px" className="h-11 w-[3.3rem] object-contain" />
                       </span>
                       {item.name}
                     </button>
@@ -243,7 +243,7 @@ export function WishMachine({ initial }: { initial: { slug: string; picks: WishP
           <p className="label mt-1 text-ink-soft">{card.occasion.subject}</p>
 
           <div className="mt-6 flow-root">
-            <SpeciesPlate
+            <SpeciesPlate locale={locale}
               species={chapter.plate.species}
               specimen={chapter.plate.specimen}
               eager

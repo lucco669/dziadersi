@@ -1,6 +1,6 @@
 import type { SpeciesKey } from "./species";
 import type { Locale } from "@/i18n/config";
-import { SL_SPECIMEN_OBSERVATIONS } from "./sl/specimens";
+import { SL_COMMON_SCENES, SL_SPECIMEN_OBSERVATIONS, SL_SPECIMEN_SCENES } from "./sl/specimens";
 
 /** Three independent people per behavioural species; no age-based progression or scoring. */
 export type SpecimenIndex = 0 | 1 | 2;
@@ -605,3 +605,86 @@ export const MAIN_SPECIMENS = {
 export const defaultSpecimen = (species: SpeciesKey): SpecimenIndex => MAIN_SPECIMENS[species];
 export const getSpecimens = (species: SpeciesKey, locale: Locale): Specimen[] => SPECIMENS[species].map(person => ({ ...person, observation: locale === "sl" ? SL_SPECIMEN_OBSERVATIONS[species][person.index] : person.observation }));
 export const specimenByIndex = (species: SpeciesKey, index: SpecimenIndex = defaultSpecimen(species), locale: Locale = "pl"): Specimen => getSpecimens(species, locale)[index];
+
+/**
+ * What each plate shows, for its alt text: one scene per species, or one per specimen where the
+ * drawings differ. Present tense, so the sentence fits a man or a woman alike. Slovenian: sl/specimens.ts.
+ */
+export type SpecimenScene = string | readonly [string, string, string];
+export const SPECIMEN_SCENES = {
+  grill: "w niebieskim fartuchu stoi przy okrągłym grillu węglowym ze szczypcami w dłoni",
+  parking: "z założonymi rękami pilnuje miejsca parkingowego zajętego niebieskim wiadrem; obok widać przód niebieskiego samochodu",
+  budowa: "wskazuje palcem niedokończony murek z cegieł, w drugiej ręce trzyma poziomicę; u stóp leży wiertarka",
+  moto: "opiera stopę o oponę niebieskiego samochodu i wskazuje na błotnik; w dłoni ma kluczyki",
+  wakacje: "z rękami na biodrach stoi przy niebiesko-białym parawanie plażowym; obok leży zwinięty ręcznik",
+  facebook: "siedzi na krześle ze smartfonem w dłoni i poprawia wszystkich w grupie osiedlowej",
+  smart: "pochyla się nad stolikiem z routerem wi-fi i wyciąga wtyczkę z gniazdka; w drugiej ręce trzyma smartfon",
+  dzialka: "podlewa pomidory z niebieskiej konewki przy drucianym płotku; obok stoi stare radio",
+  wedka: "siedzi na składanym stołku z wędką; obok stoją termos i puste wiadro",
+  korpo: "w marynarce, ze stosem wydruków, stoi przy małej drukarce biurowej; u stóp leży teczka",
+  zeglarz: "sprawdza węzeł na linie; u stóp leżą zwój liny i drewniany pachołek cumowniczy",
+  grzybiarz: "w gumowcach, z wiklinowym koszykiem grzybów i nożykiem w dłoni, zerka podejrzliwie w bok",
+  przygraniczny: "porównuje dwa długie paragony; u stóp stoją dwa kanistry, obok otwarty bagażnik samochodu",
+  oszczednosciowy: "upycha torby wielokrotnego użytku w niebieskiej torbie; obok stoją puste słoiki",
+  uzdrowiskowy: "tanecznym krokiem stoi przy parkowej ławce, z kubeczkiem wody zdrojowej i kartą zabiegów",
+  gorski: "stoi na szarym kamieniu z plecakiem i kijem do chodzenia, pouczając resztę wycieczki",
+  festiwalowy: "siedzi w niebieskim fotelu z pilotem w dłoni i unosi drugą rękę, poprawiając piosenkarza w telewizji",
+  golebiarz: "trzyma w dłoniach szarego gołębia pocztowego; obok stoją drewniany kosz transportowy i stary zegar gołębiarski",
+  jurajski: "z uniesionym palcem stoi przy dużym skamieniałym amonicie",
+  meteorologiczny: "unosi okrągły barometr, a drugą ręką trzyma się za kolano",
+  krupowkowy: "w grubym wełnianym swetrze, z ciupagą w jednej ręce i oscypkiem w drugiej",
+  bieszczadzki: "z dużym plecakiem i karimatą patrzy w zamyśleniu w bok, z rozłożoną mapą w dłoniach",
+  weselny: [
+    "z krawatem zawiązanym na czole wygłasza toast z uniesioną ręką; obok krzesło z marynarką",
+    "z uniesioną ręką i kartką w drugiej wygłasza przemowę weselną; obok krzesło z marynarką",
+    "z uniesioną ręką i kartką w drugiej wygłasza przemowę weselną; obok krzesło z marynarką",
+  ],
+  wigilijny: [
+    "w świątecznym swetrze drzemie w ochrowym fotelu; obok stołek z talerzykiem i serwetką",
+    "siedzi w ochrowym fotelu i wskazuje palcem plan rozsadzenia gości przy stole; obok stołek z talerzykiem",
+    "siedzi w ochrowym fotelu i wskazuje palcem plan rozsadzenia gości przy stole; obok stołek z talerzykiem",
+  ],
+  parapetowy: "z rękami skrzyżowanymi na niebieskiej poduszce wygląda przez okno spomiędzy firanek",
+  kolejkowy: [
+    "z teczką pod pachą wskazuje palcem koniec kolejki",
+    "uniesioną dłonią zatrzymuje kogoś, kto wpycha się do kolejki, w drugiej ręce trzyma numerek; obok słupek z taśmą",
+    "uniesioną dłonią zatrzymuje kogoś, kto wpycha się do kolejki, w drugiej ręce trzyma numerek; obok słupek z taśmą",
+  ],
+  kibicowski: [
+    "w biało-czerwonym szaliku siedzi w niebieskim fotelu z pilotem i wskazuje palcem przed siebie; u stóp leży piłka",
+    "w szaliku klubowym, z pilotem w dłoni, poucza sędziego meczu w małym telewizorze",
+    "w szaliku klubowym, z pilotem w dłoni, poucza sędziego meczu w małym telewizorze",
+  ],
+  kempingowy: [
+    "z założonymi rękami siedzi na składanym krzesełku przy przyczepie kempingowej",
+    "trzyma poziomicę przy małej przyczepie kempingowej",
+    "trzyma poziomicę przy małej przyczepie kempingowej",
+  ],
+} as const satisfies Record<SpeciesKey, SpecimenScene>;
+
+/** The general portraits (COMMON_SPECIMENS), in the same order. */
+export const COMMON_SCENES = [
+  "w krótkich spodenkach, ze skarpetami w sandałach, okularami na czole i saszetką przy pasku",
+  "z ręką na biodrze unosi palec, by udzielić niezamówionej rady",
+  "z ręką na biodrze unosi palec, by udzielić niezamówionej rady",
+] as const;
+
+const scene = (scenes: SpecimenScene, index: SpecimenIndex) => (typeof scenes === "string" ? scenes : scenes[index]);
+/** "65 lat", "33 lata": the Polish plural after a number. */
+const plYears = (age: number) => `${age} ${age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 12 || age % 100 > 14) ? "lata" : "lat"}`;
+
+/** Who a plate shows and what they do: "Kobieta, 46 lat: w niebieskim fartuchu stoi…". */
+function plateAlt(person: { age: number; gender: "man" | "woman" }, scenes: { pl: SpecimenScene; sl: SpecimenScene }, index: SpecimenIndex, locale: Locale) {
+  const who = locale === "sl"
+    ? `${person.gender === "woman" ? "Ženska" : "Moški"}, ${person.age} let`
+    : `${person.gender === "woman" ? "Kobieta" : "Mężczyzna"}, ${plYears(person.age)}`;
+  return `${who}: ${scene(scenes[locale], index)}.`;
+}
+
+/** The alt text of a species plate in an edition. */
+export const speciesArtAlt = (species: SpeciesKey, index: SpecimenIndex = defaultSpecimen(species), locale: Locale = "pl") =>
+  plateAlt(SPECIMENS[species][index], { pl: SPECIMEN_SCENES[species], sl: SL_SPECIMEN_SCENES[species] }, index, locale);
+
+/** The alt text of a general portrait in an edition. */
+export const commonArtAlt = (index: SpecimenIndex = 0, locale: Locale = "pl") =>
+  plateAlt(COMMON_SPECIMENS[index], { pl: COMMON_SCENES[index], sl: SL_COMMON_SCENES[index] }, index, locale);

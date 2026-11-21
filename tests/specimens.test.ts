@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import { getSpecies } from "../src/content/species";
-import { COMMON_SPECIMENS, defaultSpecimen, getSpecimens, SPECIMEN_COUNT, SPECIMENS } from "../src/content/specimens";
+import { COMMON_SPECIMENS, commonArtAlt, defaultSpecimen, getSpecimens, SPECIMEN_COUNT, SPECIMENS, speciesArtAlt } from "../src/content/specimens";
 import { commonArtPath, speciesArtKey, speciesArtPath } from "../src/lib/species-art";
 import { commonArtDataUri, speciesArtDataUri } from "../src/lib/species-art.server";
 import { staticArtSrcSet } from "../src/components/static-artwork";
@@ -107,4 +107,16 @@ test("portrait changes never add a second respondent to a ranking or a second ex
   assert.equal(profile.results.length, 2);
   assert.equal(profile.results[0].specimen, 2);
   assert.equal(profile.results[0].code, chosen);
+});
+
+test("every plate has its own alt text in both editions: who it shows and what they do", () => {
+  const species = Object.keys(SPECIMENS) as (keyof typeof SPECIMENS)[];
+  for (const locale of ["pl", "sl"] as const) {
+    const alts = species.flatMap((key) => ([0, 1, 2] as const).map((index) => speciesArtAlt(key, index, locale)))
+      .concat(([0, 1, 2] as const).map((index) => commonArtAlt(index, locale)));
+    for (const alt of alts) assert.match(alt, /^(Mężczyzna|Kobieta|Moški|Ženska), \d+ (lat|lata|let): \S.{20,}\.$/u, alt);
+  }
+  assert.equal(speciesArtAlt("grill", 1, "pl"), "Mężczyzna, 33 lata: w niebieskim fartuchu stoi przy okrągłym grillu węglowym ze szczypcami w dłoni.");
+  assert.equal(speciesArtAlt("grill", 2, "sl"), "Ženska, 46 let: v modrem predpasniku stoji ob okroglem žaru na oglje s kleščami v roki.");
+  assert.match(speciesArtAlt("grill", 0, "pl"), /^Mężczyzna, 65 lat:/);
 });

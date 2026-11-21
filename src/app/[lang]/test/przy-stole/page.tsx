@@ -11,7 +11,7 @@ const COPY = defineCopy({
   pl: {
     test: "Test Dziadersa",
     title: "Badanie przy stole",
-    browserTitle: "Badanie przy stole: Test Dziadersa dla całej rodziny na jednym telefonie",
+    browserTitle: "Test Dziadersa przy stole: cała rodzina, jeden telefon",
     description:
       "Test Dziadersa dla całego stołu: od dwóch do ośmiu osób na jednym telefonie, sześć zadań na osobę, a na końcu wspólny ranking, zgodność dziaderska i certyfikat dla każdego.",
     shareDescription: "Jeden telefon, cały stół. Sześć zadań na osobę, wyniki ogłaszane wszystkim naraz.",
@@ -19,7 +19,7 @@ const COPY = defineCopy({
   sl: {
     test: "Test dziadersa",
     title: "Pregled za mizo",
-    browserTitle: "Pregled za mizo: test dziadersa za vso družino na enem telefonu",
+    browserTitle: "Test dziadersa za mizo: vsa družina, en telefon",
     description:
       "Test dziadersa za vso mizo: od dveh do osmih oseb na enem telefonu, šest nalog na osebo, na koncu skupna lestvica, dziaderska združljivost in certifikat za vsakogar.",
     shareDescription: "En telefon, vsa miza. Šest nalog na osebo, izvidi razglašeni vsem hkrati.",

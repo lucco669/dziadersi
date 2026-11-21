@@ -22,6 +22,7 @@ const COPY = defineCopy({
     promoText: "Test Dziadersa nie wymaga sprzętu terenowego. Wystarczą cztery minuty i gotowość do przyjęcia wyniku.",
     seasonal: "Na andrzejki i sylwestra",
     wax: "Lanie wosku",
+    waxAlt: "Odlew z wosku w kształcie sandała ze skarpetą",
     waxText: "Pracownia Wróżb leje wosk przez ucho klucza i odczytuje cień: gatunek na nowy rok, wróżba i pierwsze słowa. Do odczytu przy stole, na głos.",
     waxCta: "Lej wosk",
   },
@@ -38,6 +39,7 @@ const COPY = defineCopy({
     promoText: "Test dziadersa ne zahteva terenske opreme. Zadoščajo štiri minute in pripravljenost sprejeti rezultat.",
     seasonal: "Za silvestrovo",
     wax: "Vlivanje voska",
+    waxAlt: "Voščeni odlitek v obliki sandala z nogavico",
     waxText: "Laboratorij za vedeževanje vliva vosek skozi ušesce ključa in bere senco: vrsta za novo leto, napoved in prve besede. Za branje za mizo, na glas.",
     waxCta: "Vlivaj vosek",
   },
@@ -90,7 +92,7 @@ export default async function OccasionsPage() {
       <section aria-labelledby="wosk" className="wrap pb-14 md:pb-20">
         <Link href="/lanie-wosku" className="group grid items-center gap-6 border-t border-ink pt-6 sm:grid-cols-[10rem_1fr]">
           {/* eslint-disable-next-line @next/next/no-img-element -- encoded WebP in public/wosk */}
-          <img src="/wosk/sandal-360.webp" width={360} height={360} alt="" loading="lazy" decoding="async" className="h-auto w-36 sm:w-full" />
+          <img src="/wosk/sandal-360.webp" width={360} height={360} alt={t.waxAlt} loading="lazy" decoding="async" className="h-auto w-36 sm:w-full" />
           <span>
             <span className="label block text-red">{t.seasonal}</span>
             <span id="wosk" className="mt-2 block text-[clamp(1.85rem,3.4vw,2.6rem)] font-bold leading-none group-hover:text-red">{t.wax}</span>

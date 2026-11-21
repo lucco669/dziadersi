@@ -187,7 +187,7 @@ export function WaxReading({
               sizes="(max-width: 767px) 70vw, 32rem"
               width={600}
               height={600}
-              alt=""
+              alt={t.shadow(shape)}
               className={styles.shadow}
               fetchPriority={result ? "high" : undefined}
               decoding="async"

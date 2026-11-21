@@ -159,7 +159,7 @@ export async function SpeciesTile({ species, className }: { species: Species; cl
   const locale = await getLocale();
   return (
     <Link href={`/atlas/${species.slug}`} className={cx("group block", className)}>
-      <SpeciesPlate species={species.key} className="w-full" />
+      <SpeciesPlate locale={locale} species={species.key} className="w-full" />
       <span className="label mt-3 flex justify-between gap-3 text-ink-soft">
         <span>{species.code}</span>
         <abbr title={statusLabel(species.status, locale)} className="no-underline">

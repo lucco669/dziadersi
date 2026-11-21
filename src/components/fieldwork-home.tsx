@@ -68,7 +68,7 @@ export function FieldworkHome({ locale, updated }: { locale: Locale; updated: st
                 <h3 className="text-4xl font-bold leading-[1.02] group-hover:text-red">{dossier.title}</h3>
                 <p className="mt-4 text-ink-soft">{dossier.season}</p>
               </div>
-              <SpeciesPlate species={dossier.species[0]} className="mx-auto h-44 w-56 max-w-full" />
+              <SpeciesPlate locale={locale} species={dossier.species[0]} className="mx-auto h-44 w-56 max-w-full" />
             </div>
             <span className="link mt-6 self-start font-sans font-medium">{t.open} →</span>
           </Link>

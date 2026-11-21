@@ -1,6 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { signInPath } from "@/lib/account";
 import { hasAuth, SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/lib/supabase/config";
+
+/**
+ * The profile of each edition. A guest is sent to the account page from here, as an HTTP redirect:
+ * the page's own redirect() comes after streaming has begun, so it can only answer 200 with a
+ * <meta http-equiv="refresh">, which crawlers report as a page with a meta refresh.
+ */
+const PROFILES = { "/profil": "pl", "/sl/profil": "sl" } as const;
 
 /**
  * Keeps the Supabase session fresh on the pages that use it: Server Components can read
@@ -25,8 +33,14 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Refreshes the session if needed; the result itself is not used here.
-  await supabase.auth.getClaims();
+  // Refreshes the session if needed.
+  const { data } = await supabase.auth.getClaims();
+  const profile = PROFILES[request.nextUrl.pathname as keyof typeof PROFILES];
+  if (profile && !data?.claims) {
+    const redirect = NextResponse.redirect(new URL(signInPath("/profil", profile), request.url));
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  }
   return response;
 }
 

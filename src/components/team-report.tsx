@@ -182,7 +182,7 @@ export function DepartmentTable({ rows, locale, print = false }: { rows: Departm
               <td className="py-4 pr-4">
                 {row.dominant ? (
                   <span className="flex items-center gap-3">
-                    <SpeciesPlate species={row.dominant.species.key} className="w-12 shrink-0" />
+                    <SpeciesPlate locale={locale} species={row.dominant.species.key} className="w-12 shrink-0" />
                     <span className="leading-tight">{row.dominant.species.name}</span>
                   </span>
                 ) : (
@@ -211,7 +211,7 @@ export function DepartmentTable({ rows, locale, print = false }: { rows: Departm
               {row.members.length > 0 && <Isotype row={row} locale={locale} className="mt-3 h-12 max-w-full" />}
               {row.dominant && (
                 <p className="mt-3 flex items-center gap-3">
-                  <SpeciesPlate species={row.dominant.species.key} className="w-12 shrink-0" />
+                  <SpeciesPlate locale={locale} species={row.dominant.species.key} className="w-12 shrink-0" />
                   <span className="label text-ink-soft">{t.dominant}: <span className="text-ink">{row.dominant.species.name}</span></span>
                 </p>
               )}

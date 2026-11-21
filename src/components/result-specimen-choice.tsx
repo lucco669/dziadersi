@@ -36,7 +36,7 @@ export function ResultSpecimenChoice({ code }: { code: string }) {
           <button key={person.index} type="button" disabled={pending} aria-pressed={result.specimen === person.index}
             onClick={() => startTransition(() => router.replace(localizePath(`/wynik/${encodeResult({ ...draft, specimen: person.index })}`, locale), { scroll: false }))}
             className={cx("border p-2 text-left hover:border-red disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red", result.specimen === person.index ? "border-ink bg-ink/5" : "border-rule")}>
-            {species ? <SpeciesArtwork species={species.key} specimen={person.index} sizes="120px" className="w-full" /> : <CommonPlate specimen={person.index} sizes="120px" className="w-full" />}
+            {species ? <SpeciesArtwork locale={locale} species={species.key} specimen={person.index} sizes="120px" className="w-full" /> : <CommonPlate locale={locale} specimen={person.index} sizes="120px" className="w-full" />}
             <span className="mt-1 block font-sans text-xs leading-snug">{t.label(person.index, person.age)}</span>
           </button>
         ))}

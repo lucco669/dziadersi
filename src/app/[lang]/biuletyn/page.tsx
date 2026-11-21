@@ -164,7 +164,7 @@ export default async function BulletinPage() {
                 <div key={label} className="border-t border-ink pt-4">
                   <p className="label text-red">{label}</p>
                   <Link href={`/atlas/${species.slug}`} className="group mt-2 flex items-center gap-4">
-                    <SpeciesPlate species={species.key} animated className="w-28 shrink-0" />
+                    <SpeciesPlate locale={locale} species={species.key} animated className="w-28 shrink-0" />
                     <span className="text-2xl font-bold leading-tight group-hover:text-red">{species.name}</span>
                   </Link>
                 </div>

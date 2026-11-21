@@ -578,7 +578,7 @@ export function TestRunner() {
               <p className="label text-ink-soft">{t.pause.suspicionLabel}</p>
               {suspected ? (
                 <>
-                  <SpeciesPlate species={suspected.key} animated className="mt-4 w-full max-w-64" />
+                  <SpeciesPlate locale={locale} species={suspected.key} animated className="mt-4 w-full max-w-64" />
                   <p className="mt-3 text-2xl font-bold leading-tight">{suspected.name}</p>
                   <p className="mt-1 font-sans text-[0.9rem] text-ink-soft">{typo(t.pause.confirm)}</p>
                 </>
@@ -637,7 +637,7 @@ export function TestRunner() {
             >
               {typo(proxy ? task.proxyPrompt : task.prompt)}
             </h1>
-            {plate && <SpeciesPlate species={plate} animated className="hidden w-40 shrink-0 sm:block md:w-48" />}
+            {plate && <SpeciesPlate locale={locale} species={plate} animated className="hidden w-40 shrink-0 sm:block md:w-48" />}
           </div>
           <div className="mt-8 md:mt-10">
             <TaskBody task={task} proxy={proxy} value={answers[current] ?? undefined} seed={seed + current * 7919} onAnswer={answer} untimed={untimed || reducedMotion} />

@@ -450,7 +450,7 @@ export default async function HonorPage() {
                       <li key={key}>
                         <Link href={`/atlas/${species.slug}`} className="group grid grid-cols-[2rem_4.5rem_1fr_auto] items-center gap-4 border-b border-rule py-2.5">
                           <span className="font-sans text-[0.9rem] font-semibold text-red">{i + 1}</span>
-                          <SpeciesPlate species={key as SpeciesKey} variant="pictogram" className="w-full" />
+                          <SpeciesPlate locale={locale} species={key as SpeciesKey} variant="pictogram" className="w-full" />
                           <span className="text-xl font-bold leading-tight group-hover:text-red">{species.name}</span>
                           <span className="font-sans font-semibold tabular-nums">{formatNumber(locale, n)}</span>
                         </Link>
@@ -466,7 +466,7 @@ export default async function HonorPage() {
               <Plaque label={t.species.week}>
                 {weekTop ? (
                   <Link href={`/atlas/${known.get(weekTop[0])!.slug}`} className="group flex items-center gap-4">
-                    <SpeciesPlate species={weekTop[0] as SpeciesKey} animated className="w-28 shrink-0" />
+                    <SpeciesPlate locale={locale} species={weekTop[0] as SpeciesKey} animated className="w-28 shrink-0" />
                     <span>
                       <span className="block text-2xl font-bold leading-tight group-hover:text-red">{known.get(weekTop[0])!.name}</span>
                       <span className="label block text-ink-soft">{t.species.weekCount(weekTop[1])}</span>

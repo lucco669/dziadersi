@@ -107,7 +107,7 @@ export function WaxProtocol({ reading, locale }: { reading: Reading; locale: Loc
         <div className="lg:col-span-4">
           <p className="label text-red">{t.species(reading.year)}</p>
           <Link href={`/atlas/${reading.species.slug}`} className="group mt-2 block">
-            <SpeciesPlate species={reading.species.key} className="w-full max-w-[18rem]" sizes="(max-width: 1023px) 70vw, 18rem" />
+            <SpeciesPlate locale={locale} species={reading.species.key} className="w-full max-w-[18rem]" sizes="(max-width: 1023px) 70vw, 18rem" />
             <span className="mt-3 block text-[clamp(1.8rem,3vw,2.4rem)] font-bold leading-none group-hover:text-red">{reading.species.name}</span>
             <span className="mt-2 block leading-snug text-ink-soft">{typo(reading.species.teaser)}</span>
           </Link>

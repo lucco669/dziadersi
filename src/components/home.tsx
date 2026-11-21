@@ -239,7 +239,7 @@ export function AtlasPlates({ locale }: { locale: Locale }) {
         {featured.map((item) => (
           <li key={item.key}>
             <Link href={`/atlas/${item.slug}`} className="group block">
-              <SpeciesPlate species={item.key} sizes="(max-width: 639px) 320px, (max-width: 1023px) 30vw, 320px" className="mx-auto w-full max-w-80 transition-transform duration-300 motion-safe:group-hover:-translate-y-1" />
+              <SpeciesPlate locale={locale} species={item.key} sizes="(max-width: 639px) 320px, (max-width: 1023px) 30vw, 320px" className="mx-auto w-full max-w-80 transition-transform duration-300 motion-safe:group-hover:-translate-y-1" />
               <span className="mt-3 block text-[1.2rem] font-bold leading-tight transition-colors group-hover:text-red">{item.name}</span>
               <span className="mt-1 block font-sans text-[0.9rem] leading-snug text-ink-soft">{typo(item.teaser)}</span>
             </Link>

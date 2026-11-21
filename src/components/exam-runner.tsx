@@ -66,7 +66,7 @@ export function Clue({ question }: { question: Question }) {
   const locale = useLocale();
   switch (question.kind) {
     case "plate":
-      return <SpeciesPlate species={question.answer} animated className="w-full max-w-sm" />;
+      return <SpeciesPlate locale={locale} species={question.answer} animated className="w-full max-w-sm" />;
     case "call":
       return <p className="border-l-2 border-red pl-5 text-[clamp(1.8rem,3.6vw,2.6rem)] italic leading-snug">{quote(typo(question.clue), locale)}</p>;
     case "latin":

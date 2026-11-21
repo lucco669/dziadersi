@@ -100,7 +100,7 @@ export default async function GuidePage() {
         crumbs={[{ label: guide.title }]}
         title={guide.title}
         lead={typo(guide.lead)}
-        aside={<SpeciesPlate species="korpo" className="mx-auto w-64 max-w-full" />}
+        aside={<SpeciesPlate locale={locale} species="korpo" className="mx-auto w-64 max-w-full" />}
       />
       <Section id="znaczenie" title={t.definition}>
         <div className="max-w-3xl space-y-5">
@@ -222,7 +222,7 @@ export default async function GuidePage() {
         <div className="grid gap-8 sm:grid-cols-3">
           {species.map((item) => (
             <Link key={item.key} href={"/atlas/" + item.slug} className="group">
-              <SpeciesPlate species={item.key} className="mx-auto h-40 w-52 max-w-full" />
+              <SpeciesPlate locale={locale} species={item.key} className="mx-auto h-40 w-52 max-w-full" />
               <h3 className="mt-4 text-2xl font-bold group-hover:text-red">{item.name}</h3>
               <p className="mt-2 text-ink-soft">{typo(item.teaser)}</p>
             </Link>

@@ -122,7 +122,7 @@ export default async function WishesPage() {
                 .map((chapter, i) => (
                   <li key={chapter.slug} className="border-t border-ink pt-5">
                     <div className="flex items-center gap-4">
-                      <SpeciesPlate species={chapter.plate.species} specimen={chapter.plate.specimen} sizes="96px" className="w-24 shrink-0" />
+                      <SpeciesPlate locale={locale} species={chapter.plate.species} specimen={chapter.plate.specimen} sizes="96px" className="w-24 shrink-0" />
                       <h4 className="text-[1.6rem] font-bold leading-tight">{chapter.name}</h4>
                     </div>
                     <ul className="mt-3">

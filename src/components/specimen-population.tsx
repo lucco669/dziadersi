@@ -19,7 +19,7 @@ export function SpecimenPopulation({ locale }: { locale: Locale }) {
     <div className="relative mt-4" style={{ aspectRatio: "2 / 1" }}>{CAST.map(({ species, specimen }, index) => {
       // Lazy, so React does not preload them: the headline beside them is the largest paint on every screen.
       return <div key={species} className="absolute top-0 w-[54%]" style={{ left: `${index * 27 - 4}%`, zIndex: index === 1 ? 2 : 1 }}>
-        <SpeciesPlate species={species} specimen={specimen} sizes="(max-width: 639px) calc(54vw - 22px), (max-width: 1023px) 400px, 310px" className="w-full" />
+        <SpeciesPlate locale={locale} species={species} specimen={specimen} sizes="(max-width: 639px) calc(54vw - 22px), (max-width: 1023px) 400px, 310px" className="w-full" />
       </div>;
     })}</div>
     <div className="grid grid-cols-3 gap-2">{CAST.map(({ species, specimen }) => <Link key={species} href={`/atlas/${speciesByKey(species, locale).slug}`} className="label text-center text-[0.72rem] text-ink-soft hover:text-red hover:underline">{speciesByKey(species, locale).code} · {t.age(specimenByIndex(species, specimen).age)}</Link>)}</div>

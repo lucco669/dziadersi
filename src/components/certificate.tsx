@@ -88,10 +88,10 @@ export function Certificate({ locale, score, diagnosis, latin, number, species, 
         <div className="mt-4 flex justify-center gap-2">
           {species.length > 0 ? (
             species.map((key) => (
-              <SpeciesPlate key={key} species={key} specimen={specimen} sizes={species.length > 1 ? "120px" : "160px"} className={species.length > 1 ? "h-20 md:h-24" : "h-24 md:h-28"} />
+              <SpeciesPlate locale={locale} key={key} species={key} specimen={specimen} sizes={species.length > 1 ? "120px" : "160px"} className={species.length > 1 ? "h-20 md:h-24" : "h-24 md:h-28"} />
             ))
           ) : (
-            <CommonPlate specimen={specimen} className="h-24 md:h-28" />
+            <CommonPlate locale={locale} specimen={specimen} className="h-24 md:h-28" />
           )}
         </div>
 

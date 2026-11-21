@@ -409,7 +409,7 @@ function SpeciesNote({ species, role, locale, specimen }: { species: Species; ro
             {species.latin} ({species.authority})
           </p>
         </div>
-        <SpeciesPlate species={species.key} specimen={specimen} sizes="192px" className="w-full max-w-48" />
+        <SpeciesPlate locale={locale} species={species.key} specimen={specimen} sizes="192px" className="w-full max-w-48" />
       </div>
       <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
         <Field label={t.habitat}>{typo(species.habitat)}</Field>
