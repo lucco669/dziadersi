@@ -19,7 +19,7 @@ export const shareOutlets = (url: string, text: string) => [
   { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
   { label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}` },
   { label: "X", href: `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
-];
+] as const;
 
 /**
  * A share outlet opened on click. Share pages answer crawlers with a login redirect or a 404, so their

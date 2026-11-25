@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
-import { Stamp } from "@/components/brand";
+import { CreateFamilyGroup } from "@/components/family-group";
+import { TeamOffer } from "@/components/team";
 import { Certificate } from "@/components/certificate";
 import { LabSheet } from "@/components/lab-sheet";
 import { NewsletterBox } from "@/components/newsletter-box";
@@ -30,12 +31,8 @@ const COPY = defineCopy({
     description: (result: Result) =>
       `${result.name ? `Osoba badana: ${result.name}${result.proxy ? " (wywiad rodzinny)" : ""}. ` : ""}${result.verdict.title}, rozpoznanie: ${result.diagnosis.name}. Test Dziadersa w Instytucie Badań nad Dziaderstwem. Zbadaj się, zanim będzie za późno.`,
     result: "Wynik Testu Dziadersa",
-    certificate: (number: string, date: string) => `Certyfikat nr ${number} · ${date}`,
     heading: (result: Result) =>
       `Wynik Testu Dziadersa: ${result.score}%. ${result.verdict.title}. Rozpoznanie: ${result.diagnosis.name}.`,
-    respondent: "Osoba badana",
-    proxy: " · wywiad rodzinny",
-    diagnosis: "Rozpoznanie",
     census: (percentile: number, total: string, nid: string) =>
       `Wynik wyższy niż u ${percentile}% z ${total} zbadanych w Narodowym Spisie. Narodowy Indeks Dziaderstwa wynosi dziś ${nid}%.`,
     model: (percentile: number, nid: string) => `Wynik wyższy niż u ${percentile}% badanych. Narodowy Indeks Dziaderstwa wynosi dziś ${nid}%.`,
@@ -44,7 +41,7 @@ const COPY = defineCopy({
     bulletinAside: "Poniedziałki, rano",
     bulletinLead: "Wyniki takie jak ten trafiają do Narodowego Spisu. W poniedziałek Dział Statystyki podaje, jak wypadł cały tydzień: ilu zbadano, ile wyników przekroczyło próg, które gatunki rozpoznano najczęściej.",
     notYours: "Nie twój wynik?",
-    takeTest: "Wykonaj test",
+    takeTest: "Wykonaj własny test",
     scale: "Skala dziaderstwa",
     nidToday: (nid: string) => `NID dziś ${nid}`,
     score: (score: number) => `Wynik ${score}`,
@@ -74,8 +71,6 @@ const COPY = defineCopy({
     labIntro: "Parametry wyliczone z odpowiedzi. Krew nie była potrzebna, choć laboratorium proponowało.",
     labNote:
       "Strzałka przy wyniku oznacza wartość poza zakresem referencyjnym. Zakresy ustalono na grupie kontrolnej, która nie posiada szuflady ze wszystkim.",
-    labDownload: "Pobierz wyniki",
-    labFormat: "Obraz 4:5, do wysłania lekarzowi rodzinnemu. Albo rodzinie.",
     referral: "Zbadaj kogoś jeszcze.",
     referralText: "Wyślij test komuś, kto „nie potrzebuje instrukcji”. Albo zrób go jeszcze raz, tym razem szczerze.",
     friends: "Ranking znajomych",
@@ -90,12 +85,8 @@ const COPY = defineCopy({
     description: (result: Result) =>
       `${result.name ? `Preiskovana oseba: ${result.name}${result.proxy ? " (heteroanamneza)" : ""}. ` : ""}${result.verdict.title}, diagnoza: ${result.diagnosis.name}. Test dziadersa na Inštitutu za raziskave dziaderstva. Preglej se, preden bo prepozno.`,
     result: "Izvid testa dziadersa",
-    certificate: (number: string, date: string) => `Certifikat št. ${number} · ${date}`,
     heading: (result: Result) =>
       `Izvid testa dziadersa: ${result.score} %. ${result.verdict.title}. Diagnoza: ${result.diagnosis.name}.`,
-    respondent: "Preiskovana oseba",
-    proxy: " · heteroanamneza",
-    diagnosis: "Diagnoza",
     census: (percentile: number, total: string, nid: string) =>
       `Rezultat je višji kot pri ${percentile} % izmed ${total} preiskovanih v Nacionalnem popisu. Nacionalni indeks dziaderstva danes znaša ${nid} %.`,
     model: (percentile: number, nid: string) =>
@@ -105,7 +96,7 @@ const COPY = defineCopy({
     bulletinAside: "Ob ponedeljkih, zjutraj",
     bulletinLead: "Rezultati, kot je ta, gredo v Nacionalni popis. V ponedeljek Služba za statistiko objavi, kakšen je bil ves teden: koliko pregledov, koliko rezultatov je preseglo prag, katere vrste so bile najpogosteje prepoznane.",
     notYours: "Ni tvoj izvid?",
-    takeTest: "Opravi test",
+    takeTest: "Opravi svoj test",
     scale: "Skala dziaderstva",
     nidToday: (nid: string) => `NID danes ${nid}`,
     score: (score: number) => `Rezultat ${score}`,
@@ -135,8 +126,6 @@ const COPY = defineCopy({
     labIntro: "Parametri so izračunani iz odgovorov. Kri ni bila potrebna, čeprav se je laboratorij ponudil.",
     labNote:
       "Puščica ob rezultatu pomeni vrednost zunaj referenčnega območja. Območja so bila določena na kontrolni skupini, ki nima predala z vsem mogočim.",
-    labDownload: "Prenesi izvide",
-    labFormat: "Slika 4:5, za pošiljanje osebnemu zdravniku. Ali družini.",
     referral: "Preglej še koga.",
     referralText: "Pošlji test nekomu, ki »ne potrebuje navodil«. Ali ga opravi še enkrat, tokrat iskreno.",
     friends: "Lestvica prijateljev",
@@ -230,73 +219,51 @@ function Summary({
 }) {
   const t = COPY[locale];
   return (
-    <section className="wrap pb-16 pt-8 md:pb-24 md:pt-12">
-      <p className="label flex flex-wrap justify-between gap-x-6 gap-y-1 text-ink-soft">
-        <span>{t.result}</span>
-        <span>{t.certificate(result.certificate, result.date)}</span>
-      </p>
+    <section className="wrap pb-16 pt-4 md:pb-24 md:pt-10">
+      <h1 className="sr-only">{t.heading(result)}</h1>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1 border-b border-ink pb-3">
+        <p className="font-bold">{t.result}</p>
+        <p className="label text-ink-soft">
+          <span className="hidden sm:inline">{t.notYours} </span>
+          <Link href="/test" className="link text-ink">{t.takeTest} <span aria-hidden="true">→</span></Link>
+        </p>
+      </div>
 
-      <div className="mt-8 grid gap-16 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-7">
-          <h1 className="sr-only">{t.heading(result)}</h1>
-          <div aria-hidden="true">
-            <p className="label text-ink-soft">
-              {t.respondent}
-              {result.name && <span className="text-ink">: {result.name}</span>}
-              {result.proxy && <span className="text-red">{t.proxy}</span>}
-            </p>
-            <p className="mt-2 text-[clamp(7.5rem,24vw,15rem)] font-bold leading-[0.8] tracking-[-0.04em] tabular-nums">
-              {result.score}
-              <span className="text-[0.4em]">%</span>
-            </p>
-            <Stamp className="mt-8 animate-stamp text-[0.9rem] [--stamp-rotate:-3deg]">{result.verdict.title}</Stamp>
-            <p className="label mt-10 text-ink-soft">{t.diagnosis}</p>
-            <p className="mt-1 text-[clamp(2.25rem,4.8vw,3.5rem)] font-bold leading-[1] tracking-[-0.015em] [text-wrap:balance]">
-              {result.diagnosis.name}
-            </p>
-            <p className="mt-2 text-lg italic text-ink-soft">{result.diagnosis.latin}</p>
-          </div>
-
+      <div className="mt-4 grid items-start gap-5 lg:mt-8 lg:grid-cols-2 lg:gap-12">
+        <Certificate
+          specimen={result.specimen}
+          locale={locale}
+          score={result.score}
+          verdict={result.verdict.title}
+          diagnosis={result.diagnosis.name}
+          latin={result.diagnosis.latin}
+          number={result.certificate}
+          species={result.diagnosis.species.map((species) => species.key)}
+          name={result.name || undefined}
+          date={result.date}
+          proxy={result.proxy}
+          className="border border-ink"
+        />
+        <div className="mx-auto w-full min-w-0 max-w-[34rem]">
+          <ResultActions code={result.code} score={result.score} diagnosis={result.diagnosis.name} name={result.name} />
           <ScoreScale score={result.score} nid={nid} locale={locale} />
-          <p className="mt-5 max-w-xl text-ink-soft">
+          <p className="mt-5 text-ink-soft">
             {typo(
               real
                 ? t.census(real.percentile, formatNumber(locale, real.total), pct(nid))
                 : t.model(result.percentile, pct(nid)),
             )}{" "}
-            <Link href="/spis" className="link text-ink">
-              {t.censusLink}
-            </Link>
-          </p>
-
-          <ResultActions code={result.code} score={result.score} diagnosis={result.diagnosis.name} name={result.name} />
-        </div>
-
-        <div className="lg:col-span-5 lg:pt-2">
-          <Certificate
-            specimen={result.specimen}
-            locale={locale}
-            score={result.score}
-            diagnosis={result.diagnosis.name}
-            latin={result.diagnosis.latin}
-            number={result.certificate}
-            species={result.diagnosis.species.map((species) => species.key)}
-            name={result.name || undefined}
-            date={result.date}
-            proxy={result.proxy}
-            className="border border-ink"
-          />
-          <p className="label mt-6 text-center text-ink-soft">
-            {t.notYours}{" "}
-            <Link href="/test" className="link text-ink">
-              {t.takeTest}
-            </Link>
+            <Link href="/spis" className="link text-ink">{t.censusLink}</Link>
           </p>
           <ResultProfileNote
             code={result.code}
             species={result.diagnosis.species.map((species) => ({ key: species.key, name: species.name }))}
           />
         </div>
+      </div>
+      <div className="mt-8 grid gap-x-12 lg:grid-cols-2">
+        <CreateFamilyGroup code={result.code} />
+        <TeamOffer code={result.code} className="mt-8" />
       </div>
     </section>
   );
@@ -497,17 +464,7 @@ function Lab({ result, locale }: { result: Result; locale: Locale }) {
     <Section id="badania" title={t.lab} aside={t.labUnit} intro={typo(t.labIntro)}>
       <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-10">
         <LabSheet result={result} locale={locale} className="border border-ink lg:col-span-8" />
-        <div className="lg:col-span-4">
-          <p className="max-w-sm text-lg leading-relaxed">{typo(t.labNote)}</p>
-          <a
-            href={localizePath(`/wynik/${result.code}/badania?pobierz`, locale)}
-            download
-            className="btn mt-8 border border-ink hover:bg-ink hover:text-paper"
-          >
-            {t.labDownload} <span aria-hidden="true">↓</span>
-          </a>
-          <p className="label mt-3 text-ink-soft">{t.labFormat}</p>
-        </div>
+        <p className="max-w-sm text-lg leading-relaxed lg:col-span-4">{typo(t.labNote)}</p>
       </div>
     </Section>
   );

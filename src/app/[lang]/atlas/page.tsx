@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { breadcrumbList, JsonLd, PageHeader, Section, TestPromo } from "@/components/page";
 import { SpeciesPlate } from "@/components/pictograms";
 import { RegionMap } from "@/components/region-map";
@@ -15,6 +16,7 @@ import { getCommunity } from "@/lib/community";
 import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 import { plural, pluralSl, typo } from "@/lib/typo";
+import { GuidedKey } from "./guided-key";
 
 /** Dichotomous identification key for the nationwide species: where each pair of steps leads. */
 const KEY: [number | SpeciesKey, number | SpeciesKey][] = [
@@ -50,6 +52,8 @@ const COPY = defineCopy({
     occasionalIntro:
       "Występują w całym kraju, ale tylko w określonych okolicznościach: na weselu, w Wigilię, w kolejce, w oknie, przy transmisji meczu i na kempingu. Poza swoją okazją zachowują się jak gatunki pospolite.",
     key: "Klucz do oznaczania gatunków",
+    identify: "Oznacz gatunek krok po kroku",
+    fullKey: "Pełny klucz do oznaczania",
     keyIntro: "Zacznij od punktu 1 i wybieraj opis, który pasuje do obserwowanego osobnika. Klucz prowadzi do jednego z dziesięciu gatunków ogólnopolskich.",
     steps: [
       ["Trzyma szczypce, także z dala od rusztu", "Nie trzyma szczypiec"],
@@ -87,6 +91,8 @@ const COPY = defineCopy({
     occasionalIntro:
       "Živijo po vsej državi, a le v določenih okoliščinah: na svatbi, na sveti večer, v čakalni vrsti, na oknu, ob prenosu tekme in v kampu. Zunaj svoje priložnosti se vedejo kot navadne vrste.",
     key: "Določevalni ključ",
+    identify: "Določi vrsto po korakih",
+    fullKey: "Celoten določevalni ključ",
     keyIntro: "Začni pri točki 1 in izbiraj opis, ki ustreza opazovanemu osebku. Ključ te pripelje do ene od desetih vsepoljskih vrst.",
     steps: [
       ["Drži klešče, tudi daleč od žara", "Ne drži klešč"],
@@ -126,6 +132,18 @@ export default async function AtlasPage() {
   const occasional = species.filter((item) => item.occasion);
   const [bulletin, community] = await Promise.all([getBulletin(locale), getCommunity()]);
   const featured = species[bulletin.week % species.length];
+  const steps = KEY.map((pair, i) => pair.map((to, j) => {
+    const clue = typo(t.steps[i][j]);
+    if (typeof to === "number") return { clue, to };
+    const { key, name, latin, slug } = speciesByKey(to, locale);
+    return {
+      clue,
+      to: {
+        name, latin, href: `/atlas/${slug}`,
+        plate: <SpeciesPlate species={key} locale={locale} sizes="176px" className="w-44" />,
+      },
+    };
+  }));
 
   return (
     <main id="tresc">
@@ -163,6 +181,9 @@ export default async function AtlasPage() {
             <Link href="/dziaders" className="link text-ink">
               {t.guide}
             </Link>
+            <div className="mt-5">
+              <a href="#klucz" className="btn bg-ink text-paper hover:bg-red">{t.identify} ↓</a>
+            </div>
           </>
         }
         meta={t.meta(species.length, nationwide.length, regional.length, occasional.length)}
@@ -222,34 +243,33 @@ export default async function AtlasPage() {
       <Sightings community={community} />
 
       <Section id="klucz" title={t.key} intro={typo(t.keyIntro)}>
+        <Suspense fallback={null}>
+          <GuidedKey steps={steps} />
+        </Suspense>
+        <h3 className="mb-4 text-2xl font-bold">{t.fullKey}</h3>
         <ol className="max-w-4xl border-t border-ink">
-          {KEY.map((pair, i) => (
+          {steps.map((pair, i) => (
             <li key={i} id={`klucz-${i + 1}`} className="scroll-mt-6 border-b border-rule py-2">
-              {pair.map((to, j) => {
-                const text = t.steps[i][j];
-                const target = typeof to === "number" ? null : speciesByKey(to, locale);
-                return (
-                  <div key={text} className="grid grid-cols-[3rem_1fr] items-baseline gap-2 py-2.5">
-                    <span className="font-sans text-[0.9rem] font-semibold text-ink-soft">
-                      {i + 1}
-                      {j === 0 ? "a" : "b"}.
-                    </span>
-                    <span className="flex flex-wrap items-baseline gap-x-3 sm:flex-nowrap">
-                      <span className="text-lg leading-snug">{typo(text)}</span>
-                      <span aria-hidden="true" className="hidden min-w-8 flex-1 border-b border-dotted border-ink/40 sm:block" />
-                      {target ? (
-                        <Link href={`/atlas/${target.slug}`} className="whitespace-nowrap text-lg font-bold hover:text-red">
-                          {target.name}
-                        </Link>
-                      ) : (
-                        <a href={`#klucz-${to}`} className="label whitespace-nowrap text-ink-soft hover:text-red">
-                          {t.goTo} {to}
-                        </a>
-                      )}
-                    </span>
-                  </div>
-                );
-              })}
+              {pair.map(({ clue, to }, j) => (
+                <div key={j} className="grid grid-cols-[3rem_1fr] items-baseline gap-2 py-2.5">
+                  <span className="font-sans text-[0.9rem] font-semibold text-ink-soft">
+                    {i + 1}{j === 0 ? "a" : "b"}.
+                  </span>
+                  <span className="flex flex-wrap items-baseline gap-x-3 sm:flex-nowrap">
+                    <span className="text-lg leading-snug">{clue}</span>
+                    <span aria-hidden="true" className="hidden min-w-8 flex-1 border-b border-dotted border-ink/40 sm:block" />
+                    {typeof to === "number" ? (
+                      <a href={`#klucz-${to}`} className="label whitespace-nowrap text-ink-soft hover:text-red">
+                        {t.goTo} {to}
+                      </a>
+                    ) : (
+                      <Link href={to.href} className="whitespace-nowrap text-lg font-bold hover:text-red">
+                        {to.name}
+                      </Link>
+                    )}
+                  </span>
+                </div>
+              ))}
             </li>
           ))}
         </ol>

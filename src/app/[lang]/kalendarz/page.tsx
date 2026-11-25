@@ -13,6 +13,7 @@ import Link from "@/i18n/link";
 import { getLocale } from "@/i18n/server";
 import { previousSheet, sheetFor, type Sheet } from "@/lib/almanac";
 import { getBulletin } from "@/lib/bulletin";
+import { tableTestSeason } from "@/lib/calendar";
 import { getCommunity } from "@/lib/community";
 import { absoluteUrl, institute, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -219,7 +220,7 @@ export default async function CalendarPage() {
         </div>
       </Section>
 
-      {sheet.month === 12 && sheet.day <= 26 ? (
+      {tableTestSeason(sheet.month, sheet.day) ? (
         <TestPromo title={typo(t.december.title(sheet.day, sheet.toChristmasEve))} text={typo(t.december.text)} href="/test/przy-stole" cta={t.december.cta} />
       ) : (
         <TestPromo title={t.promo.title} text={typo(t.promo.text)} />

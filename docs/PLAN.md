@@ -172,7 +172,38 @@ Setup, environment variables and the email hook: `supabase/README.md`. SQL migra
 - **OG images** use `next/og` with static TTFs bundled in `assets/fonts` (no network at build time). Pictograms are embedded as SVG data URIs via `src/lib/svg-string.ts`.
 - **Icons:** `src/app/favicon.ico` (16, 32 and 48 px), `src/app/icon.svg` (switches to paper on ink in dark mode), `public/apple-touch-icon.png` (no link tag: iOS fetches it from the root by name), and `public/icon-192.png`, `icon-512.png` and `icon-maskable-512.png` for the manifest (`src/app/manifest.ts`). They are all drawn from the head mark.
 - **Two editions.** The Polish original lives at the root, the Slovenian translation under `/sl` with Slovenian URL words (`/sl/slovar`, `/sl/izvid`). All routes sit in `src/app/[lang]`; `next.config.ts` rewrites unprefixed URLs to `/pl` and Slovenian words to the route folders, redirects `/pl/…` to `/…` and `/si` to `/sl`. The front page follows the reader's chosen edition (cookie `jezyk`) or a browser that asks for Slovenian first; deeper pages never redirect, a slip offers the other edition instead. Every page has a canonical and hreflang alternates (x-default: Polish), and the sitemap lists both editions. Codes (results, cards, lines, exams, rankings) and data (census, votes under the Polish case slug, observations) are shared by both editions. How to translate and add content: [SLOVENIAN.md](SLOVENIAN.md).
-- **Analytics:** Vercel Web Analytics (`src/components/analytics.tsx`), cookieless. The name part of result URLs (`~…`) is stripped before anything is sent. Page views of `/test` against `/wynik/[kod]` give the completion funnel. Custom events (`Test rozpoczęty`, `Test ukończony` with zone and species, `Udostępnienie` with the channel) are only visible on Vercel's Pro plan.
+- **Analytics** uses self-hosted Umami at stats.szram.uk. The tracker removes private path values, query strings, fragments and page titles (a duel title can include both signatures). External referrers retain their origin. Both editions use the same event names.
+
+### Reading result and ranking counts in Umami
+
+Use pageview totals and event totals over the same period after the measurement change. For edition-specific counts, filter Polish or Slovenian paths on both sides.
+
+| Stage | Count |
+| --- | --- |
+| Result views | Pageviews of exactly `/wynik/anonimowe` (PL) or `/sl/izvid/anonimowe` (SL). |
+| Result share intent | `Wynik: próba udostępnienia`, grouped by `kanal`. Social outlets, email and file downloads can only confirm the click. |
+| Result share handoffs | `Wynik: przekazano`. Channels are `natywne` for a resolved native text share, `obraz` for a resolved native file share and `link` for a resolved clipboard write. Divide by result views for handoffs per view. To compare attempts with successes, filter both counts to those three channels. |
+| Unconfirmed result shares | `Wynik: bez przekazania` records native `AbortError` as `anulowano` (includes dismissal or no targets), other native rejections as `błąd`, and a clipboard failure leading to the manual prompt as `ręczne kopiowanie`. A manual copy has no observable outcome. |
+| Snapshot ranking visits | Pageviews of exactly `/grupa/anonimowe` (PL) or `/sl/lestvica/anonimowe` (SL), across all list sizes. |
+| Snapshot ranking gains a second participant | `Ranking: druga osoba` fires on test completion when a one-person invitation grows to two or more distinct result entries. This includes a table joining together. Use the event's test-page path (`/test` or `/test/przy-stole` in PL, `/sl/test` or `/sl/test/za-mizo` in SL) to filter by edition. Divide by snapshot ranking visits for completed joins across that threshold per view. |
+
+These ratios measure activity. One visitor can reload, share twice or complete a test from a forwarded invitation without opening the ranking. Two people can extend the same snapshot independently. A fresh multi-person table and a return visit to a duel contribute no join event. The browser can confirm handing data to the share API or clipboard. Delivery to a recipient is unobservable. Blockers, late tracker loading and the tracker’s human-interaction filter can reduce counts. Older `Udostępnienie` events and the site-wide yearbook tally mix other activities and have different definitions.
+
+Persistent family rankings have their own view paths, `/grupy/anonimowe` and `/sl/skupina/anonimowe`. For their second-participant count, the existing membership table already records each accepted attempt once. This read-only aggregate returns the number of families whose second join fell in the supplied interval (`$1` inclusive, `$2` exclusive, both timestamps with time zone).
+
+```sql
+select count(*) as families_reaching_two
+from (
+  select m.joined_at,
+         row_number() over (partition by m.group_id order by m.joined_at, m.attempt) as position
+  from public.family_members m
+  join public.family_groups g on g.id = m.group_id
+  where g.kind = 'family'
+) members
+where position = 2 and joined_at >= $1 and joined_at < $2;
+```
+
+Compare this aggregate with family ranking views across **both** editions. Family membership has no edition field, survives analytics blocking and expires with the group after 90 days. Earlier counts can shrink as groups expire. These measurements use no person or invitation identifier to link analytics stages.
 
 ## 7. Launch checklist
 

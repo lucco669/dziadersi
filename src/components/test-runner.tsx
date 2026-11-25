@@ -8,6 +8,7 @@ import { getStations, getTasks, TASKS, type Task } from "@/content/test";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import { localizePath } from "@/i18n/routes";
+import { trackSecondParticipant } from "@/lib/ranking-measurement";
 import { sameAnswer } from "@/lib/answer-stats";
 import type { AnswerCounts } from "@/lib/census";
 import { cleanName, DIAGNOSABLE, dayNumber, decodeGroup, encodeResult, evaluate, GROUP_LIMIT, groupPath, suspect } from "@/lib/test";
@@ -375,6 +376,7 @@ export function TestRunner() {
     // Analytics count in Polish labels, so both editions add up to the same statistics.
     const result = evaluate(draft, "pl");
     track("Test ukończony", { strefa: result.verdict.label, gatunek: result.diagnosis.name, tryb: proxy ? "wywiad" : "osobiście" });
+    trackSecondParticipant(group, href);
     record(code, result.score);
     writeProgress(null);
     setPhase("processing");

@@ -73,7 +73,7 @@ export function LabSheet({ result, locale, className }: { result: Result; locale
         <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2 border-y border-ink py-3 font-sans text-[0.88rem] sm:grid-cols-4">
           <div>
             <dt className="text-ink-faint">{t.patient}</dt>
-            <dd className="font-semibold">{result.name || t.anonymous}</dd>
+            <dd className="break-words font-semibold">{result.name || t.anonymous}</dd>
           </div>
           <div>
             <dt className="text-ink-faint">{t.taken}</dt>
@@ -109,14 +109,14 @@ export function LabSheet({ result, locale, className }: { result: Result; locale
           <tbody>
             {rows.map((row) => (
               <tr key={row.code} className="border-t border-rule align-baseline">
-                <th scope="row" className="py-2 pr-3 text-left font-normal">
+                <th scope="row" className="py-2 pr-3 text-left font-normal [overflow-wrap:anywhere]">
                   <span className="mr-2 inline-block min-w-[2.6rem] font-semibold">{row.code}</span>
                   {typo(row.name)}
                   <span className="block text-[0.78rem] text-ink-faint sm:hidden">
                     {t.norm} {row.range} {row.unit}
                   </span>
                 </th>
-                <td className={cx("whitespace-nowrap py-2 pr-3 text-right tabular-nums", row.flag && "font-semibold text-red")}>
+                <td className={cx("whitespace-nowrap py-2 text-right tabular-nums sm:pr-3", row.flag && "font-semibold text-red")}>
                   {row.value}
                   <span className="inline-block w-5 text-center" aria-label={row.flag === "H" ? t.high : row.flag === "L" ? t.low : undefined}>
                     {ARROW[row.flag]}

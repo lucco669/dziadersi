@@ -3,6 +3,9 @@ import { defineCopy } from "@/i18n/copy";
 
 export const TIME_ZONE = "Europe/Warsaw";
 
+/** The calendar and homepage invite the whole table to the test over Christmas. */
+export const tableTestSeason = (month: number, day: number) => month === 12 && day <= 26;
+
 const DAY_MS = 86_400_000;
 
 const partsFormat = new Intl.DateTimeFormat("en-CA", {

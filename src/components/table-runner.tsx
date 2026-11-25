@@ -7,6 +7,7 @@ import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
 import Link from "@/i18n/link";
 import { localizePath } from "@/i18n/routes";
+import { trackSecondParticipant } from "@/lib/ranking-measurement";
 import { track } from "@/lib/analytics";
 import { checkNames, readTable, SHORT_LENGTH, tableCapacity, tableCodes, tableMinimum, tablePath, type NameProblem, type TableState } from "@/lib/table";
 import { dayNumber, decodeGroup, DIAGNOSABLE, evaluate } from "@/lib/test";
@@ -308,7 +309,9 @@ export function TableRunner() {
     const steps = 5;
     setProcessing({ people: codes.length, step: 0 });
     window.scrollTo({ top: 0 });
-    const target = localizePath(tablePath(codes, final.group), locale);
+    const ranking = tablePath(codes, final.group);
+    trackSecondParticipant(final.group, ranking);
+    const target = localizePath(ranking, locale);
     router.prefetch(target);
     for (let i = 1; i <= steps; i++) timers.current.push(window.setTimeout(() => setProcessing((p) => p && { ...p, step: i }), 400 + (i - 1) * 520));
     timers.current.push(window.setTimeout(() => router.push(target), reducedMotion ? 0 : 400 + steps * 520 + 700));

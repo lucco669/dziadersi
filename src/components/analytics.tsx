@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { analyticsUrl } from "@/lib/analytics-url";
+import { analyticsPayload } from "@/lib/analytics-url";
 import "@/lib/analytics";
 
 /**
@@ -24,11 +24,7 @@ if (typeof window !== "undefined" && !window.umamiBeforeSend) {
 
   window.umamiBeforeSend = (_type, payload) => {
     if (navigator.webdriver) return null;
-    const clean = { ...payload };
-    if (typeof clean.url === "string") clean.url = analyticsUrl(new URL(clean.url, location.origin).href);
-    if (typeof clean.referrer === "string" && clean.referrer.startsWith(location.origin)) {
-      clean.referrer = analyticsUrl(clean.referrer);
-    }
+    const clean = analyticsPayload(payload, location.origin);
     return human ? clean : new Promise((resolve) => waiting.push(() => resolve(clean)));
   };
 }

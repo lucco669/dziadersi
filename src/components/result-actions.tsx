@@ -1,18 +1,17 @@
 "use client";
-import { ResultSpecimenChoice } from "./result-specimen-choice";
-
 import { track } from "@/lib/analytics";
+import { copyResultLink, resultShareIntent, shareResult } from "@/lib/result-sharing";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 import { useLocale } from "@/i18n/client";
 import { defineCopy } from "@/i18n/copy";
+import Link from "@/i18n/link";
 import { localizePath } from "@/i18n/routes";
 import { site } from "@/lib/site";
 import { tally } from "@/lib/tally";
-import { cleanName, decodeResult, encodeResult } from "@/lib/test";
+import { cleanName, decodeResult, encodeResult, groupPath } from "@/lib/test";
 import { cx } from "@/lib/typo";
-import { CreateFamilyGroup } from "./family-group";
-import { TeamOffer } from "./team";
+import { ResultSpecimenChoice } from "./result-specimen-choice";
 import { ShareOutlet, shareOutlets } from "./share-bar";
 
 const COPY = defineCopy({
@@ -27,8 +26,10 @@ const COPY = defineCopy({
     copy: "Kopiuj link",
     copied: "Skopiowano link ✓",
     sendCertificate: "Wyślij certyfikat",
+    compare: "Porównaj wyniki",
+    options: "Rycina, podpis i pliki do pobrania",
     announce: "Link skopiowany do schowka.",
-    certificate: "Certyfikat",
+    downloads: "Do pobrania",
     post: "Pobierz post 4:5",
     story: "Pobierz relację 9:16",
     lab: "Wyniki badań",
@@ -55,8 +56,10 @@ const COPY = defineCopy({
     copy: "Kopiraj povezavo",
     copied: "Povezava kopirana ✓",
     sendCertificate: "Pošlji certifikat",
+    compare: "Primerjaj rezultate",
+    options: "Risba, podpis in datoteke za prenos",
     announce: "Povezava je kopirana v odložišče.",
-    certificate: "Certifikat",
+    downloads: "Prenosi",
     post: "Prenesi objavo 4:5",
     story: "Prenesi zgodbo 9:16",
     lab: "Laboratorijski izvidi",
@@ -123,37 +126,20 @@ export function ResultActions({
   }, [code, score, locale]);
 
   async function copy() {
-    track("Udostępnienie", { kanal: "link" });
-    tally("udostepnienie");
-    try {
-      await navigator.clipboard.writeText(url);
+    if (await copyResultLink(url, t.prompt)) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2400);
-    } catch {
-      window.prompt(t.prompt, url);
     }
   }
 
   async function share() {
     if (!canShare) return copy();
-    track("Udostępnienie", { kanal: "natywne" });
-    tally("udostepnienie");
-    try {
-      await navigator.share({ title: t.title(score, diagnosis), text, url });
-    } catch {
-      // Closing the share sheet is not an error worth reporting.
-    }
+    await shareResult({ title: t.title(score, diagnosis), text, url });
   }
 
   async function shareImage() {
     if (!storyFile) return;
-    track("Udostępnienie", { kanal: "obraz" });
-    tally("certyfikat");
-    try {
-      await navigator.share({ files: [storyFile], text: `${text} ${url}` });
-    } catch {
-      // Cancelled by the user.
-    }
+    await shareResult({ files: [storyFile], text: `${text} ${url}` });
   }
 
   function saveName(event: FormEvent) {
@@ -170,126 +156,121 @@ export function ResultActions({
     router.replace(localizePath(`/wynik/${encodeResult({ ...draft, name: cleaned })}`, locale), { scroll: false });
   }
 
-  const sent = (channel: string) => {
-    track("Udostępnienie", { kanal: channel });
-    tally("udostepnienie");
-  };
-
   return (
-    <div className="mt-10 border-t border-ink pt-6">
-      <ResultSpecimenChoice code={code} />
-      <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={share} className="btn bg-ink text-paper hover:bg-red">
-          {t.share} <span aria-hidden="true">→</span>
+    <div>
+      <div className="grid gap-2 min-[360px]:grid-cols-2">
+        <button type="button" onClick={storyFile ? shareImage : share} className="btn min-h-12 whitespace-normal px-3 bg-ink text-paper hover:bg-red">
+          {copied ? t.copied : t.sendCertificate}
         </button>
-        <button type="button" onClick={copy} className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
-          {copied ? t.copied : t.copy}
-        </button>
-        {storyFile && (
-          <button type="button" onClick={shareImage} className="btn border border-ink text-ink hover:bg-ink hover:text-paper">
-            {t.sendCertificate}
-          </button>
-        )}
+        <Link href={groupPath([code])} className="btn min-h-12 whitespace-normal px-3 border border-ink text-center hover:bg-ink hover:text-paper">
+          {t.compare}
+        </Link>
       </div>
       <p className="sr-only" aria-live="polite">
         {copied ? t.announce : ""}
       </p>
 
-      <dl className="mt-7 grid gap-x-8 gap-y-3 font-sans text-[0.95rem] sm:grid-cols-[auto_1fr]">
-        <dt className="label pt-0.5 text-ink-soft">{t.certificate}</dt>
-        <dd className="flex flex-wrap gap-x-5 gap-y-1">
-          <a href={image("post")} download onClick={() => {
-              track("Udostępnienie", { kanal: "post" });
-              tally("certyfikat");
-            }} className="link">
-            {t.post}
-          </a>
-          <a href={image("relacja")} download onClick={() => {
-              track("Udostępnienie", { kanal: "relacja" });
-              tally("certyfikat");
-            }} className="link">
-            {t.story}
-          </a>
-          <a
-            href={localizePath(`/wynik/${code}/badania?pobierz`, locale)}
-            download
-            onClick={() => {
-              track("Udostępnienie", { kanal: "badania" });
-              tally("certyfikat");
-            }}
-            className="link"
-          >
-            {t.lab}
-          </a>
-        </dd>
-        <dt className="label pt-0.5 text-ink-soft">{t.send}</dt>
-        <dd className="flex flex-wrap gap-x-5 gap-y-1">
-          {shareOutlets(url, text).map((outlet) => (
-            <ShareOutlet key={outlet.label} {...outlet} onOpen={() => sent(outlet.label)} className="link" />
-          ))}
-          <a
-            href={`mailto:?subject=${encodeURIComponent(t.subject(score))}&body=${encodeURIComponent(`${text}\n\n${url}`)}`}
-            onClick={() => sent(t.email)}
-            className="link"
-          >
-            {t.email}
-          </a>
-        </dd>
-        <dt className="label pt-0.5 text-ink-soft">{t.profile}</dt>
-        <dd>
-          <a href={localizePath(`/profil/zapisz/${code}`, locale)} onClick={() => track("Profil", { akcja: "zapisz" })} className="link">
-            {t.save}
-          </a>
-        </dd>
-        <dt className="label pt-0.5 text-ink-soft">{t.respondent}</dt>
-        <dd>
-          {editing ? (
-            <form onSubmit={saveName} className="flex flex-wrap items-end gap-x-4 gap-y-2">
-              <label htmlFor="imie" className="sr-only">
-                {t.nameLabel}
-              </label>
-              <input
-                id="imie"
-                autoFocus
-                value={nameDraft}
-                onChange={(event) => {
-                  setNameDraft(event.target.value);
-                  setNameError(false);
-                }}
-                maxLength={24}
-                autoComplete="given-name"
-                placeholder={t.namePlaceholder}
-                className="w-56 border-0 border-b-2 border-ink bg-transparent px-0 py-1 font-serif text-xl font-bold placeholder:font-normal placeholder:text-ink/30 focus:border-red focus-visible:outline-none"
-              />
-              <button type="submit" className="label py-1.5 font-semibold text-ink hover:text-red">
-                {t.saveName}
-              </button>
-              <button
-                type="button"
+      <details className="mt-4 border-y border-rule">
+        <summary className="cursor-pointer py-3 font-sans text-base font-semibold hover:text-red">{t.options}</summary>
+        <div className="pb-5 pt-3">
+          <ResultSpecimenChoice code={code} />
+          <dl className="mt-7 grid gap-x-8 gap-y-3 font-sans text-[0.95rem] sm:grid-cols-[auto_1fr]">
+            <dt className="label pt-0.5 text-ink-soft">{t.downloads}</dt>
+            <dd className="flex flex-wrap gap-x-5 gap-y-1">
+              <a href={image("post")} download onClick={() => {
+                  resultShareIntent("post");
+                  tally("certyfikat");
+                }} className="link">
+                {t.post}
+              </a>
+              <a href={image("relacja")} download onClick={() => {
+                  resultShareIntent("relacja");
+                  tally("certyfikat");
+                }} className="link">
+                {t.story}
+              </a>
+              <a
+                href={localizePath(`/wynik/${code}/badania?pobierz`, locale)}
+                download
                 onClick={() => {
-                  setEditing(false);
-                  setNameError(false);
-                  setNameDraft(name);
+                  resultShareIntent("badania");
+                  tally("certyfikat");
                 }}
-                className="label py-1.5 text-ink-soft hover:text-ink"
+                className="link"
               >
-                {t.cancel}
-              </button>
-              {nameError && (
-                <p className="w-full font-sans text-sm text-red" role="alert">
-                  {t.nameError}
-                </p>
+                {t.lab}
+              </a>
+            </dd>
+            <dt className="label pt-0.5 text-ink-soft">{t.send}</dt>
+            <dd className="flex flex-wrap gap-x-5 gap-y-1">
+              <button type="button" onClick={copy} className="link">{copied ? t.copied : t.copy}</button>
+              {storyFile && canShare && <button type="button" onClick={share} className="link">{t.share}</button>}
+              {shareOutlets(url, text).map((outlet) => (
+                <ShareOutlet key={outlet.label} {...outlet} onOpen={() => resultShareIntent(outlet.label)} className="link" />
+              ))}
+              <a
+                href={`mailto:?subject=${encodeURIComponent(t.subject(score))}&body=${encodeURIComponent(`${text}\n\n${url}`)}`}
+                onClick={() => resultShareIntent("email")}
+                className="link"
+              >
+                {t.email}
+              </a>
+            </dd>
+            <dt className="label pt-0.5 text-ink-soft">{t.profile}</dt>
+            <dd>
+              <a href={localizePath(`/profil/zapisz/${code}`, locale)} onClick={() => track("Profil", { akcja: "zapisz" })} className="link">
+                {t.save}
+              </a>
+            </dd>
+            <dt className="label pt-0.5 text-ink-soft">{t.respondent}</dt>
+            <dd>
+              {editing ? (
+                <form onSubmit={saveName} className="flex flex-wrap items-end gap-x-4 gap-y-2">
+                  <label htmlFor="imie" className="sr-only">
+                    {t.nameLabel}
+                  </label>
+                  <input
+                    id="imie"
+                    autoFocus
+                    value={nameDraft}
+                    onChange={(event) => {
+                      setNameDraft(event.target.value);
+                      setNameError(false);
+                    }}
+                    maxLength={24}
+                    autoComplete="given-name"
+                    placeholder={t.namePlaceholder}
+                    className="w-56 border-0 border-b-2 border-ink bg-transparent px-0 py-1 font-serif text-xl font-bold placeholder:font-normal placeholder:text-ink/30 focus:border-red focus-visible:outline-none"
+                  />
+                  <button type="submit" className="label py-1.5 font-semibold text-ink hover:text-red">
+                    {t.saveName}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditing(false);
+                      setNameError(false);
+                      setNameDraft(name);
+                    }}
+                    className="label py-1.5 text-ink-soft hover:text-ink"
+                  >
+                    {t.cancel}
+                  </button>
+                  {nameError && (
+                    <p className="w-full font-sans text-sm text-red" role="alert">
+                      {t.nameError}
+                    </p>
+                  )}
+                </form>
+              ) : (
+                <button type="button" onClick={() => setEditing(true)} className={cx("link text-left", !name && "text-red")}>
+                  {name ? t.change(name) : t.addName}
+                </button>
               )}
-            </form>
-          ) : (
-            <button type="button" onClick={() => setEditing(true)} className={cx("link text-left", !name && "text-red")}>
-              {name ? t.change(name) : t.addName}
-            </button>
-          )}
-        </dd>
-      </dl>
-      <CreateFamilyGroup code={code} />
-      <TeamOffer code={code} className="mt-8" />
+            </dd>
+          </dl>
+        </div>
+      </details>
     </div>
   );
 }

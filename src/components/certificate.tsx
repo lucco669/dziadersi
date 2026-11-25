@@ -18,6 +18,7 @@ const COPY = defineCopy({
     own: "uzyskała w Teście Dziadersa wynik",
     sample: "Wzór",
     diagnosis: "Rozpoznanie",
+    interview: "Wywiad rodzinny",
     position: "Kierownik Pracowni Diagnostycznej",
     date: "Data badania",
     caption: (score: number, diagnosis: string, name?: string, proxy?: boolean) =>
@@ -31,6 +32,7 @@ const COPY = defineCopy({
     own: "na testu dziadersa dosegla rezultat",
     sample: "Vzorec",
     diagnosis: "Diagnoza",
+    interview: "Heteroanamneza",
     position: "Vodja diagnostičnega laboratorija",
     date: "Datum pregleda",
     caption: (score: number, diagnosis: string, name?: string, proxy?: boolean) =>
@@ -53,54 +55,74 @@ export type CertificateProps = {
   sample?: boolean;
   /** Issued on a family interview, not on the respondent's own answers. */
   proxy?: boolean;
+  verdict?: string;
   className?: string;
 };
 
 /** The certificate, with the red stripe of a Polish school certificate awarded with distinction. */
-export function Certificate({ locale, score, diagnosis, latin, number, species, specimen, name, date, sample, proxy, className }: CertificateProps) {
+export function Certificate({ locale, score, diagnosis, latin, number, species, specimen, name, date, sample, proxy, verdict, className }: CertificateProps) {
   const t = COPY[locale];
   const home = localizePath("/", locale);
   return (
     <figure className={cx("relative mx-auto w-full max-w-[34rem] overflow-hidden bg-[#fbf8f1] p-2 text-ink", className)}>
       <div aria-hidden="true" className="absolute -left-20 top-4 h-6 w-56 -rotate-45 bg-red md:-left-16 md:top-12 md:h-7" />
-      <div className="relative border border-ink px-6 pb-6 pt-6 text-center md:px-10 md:pb-8">
+      <div className={cx("relative border border-ink text-center md:px-10 md:pb-8", verdict ? "px-3 py-4 sm:px-6" : "px-6 py-6")}>
         <p className="label text-[0.75rem] text-ink-soft">
           {siteCopy(locale).institute}{" "}
-          <span className="block sm:inline">
+          <span className={verdict ? "hidden sm:inline" : "block sm:inline"}>
             · {t.number} {number}
           </span>
         </p>
 
-        <p className="mt-7 text-[clamp(1.85rem,4vw,2.5rem)] font-bold leading-none tracking-[-0.01em]">{t.title}</p>
-        <p className="mx-auto mt-4 max-w-sm text-[1rem] italic leading-relaxed text-ink-soft">
+        <p className={cx("font-bold leading-none tracking-[-0.01em]", verdict ? "mt-3 text-[clamp(1.5rem,6vw,2.5rem)]" : "mt-7 text-[clamp(1.85rem,4vw,2.5rem)]")}>{t.title}</p>
+        <p className={cx("mx-auto max-w-sm text-[1rem] italic text-ink-soft", verdict ? "mt-2 hidden leading-snug sm:block" : "mt-4 leading-relaxed")}>
           {typo(t.certifies)}
-          {name ? <span className="my-1 block text-[1.75rem] not-italic font-bold leading-tight text-ink">{name}</span> : " "}
+          {name ? <span className="my-1 block break-words text-[1.75rem] not-italic font-bold leading-tight text-ink">{name}</span> : " "}
           {typo(proxy ? t.proxy : t.own)}
         </p>
 
-        <div className="relative">
-          <p className="mt-1 text-[clamp(4.5rem,11vw,6.75rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">{score}%</p>
-          {sample && (
-            <Stamp className="absolute right-0 top-1/2 -translate-y-1/2 rotate-[-12deg] bg-[#fbf8f1]/70">{t.sample}</Stamp>
-          )}
-        </div>
+        {verdict && (name || proxy) && (
+          <p className="mt-2 break-words text-lg leading-tight sm:hidden">
+            {name && <strong>{name}</strong>}
+            {proxy && <span className="label block text-ink-soft">{t.interview}</span>}
+          </p>
+        )}
 
-        <div className="mt-4 flex justify-center gap-2">
-          {species.length > 0 ? (
-            species.map((key) => (
-              <SpeciesPlate locale={locale} key={key} species={key} specimen={specimen} sizes={species.length > 1 ? "120px" : "160px"} className={species.length > 1 ? "h-20 md:h-24" : "h-24 md:h-28"} />
-            ))
-          ) : (
-            <CommonPlate locale={locale} specimen={specimen} className="h-24 md:h-28" />
-          )}
+        <div className={verdict ? "mx-auto mt-4 flex max-w-md items-center justify-center gap-3" : undefined}>
+          <div className="relative">
+            <p className="mt-1 text-[clamp(4.5rem,11vw,6.75rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">
+              {score}<span className={verdict ? "text-[0.5em]" : undefined}>%</span>
+            </p>
+            {sample && (
+              <Stamp className="absolute right-0 top-1/2 -translate-y-1/2 rotate-[-12deg] bg-[#fbf8f1]/70">{t.sample}</Stamp>
+            )}
+          </div>
+
+          <div className={cx("flex min-w-0 justify-center gap-2", !verdict && "mt-4")}>
+            {species.length > 0 ? (
+              species.map((key) => (
+                <SpeciesPlate
+                  locale={locale}
+                  key={key}
+                  species={key}
+                  specimen={specimen}
+                  sizes={species.length > 1 ? "120px" : "160px"}
+                  className={cx("min-w-0", species.length > 1 ? "h-20 md:h-24" : "h-24 md:h-28")}
+                />
+              ))
+            ) : (
+              <CommonPlate locale={locale} specimen={specimen} className="h-24 object-contain md:h-28" />
+            )}
+          </div>
         </div>
 
         <p className="label mt-4 text-ink-soft">{t.diagnosis}</p>
         <p className="mt-1 text-balance text-[1.5rem] font-bold leading-tight">{diagnosis}</p>
         <p className="mt-0.5 italic text-ink-soft">{latin}</p>
+        {verdict && <Stamp className="mt-3 -rotate-2">{verdict}</Stamp>}
 
-        <div className="mt-8 flex items-end justify-between gap-6 text-left">
-          <Seal locale={locale} className="size-24 shrink-0 rotate-[-10deg] text-red md:size-28" />
+        <div className={cx("flex items-end justify-between gap-6 text-left", verdict ? "mt-4" : "mt-8")}>
+          <Seal locale={locale} className={cx("shrink-0 rotate-[-10deg] text-red md:size-28", verdict ? "size-16" : "size-24")} />
           <div className="w-full max-w-[13rem]">
             <p className="text-[1.6rem] italic leading-none">Z. Wąsik</p>
             <p className="label mt-2 border-t border-ink pt-2 text-[0.72rem] leading-snug text-ink-soft">
@@ -112,11 +134,12 @@ export function Certificate({ locale, score, diagnosis, latin, number, species, 
         </div>
 
         {date && (
-          <p className="label mt-6 flex justify-between gap-4 border-t border-rule pt-3 text-left text-[0.75rem] text-ink-soft">
+          <p className={cx("label flex justify-between gap-3 border-t border-rule pt-2 text-left text-[0.75rem] text-ink-soft", verdict ? "mt-3" : "mt-6")}>
             <span>
               {t.date}: {date}
             </span>
-            <span>dziader.si{home === "/" ? "" : home}</span>
+            {verdict && <span className="sm:hidden">{t.number} {number}</span>}
+            <span className={verdict ? "hidden sm:inline" : undefined}>dziader.si{home === "/" ? "" : home}</span>
           </p>
         )}
       </div>

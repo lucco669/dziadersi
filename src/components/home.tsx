@@ -36,16 +36,9 @@ const COPY = defineCopy({
     crowdLabel: (count: number) => `${count} na 100 osób wykazuje objawy dziaderstwa`,
     crowdCaption: (count: number) =>
       `Rys. 2. Natężenie dziaderstwa w przeliczeniu na 100 osób: ${count} ${plural(count, "osoba", "osoby", "osób")} z objawami. Źródło: IBD.`,
-    testTitle: "Test Dziadersa",
-    testLead:
-      "Badanie okresowe w pięciu gabinetach: plansze Rorschacha, próba klaksonowa, inwentaryzacja szuflady. Wynik, rozpoznanie gatunku, wyniki laboratoryjne i certyfikat do wysłania rodzinie.",
-    testFacts: [
-      ["5", "gabinetów"],
-      ["16", "zadań"],
-      ["1", "certyfikat"],
-    ],
-    start: "Rozpocznij badanie",
-    sample: "Przykładowy wynik",
+    testTitle: "Przykładowy certyfikat",
+    testLead: "Wynik w procentach, rozpoznany gatunek i podpis kierownika. W aktach są też wyniki badań laboratoryjnych.",
+    sample: "Zobacz pełny wynik",
     atlasCount: (count: number) => `${count} ${plural(count, "gatunek", "gatunki", "gatunków")} w Atlasie`,
     atlasIntro: "Trzy okazy z kolekcji Instytutu. Brzmi znajomo? Test rozpoznaje dziesięć gatunków i ich krzyżówki.",
     atlasAll: "Cały Atlas",
@@ -81,16 +74,9 @@ const COPY = defineCopy({
     crowdLabel: (count: number) => `${count} od 100 oseb kaže znake dziaderstva`,
     crowdCaption: (count: number) =>
       `Sl. 2. Jakost dziaderstva na 100 oseb: ${count} ${pluralSl(count, "oseba", "osebi", "osebe", "oseb")} s simptomi. Vir: IBD.`,
-    testTitle: "Test dziadersa",
-    testLead:
-      "Obdobni pregled v petih ordinacijah: Rorschachove table, preizkus s hupo, inventura predala. Rezultat, diagnoza vrste, laboratorijski izvidi in certifikat, ki ga pošlješ družini.",
-    testFacts: [
-      ["5", "ordinacij"],
-      ["16", "nalog"],
-      ["1", "certifikat"],
-    ],
-    start: "Začni pregled",
-    sample: "Primer izvida",
+    testTitle: "Vzorec certifikata",
+    testLead: "Rezultat v odstotkih, ugotovljena vrsta in podpis vodje laboratorija. V spisu so tudi laboratorijski izvidi.",
+    sample: "Poglej celoten izvid",
     atlasCount: (count: number) => `${count} ${pluralSl(count, "vrsta", "vrsti", "vrste", "vrst")} v Atlasu`,
     atlasIntro: "Trije primerki iz zbirke Inštituta. Se ti zdijo znani? Test prepozna deset vrst in njihove križance.",
     atlasAll: "Ves Atlas",
@@ -185,33 +171,17 @@ export function TestBand({ locale }: { locale: Locale }) {
   const sample = evaluate(SAMPLE_DRAFT, locale);
   return (
     <section aria-labelledby="test" className="bg-ink text-paper">
-      <div className="wrap grid items-center gap-14 py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-6">
+      <div className="wrap grid items-center gap-8 py-12 md:py-16 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-5">
           <h2 id="test" className="text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[0.95] tracking-[-0.02em]">
             {t.testTitle}
           </h2>
           <p className="mt-6 max-w-lg text-[clamp(1.15rem,1.8vw,1.35rem)] leading-snug text-paper/80">{typo(t.testLead)}</p>
-          <dl className="mt-10 grid max-w-lg grid-cols-3 border-t border-paper/30">
-            {t.testFacts.map(([value, label]) => (
-              <div key={label} className="pt-4">
-                <dt className="sr-only">{label}</dt>
-                <dd>
-                  <span className="block text-5xl font-bold leading-none">{value}</span>
-                  <span className="label mt-1 block text-paper/70">{label}</span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
-            <Link href="/test" className="btn bg-paper text-ink hover:bg-red hover:text-paper">
-              {t.start} <span aria-hidden="true">→</span>
-            </Link>
-            <Link href={`/wynik/${encodeResult(SAMPLE_DRAFT)}`} className="link font-sans font-medium text-paper/85">
-              {t.sample}
-            </Link>
-          </div>
+          <Link href={`/wynik/${encodeResult(SAMPLE_DRAFT)}`} className="btn mt-6 bg-paper text-ink hover:bg-red hover:text-paper">
+            {t.sample} <span aria-hidden="true">→</span>
+          </Link>
         </div>
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-7">
           <Certificate
             locale={locale}
             sample
